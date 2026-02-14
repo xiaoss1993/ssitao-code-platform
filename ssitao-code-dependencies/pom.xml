@@ -64,10 +64,7 @@
         <poi.version>5.2.5</poi.version>
 
         <!-- ==================== 文档接口 ==================== -->
-        <io.swagger.v3.version>2.1.0</io.swagger.v3.version>
-        <swagger.version>1.6.8</swagger.version>
-        <springdoc-openapi-ui.version>1.6.15</springdoc-openapi-ui.version>
-        <knife4j-springdoc.version>3.0.3</knife4j-springdoc.version>
+        <knife4j-springdoc.version>4.5.0</knife4j-springdoc.version>
 
         <!-- ==================== HTTP 客户端 ==================== -->
         <httpclient.version>4.5.14</httpclient.version>
@@ -138,7 +135,13 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j-springdoc.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- Hutool 工具类 -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -255,12 +258,6 @@
                 <version>${javassist.version}</version>
             </dependency>
 
-            <!-- Knife4j - 增强版 Swagger UI (SpringDoc 专用) -->
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-springdoc-ui</artifactId>
-                <version>${knife4j-springdoc.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.hibernate.validator</groupId>
