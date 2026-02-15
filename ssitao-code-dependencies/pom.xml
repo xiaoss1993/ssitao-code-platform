@@ -34,7 +34,7 @@
         <!-- ==================== 核心依赖版本 ==================== -->
         <spring-boot.version>2.7.18</spring-boot.version>
         <slf4j-api.version>1.7.36</slf4j-api.version>
-        <mybatis-flex.version>1.10.9</mybatis-flex.version>
+        <ssitao-code-mybatis-easy.version>1.1.1</ssitao-code-mybatis-easy.version>
 
         <!-- ==================== Spring 相关 ==================== -->
         <spring-authorization-server.version>0.4.5</spring-authorization-server.version>
