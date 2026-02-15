@@ -12,7 +12,6 @@ server:
 spring:
   application:
     name: ssitao-code-platform
-
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,6 +41,8 @@ springdoc:
   api-docs:
     path: /v3/api-docs
     enabled: true
+    groups:
+      enabled: true
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
@@ -52,19 +53,8 @@ knife4j:
   setting:
     language: zh_cn
     swagger-model-name: 实体类列表
-    home-custom-path:
-  basic:
-    enable: false
-    username: admin
-    password: admin
-  # 自动上传OpenAPI数据源到Knife4jInsight平台中
-  # 参考文档：http://knife4j.net
-  insight:
-    enable: false
-    namespace: knife4j-demo-openapi3
-    server: http://localhost:10086
-    secret: BudeU0urM30JTQ+YPZu1GddkG8h0fMgWuYeViSO4Y7Q=
-    service-name: knife4j-demo-openapi3
+  production: false
+  cors: true
 management:
   endpoints:
     web:

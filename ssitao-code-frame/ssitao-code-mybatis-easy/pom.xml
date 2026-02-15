@@ -11,8 +11,15 @@
 
     <artifactId>ssitao-code-mybatis-easy</artifactId>
     <packaging>jar</packaging>
-
     <name>ssitao-code-mybatis-easy</name>
-    <description>MyBatis增强模块：提供MyBatis-Flex扩展配置和工具类</description>
+    <description>MyBatis-Flex 增强模块：提供 MyBatis-Flex 扩展配置和工具类</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
 
 </project>
