@@ -17,8 +17,8 @@ import static com.ssitao.code.frame.mybatisflex.core.table.TableInfoFactory.defa
 /**
  * 属性查询管理。
  *
- * @author 王帅
- * @since 2023-07-15
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class FieldQueryManager {
 

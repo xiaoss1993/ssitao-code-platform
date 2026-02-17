@@ -8,7 +8,7 @@ import #(importClass)
 #end
 
 #if(withActiveRecord)
-import com.tweb.frame.mybatis.core.activerecord.Model
+import com.ssitao.code.frame.mybatisflex.core.activerecord.Model
 #end
 
 #if(withSwagger && swaggerVersion.getName() == "FOX")

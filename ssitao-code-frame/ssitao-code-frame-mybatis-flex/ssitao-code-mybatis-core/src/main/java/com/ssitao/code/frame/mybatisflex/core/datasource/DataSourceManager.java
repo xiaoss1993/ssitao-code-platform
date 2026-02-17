@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class DataSourceManager {
 

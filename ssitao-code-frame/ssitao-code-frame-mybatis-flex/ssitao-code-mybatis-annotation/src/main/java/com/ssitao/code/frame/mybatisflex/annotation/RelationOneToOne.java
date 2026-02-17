@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 /**
  * 一对一映射。
  *
- * @author michael
+ * @author ssitao
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

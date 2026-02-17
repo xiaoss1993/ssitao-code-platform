@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class FlexDataSource extends AbstractDataSource {
 

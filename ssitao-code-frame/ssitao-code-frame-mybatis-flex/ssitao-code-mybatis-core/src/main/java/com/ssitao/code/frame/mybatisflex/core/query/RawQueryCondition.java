@@ -10,8 +10,7 @@ import java.util.List;
 /**
  * 原生条件。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class RawQueryCondition extends QueryCondition {
 

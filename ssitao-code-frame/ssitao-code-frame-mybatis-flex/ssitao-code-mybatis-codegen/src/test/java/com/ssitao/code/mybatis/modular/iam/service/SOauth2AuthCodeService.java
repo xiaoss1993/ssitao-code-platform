@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.SOauth2
 /**
  * OAuth2授权码信息 服务层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface SOauth2AuthCodeService extends IService<SOauth2AuthCode> {
 

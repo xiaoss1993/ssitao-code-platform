@@ -18,8 +18,8 @@ import java.util.Optional;
  * 实现类可以进行其他方法的扩展。
  *
  * @param <T> 实体类类型
- * @author 王帅
- * @since 2023-07-23
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings({"unused", "unchecked"})
 public interface MapperModel<T> {

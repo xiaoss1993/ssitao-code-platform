@@ -30,7 +30,7 @@ logging:
   level:
     root: INFO
     com.tweb: INFO
-    com.tweb.frame.mybatis: WARN
+    com.ssitao.code.frame.mybatisflex: WARN
     # 第三方框架日志级别
     org.springframework: WARN
     org.apache: WARN

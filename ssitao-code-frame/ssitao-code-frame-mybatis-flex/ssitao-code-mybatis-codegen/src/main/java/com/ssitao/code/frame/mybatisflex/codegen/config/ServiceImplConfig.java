@@ -6,8 +6,8 @@ import java.io.Serializable;
 /**
  * 生成 ServiceImpl 的配置。
  *
- * @author 王帅
- * @since 2023-05-15
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class ServiceImplConfig implements Serializable {
@@ -54,7 +54,7 @@ public class ServiceImplConfig implements Serializable {
 
     public String buildSuperClassImport() {
         if (superClass == null) {
-            return "com.tweb.frame.mybatis.spring.service.impl.ServiceImpl";
+            return "com.ssitao.code.frame.mybatisflex.spring.service.impl.ServiceImpl";
         }
         return superClass.getName();
     }

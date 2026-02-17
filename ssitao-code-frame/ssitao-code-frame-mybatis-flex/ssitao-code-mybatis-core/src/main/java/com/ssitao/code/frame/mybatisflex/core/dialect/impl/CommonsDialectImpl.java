@@ -65,7 +65,7 @@ import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.WHERE;
 
 /**
  * 通用的方言设计，其他方言可以继承于当前 CommonsDialectImpl
- * 创建或获取方言请参考 {@link com.tweb.frame.mybatis.core.dialect.DialectFactory}
+ * 创建或获取方言请参考 {@link com.ssitao.code.frame.mybatisflex.core.dialect.DialectFactory}
  */
 public class CommonsDialectImpl implements IDialect {
 

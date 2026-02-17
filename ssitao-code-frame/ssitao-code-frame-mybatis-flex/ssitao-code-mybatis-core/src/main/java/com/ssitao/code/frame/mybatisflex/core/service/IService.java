@@ -24,8 +24,8 @@ import java.util.Optional;
  * 由 Mybatis-Flex 提供的顶级增强 Service 接口。
  *
  * @param <T> 实体类（Entity）类型
- * @author 王帅
- * @since 2023-05-01
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings({"unused", "unchecked"})
 public interface IService<T> {

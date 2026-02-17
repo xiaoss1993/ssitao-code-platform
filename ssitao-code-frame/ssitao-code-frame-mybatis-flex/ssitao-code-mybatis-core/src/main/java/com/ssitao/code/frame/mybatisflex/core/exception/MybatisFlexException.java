@@ -7,8 +7,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 /**
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class MybatisFlexException extends RuntimeException {
 

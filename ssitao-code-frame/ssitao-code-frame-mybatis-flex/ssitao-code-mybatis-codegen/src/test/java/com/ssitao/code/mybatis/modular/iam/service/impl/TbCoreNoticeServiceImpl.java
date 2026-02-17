@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 首页新闻公告 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCoreNoticeServiceImpl extends ServiceImpl<TbCoreNoticeMapper, TbCoreNotice>  implements TbCoreNoticeService{

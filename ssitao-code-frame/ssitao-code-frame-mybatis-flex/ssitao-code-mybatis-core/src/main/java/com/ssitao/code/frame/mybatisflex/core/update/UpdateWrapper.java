@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public interface UpdateWrapper<T> extends PropertySetter<UpdateWrapper<T>>, Serializable {
 

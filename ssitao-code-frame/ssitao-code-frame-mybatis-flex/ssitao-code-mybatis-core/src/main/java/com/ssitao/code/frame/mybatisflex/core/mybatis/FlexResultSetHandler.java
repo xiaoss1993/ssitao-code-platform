@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author michael
+ * @author ssitao
  * 用于增强对 Cursor 查询处理，以及 List<String> 的自动映射问题
  */
 public class FlexResultSetHandler extends FlexDefaultResultSetHandler {

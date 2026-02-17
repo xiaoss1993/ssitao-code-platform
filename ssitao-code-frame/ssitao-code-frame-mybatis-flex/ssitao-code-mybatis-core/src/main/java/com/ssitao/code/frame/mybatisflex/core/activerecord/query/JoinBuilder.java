@@ -9,8 +9,8 @@ import com.ssitao.code.frame.mybatisflex.core.query.RawQueryCondition;
 /**
  * Lambda joins 构建器。
  *
- * @author 王帅
- * @since 2023-07-28
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class JoinBuilder<R extends QueryModel<R>> {
 

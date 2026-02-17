@@ -3,8 +3,8 @@
 #set(jdkVersion = entityConfig.getJdkVersion())
 package #(packageConfig.tableDefPackage);
 
-import com.tweb.frame.mybatis.core.query.QueryColumn;
-import com.tweb.frame.mybatis.core.table.TableDef;
+import com.ssitao.code.frame.mybatisflex.core.query.QueryColumn;
+import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 
 #if(jdkVersion >= 14)
 import java.io.Serial;

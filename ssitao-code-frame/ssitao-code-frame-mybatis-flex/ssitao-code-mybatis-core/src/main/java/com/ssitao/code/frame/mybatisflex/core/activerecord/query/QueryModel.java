@@ -18,8 +18,8 @@ import com.ssitao.code.frame.mybatisflex.core.util.LambdaUtil;
  * 如果不想通过实体类直接构建查询条件，可以不继承该类。
  *
  * @param <T> 实体类类型
- * @author 王帅
- * @since 2023-07-24
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings({"unused", "unchecked"})
 public abstract class QueryModel<T extends QueryModel<T>> {

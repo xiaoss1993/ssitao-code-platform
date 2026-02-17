@@ -7,8 +7,8 @@ import java.io.Serializable;
 /**
  * 生成 MapperXml 的配置。
  *
- * @author 王帅
- * @since 2023-05-17
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class MapperXmlConfig implements Serializable {

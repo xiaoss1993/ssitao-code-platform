@@ -37,8 +37,8 @@ import java.util.*;
 /**
  * MyBatis Flex Processor.
  *
- * @author 王帅, CloudPlayer
- * @since 2023-06-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class MybatisFlexProcessor extends AbstractProcessor {
 

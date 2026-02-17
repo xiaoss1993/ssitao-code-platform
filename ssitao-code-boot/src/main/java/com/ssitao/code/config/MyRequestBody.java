@@ -3,9 +3,9 @@ package com.ssitao.code.config;
 import java.lang.annotation.*;
 
 /**
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author ssitao
  * 2023/3/14 16:09
- * @since:knife4j-springdoc-openapi-demo
+ * @since 1.0.0
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

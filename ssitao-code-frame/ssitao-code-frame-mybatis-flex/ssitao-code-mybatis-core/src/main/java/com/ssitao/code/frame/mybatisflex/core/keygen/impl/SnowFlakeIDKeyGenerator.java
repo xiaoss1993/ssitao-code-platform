@@ -22,8 +22,8 @@ import java.net.NetworkInterface;
  *
  * <p>优化自开源项目：<a href="https://gitee.com/yu120/sequence">Sequence</a>
  *
- * @author 王帅
- * @since 2023-05-12
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class SnowFlakeIDKeyGenerator implements IKeyGenerator {
 

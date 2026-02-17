@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.annotation;
 /**
  * 监听器接口。
  *
- * @author snow
- * @since 2023/4/28
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface Listener extends Comparable<Listener> {
 

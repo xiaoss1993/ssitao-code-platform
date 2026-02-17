@@ -25,7 +25,7 @@ import java.util.StringJoiner;
 import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.*;
 
 /**
- * @author: 老唐
+ * @author ssitao
  * @date: 2024-07-20 11:36
  * @version: 1.0
  */

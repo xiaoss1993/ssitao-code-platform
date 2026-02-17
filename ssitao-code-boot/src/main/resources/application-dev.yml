@@ -40,11 +40,11 @@ logging:
   level:
     root: INFO
     com.tweb: DEBUG
-    com.tweb.frame.mybatis: DEBUG
+    com.ssitao.code.frame.mybatisflex: DEBUG
     com.tweb.modular.flex.mapper: DEBUG
     # MyBatis-Flex SQL 日志
-    com.tweb.frame.mybatis.core.BaseMapper: DEBUG
-    com.tweb.frame.mybatis.core.table.TableInfoFactory: DEBUG
+    com.ssitao.code.frame.mybatisflex.core.BaseMapper: DEBUG
+    com.ssitao.code.frame.mybatisflex.core.table.TableInfoFactory: DEBUG
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%-5p){cyan} %clr([%15.15t]){faint} %clr(%m){cyan} %clr(:){faint} %clr(%L){green} %n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:%L - %msg%n"

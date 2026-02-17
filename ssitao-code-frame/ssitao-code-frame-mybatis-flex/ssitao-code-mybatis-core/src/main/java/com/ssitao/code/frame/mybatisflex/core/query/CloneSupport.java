@@ -10,8 +10,8 @@ import java.io.Serializable;
  * <p>支持序列化克隆与 {@link Object#clone()} 方法。
  *
  * @param <T> 克隆对象类型
- * @author 王帅
- * @since 2023-06-10
+ * @author ssitao 
+ * @since 1.0.0
  */
 public interface CloneSupport<T> extends Serializable, Cloneable {
 

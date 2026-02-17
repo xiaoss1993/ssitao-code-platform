@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 产品资源申请明细 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class ProductResourceApplicationDetailsServiceImpl extends ServiceImpl<ProductResourceApplicationDetailsMapper, ProductResourceApplicationDetails>  implements ProductResourceApplicationDetailsService{

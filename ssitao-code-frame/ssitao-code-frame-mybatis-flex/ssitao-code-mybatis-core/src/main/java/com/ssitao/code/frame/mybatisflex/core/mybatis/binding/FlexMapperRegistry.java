@@ -80,7 +80,7 @@ public class FlexMapperRegistry extends MapperRegistry {
      * Gets the mappers.
      *
      * @return the mappers
-     * @since 3.2.2
+     * @since 1.0.0
      */
     public Collection<Class<?>> getMappers() {
         return Collections.unmodifiableCollection(knownMappers.keySet());
@@ -91,7 +91,7 @@ public class FlexMapperRegistry extends MapperRegistry {
      *
      * @param packageName the package name
      * @param superType   the super type
-     * @since 3.2.2
+     * @since 1.0.0
      */
     public void addMappers(String packageName, Class<?> superType) {
         ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
@@ -106,7 +106,7 @@ public class FlexMapperRegistry extends MapperRegistry {
      * Adds the mappers.
      *
      * @param packageName the package name
-     * @since 3.2.2
+     * @since 1.0.0
      */
     public void addMappers(String packageName) {
         addMappers(packageName, Object.class);

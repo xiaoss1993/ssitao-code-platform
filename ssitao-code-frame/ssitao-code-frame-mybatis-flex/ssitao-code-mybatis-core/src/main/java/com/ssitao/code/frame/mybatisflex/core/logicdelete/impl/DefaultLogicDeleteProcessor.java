@@ -11,7 +11,7 @@ import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.SINGLE_Q
 
 /**
  * 默认逻辑删除处理器。
- * @author michael
+ * @author ssitao
  */
 public class DefaultLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 

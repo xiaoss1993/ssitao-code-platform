@@ -10,8 +10,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * 抽象消息收集器。
  *
- * @author 王帅
- * @since 2023-09-28
+ * @author ssitao 
+ * @since 1.0.0
  */
 public abstract class AbstractMessageCollector implements MessageCollector {
 

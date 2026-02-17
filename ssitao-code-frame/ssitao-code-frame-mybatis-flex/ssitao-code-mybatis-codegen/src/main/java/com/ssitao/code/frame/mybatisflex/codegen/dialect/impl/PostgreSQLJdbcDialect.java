@@ -5,7 +5,7 @@ import com.ssitao.code.frame.mybatisflex.codegen.dialect.AbstractJdbcDialect;
 import com.ssitao.code.frame.mybatisflex.core.util.StringUtil;
 
 /**
- * @author strignke
+ * @author ssitao
  */
 public class PostgreSQLJdbcDialect extends AbstractJdbcDialect {
     @Override

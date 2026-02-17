@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.processor.config;
 /**
  * 配置键值。
  *
- * @author 王帅
- * @since 2023-06-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public enum ConfigurationKey {
 
@@ -55,7 +55,7 @@ public enum ConfigurationKey {
     /**
      * 自定义 Mapper 的父类。
      */
-    MAPPER_BASE_CLASS("processor.mapper.baseClass", "com.tweb.frame.mybatis.core.BaseMapper"),
+    MAPPER_BASE_CLASS("processor.mapper.baseClass", "com.ssitao.code.frame.mybatisflex.core.BaseMapper"),
 
     /**
      * 自定义 Mapper 生成的包名。

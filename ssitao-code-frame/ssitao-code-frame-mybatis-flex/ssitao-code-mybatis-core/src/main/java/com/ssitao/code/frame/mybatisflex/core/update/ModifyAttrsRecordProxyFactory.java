@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class ModifyAttrsRecordProxyFactory {
 

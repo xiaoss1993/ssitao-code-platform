@@ -6,7 +6,7 @@ import java.lang.annotation.*;
 /**
  * 数据库表信息注解。
  *
- * @author Michael Yang
+ * @author ssitao
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

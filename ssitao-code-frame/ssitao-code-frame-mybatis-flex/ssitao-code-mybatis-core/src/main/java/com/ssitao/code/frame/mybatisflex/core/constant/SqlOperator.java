@@ -4,8 +4,7 @@ package com.ssitao.code.frame.mybatisflex.core.constant;
 /**
  * SQL 操作符。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public enum SqlOperator {
 

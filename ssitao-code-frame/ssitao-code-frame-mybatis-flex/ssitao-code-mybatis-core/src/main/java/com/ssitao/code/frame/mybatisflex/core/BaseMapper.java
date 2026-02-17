@@ -46,13 +46,7 @@ import static com.ssitao.code.frame.mybatisflex.core.query.QueryMethods.count;
  * 通用 Mapper 接口。
  *
  * @param <T> 实体类类型
- * @author 开源海哥
- * @author 庄佳彬
- * @author 闵柳华
- * @author 王帅
- * @author yangs
- * @author lhzsdnu
- * @author 王超
+ * @author ssitao
  */
 @SuppressWarnings({"varargs", "unchecked", "unused"})
 public interface BaseMapper<T> {
@@ -91,7 +85,7 @@ public interface BaseMapper<T> {
      * @param entity      实体类
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#insert(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#insert(Map, ProviderContext)
      */
     @InsertProvider(type = EntitySqlProvider.class, method = "insert")
     int insert(@Param(FlexConsts.ENTITY) @NonNull T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
@@ -122,7 +116,7 @@ public interface BaseMapper<T> {
      * @param entity      带有主键的实体类
      * @param ignoreNulls 是否忽略 {@code null} 值
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#insertWithPk(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#insertWithPk(Map, ProviderContext)
      */
     @InsertProvider(type = EntitySqlProvider.class, method = "insertWithPk")
     int insertWithPk(@Param(FlexConsts.ENTITY) @NonNull T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
@@ -132,7 +126,7 @@ public interface BaseMapper<T> {
      *
      * @param entities 插入的数据列表
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#insertBatch(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#insertBatch(Map, ProviderContext)
      * @see com.ssitao.code.frame.mybatisflex.core.FlexConsts#METHOD_INSERT_BATCH
      */
     @InsertProvider(type = EntitySqlProvider.class, method = FlexConsts.METHOD_INSERT_BATCH)
@@ -263,7 +257,7 @@ public interface BaseMapper<T> {
      *
      * @param id 主键数据
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#deleteById(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#deleteById(Map, ProviderContext)
      */
     @DeleteProvider(type = EntitySqlProvider.class, method = "deleteById")
     int deleteById(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Serializable id);
@@ -273,7 +267,7 @@ public interface BaseMapper<T> {
      *
      * @param ids 主键列表
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#deleteBatchByIds(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#deleteBatchByIds(Map, ProviderContext)
      */
     @DeleteProvider(type = EntitySqlProvider.class, method = "deleteBatchByIds")
     int deleteBatchByIds(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Collection<? extends Serializable> ids);
@@ -284,7 +278,7 @@ public interface BaseMapper<T> {
      * @param ids  主键列表
      * @param size 切分大小
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#deleteBatchByIds(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#deleteBatchByIds(Map, ProviderContext)
      */
     default int deleteBatchByIds(@NonNull Collection<? extends Serializable> ids, int size) {
         if (size <= 0) {
@@ -328,7 +322,7 @@ public interface BaseMapper<T> {
      *
      * @param queryWrapper 条件
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#deleteByQuery(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#deleteByQuery(Map, ProviderContext)
      */
     @DeleteProvider(type = EntitySqlProvider.class, method = "deleteByQuery")
     int deleteByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);
@@ -352,7 +346,7 @@ public interface BaseMapper<T> {
      * @param entity      数据内容，必须包含有主键
      * @param ignoreNulls 是否忽略空内容字段
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#update(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#update(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "update")
     int update(@Param(FlexConsts.ENTITY) @NonNull T entity, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
@@ -425,7 +419,7 @@ public interface BaseMapper<T> {
      * @param ignoreNulls  是否忽略空值
      * @param queryWrapper 条件
      * @return 受影响的行数
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#updateByQuery(Map, ProviderContext)
      */
     @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
     int updateByQuery(
@@ -455,7 +449,7 @@ public interface BaseMapper<T> {
      *
      * @param id 主键
      * @return 实体类数据
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#selectOneById(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#selectOneById(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectOneById")
     @Nullable T selectOneById(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Serializable id);
@@ -619,7 +613,7 @@ public interface BaseMapper<T> {
      *
      * @param ids 主键列表
      * @return 数据列表
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#selectListByIds(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#selectListByIds(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByIds")
     @Nullable List<T> selectListByIds(@Param(FlexConsts.PRIMARY_VALUE) @NonNull Collection<? extends Serializable> ids);
@@ -675,7 +669,7 @@ public interface BaseMapper<T> {
      *
      * @param queryWrapper 条件
      * @return 数据列表
-     * @see com.tweb.frame.mybatis.core.provider.EntitySqlProvider#selectListByQuery(Map, ProviderContext)
+     * @see com.ssitao.code.frame.mybatisflex.core.provider.EntitySqlProvider#selectListByQuery(Map, ProviderContext)
      */
     @SelectProvider(type = EntitySqlProvider.class, method = "selectListByQuery")
     @Nullable List<T> selectListByQuery(@Param(FlexConsts.QUERY) @NonNull QueryWrapper queryWrapper);

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 凭据 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCredentialServiceImpl extends ServiceImpl<TbCredentialMapper, TbCredential>  implements TbCredentialService{

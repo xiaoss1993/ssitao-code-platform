@@ -5,7 +5,7 @@
 #set(serviceVarName = firstCharToLowerCase(table.buildServiceClassName()))
 package #(packageConfig.controllerPackage);
 
-import com.tweb.frame.mybatis.core.paginate.Page;
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

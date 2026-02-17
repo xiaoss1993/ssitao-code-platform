@@ -11,8 +11,8 @@ import java.io.Serializable;
 /**
  * 模板配置。
  *
- * @author 王帅
- * @since 2023-05-17
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class TemplateConfig implements Serializable {

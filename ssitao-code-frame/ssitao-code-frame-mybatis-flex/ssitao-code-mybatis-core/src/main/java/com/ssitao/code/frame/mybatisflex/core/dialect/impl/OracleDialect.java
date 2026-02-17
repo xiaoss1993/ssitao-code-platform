@@ -17,7 +17,7 @@ import java.util.*;
 import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.*;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class OracleDialect extends CommonsDialectImpl {
 

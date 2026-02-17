@@ -11,8 +11,8 @@ import #(packageConfig.servicePackage).#(table.buildServiceClassName());
 #end
 import org.springframework.stereotype.Service;
 #if(isCacheExample)
-import com.tweb.frame.mybatis.core.paginate.Page;
-import com.tweb.frame.mybatis.core.query.QueryWrapper;
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
+import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;

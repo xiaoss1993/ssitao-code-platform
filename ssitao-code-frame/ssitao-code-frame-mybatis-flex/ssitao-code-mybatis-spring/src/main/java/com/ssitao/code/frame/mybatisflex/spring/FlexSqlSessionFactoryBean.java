@@ -76,19 +76,11 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
  *
  * <p>在 MyBatis 官方的 SqlSessionFactoryBean 基础上,替换了  FlexSqlSessionFactoryBean。
  *
- * <p>源于 {@link SqlSessionFactoryBean}，主要是用于构建 {@link com.tweb.frame.mybatis.core.mybatis.FlexConfiguration }，而不是使用原生的 {@link Configuration}。
+ * <p>源于 {@link SqlSessionFactoryBean}，主要是用于构建 {@link com.ssitao.code.frame.mybatisflex.core.mybatis.FlexConfiguration }，而不是使用原生的 {@link Configuration}。
  *
  * <p>此代码主要是用于修改 {@link FlexSqlSessionFactoryBean#buildSqlSessionFactory()} 部分。
  *
- * @author Putthiphong Boonphong
- * @author Hunter Presnall
- * @author Eduardo Macarron
- * @author Eddú Meléndez
- * @author Kazuki Shimizu
- * @author Jens Schauder
- * @author 王帅
- * @author miachel
- * @author life
+ * @author ssitao
  */
 public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
     implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ContextRefreshedEvent> {
@@ -157,7 +149,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Sets the ObjectFactory.
      *
      * @param objectFactory a custom ObjectFactory
-     * @since 1.1.2
+     * @since 1.0.0
      */
     @Override
     public void setObjectFactory(ObjectFactory objectFactory) {
@@ -168,7 +160,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Sets the ObjectWrapperFactory.
      *
      * @param objectWrapperFactory a specified ObjectWrapperFactory
-     * @since 1.1.2
+     * @since 1.0.0
      */
     @Override
     public void setObjectWrapperFactory(ObjectWrapperFactory objectWrapperFactory) {
@@ -179,7 +171,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Gets the DatabaseIdProvider
      *
      * @return a specified DatabaseIdProvider
-     * @since 1.1.0
+     * @since 1.0.0
      */
     @Override
     public DatabaseIdProvider getDatabaseIdProvider() {
@@ -190,7 +182,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Sets the DatabaseIdProvider. As of version 1.2.2 this variable is not initialized by default.
      *
      * @param databaseIdProvider a DatabaseIdProvider
-     * @since 1.1.0
+     * @since 1.0.0
      */
     @Override
     public void setDatabaseIdProvider(DatabaseIdProvider databaseIdProvider) {
@@ -241,7 +233,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Mybatis plugin list.
      *
      * @param plugins list of plugins
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setPlugins(Interceptor... plugins) {
@@ -255,7 +247,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Since 2.0.1, allow to specify a wildcard such as {@code com.example.*.model}.
      *
      * @param typeAliasesPackage package to scan for domain objects
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setTypeAliasesPackage(String typeAliasesPackage) {
@@ -267,7 +259,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * scan configured.
      *
      * @param typeAliasesSuperType super class for domain objects
-     * @since 1.1.2
+     * @since 1.0.0
      */
     @Override
     public void setTypeAliasesSuperType(Class<?> typeAliasesSuperType) {
@@ -281,7 +273,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Since 2.0.1, allow to specify a wildcard such as {@code com.example.*.typehandler}.
      *
      * @param typeHandlersPackage package to scan for type handlers
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setTypeHandlersPackage(String typeHandlersPackage) {
@@ -292,7 +284,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Set type handlers. They must be annotated with {@code MappedTypes} and optionally with {@code MappedJdbcTypes}
      *
      * @param typeHandlers Type handler list
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setTypeHandlers(TypeHandler<?>... typeHandlers) {
@@ -303,7 +295,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Set the default type handler class for enum.
      *
      * @param defaultEnumTypeHandler The default type handler class for enum
-     * @since 2.0.5
+     * @since 1.0.0
      */
     @Override
     public void setDefaultEnumTypeHandler(
@@ -316,7 +308,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * List of type aliases to register. They can be annotated with {@code Alias}
      *
      * @param typeAliases Type aliases list
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setTypeAliases(Class<?>... typeAliases) {
@@ -328,7 +320,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * no one still pending to resolve includes. Defaults to false.
      *
      * @param failFast enable failFast
-     * @since 1.0.1
+     * @since 1.0.0
      */
     @Override
     public void setFailFast(boolean failFast) {
@@ -350,7 +342,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Set a customized MyBatis configuration.
      *
      * @param configuration MyBatis configuration
-     * @since 1.3.0
+     * @since 1.0.0
      */
     @Override
     public void setConfiguration(Configuration configuration) {
@@ -463,7 +455,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Set scripting language drivers.
      *
      * @param scriptingLanguageDrivers scripting language drivers
-     * @since 2.0.2
+     * @since 1.0.0
      */
     @Override
     public void setScriptingLanguageDrivers(LanguageDriver... scriptingLanguageDrivers) {
@@ -474,7 +466,7 @@ public class FlexSqlSessionFactoryBean extends SqlSessionFactoryBean
      * Set a default scripting language driver class.
      *
      * @param defaultScriptingLanguageDriver A default scripting language driver class
-     * @since 2.0.2
+     * @since 1.0.0
      */
     @Override
     public void setDefaultScriptingLanguageDriver(Class<? extends LanguageDriver> defaultScriptingLanguageDriver) {

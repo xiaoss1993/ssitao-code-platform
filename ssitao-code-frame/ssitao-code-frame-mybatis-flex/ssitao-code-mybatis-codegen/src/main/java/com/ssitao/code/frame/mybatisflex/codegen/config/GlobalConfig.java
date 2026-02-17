@@ -17,9 +17,8 @@ import java.util.function.UnaryOperator;
 /**
  * 代码生成全局配置类。
  *
- * @author Michael Yang
- * @author 王帅
- * @since 2023-05-15
+ * @author ssitao
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class GlobalConfig implements Serializable {

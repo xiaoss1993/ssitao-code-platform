@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 高级查询配置 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCoreGroupqueryServiceImpl extends ServiceImpl<TbCoreGroupqueryMapper, TbCoreGroupquery>  implements TbCoreGroupqueryService{

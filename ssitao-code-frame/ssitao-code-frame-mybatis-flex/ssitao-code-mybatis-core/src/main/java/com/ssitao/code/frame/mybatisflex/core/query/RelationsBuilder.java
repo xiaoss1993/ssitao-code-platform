@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * 使用 {@code Relations Query} 的方式进行关联查询。
  *
- * @author 王帅
- * @since 2023-08-08
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class RelationsBuilder<T> extends AbstractQueryBuilder<T> {
 

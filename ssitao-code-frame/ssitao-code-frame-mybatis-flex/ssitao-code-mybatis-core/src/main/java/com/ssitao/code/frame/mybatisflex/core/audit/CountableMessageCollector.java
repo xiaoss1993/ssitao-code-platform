@@ -4,8 +4,8 @@ package com.ssitao.code.frame.mybatisflex.core.audit;
 /**
  * 计数消息收集器，当消息达到指定数量时发送消息。
  *
- * @author 王帅
- * @since 2023-09-28
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class CountableMessageCollector extends AbstractMessageCollector {
 

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 工作日历 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbSysCalendarServiceImpl extends ServiceImpl<TbSysCalendarMapper, TbSysCalendar>  implements TbSysCalendarService{

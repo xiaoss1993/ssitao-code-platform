@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
 /**
  * VO（View Object）类。
  *
- * @author 王帅
- * @since 2024-04-02
+ * @author ssitao 
+ * @since 1.0.0
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

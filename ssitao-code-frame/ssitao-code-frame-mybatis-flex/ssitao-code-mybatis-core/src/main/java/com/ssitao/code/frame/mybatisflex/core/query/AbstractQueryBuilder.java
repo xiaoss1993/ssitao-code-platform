@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.BaseMapper;
 /**
  * 抽象关联查询。
  *
- * @author 王帅
- * @since 2023-08-08
+ * @author ssitao 
+ * @since 1.0.0
  */
 public abstract class AbstractQueryBuilder<T> implements ChainQuery<T> {
 

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class TableManager {
 

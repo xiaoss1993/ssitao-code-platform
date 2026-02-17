@@ -9,10 +9,9 @@ import java.util.ResourceBundle;
 /**
  * 异常消息中使用的本地化消息格式的枚举。
  *
- * @author 王帅
- * @author michael
+ * @author ssitao
  *
- * @since 2023-07-26
+ * @since 1.0.0
  */
 public enum LocalizedFormats implements Localizable {
 

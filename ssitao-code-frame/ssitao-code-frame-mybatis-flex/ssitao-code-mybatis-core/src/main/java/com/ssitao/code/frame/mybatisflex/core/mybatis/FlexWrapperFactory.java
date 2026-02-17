@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class FlexWrapperFactory implements ObjectWrapperFactory {
 

@@ -7,8 +7,7 @@ import com.ssitao.code.frame.mybatisflex.codegen.entity.Table;
 /**
  * 文件生成器接口。
  *
- * @author Michael Yang
- * @author 王帅
+ * @author ssitao
  */
 public interface IGenerator {
 

@@ -12,8 +12,7 @@ import java.util.Objects;
 /**
  * 查询表。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class QueryTable implements CloneSupport<QueryTable> {
 

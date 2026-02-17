@@ -8,8 +8,8 @@ import java.util.Locale;
 /**
  * 可本地化字符串接口。
  *
- * @author 王帅
- * @since 2023-07-26
+ * @author ssitao 
+ * @since 1.0.0
  */
 public interface Localizable extends Serializable {
 

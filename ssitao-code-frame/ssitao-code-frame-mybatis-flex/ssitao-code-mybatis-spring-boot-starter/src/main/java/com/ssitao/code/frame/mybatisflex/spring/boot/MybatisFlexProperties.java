@@ -1,18 +1,4 @@
-/*
- *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
- *  <p>
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  <p>
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  <p>
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.ssitao.code.frame.mybatisflex.spring.boot;
 
 import com.ssitao.code.frame.mybatisflex.core.FlexConsts;
@@ -46,10 +32,7 @@ import java.util.stream.Stream;
  * Mybatis-Flex 的配置属性。
  * 参考：https://github.com/mybatis/spring-boot-starter/blob/master/mybatis-spring-boot-autoconfigure/src/main/java/org/mybatis/spring/boot/autoconfigure/MybatisProperties.java
  *
- * @author Eddú Meléndez
- * @author Kazuki Shimizu
- * @author micahel
- * @author 王帅
+ * @author ssitao
  */
 @ConfigurationProperties(prefix = "mybatis-flex")
 public class MybatisFlexProperties {
@@ -175,14 +158,14 @@ public class MybatisFlexProperties {
     }
 
     /**
-     * @since 1.1.0
+     * @since 1.0.0
      */
     public String getConfigLocation() {
         return this.configLocation;
     }
 
     /**
-     * @since 1.1.0
+     * @since 1.0.0
      */
     public void setConfigLocation(String configLocation) {
         this.configLocation = configLocation;
@@ -213,14 +196,14 @@ public class MybatisFlexProperties {
     }
 
     /**
-     * @since 1.3.3
+     * @since 1.0.0
      */
     public Class<?> getTypeAliasesSuperType() {
         return typeAliasesSuperType;
     }
 
     /**
-     * @since 1.3.3
+     * @since 1.0.0
      */
     public void setTypeAliasesSuperType(Class<?> typeAliasesSuperType) {
         this.typeAliasesSuperType = typeAliasesSuperType;
@@ -243,28 +226,28 @@ public class MybatisFlexProperties {
     }
 
     /**
-     * @since 2.1.0
+     * @since 1.0.0
      */
     public Class<? extends LanguageDriver> getDefaultScriptingLanguageDriver() {
         return defaultScriptingLanguageDriver;
     }
 
     /**
-     * @since 2.1.0
+     * @since 1.0.0
      */
     public void setDefaultScriptingLanguageDriver(Class<? extends LanguageDriver> defaultScriptingLanguageDriver) {
         this.defaultScriptingLanguageDriver = defaultScriptingLanguageDriver;
     }
 
     /**
-     * @since 1.2.0
+     * @since 1.0.0
      */
     public Properties getConfigurationProperties() {
         return configurationProperties;
     }
 
     /**
-     * @since 1.2.0
+     * @since 1.0.0
      */
     public void setConfigurationProperties(Properties configurationProperties) {
         this.configurationProperties = configurationProperties;
@@ -294,7 +277,7 @@ public class MybatisFlexProperties {
     /**
      * The configuration properties for mybatis core module.
      *
-     * @since 3.0.0
+     * @since 1.0.0
      */
     public static class CoreConfiguration {
 
@@ -766,10 +749,10 @@ public class MybatisFlexProperties {
     }
 
     /**
-     * {@link com.tweb.frame.mybatis.core.FlexGlobalConfig} 配置。
+     * {@link com.ssitao.code.frame.mybatisflex.core.FlexGlobalConfig} 配置。
      *
-     * @author 王帅
-     * @since 2023-06-21
+ * @author ssitao
+ * @since 1.0.0
      */
     public static class GlobalConfig {
 
@@ -927,8 +910,8 @@ public class MybatisFlexProperties {
     /**
      * MyBatis Flex Admin 配置。
      *
-     * @author 王帅
-     * @since 2023-07-02
+ * @author ssitao
+ * @since 1.0.0
      */
     public static class AdminConfig {
 
@@ -976,8 +959,8 @@ public class MybatisFlexProperties {
     /**
      * Seata 配置
      *
-     * @author life
-     */
+ * @author ssitao
+ */
     public static class SeataConfig {
 
         /**
@@ -1009,8 +992,8 @@ public class MybatisFlexProperties {
     }
 
     /**
-     * @author life
-     */
+ * @author ssitao
+ */
     public enum SeataMode {
 
         XA,

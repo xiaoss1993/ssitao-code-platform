@@ -11,8 +11,8 @@ import java.util.Objects;
 /**
  * 原生查询表。
  *
- * @author 王帅
- * @since 2023-10-16
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class RawQueryTable extends QueryTable {
 

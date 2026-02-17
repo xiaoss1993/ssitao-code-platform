@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.core.constant;
 /**
  * SQL 构建常量池。
  *
- * @author 王帅
- * @since 2023-06-12
+ * @author ssitao 
+ * @since 1.0.0
  */
 public final class SqlConsts {
 

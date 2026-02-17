@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.GenType
 /**
  * 前端和后端数据类型管理 映射层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface GenTypeScriptTypeMapper extends BaseMapper<GenTypeScriptType> {
 

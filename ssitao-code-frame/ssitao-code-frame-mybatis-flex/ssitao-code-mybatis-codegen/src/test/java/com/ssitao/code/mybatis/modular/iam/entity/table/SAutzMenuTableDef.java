@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 /**
  * 权限设置菜单 表定义层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public class SAutzMenuTableDef extends TableDef {
 

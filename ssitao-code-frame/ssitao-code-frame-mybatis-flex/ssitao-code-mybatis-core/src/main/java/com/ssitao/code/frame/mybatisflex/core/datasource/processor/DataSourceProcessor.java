@@ -13,8 +13,8 @@ import java.lang.reflect.Method;
  * <p>
  * Spring模式下,不区分使用到程序的层(Controller、Service、Dao层都支持)，下层控制粒度细上层控制粒粗，使用时根据需要进行灵活应用。
  *
- * @author Alay
- * @since 2024-12-07 15:34
+ * @author ssitao
+ * @since 1.0.0 15:34
  */
 public interface DataSourceProcessor {
 

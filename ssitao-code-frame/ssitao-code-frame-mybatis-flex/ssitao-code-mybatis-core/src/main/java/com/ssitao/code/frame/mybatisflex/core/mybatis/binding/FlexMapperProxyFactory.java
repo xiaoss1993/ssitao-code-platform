@@ -24,8 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author Lasse Voss
- * @author Michael Yang
+ * @author ssitao
  */
 public class FlexMapperProxyFactory<T> {
 

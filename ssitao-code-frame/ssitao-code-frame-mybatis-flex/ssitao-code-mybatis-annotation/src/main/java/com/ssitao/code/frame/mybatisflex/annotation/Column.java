@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 /**
  * 数据库表中的列信息注解。
  *
- * @author 开源海哥
+ * @author ssitao 
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 /**
  * 企微设置管理 表定义层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public class TbIamWechatConfigTableDef extends TableDef {
 

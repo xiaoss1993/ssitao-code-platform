@@ -12,8 +12,8 @@ import java.util.function.Predicate;
  * 属性设置接口。
  *
  * @param <R> 链式调用返回值类型
- * @author 王帅
- * @since 2023-08-16
+ * @author ssitao 
+ * @since 1.0.0
  */
 public interface PropertySetter<R> {
 

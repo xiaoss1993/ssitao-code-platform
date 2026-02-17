@@ -59,7 +59,6 @@
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
         <jsqlparser.version>4.7</jsqlparser.version>
-        <mybatis-flex.version>1.8.6</mybatis-flex.version>
         <ssitao-code-mybatis-flex.version>${revision}</ssitao-code-mybatis-flex.version>
 
 
@@ -211,18 +210,6 @@
                 <groupId>org.mybatis.scripting</groupId>
                 <artifactId>mybatis-thymeleaf</artifactId>
                 <version>1.0.4</version>
-            </dependency>
-
-            <!-- ==================== MyBatis-Flex ==================== -->
-            <dependency>
-                <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-core</artifactId>
-                <version>${mybatis-flex.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-spring</artifactId>
-                <version>${mybatis-flex.version}</version>
             </dependency>
 
             <!-- ==================== 其他第三方依赖 ==================== -->

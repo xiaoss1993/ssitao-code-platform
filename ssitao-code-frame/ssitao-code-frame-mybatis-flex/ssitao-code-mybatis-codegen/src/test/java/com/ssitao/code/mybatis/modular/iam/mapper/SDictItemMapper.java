@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.SDictIt
 /**
  * 数据字典选项配置 映射层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface SDictItemMapper extends BaseMapper<SDictItem> {
 

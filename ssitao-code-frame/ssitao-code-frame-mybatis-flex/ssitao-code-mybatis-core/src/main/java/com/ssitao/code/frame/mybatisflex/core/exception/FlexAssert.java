@@ -9,10 +9,9 @@ import java.util.Map;
 /**
  * 断言。
  *
- * @author 王帅
- * @author michael
+ * @author ssitao
  *
- * @since 2023-07-08
+ * @since 1.0.0
  */
 public final class FlexAssert {
 

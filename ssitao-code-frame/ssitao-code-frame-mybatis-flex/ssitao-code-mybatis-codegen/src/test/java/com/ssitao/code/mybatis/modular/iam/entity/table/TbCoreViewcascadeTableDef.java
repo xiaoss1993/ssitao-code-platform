@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 /**
  * 资源_级联关系 表定义层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public class TbCoreViewcascadeTableDef extends TableDef {
 

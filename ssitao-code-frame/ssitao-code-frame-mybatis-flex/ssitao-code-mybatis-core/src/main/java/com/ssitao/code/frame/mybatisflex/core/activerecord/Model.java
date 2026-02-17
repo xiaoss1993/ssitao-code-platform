@@ -22,8 +22,8 @@ import java.util.Optional;
  * Active Record 模型。
  *
  * @param <T> 实体类类型
- * @author 王帅
- * @since 2023-07-24
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings({"unused", "unchecked"})
 public abstract class Model<T extends Model<T>>

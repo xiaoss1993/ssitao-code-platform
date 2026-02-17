@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.codegen.constant;
 /**
  * 代码生成模板常量池。
  *
- * @author 王帅
- * @since 2023-05-16
+ * @author ssitao 
+ * @since 1.0.0
  */
 public final class TemplateConst {
 

@@ -12,7 +12,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class Fastjson2TypeHandler extends BaseJsonTypeHandler<Object> {
 

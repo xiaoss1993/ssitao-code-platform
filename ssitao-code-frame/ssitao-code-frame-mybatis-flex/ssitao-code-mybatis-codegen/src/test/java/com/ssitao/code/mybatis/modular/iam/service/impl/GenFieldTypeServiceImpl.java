@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * DB和后端数据类型 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class GenFieldTypeServiceImpl extends ServiceImpl<GenFieldTypeMapper, GenFieldType>  implements GenFieldTypeService{

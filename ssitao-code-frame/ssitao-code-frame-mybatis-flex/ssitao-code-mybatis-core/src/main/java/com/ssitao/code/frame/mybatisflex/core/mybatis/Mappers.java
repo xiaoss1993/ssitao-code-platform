@@ -20,8 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 获取 {@link BaseMapper} 对象。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 @SuppressWarnings("unchecked")
 public class Mappers {

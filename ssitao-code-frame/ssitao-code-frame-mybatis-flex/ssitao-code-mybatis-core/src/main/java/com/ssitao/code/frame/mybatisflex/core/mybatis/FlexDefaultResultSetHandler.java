@@ -44,11 +44,7 @@ import java.util.*;
 /**
  * 复制于 DefaultResultSetHandler，并开放若干方法，方便子类重写
  *
- * @author Clinton Begin
- * @author Eduardo Macarron
- * @author Iwao AVE!
- * @author Kazuki Shimizu
- * @author Michael
+ * @author ssitao
  */
 public class FlexDefaultResultSetHandler extends DefaultResultSetHandler {
 

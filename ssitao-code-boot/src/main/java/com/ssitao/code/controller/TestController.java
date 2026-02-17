@@ -1,22 +1,32 @@
 package com.ssitao.code.controller;
 
 import com.ssitao.code.common.result.Result;
+import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
+import com.ssitao.code.frame.mybatisflex.core.row.Row;
+import com.ssitao.code.frame.mybatisflex.core.row.RowMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "Test APIs", description = "APIs for testing functionality")
 @RestController
 @RequestMapping("/test")
+@AllArgsConstructor
 public class TestController {
 
+    private final RowMapper rowMapper;
     @Operation(summary = "Hello World", description = "A simple Hello World endpoint")
     @GetMapping("/hello")
     public Result<String> hello() {
+        List<Row> rowList = rowMapper.selectListByQuery("tweb", "tb_iam_role", QueryWrapper.create());
+
         return Result.success("Hello World from ssitao-code-platform!");
     }
 

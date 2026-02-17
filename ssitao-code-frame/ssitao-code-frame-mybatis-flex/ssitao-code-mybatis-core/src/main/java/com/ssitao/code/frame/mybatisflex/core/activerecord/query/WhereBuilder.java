@@ -18,8 +18,8 @@ import java.util.function.Predicate;
 /**
  * Lambda 条件构建器。
  *
- * @author 王帅
- * @since 2023-07-24
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class WhereBuilder<R extends QueryModel<R>> implements Conditional<R> {
 

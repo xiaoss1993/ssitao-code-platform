@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 /**
  * 角色权限关联 表定义层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public class TbIamRolepermTableDef extends TableDef {
 

@@ -16,8 +16,7 @@ import java.util.Map;
 /**
  * TableDef 生成器。
  *
- * @author Michael Yang
- * @author 王帅
+ * @author ssitao
  */
 public class TableDefGenerator implements IGenerator {
 

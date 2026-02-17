@@ -4,8 +4,7 @@ package com.ssitao.code.frame.mybatisflex.core;
 /**
  * Mybatis-Flex 可能用到的静态常量
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class FlexConsts {
 

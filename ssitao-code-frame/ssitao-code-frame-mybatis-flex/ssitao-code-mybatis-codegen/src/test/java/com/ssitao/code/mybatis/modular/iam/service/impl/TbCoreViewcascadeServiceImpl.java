@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 资源_级联关系 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCoreViewcascadeServiceImpl extends ServiceImpl<TbCoreViewcascadeMapper, TbCoreViewcascade>  implements TbCoreViewcascadeService{

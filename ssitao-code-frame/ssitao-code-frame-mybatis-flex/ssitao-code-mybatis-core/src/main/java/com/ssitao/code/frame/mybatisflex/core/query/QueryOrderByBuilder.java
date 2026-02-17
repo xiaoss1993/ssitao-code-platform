@@ -7,7 +7,7 @@ import com.ssitao.code.frame.mybatisflex.core.util.LambdaUtil;
 
 /**
  * 排序字段构建器
- * @author michael
+ * @author ssitao
  */
 @SuppressWarnings("unchecked")
 public class QueryOrderByBuilder<Wrapper extends QueryWrapper> {

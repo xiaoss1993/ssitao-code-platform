@@ -10,8 +10,8 @@ import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.EQUALS;
 /**
  * 逻辑删除处理器抽象类。
  *
- * @author 王帅
- * @since 2023-06-20
+ * @author ssitao 
+ * @since 1.0.0
  */
 public abstract class AbstractLogicDeleteProcessor implements LogicDeleteProcessor {
 

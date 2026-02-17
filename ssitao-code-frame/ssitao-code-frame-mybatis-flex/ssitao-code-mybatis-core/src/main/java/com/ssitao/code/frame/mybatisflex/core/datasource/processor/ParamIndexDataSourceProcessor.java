@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 /**
  * 参数索引中取出数据源名称(针对简单类型参数快速解析读取)
  *
- * @author Alay
- * @since 2024-12-07 15:43
+ * @author ssitao
+ * @since 1.0.0 15:43
  */
 public class ParamIndexDataSourceProcessor implements DataSourceProcessor {
     private static final String NULL_STR = "null";

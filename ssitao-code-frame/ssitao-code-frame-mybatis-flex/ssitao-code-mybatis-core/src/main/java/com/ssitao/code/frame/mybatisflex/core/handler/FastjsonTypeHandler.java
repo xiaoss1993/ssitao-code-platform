@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class FastjsonTypeHandler extends BaseJsonTypeHandler<Object> {
 

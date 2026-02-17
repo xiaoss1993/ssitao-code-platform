@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class GsonTypeHandler extends BaseJsonTypeHandler<Object> {
 

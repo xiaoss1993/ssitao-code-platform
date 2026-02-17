@@ -8,9 +8,8 @@ import java.lang.reflect.Type;
 /**
  * 类型支持 update 监听器。
  *
- * @author snow
- * @author robot.luo
- * @since 2023/4/28
+ * @author ssitao
+ * @since 1.0.0
  */
 public abstract class AbstractUpdateListener<T> implements UpdateListener {
 

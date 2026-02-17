@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 在职人员按月统计 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbIamAccountonjobServiceImpl extends ServiceImpl<TbIamAccountonjobMapper, TbIamAccountonjob>  implements TbIamAccountonjobService{

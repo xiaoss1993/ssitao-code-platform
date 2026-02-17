@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbCoreJ
 /**
  * 移动端api 映射层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface TbCoreJeappapiMapper extends BaseMapper<TbCoreJeappapi> {
 

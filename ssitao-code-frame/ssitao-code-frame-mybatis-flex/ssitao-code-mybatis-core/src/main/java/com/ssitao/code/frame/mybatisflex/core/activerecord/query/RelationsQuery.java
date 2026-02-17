@@ -11,8 +11,8 @@ import java.io.Serializable;
 /**
  * 使用 {@code Relations Query} 的方式进行关联查询。
  *
- * @author 王帅
- * @since 2023-07-30
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class RelationsQuery<T extends Model<T>> extends RelationsBuilder<T> {
 

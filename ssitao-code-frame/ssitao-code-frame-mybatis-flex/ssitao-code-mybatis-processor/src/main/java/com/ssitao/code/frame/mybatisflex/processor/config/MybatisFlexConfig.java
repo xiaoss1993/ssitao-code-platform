@@ -20,8 +20,8 @@ import java.util.Properties;
 /**
  * Mybatis Flex 生成配置。
  *
- * @author 王帅
- * @since 2023-06-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class MybatisFlexConfig {
 

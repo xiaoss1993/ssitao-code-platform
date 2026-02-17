@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 发布历史记录 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class ReleaseHistoryServiceImpl extends ServiceImpl<ReleaseHistoryMapper, ReleaseHistory>  implements ReleaseHistoryService{

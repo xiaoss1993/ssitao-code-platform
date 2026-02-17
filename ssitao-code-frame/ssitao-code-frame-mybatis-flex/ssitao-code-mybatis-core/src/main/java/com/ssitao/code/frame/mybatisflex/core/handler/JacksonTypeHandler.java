@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class JacksonTypeHandler extends BaseJsonTypeHandler<Object> {
 

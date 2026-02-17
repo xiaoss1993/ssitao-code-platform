@@ -11,8 +11,7 @@ import java.io.Serializable;
  * 属性查询构建者。
  *
  * @param <T> 属性所在实体类类型
- * @author 开源海哥
- * @author 王帅
+ * @author ssitao
  */
 public class FieldQueryBuilder<T> implements Serializable {
 

@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.core.constant;
 /**
  * 支持的 SQL 函数名。
  *
- * @author 王帅
- * @since 2023-07-03
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class FuncName {
 

@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbCoreN
 /**
  * 首页新闻公告 服务层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface TbCoreNoticeService extends IService<TbCoreNotice> {
 

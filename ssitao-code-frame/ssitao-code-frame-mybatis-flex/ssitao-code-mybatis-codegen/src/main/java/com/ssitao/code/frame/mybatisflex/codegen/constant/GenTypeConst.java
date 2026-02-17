@@ -4,8 +4,8 @@ package com.ssitao.code.frame.mybatisflex.codegen.constant;
 /**
  * 生成类型常量。
  *
- * @author 王帅
- * @since 2023-05-17
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class GenTypeConst {
 

@@ -58,13 +58,11 @@ public class TreeBaseEntity extends BaseEntity {
      * 是否有子节点
      */
     @Schema(description = "是否有子节点")
-    @com.mybatisflex.annotation.Column(ignore = true)
     private Boolean hasChildren;
 
     /**
      * 子节点列表
      */
     @Schema(description = "子节点列表")
-    @com.mybatisflex.annotation.Column(ignore = true)
     private java.util.List<TreeBaseEntity> children;
 }

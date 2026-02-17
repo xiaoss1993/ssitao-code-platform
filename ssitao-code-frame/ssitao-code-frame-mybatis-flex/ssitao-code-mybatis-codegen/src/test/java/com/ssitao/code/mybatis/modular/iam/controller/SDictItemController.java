@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * 数据字典选项配置 控制层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping("/sDictItem")

@@ -13,8 +13,8 @@ import java.util.Set;
 /**
  * 表策略配置。
  *
- * @author 王帅
- * @since 2023-05-14
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class StrategyConfig implements Serializable {

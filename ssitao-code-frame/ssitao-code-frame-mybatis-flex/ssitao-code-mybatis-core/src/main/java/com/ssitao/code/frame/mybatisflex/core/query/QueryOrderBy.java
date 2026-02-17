@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 排序字段
- * @author michael
+ * @author ssitao
  */
 public class QueryOrderBy implements CloneSupport<QueryOrderBy> {
 

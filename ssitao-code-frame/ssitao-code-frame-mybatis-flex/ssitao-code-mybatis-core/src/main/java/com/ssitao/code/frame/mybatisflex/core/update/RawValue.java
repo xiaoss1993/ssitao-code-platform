@@ -12,7 +12,7 @@ import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import java.io.Serializable;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class RawValue implements Serializable {
 

@@ -5,7 +5,7 @@ import com.ssitao.code.frame.mybatisflex.codegen.dialect.AbstractJdbcDialect;
 import com.ssitao.code.frame.mybatisflex.core.util.StringUtil;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class MySqlJdbcDialect extends AbstractJdbcDialect {
     @Override

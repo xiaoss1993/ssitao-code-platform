@@ -10,8 +10,8 @@ import java.util.Set;
 /**
  * 文件工具类。
  *
- * @author 王帅
- * @since 2023-06-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class FileUtil {
 

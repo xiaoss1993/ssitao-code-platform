@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbIamAc
 /**
  * 账号部门关联 服务层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface TbIamAccountdeptService extends IService<TbIamAccountdept> {
 

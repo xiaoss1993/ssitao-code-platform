@@ -118,11 +118,11 @@
     <springProfile name="dev">
         <!-- 控制台日志级别 -->
         <logger name="com.tweb" level="DEBUG"/>
-        <logger name="com.tweb.frame.mybatis" level="DEBUG"/>
+        <logger name="com.ssitao.code.frame.mybatisflex" level="DEBUG"/>
 
         <!-- SQL 日志 - 控制台和文件 -->
         <logger name="com.tweb.modular.flex.mapper" level="DEBUG"/>
-        <logger name="com.tweb.frame.mybatis.core.BaseMapper" level="DEBUG"/>
+        <logger name="com.ssitao.code.frame.mybatisflex.core.BaseMapper" level="DEBUG"/>
 
         <!-- 业务日志 - 控制台和文件 -->
         <logger name="BUSINESS_LOGGER" level="INFO" additivity="false">
@@ -150,11 +150,11 @@
     <springProfile name="test">
         <!-- 控制台日志级别 -->
         <logger name="com.tweb" level="DEBUG"/>
-        <logger name="com.tweb.frame.mybatis" level="DEBUG"/>
+        <logger name="com.ssitao.code.frame.mybatisflex" level="DEBUG"/>
 
         <!-- SQL 日志 - 控制台和文件 -->
         <logger name="com.tweb.modular.flex.mapper" level="DEBUG"/>
-        <logger name="com.tweb.frame.mybatis.core.BaseMapper" level="DEBUG"/>
+        <logger name="com.ssitao.code.frame.mybatisflex.core.BaseMapper" level="DEBUG"/>
 
         <!-- 业务日志 - 文件 -->
         <logger name="BUSINESS_LOGGER" level="INFO" additivity="false">
@@ -182,7 +182,7 @@
         <!-- 控制台不输出 -->
         <!-- 生产环境日志级别 -->
         <logger name="com.tweb" level="INFO"/>
-        <logger name="com.tweb.frame.mybatis" level="WARN"/>
+        <logger name="com.ssitao.code.frame.mybatisflex" level="WARN"/>
 
         <!-- SQL 日志 - 仅文件，仅慢SQL -->
         <logger name="com.tweb.modular.flex.mapper" level="WARN"/>

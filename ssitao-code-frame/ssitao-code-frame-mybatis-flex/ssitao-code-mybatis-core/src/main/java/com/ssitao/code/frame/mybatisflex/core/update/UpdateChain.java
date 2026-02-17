@@ -19,8 +19,8 @@ import java.lang.reflect.Type;
 /**
  * 用于数据更新、删除的链式操作
  *
- * @author michale
- * @since 2023-07-25
+ * @author ssitao
+ * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
 public class UpdateChain<T> extends QueryWrapperAdapter<UpdateChain<T>> implements PropertySetter<UpdateChain<T>> {

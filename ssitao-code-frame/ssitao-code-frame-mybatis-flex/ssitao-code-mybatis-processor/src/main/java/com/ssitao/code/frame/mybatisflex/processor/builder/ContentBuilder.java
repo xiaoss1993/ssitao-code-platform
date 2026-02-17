@@ -13,8 +13,8 @@ import java.util.StringJoiner;
 /**
  * 文件内容构建。
  *
- * @author 王帅
- * @since 2023-06-23
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings({"squid:S107", "squid:S1192"})
 public class ContentBuilder {

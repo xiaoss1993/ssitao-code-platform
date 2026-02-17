@@ -15,8 +15,8 @@ import lombok.EqualsAndHashCode;
 /**
  * 菜单功能关系 实体类。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Data
 @Builder

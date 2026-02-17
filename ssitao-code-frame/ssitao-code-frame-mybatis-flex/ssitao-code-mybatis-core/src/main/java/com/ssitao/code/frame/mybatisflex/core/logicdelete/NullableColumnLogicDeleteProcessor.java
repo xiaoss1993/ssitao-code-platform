@@ -9,8 +9,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableInfo;
 /**
  * 数据列默认值为 {@code null} 值的逻辑删除处理器。
  *
- * @author 王帅
- * @since 2023-07-30
+ * @author ssitao 
+ * @since 1.0.0
  */
 public abstract class NullableColumnLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 

@@ -16,8 +16,8 @@ import java.util.Map;
 /**
  * Controller 生成器。
  *
- * @author 王帅
- * @since 2023-05-14
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class ControllerGenerator implements IGenerator {
 

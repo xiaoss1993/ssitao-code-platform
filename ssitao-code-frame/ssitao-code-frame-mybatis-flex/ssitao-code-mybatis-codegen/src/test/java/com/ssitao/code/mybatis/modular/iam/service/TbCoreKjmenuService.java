@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbCoreK
 /**
  * 快捷菜单 服务层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface TbCoreKjmenuService extends IService<TbCoreKjmenu> {
 

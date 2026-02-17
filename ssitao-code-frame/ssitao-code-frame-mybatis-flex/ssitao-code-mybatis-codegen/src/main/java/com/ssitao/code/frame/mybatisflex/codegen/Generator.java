@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 代码生成器。
  *
- * @author michael
+ * @author ssitao
  */
 public class Generator {
 

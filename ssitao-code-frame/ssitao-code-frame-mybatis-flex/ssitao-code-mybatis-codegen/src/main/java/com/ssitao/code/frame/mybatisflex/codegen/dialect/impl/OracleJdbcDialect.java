@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class OracleJdbcDialect extends AbstractJdbcDialect {
 

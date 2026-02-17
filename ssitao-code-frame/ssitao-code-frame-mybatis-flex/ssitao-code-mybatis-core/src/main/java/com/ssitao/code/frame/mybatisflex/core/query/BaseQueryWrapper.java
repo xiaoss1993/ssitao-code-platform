@@ -41,7 +41,7 @@ public class BaseQueryWrapper<T extends BaseQueryWrapper<T>> implements CloneSup
      * <p>Description: Default QueryWrapper values. </p>
      * <p>Notice: When adding new attributes, it is necessary to supplement here. </p>
      *
-     * @author dragon
+     * @author ssitao
      */
     public void clear() {
         this.with = null;

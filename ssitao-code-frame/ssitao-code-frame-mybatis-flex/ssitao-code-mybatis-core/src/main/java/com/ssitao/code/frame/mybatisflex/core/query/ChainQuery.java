@@ -18,8 +18,8 @@ import java.util.Optional;
  * </ul>
  *
  * @param <T> 实体类类型
- * @author 王帅
- * @since 2023-08-08
+ * @author ssitao 
+ * @since 1.0.0
  */
 public interface ChainQuery<T> {
 

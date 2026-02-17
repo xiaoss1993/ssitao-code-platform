@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 企微应用管理 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbIamWechatAppServiceImpl extends ServiceImpl<TbIamWechatAppMapper, TbIamWechatApp>  implements TbIamWechatAppService{

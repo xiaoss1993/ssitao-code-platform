@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 子功能 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCoreFuncrelationServiceImpl extends ServiceImpl<TbCoreFuncrelationMapper, TbCoreFuncrelation>  implements TbCoreFuncrelationService{

@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 字段类型映射。
  *
- * @author michael
+ * @author ssitao
  */
 public class JdbcTypeMapping {
 

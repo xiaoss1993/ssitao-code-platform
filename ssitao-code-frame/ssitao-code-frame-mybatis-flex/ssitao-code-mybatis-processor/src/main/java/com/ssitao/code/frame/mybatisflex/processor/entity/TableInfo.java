@@ -5,8 +5,8 @@ package com.ssitao.code.frame.mybatisflex.processor.entity;
 /**
  * 表详细信息。
  *
- * @author 王帅
- * @since 2023-07-13
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class TableInfo {
 

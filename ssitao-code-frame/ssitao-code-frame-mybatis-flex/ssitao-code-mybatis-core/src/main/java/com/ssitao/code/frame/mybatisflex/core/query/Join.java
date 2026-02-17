@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * @author michael yang (fuhai999@gmail.com)
+ * @author ssitao yang (fuhai999@gmail.com)
  * @Date: 2020/1/14
  */
 public class Join implements CloneSupport<Join> {

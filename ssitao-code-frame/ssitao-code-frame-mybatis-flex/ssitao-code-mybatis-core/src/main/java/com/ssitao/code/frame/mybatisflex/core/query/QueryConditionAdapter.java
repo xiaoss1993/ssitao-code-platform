@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * {@link QueryCondition} 适配器，用于将 {@link QueryColumn} 转换为 {@link QueryCondition}。
  *
- * @author 王帅
- * @since 2024-09-29
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class QueryConditionAdapter extends QueryCondition {
 

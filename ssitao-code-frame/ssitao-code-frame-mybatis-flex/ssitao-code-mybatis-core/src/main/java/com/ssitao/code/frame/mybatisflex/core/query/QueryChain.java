@@ -10,8 +10,8 @@ import com.ssitao.code.frame.mybatisflex.core.table.TableInfoFactory;
 /**
  * {@link QueryWrapper} 链式调用。
  *
- * @author 王帅
- * @since 2023-07-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class QueryChain<T> extends QueryWrapperAdapter<QueryChain<T>> implements MapperQueryChain<T> {
 

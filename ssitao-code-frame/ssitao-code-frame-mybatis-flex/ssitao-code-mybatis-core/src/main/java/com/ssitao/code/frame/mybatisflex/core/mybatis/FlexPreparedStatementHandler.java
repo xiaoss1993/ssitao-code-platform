@@ -16,7 +16,7 @@ import org.apache.ibatis.session.RowBounds;
 import java.sql.*;
 
 /**
- * @author Michael Yang(fuhai999@gmail.com)
+ * @author ssitao(fuhai999@gmail.com)
  */
 public class FlexPreparedStatementHandler extends PreparedStatementHandler {
 

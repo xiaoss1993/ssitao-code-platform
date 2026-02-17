@@ -6,8 +6,8 @@ import java.io.Serializable;
 /**
  * 生成 Controller 的配置。
  *
- * @author 王帅
- * @since 2023-05-15
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class ControllerConfig implements Serializable {

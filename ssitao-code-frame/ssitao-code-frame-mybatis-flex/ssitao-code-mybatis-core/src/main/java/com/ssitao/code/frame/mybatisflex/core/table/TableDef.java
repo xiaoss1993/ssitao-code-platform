@@ -12,8 +12,8 @@ import java.util.function.Function;
 /**
  * 表定义，内包含字段。
  *
- * @author 王帅
- * @since 2024-03-11
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class TableDef extends QueryTable {
 

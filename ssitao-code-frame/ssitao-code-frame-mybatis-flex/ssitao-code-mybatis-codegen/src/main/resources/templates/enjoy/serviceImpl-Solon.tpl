@@ -1,6 +1,6 @@
 package #(packageConfig.serviceImplPackage);
 
-import com.tweb.frame.mybatis.solon.service.impl.ServiceImpl;
+import com.ssitao.code.frame.mybatisflex.solon.service.impl.ServiceImpl;
 import #(packageConfig.entityPackage).#(table.buildEntityClassName());
 import #(packageConfig.mapperPackage).#(table.buildMapperClassName());
 #if(table.getGlobalConfig().isServiceGenerateEnable())

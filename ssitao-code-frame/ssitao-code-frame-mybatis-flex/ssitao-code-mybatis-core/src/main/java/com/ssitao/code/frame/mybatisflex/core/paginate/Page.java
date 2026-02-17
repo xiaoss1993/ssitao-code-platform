@@ -13,8 +13,7 @@ import java.util.function.Function;
  * 分页对象封装。
  *
  * @param <T> 数据类型
- * @author 开源海哥
- * @author 王帅
+ * @author ssitao
  */
 public class Page<T> implements Serializable {
 

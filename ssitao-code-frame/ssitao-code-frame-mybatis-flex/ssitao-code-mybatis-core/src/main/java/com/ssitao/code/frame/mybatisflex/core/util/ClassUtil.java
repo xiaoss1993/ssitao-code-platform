@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 /**
  * 类实例创建者创建者
  *
- * @author michael
+ * @author ssitao
  * @date 17/3/21
  */
 @SuppressWarnings("unchecked")
@@ -226,8 +226,8 @@ public class ClassUtil {
      *
      * @param clazz           需要应用的类
      * @param checkToContinue 应用当前类并检测是否继续应用, 返回false则停止应用, 返回true继续向上取父类
-     * @author KAMOsama
-     */
+ * @author ssitao
+ */
     public static void applyAllClass(@NonNull Class<?> clazz, @NonNull Predicate<Class<?>> checkToContinue) {
         Class<?> currentClass = clazz;
         while (currentClass != null && currentClass != Object.class && checkToContinue.test(currentClass)) {

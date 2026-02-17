@@ -16,8 +16,7 @@ import java.sql.SQLException;
 
 /**
  * 方言接口。
- * @author michael
- * @author Suomm
+ * @author ssitao
  */
 public interface IDialect {
 

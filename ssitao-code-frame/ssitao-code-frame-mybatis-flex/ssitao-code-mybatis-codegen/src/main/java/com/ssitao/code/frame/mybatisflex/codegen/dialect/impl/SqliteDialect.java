@@ -12,7 +12,7 @@ import java.sql.*;
 
 /**
  * Sqlite 方言实现。
- * @author michael
+ * @author ssitao
  */
 public class SqliteDialect implements IDialect {
 

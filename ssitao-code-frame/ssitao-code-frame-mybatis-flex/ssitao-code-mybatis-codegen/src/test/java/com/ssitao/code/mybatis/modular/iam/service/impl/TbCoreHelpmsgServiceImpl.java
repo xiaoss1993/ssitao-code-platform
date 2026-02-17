@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 平台帮助信息说明 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbCoreHelpmsgServiceImpl extends ServiceImpl<TbCoreHelpmsgMapper, TbCoreHelpmsg>  implements TbCoreHelpmsgService{

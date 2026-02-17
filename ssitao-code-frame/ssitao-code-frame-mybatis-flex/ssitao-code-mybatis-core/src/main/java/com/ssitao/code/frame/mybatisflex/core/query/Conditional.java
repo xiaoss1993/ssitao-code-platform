@@ -11,8 +11,8 @@ import java.util.function.Predicate;
  * 动态条件查询接口。
  *
  * @param <R> 链式调用返回值类型
- * @author 王帅
- * @since 2023-08-12
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Conditional<R> {

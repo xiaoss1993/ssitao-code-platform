@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 /**
  * 字符串工具类。
  *
- * @author 王帅
- * @since 2023-06-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 @SuppressWarnings("all")
 public class StrUtil {
@@ -22,7 +22,7 @@ public class StrUtil {
     private static final Pattern PACKAGE_REGEX = Pattern.compile("(?<expression>\\$\\{entityPackage[.parent]*\\})(?<subPackage>.*)");
 
     /**
-     * com.tweb.frame.mybatis.test.entity.Account -> Account
+     * com.ssitao.code.frame.mybatisflex.test.entity.Account -> Account
      */
     public static String getClassName(String str) {
         return str.substring(str.lastIndexOf(".") + 1);

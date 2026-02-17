@@ -7,8 +7,8 @@ import java.util.Objects;
 /**
  * 列详细信息。
  *
- * @author 王帅
- * @since 2023-07-01
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class ColumnInfo implements Comparable<ColumnInfo> {
 

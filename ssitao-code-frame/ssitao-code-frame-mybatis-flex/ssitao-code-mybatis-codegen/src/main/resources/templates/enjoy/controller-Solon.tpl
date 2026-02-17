@@ -4,7 +4,7 @@
 #set(serviceVarName = firstCharToLowerCase(table.buildServiceClassName()))
 package #(packageConfig.controllerPackage);
 
-import com.tweb.frame.mybatis.core.paginate.Page;
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import org.noear.solon.annotation.*;
 import #(packageConfig.entityPackage).#(entityClassName);
 import #(packageConfig.servicePackage).#(table.buildServiceClassName());

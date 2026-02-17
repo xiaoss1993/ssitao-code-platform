@@ -32,9 +32,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * @author Clinton Begin
- * @author Eduardo Macarron
- * @author Michael Yang
+ * @author ssitao
  * <p>
  * 参考 MapperProxy<T> 并开放 MapperMethodInvoker，方便子类代理
  */

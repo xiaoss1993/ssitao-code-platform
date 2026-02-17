@@ -1,5 +1,5 @@
-com.tweb.frame.mybatis.spring.boot.FlexTransactionAutoConfiguration
-com.tweb.frame.mybatis.spring.boot.MultiDataSourceAutoConfiguration
-com.tweb.frame.mybatis.spring.boot.MybatisFlexAutoConfiguration
-com.tweb.frame.mybatis.spring.boot.MybatisFlexAdminAutoConfiguration
-com.tweb.frame.mybatis.spring.boot.MybatisLanguageDriverAutoConfiguration
+com.ssitao.code.frame.mybatisflex.spring.boot.FlexTransactionAutoConfiguration
+com.ssitao.code.frame.mybatisflex.spring.boot.MultiDataSourceAutoConfiguration
+com.ssitao.code.frame.mybatisflex.spring.boot.MybatisFlexAutoConfiguration
+com.ssitao.code.frame.mybatisflex.spring.boot.MybatisFlexAdminAutoConfiguration
+com.ssitao.code.frame.mybatisflex.spring.boot.MybatisLanguageDriverAutoConfiguration

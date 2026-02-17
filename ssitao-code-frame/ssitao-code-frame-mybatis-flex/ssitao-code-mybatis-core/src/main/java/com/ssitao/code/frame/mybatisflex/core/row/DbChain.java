@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 /**
  * 链式构建 {@link QueryWrapper} 并执行 {@link Db} 方法。
  *
- * @author 王帅
- * @since 2023-07-22
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class DbChain extends QueryWrapperAdapter<DbChain> implements PropertySetter<DbChain> {
 

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 产品申请部署流转日志 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class TbProductFlowlogServiceImpl extends ServiceImpl<TbProductFlowlogMapper, TbProductFlowlog>  implements TbProductFlowlogService{

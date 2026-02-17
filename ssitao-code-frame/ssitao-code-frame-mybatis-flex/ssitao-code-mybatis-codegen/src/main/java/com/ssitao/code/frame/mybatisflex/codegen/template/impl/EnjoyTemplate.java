@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * <a href=https://jfinal.com/doc/6-1>JFinal Enjoy</a> 模板引擎实现。
  *
- * @author michael
+ * @author ssitao
  */
 public class EnjoyTemplate implements ITemplate {
 
@@ -58,8 +58,8 @@ public class EnjoyTemplate implements ITemplate {
     /**
      * 从文件或者类路径读取模板。
      *
-     * @author 王帅
-     */
+ * @author ssitao
+ */
     public static class FileAndClassPathSourceFactory implements ISourceFactory {
 
         @Override

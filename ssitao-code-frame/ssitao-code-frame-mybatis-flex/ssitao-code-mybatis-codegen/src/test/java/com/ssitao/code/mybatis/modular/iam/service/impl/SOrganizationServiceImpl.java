@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * 组织,公司 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class SOrganizationServiceImpl extends ServiceImpl<SOrganizationMapper, SOrganization>  implements SOrganizationService{

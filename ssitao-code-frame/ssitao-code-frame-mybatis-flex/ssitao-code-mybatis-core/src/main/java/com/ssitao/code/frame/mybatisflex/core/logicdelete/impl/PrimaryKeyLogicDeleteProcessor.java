@@ -15,9 +15,9 @@ import static com.ssitao.code.frame.mybatisflex.core.constant.SqlConsts.EQUALS;
 /**
  * 主键逻辑删除处理器。
  *
- * @author 王帅
+ * @author ssitao 
  * @see <a href="https://gitee.com/mybatis-flex/mybatis-flex/issues/I7O1VV">I7O1VV</a>
- * @since 2023-07-26
+ * @since 1.0.0
  */
 public class PrimaryKeyLogicDeleteProcessor extends NullableColumnLogicDeleteProcessor {
 

@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author <a href="xiaoymin@foxmail.com">xiaoymin@foxmail.com</a>
+ * @author ssitao
  * 2023/3/14 21:31
- * @since:knife4j-springdoc-openapi-demo
+ * @since 1.0.0
  */
 public class MyRequestArgumentResolver implements HandlerMethodArgumentResolver {
     private static final String JSONBODY_ATTRIBUTE = "MY_REQUEST_BODY_ATTRIBUTE_XX";

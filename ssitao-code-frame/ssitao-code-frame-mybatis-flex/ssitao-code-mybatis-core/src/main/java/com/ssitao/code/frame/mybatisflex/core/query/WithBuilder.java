@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public class WithBuilder<Wrapper extends QueryWrapper> {
 

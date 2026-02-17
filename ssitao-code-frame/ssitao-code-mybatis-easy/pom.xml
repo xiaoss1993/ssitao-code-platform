@@ -23,12 +23,6 @@
     </properties>
 
     <dependencies>
-        <!-- MyBatis-Flex 核心依赖 -->
-        <dependency>
-            <groupId>com.mybatis-flex</groupId>
-            <artifactId>mybatis-flex-core</artifactId>
-            <version>${mybatis-flex.version}</version>
-        </dependency>
 
         <!-- MyBatis Spring 集成 -->
         <dependency>

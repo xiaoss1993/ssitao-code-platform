@@ -9,8 +9,8 @@ import com.ssitao.code.frame.mybatisflex.core.util.LambdaUtil;
 /**
  * Lambda 排序构建器。
  *
- * @author 王帅
- * @since 2023-07-25
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class OrderByBuilder<R extends QueryModel<R>> {
 

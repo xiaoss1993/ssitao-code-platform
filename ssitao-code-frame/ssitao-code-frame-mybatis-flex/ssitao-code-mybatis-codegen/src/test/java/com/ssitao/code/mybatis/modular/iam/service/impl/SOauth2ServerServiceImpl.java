@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * OAuth2 服务配置 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class SOauth2ServerServiceImpl extends ServiceImpl<SOauth2ServerMapper, SOauth2Server>  implements SOauth2ServerService{

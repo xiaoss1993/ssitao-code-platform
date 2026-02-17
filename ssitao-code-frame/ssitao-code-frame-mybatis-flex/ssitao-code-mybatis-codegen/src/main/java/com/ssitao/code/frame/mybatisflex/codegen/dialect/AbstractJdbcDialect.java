@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * 默认方言抽象类。
  *
- * @author michael
+ * @author ssitao
  */
 public abstract class AbstractJdbcDialect implements IDialect {
 

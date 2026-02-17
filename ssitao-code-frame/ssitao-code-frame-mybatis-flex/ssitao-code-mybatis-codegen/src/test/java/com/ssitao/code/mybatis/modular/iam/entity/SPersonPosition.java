@@ -14,8 +14,8 @@ import lombok.EqualsAndHashCode;
 /**
  * 人员职位关联 实体类。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Data
 @Builder

@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * 使用 {@code Fields Query} 的方式进行关联查询。
  *
- * @author 王帅
- * @since 2023-07-30
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class FieldsQuery<T extends Model<T>> extends FieldsBuilder<T> {
 

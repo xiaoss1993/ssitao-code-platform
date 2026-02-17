@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 /**
  * OAuth2用户授权信息 服务层实现。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @Service
 public class SOauth2UserTokenServiceImpl extends ServiceImpl<SOauth2UserTokenMapper, SOauth2UserToken>  implements SOauth2UserTokenService{

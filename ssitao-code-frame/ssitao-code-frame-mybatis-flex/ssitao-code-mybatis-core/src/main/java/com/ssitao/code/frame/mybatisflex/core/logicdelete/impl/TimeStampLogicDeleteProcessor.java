@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.logicdelete.AbstractLogicDeletePro
 /**
  * 时间戳类型的属性对应的逻辑删除处理器。
  *
- * @author 王帅
- * @since 2023-06-21
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class TimeStampLogicDeleteProcessor extends AbstractLogicDeleteProcessor {
 

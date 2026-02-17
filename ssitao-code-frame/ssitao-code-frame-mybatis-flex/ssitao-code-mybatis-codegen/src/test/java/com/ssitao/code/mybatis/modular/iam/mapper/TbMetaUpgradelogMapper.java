@@ -6,8 +6,8 @@ import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbMetaU
 /**
  * 升级包安装明细 映射层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 public interface TbMetaUpgradelogMapper extends BaseMapper<TbMetaUpgradelog> {
 

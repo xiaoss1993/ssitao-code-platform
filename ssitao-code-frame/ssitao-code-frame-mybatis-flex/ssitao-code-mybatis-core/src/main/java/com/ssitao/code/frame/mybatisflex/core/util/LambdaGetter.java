@@ -4,7 +4,7 @@ package com.ssitao.code.frame.mybatisflex.core.util;
 import java.io.Serializable;
 
 /**
- * @author michael
+ * @author ssitao
  */
 @FunctionalInterface
 public interface LambdaGetter<T> extends Serializable {

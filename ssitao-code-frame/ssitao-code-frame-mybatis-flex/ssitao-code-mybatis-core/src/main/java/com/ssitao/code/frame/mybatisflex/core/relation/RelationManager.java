@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.ssitao.code.frame.mybatisflex.core.query.QueryMethods.column;
 
 /**
- * @author michael
+ * @author ssitao
  */
 @SuppressWarnings("rawtypes")
 public class RelationManager {

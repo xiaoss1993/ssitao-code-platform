@@ -12,9 +12,7 @@ import java.util.function.Predicate;
 /**
  * 默认 {@link QueryColumn} 行为。
  *
- * @author michael
- * @author 王帅
- * @author CloudPlayer
+ * @author ssitao
  */
 public class QueryColumnBehavior {
 

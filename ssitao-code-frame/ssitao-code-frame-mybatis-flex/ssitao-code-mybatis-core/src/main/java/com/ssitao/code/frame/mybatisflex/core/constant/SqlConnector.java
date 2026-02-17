@@ -2,7 +2,7 @@
 package com.ssitao.code.frame.mybatisflex.core.constant;
 
 /**
- * @author michael
+ * @author ssitao
  */
 public enum SqlConnector {
 

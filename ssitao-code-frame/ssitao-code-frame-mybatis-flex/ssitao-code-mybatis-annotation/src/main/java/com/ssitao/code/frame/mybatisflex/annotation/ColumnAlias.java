@@ -7,8 +7,8 @@ import java.lang.annotation.*;
 /**
  * 别名注解，用于解决列名重复。
  *
- * @author 王帅
- * @since 2023-06-30
+ * @author ssitao 
+ * @since 1.0.0
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

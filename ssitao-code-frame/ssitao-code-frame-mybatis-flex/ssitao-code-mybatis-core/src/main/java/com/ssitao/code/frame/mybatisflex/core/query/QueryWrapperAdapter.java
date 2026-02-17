@@ -15,8 +15,7 @@ import java.util.function.Predicate;
  * {@link QueryWrapper} 泛型适配器。
  *
  * @param <R> 返回值类型
- * @author michael
- * @author suomm
+ * @author ssitao
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class QueryWrapperAdapter<R extends QueryWrapperAdapter<R>> extends QueryWrapper {

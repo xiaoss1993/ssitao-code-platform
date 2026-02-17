@@ -7,8 +7,8 @@ import com.ssitao.code.frame.mybatisflex.core.logicdelete.NullableColumnLogicDel
 /**
  * {@link java.time.LocalDateTime} 类型的属性对应的逻辑删除处理器。
  *
- * @author 王帅
- * @since 2023-06-20
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class DateTimeLogicDeleteProcessor extends NullableColumnLogicDeleteProcessor {
 

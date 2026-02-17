@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * 执行异常 控制层。
  *
- * @author SSiztao
- * @since 2026-02-16
+ * @author ssitao
+ * @since 1.0.0
  */
 @RestController
 @RequestMapping("/tbCoreException")

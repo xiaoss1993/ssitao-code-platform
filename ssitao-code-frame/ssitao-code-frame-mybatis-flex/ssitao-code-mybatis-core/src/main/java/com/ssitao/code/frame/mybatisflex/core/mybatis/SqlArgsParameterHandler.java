@@ -17,8 +17,7 @@ import java.util.Map;
 /**
  * 向 {@link PreparedStatement} 中的占位符设置值。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class SqlArgsParameterHandler extends DefaultParameterHandler {
 

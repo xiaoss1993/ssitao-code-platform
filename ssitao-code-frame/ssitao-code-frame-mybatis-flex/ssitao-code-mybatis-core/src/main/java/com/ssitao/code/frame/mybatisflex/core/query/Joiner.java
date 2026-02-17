@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * @author michael yang (fuhai999@gmail.com)
+ * @author ssitao yang (fuhai999@gmail.com)
  * @Date: 2020/1/14
  */
 public class Joiner<M extends QueryWrapper> {

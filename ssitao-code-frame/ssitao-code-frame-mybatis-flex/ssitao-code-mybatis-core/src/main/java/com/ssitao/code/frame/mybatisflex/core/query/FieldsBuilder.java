@@ -18,8 +18,8 @@ import java.util.Map;
 /**
  * 使用 {@code Fields Query} 的方式进行关联查询。
  *
- * @author 王帅
- * @since 2023-08-08
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class FieldsBuilder<T> extends AbstractQueryBuilder<T> {
 

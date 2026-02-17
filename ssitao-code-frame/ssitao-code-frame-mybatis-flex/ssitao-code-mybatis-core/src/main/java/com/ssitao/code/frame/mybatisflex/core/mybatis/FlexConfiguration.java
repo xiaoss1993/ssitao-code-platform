@@ -40,8 +40,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author michael
- * @author life
+ * @author ssitao
  */
 public class FlexConfiguration extends Configuration {
 

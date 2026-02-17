@@ -17,8 +17,8 @@ import java.util.Map;
 /**
  * package-info.java 生成器。
  *
- * @author 王帅
- * @since 2023-05-17
+ * @author ssitao 
+ * @since 1.0.0
  */
 public class PackageInfoGenerator implements IGenerator {
 

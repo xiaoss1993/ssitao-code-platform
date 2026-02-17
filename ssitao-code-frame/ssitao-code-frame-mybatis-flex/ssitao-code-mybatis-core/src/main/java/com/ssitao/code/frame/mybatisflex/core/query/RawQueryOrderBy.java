@@ -10,8 +10,7 @@ import java.util.List;
 /**
  * 原生排序字段。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  */
 public class RawQueryOrderBy extends QueryOrderBy {
 

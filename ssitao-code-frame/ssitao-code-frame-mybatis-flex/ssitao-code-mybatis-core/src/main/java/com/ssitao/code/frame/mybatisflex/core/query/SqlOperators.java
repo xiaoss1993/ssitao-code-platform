@@ -1,18 +1,4 @@
-/*
- *  Copyright (c) 2022-2024, Mybatis-Flex (fuhai999@gmail.com).
- *  <p>
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  <p>
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  <p>
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.ssitao.code.frame.mybatisflex.core.query;
 
 import com.ssitao.code.frame.mybatisflex.core.constant.SqlOperator;
@@ -27,8 +13,7 @@ import java.util.HashMap;
  * <p>该类继承自 {@link HashMap}，其中键是<strong>数据库字段的名称</strong>，
  * 值是对应的 {@link SqlOperator} 枚举实例。
  *
- * @author michael
- * @author 王帅
+ * @author ssitao
  * @see SqlOperator
  */
 public class SqlOperators extends HashMap<String, SqlOperator> {
