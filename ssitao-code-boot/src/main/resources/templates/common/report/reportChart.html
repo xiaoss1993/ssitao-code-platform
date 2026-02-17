@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${reportChart.id}"/>
+			<input type="hidden" name="objectType" id="objectType" th:value="${reportChart.objectType}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="baseInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表名称"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.name}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="simpleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表简称"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.simpleName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置报表"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.preName}"></div>
+						</li>
+						<li class="field-li check content-whole preContent r odd" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.status} eq 'RN'?'使用中':'未发布'"></div>
+						</li>
+						<li class="field-li check content-whole r" field="scope" htype="CHECKBOX">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="应用范围" title="应用范围"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.scopeName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content" th:text="${reportChart.remark}"></div>
+						</li>
+						<li class="field-li content-whole sign" field="baseInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="报表类型"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li r" field="dataFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据集"></span></div>
+							<div class="field-div field-content" th:text="${dataFieldName}"></div>
+						</li>
+						<li class="field-li r" field="categoryFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="分类"></span></div>
+							<div class="field-div field-content" th:text="${categoryFieldName}"></div>
+						</li>
+						<li class="field-li content-whole sign chartType" field="chartType" htype="SIGN">
+							<input type="hidden" id="chartType" name="chartType" th:value="${reportChart.chartType}" required/>
+							<div class="chart-box">
+								<div class="left"><span>饼</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="pie-basic"><img/></div>
+									<div class="type" type="pie-doughnut"><img/></div>
+									<div class="type" type="pie-roseType"><img/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>折</span><span>线</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="line-basic"><img/></div>
+									<div class="type" type="line-stack"><img/></div>
+									<div class="type" type="line-area"><img/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>柱</span><span>状</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="bar-basic"><img/></div>
+									<div class="type" type="bar-group"><img/></div>
+									<div class="type" type="bar-stack"><img/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>条</span><span>形</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="hbar-basic"><img/></div>
+									<div class="type" type="hbar-group"><img/></div>
+									<div class="type" type="hbar-stack"><img/></div>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editReport();" th:if="${btnEdit}"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			var chartType = $('#chartType').val();
+			if(chartType) {
+				$('.chartType .type[type="'+chartType+'"]').addClass('curType');
+			}
+			
+			controlBtnShowPosition();
+		});
+		
+		function editReport() {
+			var url = '/report/addOrEditReportChart/'+$('#id').val()+'?objectType='+$('#objectType').val()+'&preId=&parentname=' + parentName;
+			openWindowLikeIframe({'url':url, 'title':'编辑报表', 'isParent':true});
+		}
+		
+	</script>
+	
+</body>
+</html>

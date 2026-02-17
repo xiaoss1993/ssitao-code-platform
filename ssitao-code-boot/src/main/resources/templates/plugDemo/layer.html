@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include-back :: header"></head>
+<style>
+.iconfont{font-weight:400;}
+.clearfix{ clear:both; zoom:1;}
+.clearfix:after{content:'\20'; clear:both; zoom:1; display:block; height:0;}
+.downmore{line-height:30px; text-align:center;}
+.downmore a{padding:0 5px;}
+.downmore a cite{text-decoration:underline}
+.downmore a:hover{color:#666;}
+.layer-area .seecodes{height:32px; line-height:32px; border:none; background-color:#5FB878; color:#fff;}
+
+.demolist{position:relative; margin-top:0; font-size:0;  text-align:center;}
+.demolist li{width:210px; margin:0 0 0 20px; display:inline-block; *display:inline; *zoom:1; vertical-align:top; font-size:14px;}
+.demolist li:first-child{margin-left:0px;}
+.demolist li div{*padding:0 10px; height: 35px; line-height: 35px; border-radius: 2px; background-color: #1AA094; color:#fff;}
+.demolist li a{width:210px;display:inline-block;margin-top:10px;}
+</style>
+
+<!-- 滚动条、弹出框等，参考https://layer.layui.com/ -->
+<!-- 访问地址： http://127.0.0.1:8080/demo?demoType=layer -->
+<body>
+	<ul class="clearfix demolist">
+		<li class="layer-area">
+		  <div>信息框</div>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo1()">例1</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo2()">例2</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo3()">例3</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo4()">例4</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo5()">例5</a>
+		</li>
+		
+		<li class="layer-area">
+		  <div>页面层/iframe层</div>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo6()">页面层-自定义</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo7()">页面层-图片</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" id="parentIframe" onclick="demo8()">iframe-子父操作</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo9()">iframe-多媒体</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo10()">iframe-禁滚动条</a>
+		</li>
+		
+		<li class="layer-area">
+		  <div>加载层</div>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo11()">默认</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo12()">风格2</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo13()">风格3</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo14()">风格4</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo15()">打酱油</a>
+		</li>
+		
+		<li class="layer-area">
+		  <div>tips层</div>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo16($(this))">上</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo17($(this))">右</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo18($(this))">下</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo19($(this))">左</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo20($(this))">允许多个</a>
+		</li>
+		
+		<li class="layer-area">
+		  <div>其它演示</div>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo21($(this))">默认prompt</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo22($(this))">屏蔽浏览器滚动条</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo23($(this))">弹出即全屏</a>
+		  <a class="layui-btn layui-btn-primary layer-demolist" href="javascript:;" onclick="demo24($(this))">正上方</a>
+		  <a class="layui-btn layer-demolist" href="https://layer.layui.com" target="_blank">更多例子</a>
+		</li>
+		
+		<div id="demo7" style="width:100px;height:100px;display:none;">
+			哒哒哒哒哒哒多多多
+		</div>
+	</ul>
+		
+
+	<div th:include="include-back :: footer"></div>
+	<script type="text/javascript">
+		function demo1() {
+			//信息框-例1
+			layer.alert('见到你真的很高兴', {icon: 6});
+		}
+		
+		function demo2() {
+			//信息框-例2
+
+			layer.msg('你确定你很帅么？', {
+			  time: 0 //不自动关闭
+			  ,btn: ['必须啊', '丑到爆']
+			  ,yes: function(index){
+			    layer.close(index);
+			    layer.msg('雅蠛蝶 O.o', {
+			      icon: 6
+			      ,btn: ['嗷','嗷','嗷']
+			    });
+			  }
+			});
+		}
+		
+		function demo3() {
+			//信息框-例3
+			layer.msg('这是最常用的吧');
+		}
+		
+		function demo4() {
+			//信息框-例4
+			layer.msg('不开心。。', {icon: 5});
+		}
+		
+		function demo5() {
+			//信息框-例5
+			layer.msg('玩命卖萌中', function(){
+			//关闭后的操作
+			});
+		}
+		
+		function demo6() {
+			//页面层-自定义
+
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 0,
+			  shadeClose: true,
+			  skin: 'yourclass',
+			  content: '自定义HTML内容'
+			});
+		}
+		
+		function demo7() {
+			//页面层-图片
+
+			layer.open({
+			  type: 1,
+			  title: false,
+			  closeBtn: 0,
+			  area: ['auto'],
+			  skin: 'layui-layer-nobg', //没有背景色
+			  shadeClose: true,
+			  content: $('#demo7')
+			});
+		}
+		
+		function demo8() {
+			//iframe层-父子操作
+
+			layer.open({
+			  type: 2,
+			  area: ['700px', '450px'],
+			  fixed: false, //不固定
+			  maxmin: true,
+			  content: '/demo?demoType=checkbox'
+			});
+		}
+		
+		function demo9() {
+			//iframe层-多媒体
+
+			layer.open({
+			  type: 2,
+			  title: false,
+			  area: ['630px', '360px'],
+			  shade: 0.8,
+			  closeBtn: 0,
+			  shadeClose: true,
+			  content: '//player.youku.com/embed/XMjY3MzgzODg0'
+			});
+			layer.msg('点击任意处关闭');
+		}
+		
+		function demo10() {
+			//iframe层-禁滚动条
+			layer.open({
+			  type: 2,
+			  area: ['360px', '500px'],
+			  skin: 'layui-layer-rim', //加上边框
+			  content: ['/demo?demoType=checkbox', 'no']
+			});
+		}
+		
+		function demo11() {
+			//加载层-默认风格
+			layer.load();
+			//此处演示关闭
+			setTimeout(function(){
+			  layer.closeAll('loading');
+			}, 2000)
+		}
+		
+		function demo12() {
+			//加载层-风格2
+			layer.load(1);
+			//此处演示关闭
+			setTimeout(function(){
+			  layer.closeAll('loading');
+			}, 2000);
+		}
+		
+		function demo13() {
+			//加载层-风格3
+			layer.load(2);
+			//此处演示关闭
+			setTimeout(function(){
+			  layer.closeAll('loading');
+			}, 2000);
+		}
+		
+		function demo14() {
+			//加载层-风格4
+			layer.msg('加载中', {
+			  icon: 16
+			  ,shade: 0.01
+			});
+		}
+		
+		function demo15() {
+			//打酱油
+			layer.msg('尼玛，打个酱油', {icon: 4});
+		}
+		
+		function demo16($obj) {
+			//tips层-上
+			layer.tips('上', $obj, {
+			  tips: [1, '#0FA6D8'] //还可配置颜色
+			});
+		}
+		
+		function demo17($obj) {
+			//tips层-右
+			layer.tips('默认就是向右的', $obj);
+		}
+		
+		function demo18($obj) {
+			//tips层-下
+			layer.tips('下', $obj, {
+			  tips: 3
+			});
+		}
+		
+		function demo19($obj) {
+			//tips层-左
+			layer.tips('左边么么哒', $obj, {
+			  tips: [4, '#78BA32']
+			});
+		}
+		
+		function demo20($obj) {
+			//tips层-不销毁之前的
+			layer.tips('不销毁之前的', $obj, {
+			  tipsMore: true
+			});
+		}
+		
+		function demo21() {
+			//默认prompt
+			layer.prompt(function(val, index){
+			  layer.msg('得到了'+val);
+			  layer.close(index);
+			});
+		}
+		
+		function demo22() {
+			//屏蔽浏览器滚动条
+			layer.open({
+			  content: '浏览器滚动条已锁',
+			  scrollbar: false
+			});
+		}
+		
+		function demo23() {
+			//弹出即全屏
+
+			var index = layer.open({
+			  type: 2,
+			  content: 'http://layim.layui.com',
+			  area: ['320px', '195px'],
+			  maxmin: true
+			});
+			layer.full(index);
+		}
+		
+		function demo24() {
+			//正上方
+			layer.msg('灵活运用offset', {
+			  offset: 't',
+			  anim: 6
+			});
+		}
+		
+	</script>
+</body>
+</html>

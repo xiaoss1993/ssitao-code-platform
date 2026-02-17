@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	#viewFilter-text{max-width:100px;overflow:hidden;text-overflow:ellipsis;}
+	.addList{text-align:center;padding:6px 0px;background-color:#f5f5f5;cursor:pointer;}
+	.view-btn .dropdown-menu.dropdown-sub-menu{right:138px!important;left:auto;border-radius:5px;border:1px solid #e5e6e7;}
+	.view-btn .dropdown-menu-right{max-height:300px;overflow-y:auto;width:135px;}
+	.dropdown-menu-right .text{max-width:97px;overflow:hidden;text-overflow:ellipsis;height:15px;}
+	.t-btn{display:none;}
+</style>
+<link rel="stylesheet" href="/css/list/folder.css"/>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content">
+		<div class="tree-box" id="tree-box"></div>
+		<div class="list-box">
+			<div class="table-list-box"> 
+				<div class="table-list">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" th:if="${btnAdd}" signBtn="common" onclick="addEntity();">
+								<i class="fa fa-plus mr5"></i>
+								<span th:text="新建" class="pt1 h18"></span>
+							</button>
+							<button type="button" class="btn t-btn n-active" th:if="${btnExp}" signBtn="common" onclick="importBill()">
+								<i class="fa fa-cloud-upload mr5"></i>
+								<span th:text="导入" class="pt1 h18"></span>
+							</button>
+							<button type="button" class="btn t-btn n-active" th:if="${btnExp}" signBtn="common" onclick="exportBill()">
+								<i class="fa fa-cloud-download mr5"></i>
+								<span th:text="导出" class="pt1 h18"></span>
+							</button>
+							<button type="button" class="btn t-btn n-active" th:if="${btnExp}" signBtn="print" onclick="printReport()">
+								<i class="fa fa-print mr5"></i>
+								<span th:text="打印" class="pt1 h18"></span>
+							</button>
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+							<div th:class="${viewType} eq 'LIST' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="LIST">
+								<span>
+									<i class="fa fa-th-list mr5"></i>列表
+								</span>
+							</div>
+							<div th:class="${viewType} eq 'FOLDER' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="FOLDER">
+								<span>
+									<i class="fa fa-folder mr5"></i>文件夹
+								</span>
+							</div>
+							<div th:class="${viewType} eq 'REPORT' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="REPORT">
+								<span>
+									<i class="fa fa-bar-chart-o mr5"></i>报表
+								</span>
+							</div>
+							<div class="view-btn dropdown-btn">
+								<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="display:inline-block;padding: 7px 12px;">
+									<i class="fa fa-sliders mr5"></i>
+									<span class="text" id="viewFilter-text" th:text="${curViewName}"></span>
+									<i class="fa fa-ellipsis-h ml5"></i>
+								</span>
+								<ul id="viewFilter" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+                                     <li th:each="select:${viewList}" th:attr="data-content=${select.text}" th:title="${select.text}" th:attr="isSystem=${select.type}" th:value="${select.id}"><a href="javascript:void(0);" th:class="${select.checked} ? 'cur':''" ><span th:text="${select.text}" class="text"></span><i class="fa fa-chevron-right ml5 eidt-list"></i></a></li>
+                                     <li class="addList" title="新建列表"><i class="zmdi zmdi-plus"></i></li>
+                                </ul>
+                                <ul class="dropdown-menu dropdown-sub-menu">
+			                    	<li onclick="editView();" class="isNotShow"><a href="javascript:void(0);"><i class="fa fa-pencil-alt eidt-icon"></i><span class="eidt-text">编辑</span></a></li>
+			                    	<li onclick="copyView();" val=""><a href="javascript:void(0);"><i class="fa fa-copy eidt-icon"></i><span class="eidt-text">复制</span></a></li>
+			                    	<li onclick="delView();" class="isNotShow"><a href="javascript:void(0);"><i class="fa fa-trash-alt eidt-icon"></i><span class="eidt-text">删除</span></a></li>
+			                    </ul>
+							</div>
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+					
+					<div id="reportChartBox" class="reportChartBox" style="display:none;">
+						<div>
+							<div id="reportChart" class="board-box scroll-bar reportChart" height="450px"></div>
+						</div>
+						<div class="report-select">
+							<div class="report-type">报表类型：</div>
+							<ul class="report-type-list">
+								<li th:each="select:${reportSelectList}" th:class="${select.checked} ? 'curType':''" th:id="${select.id}">
+									<div class="reportImg"><img th:src="@{'../../img/report/'+${select.type}}+'.png'"></div>
+									<div class="title" th:title="${select.text}" th:text="${select.text}"></div>
+								</li>
+							</ul>
+						</div>
+						<div id="reportDetail">
+							<img id="printImg" src=""/>
+							<div class="chart-content"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="breadTabType" name="breadTabType" th:value="${breadTabType}"/>
+		<input type="hidden" id="viewId" name="viewId" th:value="${viewId}"/>
+		<input type="hidden" id="viewType" name="viewType" th:value="${viewType}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="type" name="type" value="1"/>
+		<input type="hidden" id="selectFolderId" name="selectFolderId" th:value="${folderId}"/>
+		<input type="hidden" id="entityName" name="entityName" th:value="${entityName}"/>
+		
+		<input type="hidden" id="btnAdd" name="btnAdd" th:value="${btnAdd}"/>
+		<input type="hidden" id="btnEdit" name="btnEdit" th:value="${btnEdit}"/>
+		<input type="hidden" id="btnDel" name="btnDel" th:value="${btnDel}"/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',V';
+		</script>
+	</div>
+	<div th:if="${btnDl}">
+		<script type="text/javascript">
+			rights += ',DL';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div th:if="${btnEdit}">
+		<script type="text/javascript">
+			rights += ',MV';
+		</script>
+	</div>
+	<div th:if="${btnEdit} and (${objectType} eq 'PRQ' or ${objectType} eq 'TSC')">
+		<script type="text/javascript">
+			rights += ',AGN';
+		</script>
+	</div>
+	<div th:if="${btnEdit} and ${objectType} eq 'TSP'">
+		<script type="text/javascript">
+			rights += ',DTSP';
+		</script>
+	</div>
+	<div th:if="${btnDecomp}">
+		<script type="text/javascript">
+			rights += ',ATSC,DPRQ,DTSK';
+		</script>
+	</div>
+	<div th:if="${btnEdit}">
+		<script type="text/javascript">
+			rights += ',SLP';
+		</script>
+	</div>
+	<div th:if="${btnEdit}">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div th:if="${btnDel}">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/list/folder.js"></script>
+	<script src="/js/base64.js"></script>
+	<script src="/js/report/echarts.js" defer></script>
+	<script src="/js/report/echartsUtil.js" defer></script>
+	<script src="/js/report/report.js" defer></script>
+	<script src="/js/common/jquery.jqprint-0.3.js" defer></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], queryObject = [[${queryObject}]], objectType = [[${objectType}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			loadViewType(true, $('#viewType').val(), '', false);
+			
+			initViewList();
+			$('.view-type-btn').click(function() {
+				if($('#viewType').val() != $(this).attr('type')) {
+					$('.view-type-btn').removeClass('cur');
+					$(this).addClass('cur');
+					loadViewType(false, $(this).attr('type'), $('#viewId').val(), false);
+				}
+			});
+		});
+		
+		//加载视图类型，判断是加载列表还是看板
+		function loadViewType(isInit, viewType, viewId, isChangeHead) {
+			if(!objectType) {
+				objectType = $('#objectType').val();
+			}
+			
+			var isChangeView = (viewId != $('#viewId').val());
+			if(isInit || isChangeView) {//如果是初始化看板，并且查询条件为空时，就根据视图创建查询条件
+				if(viewId){
+					$('#viewId').val(viewId);
+				}
+				var $searchCondition = $('.search-condition');
+				var headData = getHeadData(objectType, queryObject, viewId, '', '');
+				if(headData) {
+					createSearchConditions(headData.headData, objectType);
+				}
+			}
+			if(!isInit && (isChangeView || viewType != $('#viewType').val())) {
+				isChangeHead = true;
+				$.ajax({
+					type : "post",
+					url : "/entity/updateUserMemoryByEntity",
+					data : {'viewIdKey': viewId, 'viewTypeKey': $('.view-btn.cur').attr('type'), 'objectType': objectType},// 你的formid
+					async : false,
+					success : function(data) {}
+				});
+			}
+			
+			$('#viewType').val(viewType)
+			if(viewType && viewType == 'FOLDER') {
+				$('.wrapper-content').addClass('tree');
+				$('.list-box').addClass('col-sm-11').removeClass('col-sm-12').css('width', $('.wrapper-content').width() - 230);
+				$('.tree-box').show();
+				initFolderList(isChangeHead, viewType);
+			}else if(viewType && viewType == 'REPORT') {
+				initReport(viewType);
+			}else {
+				$('.wrapper-content').removeClass('tree');
+				$('.list-box').addClass('col-sm-12').removeClass('col-sm-11').css('width', '100%');
+				$('.tree-box').hide();
+				
+				initEntityList(isChangeHead, viewType);
+			}
+		}
+		
+		//初始化任务列表
+		function initEntityList(isChangeHead, viewType) {
+			$('#reportChartBox').hide();
+			$('.t-btn[signBtn="common"]').show();
+			$('.t-btn[signBtn="print"]').hide();
+			
+			if(isChangeHead) {
+				if($('#grid-table').closest('.table-wrap').length) {
+					$('#grid-table').initTable('destroy');
+				}
+				
+				if(!objectType) {
+					objectType = $('#objectType').val();
+				}
+				$('#grid-table').initTable({
+					model:objectType,
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: (viewType == 'FOLDER' ? $('#selectFolderId').val() : '')
+				});
+			}else {
+				reLoadEntityList();
+			}
+		}
+		
+		function initFolderList(isChangeHead, viewType) {
+			$('#reportChartBox').hide();
+			$('.t-btn[signBtn="common"]').show();
+			$('.t-btn[signBtn="print"]').hide();
+			if(!objectType) {
+				objectType = $('#objectType').val();
+			}
+			$('#tree-box').initFolder({
+				model:objectType
+			});
+			
+			initEntityList(isChangeHead, viewType);
+		}
+		
+		function reLoad() {
+			loadViewType(true, $('#viewType').val(), '', false);
+		}
+		
+		function addEntity() {
+			var objectType = $('#objectType').val();
+			var url = '/entity/addOrEditEntity/null?objectType='+objectType+'&selectFolderId=' + $('#selectFolderId').val() +'&parentname=' + window.name;
+			intoIframePage(url, false, objectType);
+		}
+		
+		//从新加载文件夹或者列表
+		function reLoadFolder(isRemoveEntity) {
+			if(isRemoveEntity) {
+				reLoadEntityList();
+			}else{
+				loadFolderList($('#objectType').val(), $('#selectFolderId').val(), '1');
+			}
+		}
+		
+		//点击文件夹或删除文件夹时，重新加载列表
+		function reLoadEntityList() {
+			var $table = $('#grid-table');
+			var $tableWrap = $table.closest('.table-wrap');
+			if($tableWrap.length) {
+				iFilter.props.query['folderId'] = $('#selectFolderId').val();
+				iFilter.props.table.GM('setQuery', iFilter.props.query);
+			}else {
+				$table.initTable({
+					model:objectType,
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: $('#selectFolderId').val()
+				});
+			}
+		}
+	</script>	
+	
+</body>
+</html>

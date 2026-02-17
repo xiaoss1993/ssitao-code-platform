@@ -15,12 +15,6 @@
     <description>快速启动器：提供开箱即用的Starter组件</description>
 
     <dependencies>
-        <!-- 依赖框架核心 -->
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-frame</artifactId>
-        </dependency>
-
         <!-- Spring Boot Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

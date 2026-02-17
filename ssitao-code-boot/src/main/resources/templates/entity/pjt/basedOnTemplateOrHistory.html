@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/form.css">
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	.field-div{display:flex;}
+	.field-div .label-div{width:120px;display:flex;align-items:center;justify-content:flex-end;}
+	.field-div .label-div .requireSign{color:red;margin-right:5px;}
+	.field-div .label-div .field-label{color:#555;font-weight:bold;}
+</style>
+
+<body th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<form action="" id="operate">
+			<div class="col-sm-12 pl10">
+				<div class="ibox">
+					<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+					<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+					<input type="hidden" id="model" name="model" th:value="${model}"/>
+					<input type="hidden" id="isTemplate" name="isTemplate" th:value="${isTemplate}"/>
+					<input type="hidden" id="oldPlanId" name="oldPlanId" />
+					
+					<ul class="page-ul">
+						<li class="field-li" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="计划名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" placeholder="请输入计划名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li" field="birthDate" htype="DATE">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="基准日期"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control form-control-date" name="baseDate" type="text" placeholder="请选择基准日期"  autocomplete="off" readonly="readonly" required htype="DATE">
+								<i class="zmdi zmdi-calendar"></i>
+							</div>
+						</li>
+					</ul>
+					<div class="ibox-body">
+						<table grid-manager="demoOne" id="grid-table"></table>
+					</div>
+				</div>
+			</div>
+			<div class="btn-box">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input class="layui-layer-btn0 btns cp" id="submit" onclick="operateLinkField()" type="submit" value="确定">
+					<a class="layui-layer-btn1 close-btn cp">取消</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = '';
+		</script>
+		<script type="text/javascript" th:if="${isTemplate} eq 'Y'">
+			rights += 'O';
+		</script>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var model = [[${model}]]</script>
+	
+
+	<script type="text/javascript">
+		$(function() {
+			initFormControl('PLN');
+			$('#grid-table').initTable({
+				model:'PLN',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				isOpenWindow: 'Y',
+				queryObject: $('#isTemplate').val() == 'Y'?'':'H',
+				supportRadio: true,
+			});
+		});
+		
+		function addPlan() {
+			top.layer.open({
+				type : 2,
+				title : '新建计划',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '600px'],
+				content : '/plan/addOrEditPlan/null?preId='+ getCurRowId() +'&isTemplate='+$('#isTemplate').val()+'&objectId='+$('#objectId').val()+'&objectType='+$('#objectType').val()+'&parentname=' + window.name,
+			});
+		}
+		
+		function reLoadPlan() {
+			if(typeof iFilter != 'undefined') {
+				iFilter.refreshTable();
+			}
+		}
+		
+		$("#operate").html5Validate(function() {
+			var selectId = $('#grid-table').find('tr[checked="true"]').attr('id');
+			if(!selectId) {
+				$('#grid-table').testRemind('请选择一个计划');
+				hideLoading();
+			}else{
+				$('#oldPlanId').val(selectId);
+				$.ajax({
+					url : "/pjt/saveNewPlanOnTemplateOrHistory",
+					type : "post",
+					data : $('#operate').serialize(),
+					success : function(data) {
+						if (data.code == 0) {
+							var index = top.layer.getFrameIndex(window.name)
+							top.layer.close(index, data.id, data.name);
+						}
+						hideLoading();
+					}
+				});
+			}
+		});
+	</script>	
+	
+</body>
+</html>

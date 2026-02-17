@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${dataOption.id}"/>
+			<input type="hidden" id="isSystem" name="isSystem" value="Y"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="bgColor" name="bgColor" th:value="${dataOption.bgColor}"/>
+			<input type="hidden" id="fColor" name="fColor" th:value="${dataOption.fColor}"/>
+			<input type="hidden" id="dataBaseId" name="dataBaseId" th:value="${dataBaseId}"/>
+			<input type="hidden" id="orderNum" name="orderNum" th:value="${dataOption.orderNum}"/>
+			<input type="hidden" id="type" name="type" th:value="${type}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{field.optionName}"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" id="_name" type="text" placeholder=" " th:value="${dataOption.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="parentId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="父选项"></span></div>
+					<div class="field-div field-content">
+						<select id="parentId" class="selectpicker" name="parentId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${parentOptionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preSourceId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.optionPre}"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${preOptionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="bgColor" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.option.setColor}"></span></div>
+					<div class="field-div field-content set-color">
+						<div class="palette" th:style="'background-color:'+ @{${dataOption.bgColor}} + ';color:'+ @{${dataOption.fColor}} +';border-color:'+@{${dataOption.bgColor}}+';'"><i class="zmdi zmdi-palette mr5" th:style="@{'color:'+${dataOption.fColor}}"></i><span class="ml15" th:text="#{field.option.palette}"></span></div>
+						<div class="paigusu" type="bg" th:text="#{field.option.bgColor}"></div>
+						<div class="paigusu" type="fd" th:text="#{field.option.fColor}"></div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:if="${#strings.isEmpty(dataOption.id)}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			
+			//设置颜色
+			$('.paigusu').paigusu({
+				recommend : '255,87,34,1|255,153,72,1|249,189,101,1|4,190,91,1|70,182,254,1|0,150,136,1|153,136,255,1|121,85,72,1|158,158,158,1|0,0,0,1',
+				color : '#050505'
+			},function(event,obj){
+				var hex = obj.hex;
+				if($(event).attr('type') == 'bg') {
+					$('.palette').css({'background-color':'#' + hex, 'border':'1px solid '+ '#' + hex});
+					$('#bgColor').val('#' + hex);
+					$('.palette').css('color','#ffffff');
+					$('#fColor').val('#ffffff');
+					$(".zmdi-palette").css('color', '#ffffff');
+				}else {
+					$('.palette').css('color','#' + hex);
+					$('#fColor').val('#' + hex);
+					$(".zmdi-palette").css('color', '#' + hex);
+				}
+				$(".paigusu").hide();
+			});
+			
+			$(".palette").click(function() {
+				if($('.paigusu').is(':visible')) {
+					$('.paigusu').hide();
+				}else {
+					$('.paigusu').show();
+				}
+			});
+			
+			$('#parentId').change(function() {
+				resetOptionList($(this).val(), 2);
+			});
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/saveOption",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							resetOptionList(data.id, 1);
+							$('#_name').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name)
+							parent.layer.msg(data.msg);
+							parent.layer.close(index);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('OPTION');
+			}
+		});
+		
+		function resetOptionList(selectId, type) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/getPreOptionList",
+				data : {
+					'sourceId' : $('#dataBaseId').val(),
+					'selectId': selectId,
+					'type': type
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

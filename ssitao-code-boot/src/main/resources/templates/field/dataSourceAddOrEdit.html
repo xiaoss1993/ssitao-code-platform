@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+	#operate{padding-bottom:0px!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${dataSource.id}"/>
+			<input type="hidden" id="isSystem" name="isSystem" value="Y"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${dataSource.objectType}"/>
+			<input type="hidden" id="orderNum" name="orderNum" th:value="${dataSource.orderNum}"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="model" name="model" value="DATASOURCE"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本属性"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{field.sourceName}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" id="_name" type="text" placeholder=" " th:value="${dataSource.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preSourceId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.sourcePre}"></span></div>
+							<div class="field-div field-content">
+								<select id="preSourceId" class="selectpicker" name="preSourceId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${preSourceList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="linkFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.linkFieldId}"></span></div>
+							<div class="field-div field-content">
+								<select id="preSourceId" class="selectpicker" name="linkFieldId" data-live-search="true" multiple data-live-search-style="begins" th:title="#{common.select}">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${linkFieldList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li r content-whole sign nextContent" field="loginInfo" htype="SIGN" th:style="${isEdit} eq 'N' ? 'display:none;':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="选项信息"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<div class="button-box">
+									<button type="button" class="btn t-btn n-active add mb10 mr5" onclick="addOption(1);">
+										<i class="fa fa-plus mr5"></i>
+										<span th:text="新增选项" class="pt1 h18"></span>
+									</button>
+									<button type="button" class="btn t-btn n-active add mb10" onclick="addOption(2);">
+										<i class="fa fa-plus mr5"></i>
+										<span th:text="新增子选项" class="pt1 h18"></span>
+									</button>
+								</div>
+								<table grid-manager="demoOne" id="option-table" ></table>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" th:value="保存" th:style="${isEdit} eq 'N' ? 'display:none;':'' "/>
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" id="nextStep" th:value="下一步" th:style="${isEdit} eq 'Y' ? 'display:none;':'' "/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="nextSave" th:value="保存"/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="preStep" th:value="上一步"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'E,D';
+		</script>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			
+			loadOptionList();
+			
+			$('#nextSave').click(function() {
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index);
+				parent.layer.msg('操作成功');
+			});
+			
+			$('#preStep').click(function() {
+				$('.preContent').show();
+				$('.nextContent').hide();
+			});
+			
+			$('.formBtn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/saveSource",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if($('#isEdit').val() == 'Y') {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}else {
+							$('#id').val(data.id);
+							loadOptionList();
+							
+							$('.preContent').hide();
+							$('.nextContent').show();
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function changeFieldType(obj) {
+			var type = $(obj).val();
+			$('li[attrType="liHide"]').addClass('hide');
+			$('#'+type).removeClass('hide');
+		}
+		
+		function loadOptionList() {
+			var id = $('#id').val(), $table = $('#option-table'), $tableWrap = $table.closest('.table-wrap');
+			if(id) {
+				if($tableWrap.length) {
+					$tableWrap.show();
+				}else {
+					$table.initTable({
+						tableId:'option-table',
+						model:'DATAOPTION',
+						supportPage: false,
+						supportTree: true,
+						openState: true,
+						rights: rights,
+						objectId: id,
+						queryObject: $('#objectType').val()
+					});
+				}
+			}
+		}
+		
+		function addOption(type) {
+			var curId = getCurRowId();
+			if(type == 2 && !curId) {
+				top.layer.alert('请选择父选项', {icon: 6});
+				return;
+			}
+			top.layer.open({
+				type : 2,
+				title : type == 1 ? '新建选项':'新建子选项',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '500px', '500px' ],
+				content : 'field/addOrEditOption/null?preId='+curId+'&sourceId=' + $('#id').val() + '&objectType='+$('#objectType').val()+'&type='+type+'&parentname=' + window.name,
+				end: function(id){
+					GridManager.refreshGrid('option-table', true);
+				}
+			});
+		}
+		
+		function editEntity(module, id, objectType) {
+			top.layer.open({
+				type : 2,
+				title : '编辑选项',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '500px', '500px' ],
+				content : 'field/addOrEditOption/'+id+'?preId=&sourceId=&objectType='+objectType+'&type=1&parentname=' + window.name,
+				end: function(id){
+					GridManager.refreshGrid('option-table', true);
+				}
+			});
+		}
+		
+		function removeEntity(module, ids, objectType){
+			var index = top.layer.confirm($.i18n.prop("common.del.comfirm"), {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/field/removeOption',
+					type : "post",
+					data : {
+						'id' : ids
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							reLoad();
+							top.layer.close(index);
+						} else {
+							layer.msg(r.msg);
+						}
+					}
+				});
+			});
+		}
+
+		function getCurRowId() {
+			return $('.table-wrap tbody tr.selected').attr('id');;
+		}
+		
+		var openTrIds = '';
+		function reLoad() {
+			$('span[tree-element="true"]').closest('tr').each(function() {
+				if(openTrIds) {
+					openTrIds += ',' + $(this).attr('id');
+				}else {
+					openTrIds = $(this).attr('id');
+				}
+			});
+			$('#option-table').GM('onlyRefresh');
+		}
+		
+		function tableLoadComplete() {
+			if(openTrIds){
+				var trIdArr = openTrIds.split(','), condition = '';
+				for(var i = 0; i < trIdArr.length; i++) {
+					if(condition){
+						condition +=',[id="'+trIdArr[i]+'"]';
+					}else {
+						condition +='[id="'+trIdArr[i]+'"]';
+					}
+				}
+				$('tr' + condition).find('.fa-plus-square').click();
+			}
+		}
+		
+	</script>
+	
+</body>
+</html>

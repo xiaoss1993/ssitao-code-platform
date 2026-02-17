@@ -1,0 +1,223 @@
+﻿<!doctype html>
+<html class="no-js " lang="zh">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<meta name="description" content="">
+	<meta name="keywords" content="项目管理,管理软件,软件管理,管理,项目">
+	<title th:text="${company.simpleName}"></title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}">
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/common/style.min.css">
+	<link rel="stylesheet" href="/css/jquery.rollbar.css">
+	<link rel="stylesheet" href="/css/common/common.css">
+	<link rel="stylesheet"  href="/css/common/message.css">
+	<link rel="stylesheet"  href="/css/font-awesome.min.css">
+
+</head>
+
+<body th:class="${session.theme}">
+<input type="hidden" name="menuType" id="menuType" th:value="${menuType}"/>
+
+<aside th:include="include::navbarHead"></aside>
+
+<!-- Page Loader -->
+<aside class="page-loader-wrapper" id="page-loader-wrapper" th:include="include::page-loader-wrapper"></aside>
+<!-- Overlay For Sidebars -->
+<aside class="overlay"></aside>
+
+<!-- Left Sidebar -->
+<aside id="leftsidebar" class="sidebar" th:include="include::leftsidebar"></aside>
+
+<!-- Main Content -->
+<div class="block-header" th:include="include::content-nav" ></div>
+<section class="content" style="">
+    <iframe id="J_iframe" class="J_iframe" name="iframe0" width="100%" height="100%" th:src="${homePage}" frameborder="0" data-id="" seamless></iframe>
+</section>
+
+
+<!-- Jquery Core Js -->
+<foot th:include="include::foot"></foot>
+<script src="/js/drag.js"></script>
+<script src="/js/kTree.js"></script>
+<script src="/js/system/webSocket/sockjs.min.js"></script>
+<script src="/js/system/webSocket/stomp.min.js"></script>
+<script src="/js/system/webSocket/notifications.js"></script>
+<script src="/js/system/webSocket/bootstrap-notify.min.js"></script>
+<script th:inline="javascript"> var ctx = [[@{/}]], userId = [[${userId}]], isLogin = [[${isLogin}]], homePage = [[${homePage}]], firstTitle = [[${firstTitle}]], secondTitle = [[${secondTitle}]]</script>
+
+<script th:inline="javascript">
+    // 左侧菜单点击事件处理
+    $(document).ready(function() {
+        // 阻止默认的菜单展开逻辑，使用我们自己的
+        $(".f-menu").removeClass("open");
+        $(".f-menu:first").addClass("active").find(".ml-menu").show();
+
+        // 移除 mainscripts.bundle.js 中的默认菜单点击事件
+        $(".ml-menu li a", "#leftsidebar").off("click");
+
+        // 菜单折叠/展开 - 点击 toggle 图标或菜单标题
+        $(".f-menu > .menu-toggle").on("click", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $parent = $(this).parent();
+            var isOpen = $parent.hasClass("open");
+
+            // 关闭所有其他菜单
+            $(".f-menu").not($parent).removeClass("open").find(".ml-menu").slideUp(200);
+
+            // 切换当前菜单状态
+            if(isOpen) {
+                $parent.removeClass("open");
+                $parent.find(".ml-menu").slideUp(200);
+            } else {
+                $parent.addClass("open");
+                $parent.find(".ml-menu").slideDown(200);
+            }
+        });
+
+        // 左侧菜单项点击事件 - 使用事件委托确保动态加载的菜单也能响应
+        $(document).on("click", ".ml-menu a", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var $this = $(this);
+            var src = $this.attr("data-src") || $this.attr("src");
+
+            console.log("菜单点击事件触发，data-src:", $this.attr("data-src"), "src:", $this.attr("src"));
+
+            if(src && src.trim() !== "") {
+                // 高亮当前菜单
+                $this.parents(".f-menu").addClass("active").siblings(".f-menu").removeClass("active");
+                $this.addClass("active").siblings("a").removeClass("active");
+
+                // 加载页面到 iframe
+                var url = src.startsWith('/') ? src : '/' + src;
+                console.log("加载URL到iframe:", url);
+                $("#J_iframe").attr("src", url);
+
+                // 更新面包屑
+                var text = $this.text();
+                var parentText = $this.parents(".f-menu").find(".nav-label").text();
+                updateBreadcrumb(parentText, text);
+
+                // 保存导航信息到缓存
+                saveNavInfoToCache(url, $(".breadcrumb").html() + "#@#" + $(".breadTab").html());
+
+                // 在小屏幕下自动收起菜单
+                if ($(window).width() < 992) {
+                    console.log("小屏幕模式，收起侧边栏");
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // 初始化面包屑
+        updateBreadcrumb('工作台', '我的桌面');
+    });
+
+    function updateBreadcrumb(title1, title2) {
+        var $breadcrumb = $(".breadcrumb");
+        $breadcrumb.find("li").not(":first").remove();
+
+        var $li1 = $('<li class="breadcrumb-item first-title"><a class="linked" href="javascript:void(0);">' + title1 + '</a></li>');
+        var $li2 = $('<li class="breadcrumb-item second-title active"><a class="linked" href="javascript:void(0);">' + title2 + '</a></li>');
+
+        $breadcrumb.append($li1).append($li2);
+    }
+
+    function saveNavInfoToCache(key, value) {
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "/getNavInfoToCache",
+            data: { key: key },
+            async: false,
+            success: function(result) {
+                // 导航信息已保存
+            }
+        });
+    }
+
+    function toggleSidebar() {
+        var $body = $("body");
+        var $sidebar = $(".sidebar");
+        var $overlay = $(".overlay");
+
+        // 检查当前侧边栏状态
+        if ($sidebar.hasClass("open") || $body.hasClass("sidebar-open")) {
+            $sidebar.removeClass("open");
+            $body.removeClass("sidebar-open");
+            $overlay.hide();
+        } else {
+            $sidebar.addClass("open");
+            $body.addClass("sidebar-open");
+            $overlay.show();
+        }
+    }
+
+    function intoMenuUrl(url, pName, cName) {
+        if(url && cName) {
+            var fullUrl = url.startsWith('/') ? url : '/' + url;
+            $("#J_iframe").attr("src", fullUrl);
+            updateBreadcrumb(pName, cName);
+        }
+    }
+</script>
+
+<script>
+	$(function() {
+		if(sessionStorage.hasOwnProperty('logout')){//当退出登录后，点击浏览器返回按钮，在还是进入登录页面
+			top.location.href = '/login';
+		}else if(!sessionStorage.hasOwnProperty(homePage)) {
+			changeNav(2, homePage, firstTitle, secondTitle);
+		}
+	});
+
+	//初始化通信链接
+	initSocket();
+	function initSocket() {
+		connect();
+	}
+    function connect() {
+        var socket = new SockJS("/ws/privateServer");
+        stompClient = Stomp.over(socket);
+        stompClient.heartbeat.outgoing = 20000;
+        // client will send heartbeats every 20000ms
+        stompClient.heartbeat.incoming = 0;
+        stompClient.connect({}, function (frame) {
+        	console.log('socket连接成功');
+        	if(isLogin && isLogin == 'Y') {
+	        	$.ajax({
+					url : '/sendMessageByLoginUserId',
+					type : "post",
+					data : {
+						'userId': userId,
+					},
+					success : function(r) {}
+				});
+        	}
+        	var index = 0;
+            stompClient.subscribe('/user/'+userId+'/message', function (response) {
+            	var message = response.body;
+            	if(message){
+            		message = eval('('+ message +')');
+            		showNotification(message.id, message.type, message.subject, message.objectId, message.objectType);
+            		$('.notices .notify').show();
+            	}
+
+            });
+        });
+    }
+
+    function disconnect() {
+        if (stompClient != null) {
+            stompClient.disconnect();
+        }
+    }
+</script>
+
+</body>
+</html>

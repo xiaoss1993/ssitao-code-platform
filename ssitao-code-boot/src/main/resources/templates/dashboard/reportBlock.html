@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${dashboardBlock.id}"/>
+			<input type="hidden" name="blockType" th:value="REPORT"/>
+			<input type="hidden" name="moduleType" id="moduleType" th:value="${dashboardBlock.moduleType}"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<input type="hidden" name="selectReportIds" id="selectReportIds" th:value="${dashboardBlock.selectReportIds}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="区块名称"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.name}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置区块"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.preName}"></div>
+						</li>
+						<li class="field-li check content-whole r" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.status} eq 'IN'?'未发布':'使用中'"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="moduleIds" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据来源"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.moduleName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="showReportIds" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="显示报表"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.selectReportNames}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="showDetails" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">显示详情</span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.showDetails} eq 'Y'?'是':'否'"></div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content" th:text="${dashboardBlock.remark}"></div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editDashblock();"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('DASHBOARD');
+			
+			controlBtnShowPosition();
+		});
+		
+		function editDashblock($obj){
+			var url = '/dashboard/addOrEditBlock/'+$('#id').val()+'?preId=&blockType=&parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'编辑区块', 'isParent':true});
+		}
+	</script>
+	
+</body>
+</html>

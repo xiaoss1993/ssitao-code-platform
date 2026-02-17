@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head>
+	<link rel="stylesheet" href="/css/entity/gantt/gantt.main.css">
+	<link rel="stylesheet" href="/css/entity/gantt/gantt.init.css">
+	<link rel="stylesheet" href="/css/form/switch.css"/>
+	<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}"/>
+	<link rel="stylesheet" href="/css/common/common.css">
+	<style>
+		.customClass .layui-layer-content{margin-top:30px;}
+		.tool-bar{margin:0px 0px 10px 0px;display:flex;justify-content:space-between;}
+		.opeate-btn{display:flex;}
+		.opeate-btn .btn{
+			display:block;
+		    padding:6px 12px;
+		    border-color: var(--theme);
+		    background-color: var(--theme);
+		    color: #fff;
+		    margin-right:5px;
+		    border-radius: 2px;
+		    font-size: 13px;
+		    font-weight: 400;
+		    cursor:pointer;
+		    text-decoration: none;
+		}
+		.opeate-btn.saveBtn{display:none;}
+		.opeate-btn.saveBtn .btn{
+			padding: 6px 10px;
+			border:1px solid var(--theme);
+		    background-color: #f5f5f5;
+		    color:var(--theme);
+		}
+		.opeate-btn.saveBtn .btn .b-fa-save{
+			font-size:15px;
+		}
+		.opeate-btn .btn:not(.menuBox):hover{
+			opacity: .8;
+	    	text-decoration: none;
+		}
+		.opeate-btn .btn.green{
+			border-color:#04BE5B;
+			background-color:#04BE5B;
+		}
+		.opeate-btn .btn.yellow{
+			border-color:#f9bd65;
+			background-color:#f9bd65;
+		}
+ 		.opeate-btn .btn.cyan{
+			border-color:#5CC5CD;
+			background-color:#5CC5CD;
+		}
+		.opeate-btn .btn.cyan.disabled{
+			opacity: .5;
+		}
+		.tab-button .form-control{
+			background: #FFFFFF none;
+		    border: 1px solid #e5e6e7;
+		    border-radius: 2px;
+		    line-height: 1.42857143;
+		    color: inherit;
+		    display: block;
+		    padding: 6px 12px;
+		    -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+		    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+		}
+		.tab-button{display:flex;justify-content:flex-end;}
+		.tab-button .pull-right .view-btn:not(:last-child) {
+		    border-right: 0px;
+		}
+		.tab-button .pull-right .view-btn:first-child {
+		    border-radius: 2px 0px 0px 2px;
+		}
+		.tab-button .pull-right .view-btn:last-child {
+		    border-radius: 0px 2px 2px 0px;
+		}
+		.tab-button .pull-right .view-btn:not(.cur):not(:first-child) {
+		    border-left: 1px dotted #d9d9d9;
+		}
+		.tab-button .pull-right .view-btn {
+		    padding: 7px 12px;
+		    font-size: 13px;
+		    background-color: #eee;
+		    color: #676a6c;
+		    text-align: center;
+		    white-space: nowrap;
+		    vertical-align: middle;
+		}
+		.tab-button .pull-right .view-btn.cur {
+		    background-color:var(--theme)!important;
+		    color:white;
+		}
+		.tab-button .pull-right .view-btn:hover{
+			color:var(--theme);
+			opacity: .8;
+	    	text-decoration: none;
+	    	cursor:pointer;
+		}
+		.tab-button .btn-group{display:flex;}
+		.planBox{height:45px;background-color:#f5f5f5;color:#616161;font-size:12px;display:flex;justify-content:space-between;border-bottom:1px solid #e5e6e7;border-top:1px solid #e5e6e7;}
+		.planBox .planInfo{display:flex;height:45px;align-items:center;}
+		.planBox .planBtn{margin-right:20px;height:45px;display:flex;align-items:center;}
+		.planBox .planInfo .b-fa-exchange, .planBox .planInfo .b-fa-gear{font-size:14px;}
+
+		.planBox .lcs_wrap {
+            height: 24px;
+            margin-bottom:3px;
+        }
+        .planBox .lcs_switch {
+            width: 54px;
+            height: 24px;
+        }
+        .planBox .lcs_cursor {
+            width: 18px;
+            height: 18px;
+        }
+        .planBox .lcs_switch.lcs_off .lcs_label_off {
+            width: 18px;
+            height: 18px;
+        }
+        .planBox .lcs_switch.lcs_on .lcs_label_on {
+            left: 0px;
+        }
+        .planBox .lcs_switch.lcs_on .lcs_cursor {
+            left: 33px;
+        }
+        .planBox .lcs_label {
+            top: 3px;
+        }
+        .menuBox{
+        	position:relative;
+        }
+        .menuBox .dropdown-menu{
+        	position:absolute;
+        	z-index:10010;
+		    top:10px;
+		    left: 0px;
+		    border-radius: 5px;
+		    background-color:white;
+		    box-shadow: 0px 10px 20px 0px rgb(41 42 51 / 20%);
+		    border: 1px solid #e5e6e7;
+		    max-width:150px;
+    		min-width:120px;
+		    display:none;
+		    font-size:12px;
+		    color:#616161;
+        }
+        #moreOperateList, #newPlan{top:25px;}
+        #planList{max-height:300px;overflow-x:auto;}
+        .menuBox .dropdown-menu>li:not(:last-child){
+        	border-bottom: 1px dotted rgba(224,224,231,.8);
+        }
+        .menuBox .dropdown-menu>li.line{
+        	border-bottom: 1px solid #e5e6e7;
+        }
+        .menuBox .dropdown-menu>li:hover{
+            outline: none;
+		    background-color: #46b6fe4d;
+		    color: white;
+		    z-index:10012;
+        }
+        .menuBox .dropdown-menu>li>a {
+		    line-height: 25px;
+		    text-align: left;
+		    display: block;
+		    padding: 5px 12px;
+		    clear: both;
+		    font-weight: 400;
+		    color: #3d3d3d;
+		    white-space: nowrap;
+		    text-decoration: none;
+		    overflow:hidden;
+		    text-overflow: ellipsis;
+		    overflow: hidden;
+		}
+		.menuBox .dropdown-menu>li>a .icon{display:inline-block;width:15px;text-align:center;font-weight:700;margin-right:8px;}
+		.menuBox .dropdown-menu li.curPlan{background-color:#46b6fe4d;border-color:#46b6fe4d!important;}
+		.menuBox .selectPlan:hover{cursor:pointer;}
+		.menuBox .selectPlan:hover .b-fa-caret-square-down{color:var(--theme)}
+		.menuBox .selectPlan .b-fa-caret-square-down{font-size:14px;}
+		.menuBox .gt-icon-edit:hover{cursor:pointer;color:var(--theme)}
+
+		#report-box, #taskBoard-box{width:100%;}
+		#report-box .reportChart{margin-top:10px;max-height:500px;}
+		#taskBoard-box .taskBoard{margin-top:10px;}
+		#taskBoard-box .taskBoard .gt-icon-calendar-days{font-size:18px;}
+		.containerIsTemp{margin-top:10px;padding-left:15px;padding-right:15px;}
+		.hide{display:none!important;}
+	</style>
+
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/entity/gantt/gtag.js" defer></script>
+	<script src="/js/form/switch.js" defer></script>
+</head>
+
+<body class="notranslate b-theme-stockholm" th:classappend="${session.theme}">
+	<input type="hidden" name="planId" id="planId" th:value="${plan.id}"/>
+	<input type="hidden" name="isTemplate" id="isTemplate" th:value="${plan.isTemplate}"/>
+	<input type="hidden" name="objectType" id="objectType" th:value="${plan.objectType}"/>
+	<input type="hidden" name="objectId" id="objectId" th:value="${plan.objectId}"/>
+	<input type="hidden" name="ganttView" id="ganttView" th:value="${ganttView}"/>
+	<input type="hidden" name="btn_ADDTSK" id="btn_ADDTSK" value=""/>
+	<input type="hidden" name="btn_EDITTSK" id="btn_EDITTSK" value=""/>
+	<input type="hidden" name="btn_DELTSK" id="btn_DELTSK" value=""/>
+	<input type="hidden" name="isKeepTopWindow" id="isKeepTopWindow" th:value="Y"/>
+	<input type="hidden" name="parentName" id="parentName"/>
+	<div id="container" th:class="${plan.isTemplate} eq 'Y' ? 'containerIsTemp':''">
+		<div class="tool-bar">
+			<div class="opeate-btn">
+				<div class="btn menuBox" th:if="${plan.isTemplate} ne 'Y' and ${btn_ADDPLAN}" id="newPlanChange" >
+					<div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						<i class="b-fa b-fa-plus mr5"></i>
+						<span class="pt1 h18">新建计划</span>
+						<i class="b-fa gt-icon-picker ml5"></i>
+					</div>
+					<ul id="newPlan" class="dropdown-menu dropdown-menu-left common-menu-hide" x-placement="bottom-end">
+                        <li val="B" title="新建空白计划"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-plus-square"></i></span>新建空白计划</a></li>
+                        <li val="T" title="基于模板新建" class="line"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-folder-plus"></i></span>基于模板新建</a></li>
+                        <li val="H" title="基于历史新建"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-new-history"></i></span>基于历史新建</a></li>
+                    </ul>
+				</div>
+				<div class="btn green hide ADDTSK" id="addTaskBtn" th:if="${btn_ADDTSK}">
+					<i class="b-fa b-fa-plus mr5"></i>
+					<span class="pt1 h18">新建任务</span>
+				</div>
+				<div class="btn cyan disabled hide ADDTSK EDITTSK" id="undoBtn" th:if="${btn_ADDTSK} or ${btn_EDITTSK}">
+					<i class="gt-icon-undo gt-icon mr5"></i>
+					<span class="pt1 h18">撤销</span>
+				</div>
+				<div class="btn cyan disabled hide ADDTSK EDITTSK" id="redoBtn" th:if="${btn_ADDTSK} or ${btn_EDITTSK}">
+					<i class="gt-icon-redo gt-icon mr5"></i>
+					<span class="pt1 h18">恢复</span>
+				</div>
+				<div class="btn yellow menuBox" id="moreOperateChange" >
+					<div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						<i class="b-fa b-fa-tasks mr5"></i>
+						<span class="pt1 h18">更多</span>
+						<i class="b-fa gt-icon-picker ml5"></i>
+					</div>
+					<ul id="moreOperateList" class="dropdown-menu dropdown-menu-left common-menu-hide" x-placement="bottom-end">
+                        <li val="collapseAll" title="全部收缩"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-angle-double-up"></i></span>全部收缩</a></li>
+                        <li val="expandAll" title="全部展开" class="line"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-angle-double-down"></i></span>全部展开</a></li>
+                        <li val="beforeTime" title="前时间段"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-angle-left"></i></span>前时间段</a></li>
+                        <li val="afterTime" title="后时间段" class="line"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-angle-right"></i></span>后时间段</a></li>
+                        <li val="setBaseline" class="hide SETBASELINE" title="设置基线" th:if="${btn_SETBASELINE} eq 'Y'"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-stream"></i></span>设置基线</a></li>
+                        <li val="setTemplate" class="line hide SETBASELINE" title="设置模板" th:if="${btn_SETBASELINE} eq 'Y'"><a href="javascript:void(0);"><span class="icon"><i class="b-fa b-fa-server"></i></span>设置模板</a></li>
+                        <li val="import" class="hide EXPTSK" title="导入" th:if="${btn_EXPTSK}"><a href="javascript:void(0);"><span class="icon"><i class="b-fa fa-cloud-upload"></i></span>导入</a></li>
+                        <li val="export" class="hide EXPTSK" title="导出" th:if="${btn_EXPTSK}"><a href="javascript:void(0);"><span class="icon"><i class="b-fa fa-cloud-download"></i></span>导出</a></li>
+                    </ul>
+				</div>
+			</div>
+			<div class="tab-button">
+				<div class="pull-right search t-columns mr5">
+					<input class="form-control input-outline form-search" id="searchName" name="name" autocomplete="off" placeholder="搜索" type="text">
+				</div>
+				<div class="columns columns-right btn-group pull-right t-columns">
+					<div type="LIST" class="view-btn view-type-btn cur">
+						<span>
+							<i class="b-fa gt-icon-gantt mr5"></i>甘特图
+						</span>
+					</div>
+					<div type="BOARD" class="view-btn view-type-btn" th:if="${plan.isTemplate} ne 'Y'">
+						<span>
+							<i class="b-fa b-fa-table-cells-large mr5"></i>看板
+						</span>
+					</div>
+					<div type="BURNDOWN" class="view-btn view-type-btn" th:if="${plan.isTemplate} ne 'Y'">
+						<span>
+							<i class="b-fa b-fa-fire-alt mr5"></i>燃尽图
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="planBox">
+			<div class="planInfo">
+				<div class="changePlan ml20 menuBox">
+					<div class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						<span class="selectPlan" id="planChange" title="切换计划"><span class="b-fa b-fa-exchange mr10" th:classappend="${plan.isTemplate} eq 'Y' ? 'hide':''"></span><span th:text="${plan.name}" id="planName"></span></span>
+						<span class="b-fa b-fa-gear ml10" th:classappend="${plan.isTemplate} eq 'Y' ? 'hide':''" onclick="planSet()" title="维护计划" th:if="${btn_MNGPLN}"></span>
+					</div>
+					<ul id="planList" class="dropdown-menu dropdown-menu-left common-menu-hide scroll-bar" x-placement="bottom-end">
+						<li th:each="select:${planList}" th:class="${select.checked} ? 'curPlan':''" th:title="${select.text}" th:value="${select.id}">
+							<a href="javascript:void(0);" th:utext="${select.text}"></a>
+						</li>
+                    </ul>
+				</div>
+				<div class="planDate ml50" th:classappend="${plan.planDateScope} != null?'':'hide'">计划日期：<span th:text="${plan.planDateScope}" id="planDateScope"></span></div>
+				<div class="copRate ml50">完成率：<span th:text="${plan.copRate}" id="copRate"></span>%</div>
+				<div class="devRate ml50">偏差率：<span th:text="${plan.devRate}" id="devRate"></span>%</div>
+				<div class="saveBtn ml50 opeate-btn" id="saveBtn">
+					<div class="btn">
+						<i class="b-fa b-fa-save mr5"></i>
+						<span class="pt1 h18">保存</span>
+					</div>
+				</div>
+			</div>
+			<div class="planBtn">
+				<div class="btn">
+					<label>关键路径：</label>
+					<input type="checkbox" name="criticalPath" id="criticalPath" class="lcs_check lcs_tt1"/>
+				</div>
+				<div class="btn ml50">
+					<label>基线对比：</label>
+					<input type="checkbox" name="baseline" id="baseline" class="lcs_check lcs_tt1"/>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <div id="report-box" class="hide">
+    	<div style="display:flex;justify-content:space-between;">
+    		<div class="opeate-btn">
+		   		<div class="btn green" onclick="refreshBurnDown();">
+					<i class="b-fa b-fa-arrows-rotate mr5"></i>
+					<span class="pt1 h18">刷新</span>
+				</div>
+    		</div>
+	    	<div class="tab-button">
+				<div class="pull-right search t-columns mr5">
+					<input class="form-control input-outline form-search" id="searchName" name="name" autocomplete="off" placeholder="搜索" type="text">
+				</div>
+				<div class="columns columns-right btn-group pull-right t-columns">
+					<div type="LIST" class="view-btn view-type-btn">
+						<span>
+							<i class="b-fa gt-icon-gantt mr5"></i>甘特图
+						</span>
+					</div>
+					<div type="BOARD" class="view-btn view-type-btn" th:if="${plan.isTemplate} ne 'Y'">
+						<span>
+							<i class="b-fa b-fa-table-cells-large mr5"></i>看板
+						</span>
+					</div>
+					<div type="BURNDOWN" class="view-btn view-type-btn cur" th:if="${plan.isTemplate} ne 'Y'">
+						<span>
+							<i class="b-fa b-fa-fire-alt mr5"></i>燃尽图
+						</span>
+					</div>
+				</div>
+			</div>
+    	</div>
+	    <div id="reportChart" class="board-box scroll-bar reportChart"></div>
+    </div>
+
+    <div id="taskBoard-box" class="hide">
+    	<div class="tab-button">
+			<div class="pull-right search t-columns mr5">
+				<input class="form-control input-outline form-search" id="searchName" name="name" autocomplete="off" placeholder="搜索" type="text">
+			</div>
+			<div class="columns columns-right btn-group pull-right t-columns">
+				<div type="LIST" class="view-btn view-type-btn">
+					<span>
+						<i class="b-fa gt-icon-gantt mr5"></i>甘特图
+					</span>
+				</div>
+				<div type="BOARD" class="view-btn view-type-btn cur" th:if="${plan.isTemplate} ne 'Y'">
+					<span>
+						<i class="b-fa b-fa-table-cells-large mr5"></i>看板
+					</span>
+				</div>
+				<div type="BURNDOWN" class="view-btn view-type-btn" th:if="${plan.isTemplate} ne 'Y'">
+					<span>
+						<i class="b-fa b-fa-fire-alt mr5"></i>燃尽图
+					</span>
+				</div>
+			</div>
+		</div>
+	    <div id="taskBoard" class="board-box taskBoard"></div>
+    </div>
+
+    <div class="refresh-action hide" onclick="reLoad()"></div>
+
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	<script src="/js/list/jquery.ui.widget.min.js" defer></script>
+	<script src="/js/report/echarts.js" defer></script>
+	<script src="/js/report/echartsUtil.js" defer></script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#parentName').val(parentName);
+
+			var iframeId = $(window.frameElement).attr('id');
+			if(iframeId != 'custom-iframe'){
+				$('#container').addClass('containerIsTemp');
+			}
+
+			//初始化开关
+			$('.lcs_check').each(function(){
+				$(this).lc_switch($(this).attr('on_text'), $(this).attr('off_text'));
+			});
+			// triggered each time a field changes status
+			$('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+				var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+
+			});
+			// triggered each time a field is checked
+			$('body').delegate('.lcs_check', 'lcs-on', function() {
+				if(typeof switchOnOrOff == 'function') {
+					switchOnOrOff($(this), 'ON');
+				}
+			});
+			// triggered each time a is unchecked
+			$('body').delegate('.lcs_check', 'lcs-off', function() {
+				if(typeof switchOnOrOff == 'function') {
+					switchOnOrOff($(this), 'OFF');
+				}
+			});
+
+			getPlanTaskPermBtn();
+
+			$('#planChange').click(function(){
+				$('.common-menu-hide').hide();
+				var $planList = $('#planList');
+				if($planList.is(':visible')) {
+					$planList.hide();
+				}else{
+					$planList.show();
+				}
+			});
+
+			$('#moreOperateChange').click(function(){
+				$('.common-menu-hide').hide();
+				var $operateList = $('#moreOperateList');
+				if($operateList.is(':visible')) {
+					$operateList.hide();
+				}else{
+					$operateList.show();
+				}
+			});
+
+			$('#moreOperateList li').click(function(e){
+				e = e || window.event;
+			    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+			    var val = $(this).attr('val');
+			    if(val == 'expandAll') {
+			    	globalThis.ganttTool.onExpandAllClick();
+			    }else if(val == 'collapseAll'){
+			    	globalThis.ganttTool.onCollapseAllClick();
+			    }else if(val == 'beforeTime') {
+			    	globalThis.ganttTool.onShiftPreviousClick();
+			    }else if(val == 'afterTime') {
+			    	globalThis.ganttTool.onShiftNextClick();
+			    }else if(val == 'setBaseline') {
+			    	setBaseline();
+			    }else if(val == 'setTemplate') {
+			    	addOrEditPlan('SET');
+			    }else if(val == 'import') {
+			    	importBill('TSK');
+			    }else if(val == 'export') {
+			    	exportBill('TSK');
+			    }
+
+			    if(val != 'beforeTime' && val != 'afterTime') {
+			    	$(this).closest('ul').hide();
+			    }
+			});
+
+			$('#newPlanChange').click(function(){
+				$('.common-menu-hide').hide();
+				var $newPlan = $('#newPlan');
+				if($newPlan.is(':visible')) {
+					$newPlan.hide();
+				}else{
+					$newPlan.show();
+				}
+			});
+
+			$('#newPlan li').click(function(e){
+				e = e || window.event;
+			    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+			    var val = $(this).attr('val');
+			    if(val == 'B') {
+			    	addOrEditPlan('ADD');
+			    }else if(val == 'T'){
+			    	basedOnTemplateOrHistory('Y');
+			    }else if(val == 'H') {
+			    	basedOnTemplateOrHistory('N');
+			    }
+			    $(this).closest('ul').hide();
+			});
+
+			initPlanListClick();
+
+			const $popup = $('.menuBox');
+			$(document).on('click', function(event) {
+				const target = event.target;
+			  	// 检查点击的目标元素是否是弹出框内部的元素
+			  	// 如果不是，即点击了弹出框外部的其他地方，则隐藏弹出框
+			  	if (!$popup.is(target) && !$popup.has(target).length) {
+			  		$('.common-menu-hide').hide();
+			  	}
+			});
+
+			$('.view-btn').click(function(){
+				var type = $(this).attr('type');
+				if(type && type == 'BURNDOWN'){
+					$('#container').hide();
+					$('#taskBoard-box').addClass('hide');
+					$('#report-box').removeClass('hide');
+					$('#reportChart').css('max-height', parent.$('.layer-body').height() - 150);
+					loadBurnDown(false);
+				}else if(type && type == 'BOARD') {
+					$('#container').hide();
+					$('#report-box').addClass('hide');
+					$('#taskBoard-box').removeClass('hide');
+					$('#taskBoard').css('max-height', parent.$('.layer-body').height() - 130);
+					var $taskBoard = $('#taskBoard');
+					if($('#planId').val()) {
+						$taskBoard.html('');
+						loadTaskBoard();
+					}
+				}else{
+					$('#container').show();
+					$('#report-box, #taskBoard-box').addClass('hide');
+				}
+			});
+
+			hideLoading();
+		});
+
+		function getPlanTaskPermBtn(planId){
+			if(!planId){
+				planId = $('#planId').val();
+			}
+			var objectId = $('#objectId').val(), btnPerms;
+			if(!objectId){//如果项目Id为空，则是计划模板，默认具有计划任务管理所有权限
+				btnPerms = "ADDTSK,EDITTSK,EXPTSK,SETBASELINE,DELTSK";
+			}else{
+				$.ajax({
+					url : '/plan/getPlanTaskPermBtn',
+					type : "post",
+					async: false,
+					data : {
+						'objectId': objectId,
+						'planId' : planId,
+					},success : function(data) {
+						btnPerms = data;
+					}
+				});
+			}
+
+			if(btnPerms){
+				if(btnPerms.indexOf('ADDTSK') >= 0){
+					$('.ADDTSK').removeClass('hide');
+					$('#btn_ADDTSK').val('Y');
+				}else{
+					$('.ADDTSK').addClass('hide');
+					$('#btn_ADDTSK').val('');
+				}
+				if(btnPerms.indexOf('EDITTSK') >= 0){
+					$('.EDITTSK').removeClass('hide');
+					$('#btn_EDITTSK').val('Y');
+				}else{
+					$('.EDITTSK').addClass('hide');
+					$('#btn_EDITTSK').val('');
+				}
+				if(btnPerms.indexOf('EXPTSK') >= 0){
+					$('.EXPTSK').removeClass('hide');
+				}else{
+					$('.EXPTSK').addClass('hide');
+				}
+				if(btnPerms.indexOf('SETBASELINE') >= 0){
+					$('.SETBASELINE').removeClass('hide');
+				}else{
+					$('.SETBASELINE').addClass('hide');
+				}
+				if(btnPerms.indexOf('DELTSK') >= 0){
+					$('#btn_DELTSK').val('Y');
+				}else{
+					$('#btn_DELTSK').val('');
+				}
+			}else{
+				$('.ADDTSK, .EXPTSK, .SETBASELINE').addClass('hide');
+				$('#btn_ADDTSK, #btn_EDITTSK, #btn_DELTSK').val('');
+			}
+		}
+
+		function loadTaskBoard() {
+			$.ajax({
+				type : "post",
+				url : "/task/getTaskBoard",
+				data : {'planId': $('#planId').val(), 'orderBy':'planStartDate', 'orderByType':'asc'},
+				async : false,
+				success : function(data) {
+					if(data) {
+						data = eval('('+ data +')');
+						var html = '', trData, $taskboard = $('#taskBoard');
+						var tempHeight = parent.$('.layer-body').height() - 130;
+						if($taskboard.width() <= 1597) {
+							boardHeight = tempHeight - 68;
+						}else {
+							boardHeight = tempHeight - 73;
+						}
+						if(data.length) {
+							for(var i = 0; i < data.length; i++) {
+								trData = data[i];
+								html += '<div class="board-list col-lg-4 col-md-12">';
+								html += '	<div class="board-title">'+trData.name+'（<span>'+trData.data.length+'</span>）</div>';
+								html += '	<ul class="board-ul scroll-bar" style="height:'+boardHeight+'px">'+packBoardTr(trData.data)+'</ul>';
+								html += '</div>';
+								$taskboard.append(html);
+								html = '';
+							}
+						}else {
+							$taskboard.append('<div class="tc w_100p">看板未配置，请联系管理员</div>');
+						}
+					}
+				}
+			});
+		}
+
+		function loadBurnDown(refresh){
+			var $reportChart = $('#reportChart');
+			if(!$reportChart.html() || refresh) {
+				$.ajax({
+					url : '/burnDown/getChartData',
+					type : "post",
+					data : {
+						'planId' : $('#planId').val(),
+					},
+					success : function(data) {
+						if(data) {
+							data = eval('('+ data +')');
+							$reportChart.initEcharts({
+								title: data.title,
+								type: data.type,//报表类型，如：pie-basic
+								unit: data.unit,
+								data: data.chartData,
+								subtext: data.subtext,
+								theme: $reportChart.closest('body').hasClass('theme-dark') ? 'dark':''
+							});
+						}else {
+							$reportChart.initEcharts();
+						}
+					}
+				});
+			}
+		}
+
+		function initPlanListClick(){
+			$('#planList li').click(function(){
+				var planId = $(this).attr('value');
+				if(planId != $('#planId').val()) {
+					$('#planList li').removeClass('curPlan');
+					$(this).addClass('curPlan');
+					$('#planId').val(planId);
+
+					getPlanTaskPermBtn(planId);
+
+					globalThis.ganttInit.project.load('/plan/getPlanTaskList?planId=' + planId);
+				}
+				$('#planList').hide();
+			});
+		}
+
+		function switchOnOrOff($obj, type) {
+			if($obj.attr('name') == 'criticalPath') {
+				if(type == 'ON') {
+					globalThis.ganttInit.features.criticalPaths.disabled = false;
+				}else{
+					globalThis.ganttInit.features.criticalPaths.disabled = true;
+				}
+			}else if($obj.attr('name') == 'baseline') {
+				if(type == 'ON') {
+					globalThis.ganttInit.features.baselines.disabled = false;
+				}else{
+					globalThis.ganttInit.features.baselines.disabled = true;
+				}
+			}
+		}
+
+		function addOrEditPlan(type) {
+			var title = '新建计划';
+			var planId = "null", oldPlanId = "", isTemplate = $('#isTemplate').val();
+			if(type) {
+				if(type == 'EDIT'){
+					title = '编辑计划';
+					planId = $('#planId').val();
+				}else if(type == 'SET'){
+					title = '设置模板计划';
+					oldPlanId = $('#planId').val();
+					isTemplate = 'Y';
+				}
+			}
+			top.layer.open({
+				type : 2,
+				title : title,
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '830px', '600px' ],
+				content : '/plan/addOrEditPlan/' + planId + '?type='+type+'&parentId=&preId=&isTemplate='+isTemplate+'&objectId='+$('#objectId').val()+'&objectType='+$('#objectType').val()+'&oldPlanId='+oldPlanId+'&parentname=' + window.name,
+				end: function(id, name) {
+					if(id && name && (!isTemplate || isTemplate != 'Y')) {
+						reLoadPlan(id, name);
+					}
+				}
+			});
+		}
+
+		function loadPlan(planId) {
+			$.ajax({
+				url : '/plan/getPlan',
+				type : "post",
+				data : {
+					'planId' : planId,
+				},
+				success : function(r) {
+					if(r){
+						$('#planName').text(r.name);
+						if(r.planStartDate && r.planEndDate){
+							$('#planDateScope').text(r.planStartDate.substring(0, 10) + ' ~ ' + r.planEndDate.substring(0, 10));
+							$('.planDate').show();
+						}else{
+							$('.planDate').hide();
+						}
+						$('#copRate').text(r.copRate ? r.copRate : 0);
+						$('#devRate').text(r.devRate ? r.devRate : 0);
+					}
+
+					hideLoading(100);
+				}
+			});
+		}
+
+		//重新加载计划名称，和计划下拉选项
+		function reLoadPlan(id, name) {
+			$('#planName').text(name);
+			$('#planId').val(id);
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/plan/getPrePlanList",
+				data : {
+					'planId':id,
+					'isTemplate':$('#isTemplate').val(),
+					'objectId':$('#objectId').val()
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml +='<li class="'+(id == data[i].id ? 'curPlan':'')+'" title="'+data[i].text+'" value="'+data[i].id+'">';
+							optionHtml +='	<a href="javascript:void(0);">'+data[i].text+'</a>';
+							optionHtml +='</li>';
+						}
+						$('#planList').html(optionHtml);
+						initPlanListClick();
+
+						reLoad();
+					}
+				}
+			});
+		}
+
+		function reLoad(allowLoadPlan) {
+			globalThis.ganttInit.project.load('/plan/getPlanTaskList?planId=' + $('#planId').val());
+		}
+
+		function planSet() {
+			$('.common-menu-hide').hide();
+			var url = '/plan/planList?objectId='+$('#objectId').val()+'&objectType='+$('#objectType').val()+'&parentname=' + window.name;
+			parent.layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '维护计划',
+				maxmin : false,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : url,
+				end: function(id, name){
+
+				}
+			});
+		}
+
+		function basedOnTemplateOrHistory(isTemplate) {
+			var title = '';
+			if(isTemplate && isTemplate == 'Y') {
+				title = '基于模板新建';
+			}else {
+				title = '基于历史新建';
+			}
+			top.layer.open({
+				type : 2,
+				title : title,
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '860px', '650px' ],
+				content : 'pjt/basedOnTemplateOrHistory?objectId='+$('#objectId').val()+'&objectType='+$('#objectType').val()+'&isTemplate='+isTemplate+'&parentname=' + window.name,
+				end: function(id, name) {
+					if(id && name) {
+						reLoadPlan(id, name);
+					}
+				}
+			});
+		}
+
+		function importBill(objectType) {
+			var projectId = '', deptId = '';
+			parent.layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '导入任务',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '100%', '100%' ],
+				content : '/importBill?objectType='+ objectType +'&planId='+$('#planId').val()+'&isTemplate='+$('#isTemplate').val()+'&belongType='+$('#objectType').val()+'&belongId='+$('#objectId').val()+'&parentname=' + window.name,
+				end: function(id) {
+					if(id) {
+						reLoad();
+					}
+				}
+			});
+		}
+
+		function setBaseline() {
+			var index = top.layer.confirm('确定将该版计划任务设置为基线吗？', {
+				btn : ['确定', '取消']
+			}, function() {
+				top.layer.close(index);
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/plan/setBaseline",
+					data : {
+						'planId': $('#planId').val()
+					},
+					async : false,
+					success : function(data) {
+						reLoad();
+					}
+				});
+			}, function(){
+				top.layer.close(index);
+			});
+		}
+
+		function exportBill(objectType) {
+			var filterConditions = $('body').data('bindData');
+			var $exportForm = $("<form method='post' id='exportForm' style='display:none'><input name='module' value='"+objectType+"'><input name='filterConditions' value='"+filterConditions+"'><input name='name' value='"+$('#name').val()+"'><input name='planId' value='"+$('#planId').val()+"'><input name='queryObject' value='isGantt'></form>");
+			$exportForm.attr("action", "/exportBill");
+		    $('body').append($exportForm);
+		    $exportForm.submit();
+		}
+
+		//组装看板数据
+		function packBoardTr(data) {
+			var html = '';
+			if(data) {
+				var trData = '', trUser = '';
+				for(var i = 0; i < data.length; i++) {
+					trData = data[i];
+					html += '<li class="board-li" onclick="openEntity(\'TSK\', \''+trData.taskId+'\')">';
+					html += '	<div class="progressBar" style="background-color:'+trData.statusBg+'"></div>';
+					html += '	<div class="board-content spec">';
+					html += '		<div class="data-name">'+trData.name+'</div>';
+					html += '		<div class="ml10">';
+					html += '			<div class="cur-status" style="background-color:'+trData.statusBg+'">';
+					html += '				<i class="b-fa '+trData.statusIcon+'" style="color:'+trData.statusFc+'"></i>';
+					html += '				<div class="box">';
+					html += '					<div class="title" style="color:'+trData.statusFc+'">'+trData.statusName+'</div>';
+					html += '					<div class="remark" style="color:'+trData.statusFc+'">当前状态</div>';
+					html += '				</div>';
+					html += '			</div>';
+					html += '			<div class="cur-date">';
+					html += '				<div class="circ"><i class="b-fa gt-icon-calendar-days"></i></div>';
+					html += '				<div class="box">';
+					html += '					<div class="title">'+trData.startDate+'</div>';
+					html += '					<div class="remark">'+trData.startFieldName+'</div>';
+					html += '				</div>';
+					html += '			</div>';
+					html += '			<div class="cur-date mr0">';
+					html += '				<div class="circ"><i class="b-fa gt-icon-calendar-days"></i></div>';
+					html += '				<div class="box">';
+					html += '					<div class="title">'+trData.endDate+'</div>';
+					html += '					<div class="remark">'+trData.endFieldName+'</div>';
+					html += '				</div>';
+					html += '			</div>';
+					html += '			<div class="clear"></div>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="board-status">';
+					html += '		<div class="pt3">';
+					html += '			<span class="rate" style="background-color:'+trData.light+';color:'+(trData.light?'white':'')+'">偏差率：'+trData.devRate+'%</span>';
+					html += '			<span class="rate">完成率：'+trData.copRate+'%</span>';
+					html += '		</div>';
+					html += '		<ul class="list-unstyled team-info mr5">';
+					if(trData.user) {
+						for(var j = 0; j < trData.user.length; j++) {
+							if(j > 6) {
+								continue;
+							}
+							trUser = trData.user[j];
+							html += '		<li onclick="viewUser(\''+trUser.userId+'\')" title="'+trUser.userTitle+'"><img src="'+trUser.userImg+'" alt="Avatar"></li>';
+						}
+					}
+					html += '		</ul>';
+					html += '	</div>';
+					html += '</li>';
+				}
+			}
+			return html;
+		}
+
+		function openEntity(objectType, taskId) {
+			top.layer.open({
+				skin: 'openClass',
+				type : 2,
+				title : '编辑任务',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '960px', '95%' ],
+				content : '/task/view/'+taskId+'?&isKeepTopWindow='+$('#isKeepTopWindow').val()+'&isGantt=Y&parentname=' + (window.name ? window.name : $('#parentName').val()),
+				end: function(id, name) {
+					$('#taskBoard').html('');
+					loadTaskBoard();
+				}
+			});
+		}
+
+		function viewUser(id) {
+			var e = window.event;
+		    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+			top.layer.open({
+				type : 2,
+				title : '用户信息',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['950px', '550px'],
+				content : '/sys/user/view/' + id + '?isForward=Y&parentname=' + (window.name ? window.name : $('#parentName').val()),
+			});
+		}
+
+		function hideLoading(times) {
+			var $loaderWrapp = $("#page-loader-wrapper");
+			if(!$loaderWrapp.length) {
+				$loaderWrapp = parent.$("#page-loader-wrapper");
+			}
+			if(!$loaderWrapp.length) {
+				$loaderWrapp = parent.parent.$("#page-loader-wrapper");
+			}
+
+			if(times) {
+				setTimeout(function() {
+					$loaderWrapp.fadeOut();
+				}, times);
+			}else{
+				setTimeout(function() {
+					$loaderWrapp.fadeOut();
+				}, 50);
+			}
+		}
+
+		function refreshBurnDown(){
+			$.ajax({
+				url : '/burnDown/reFreshBurnDown',
+				type : "post",
+				data : {
+					'planId' : $('#planId').val(),
+				},
+				success : function(data) {
+					var $reportChart = $('#reportChart');
+					if($reportChart.html()) {
+						$reportChart.initEcharts('destroy');
+					}
+					loadBurnDown(true);
+				}
+			});
+		}
+	</script>
+	<script src="/js/entity/gantt/gantt.locales.js" defer></script>
+	<script data-default-locale="Ch" type="module" src="/js/entity/gantt/gantt.init.js" defer></script>
+</body>
+</html>

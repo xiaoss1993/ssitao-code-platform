@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+	
+	.windowPage .layout-box.new .detail-sign{
+		display:block!important;
+	}
+	.windowPage .layout-box .layout-left{width:100%!important;}
+	.windowPage .field-li.content-whole.detail-sign{width:100%!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${dashboard.name}"></div>	
+				</div>
+			</li>
+		</ul>
+		<div action="" id="operate" class="pb100">
+			<input type="hidden" name="id" id="id" th:value="${dashboard.id}"/>
+			<input type="hidden" name="blockType" th:value="CUSTOM"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<div class="layout-box">
+				<div class="layout-left">
+					<ul class="page-ul page-ul2">
+						<li class="field-li content-whole detail-sign" field="detailTabs" htype="SIGN">	
+							<div class="relevant-tabs tabSign">
+								<div class="tab baseInfo-tab active" type="baseInfo" taburl="dashboard/addOrEditDashboard" onclick="intoDashboardTab($(this))">基本信息</div>
+								<div class="tab dashboard-tab" type="dashboard" taburl="dashboard/dashboardSet" onclick="intoDashboardTab($(this))">仪表盘配置</div>
+							</div>
+						</li>
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="仪表盘名称"></span></div>
+							<div class="field-div field-content" th:text="${dashboard.name}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="simpleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="仪表盘简称"></span></div>
+							<div class="field-div field-content" th:text="${dashboard.simpleName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置仪表盘"></span></div>
+							<div class="field-div field-content" th:text="${dashboard.preName}"></div>
+						</li>
+						<li class="field-li check content-whole r odd" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content"  th:text="${dashboard.status} eq 'IN'?'未发布':'使用中'"></div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content" th:text="${dashboard.remark}"></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="btn-box" signtype="baseInfo">
+		<div class="columns pull-right t-columns">
+			<button class="btn t-btn y-active" onclick="editEntity();" type="button">
+				<span class="pt1 h18" th:text="#{common.eidt}"></span>
+			</button>
+		</div>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			controlBtnShowPosition();
+			
+		});
+		
+		function intoDashboardTab($obj){
+			var type = $($obj).attr('type');
+			if($obj.hasClass('active')){
+				return;
+			}
+			var id = $('#id').val(), url;
+			if(type == 'dashboard'){
+				url = '/dashboard/dashboardSet?dashboardId='+id+'&parentname=' + window.name;
+			}else{
+				url = '/dashboard/addOrEditDashboard/'+id+'?preId=&parentname=' + window.name;
+			}
+			intoIframePage(url, false, 'DASHBOARD');
+		}
+		
+		function editEntity(){
+			var url = '/dashboard/addOrEditDashboard/'+$('#id').val()+'?preId=&blockType=&parentname=' + window.name;
+			intoIframePage(url, false, 'DASHBOARD');
+		}
+	</script>
+	
+</body>
+</html>

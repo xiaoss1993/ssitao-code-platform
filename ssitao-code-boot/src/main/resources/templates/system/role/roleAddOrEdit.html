@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<meta charset="utf-8">
+
+<head>
+    <title>角色管理</title>
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/system/role/role.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/form/bootstrap-select.css">
+    <link rel="stylesheet" href="/js/plugins/layer/skin/layer.css">
+    <head th:include="include::formHeaderContent"></head>
+</head>
+
+<body class="windowPage layer-body">
+
+    <div class="layer-box">
+        <ul class="title-ul" id="titleSection">
+            <li class="field-li content-whole r title-sign" htype="TEXT">
+                <div class="field-div field-content spec">
+                    <div class="return-back" onclick="tabReturnBack($(this));">
+                        <i class="fa fa-reply mr5"></i><span>返回</span>
+                    </div>
+                    <div class="line"></div>
+                    <div class="field-name" id="pageTitle">新建角色</div>
+                </div>
+            </li>
+        </ul>
+        <form action="" id="operate">
+            <input type="hidden" id="isContinue" value=""/>
+            <input type="hidden" name="id" id="id"/>
+            <input type="hidden" id="objectType" name="objectType"/>
+            <input type="hidden" name="isValid" value="Y"/>
+            <input type="hidden" name="filterField" id="filterField" value=""/>
+            <div class="layout-box new">
+                <div class="layout-left">
+                    <ul class="page-ul">
+                        <li class="field-li content-whole sign" field="loginInfo" htype="SIGN">
+                            <div class="field-div field-sign-title3">
+                                <i class="zmdi zmdi-hdr-strong mr10"></i>
+                                <div class="title">角色信息</div>
+                            </div>
+                            <div class="field-div field-sign-content"></div>
+                        </li>
+                        <li class="field-li content-whole" field="roleName" htype="TEXT">
+                            <div class="field-div field-label"><span class="requireSign">*</span><span class="title" title="角色名称">角色名称</span></div>
+                            <div class="field-div field-content textWrap wordSumTotal">
+                                <input class="form-control" name="roleName" type="text" placeholder=" " autocomplete="off" htype="TEXT" maxlength="100" required>
+                            </div>
+                        </li>
+                        <li class="field-li content-whole" field="preId" htype="SELECT">
+                            <div class="field-div field-label"><span class="requireSign"></span><span class="title">前置角色</span></div>
+                            <div class="field-div field-content">
+                                <select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+                                    <option value="">请选择</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="field-li content-whole" field="remark" htype="AREA">
+                            <div class="field-div field-label"><span class="requireSign"></span><span class="title" title="备注">备注</span></div>
+                            <div class="field-div field-content textWrap wordSumTotal">
+                                <div class="textarea-box">
+                                    <textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;"></textarea>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="field-li content-whole" field="roleMembers" htype="TEXT">
+                            <div class="field-div field-label"><span class="requireSign"></span><span class="title" title="角色成员">角色成员</span></div>
+                            <div class="field-div field-content user">
+                                <div class="user-list" id="userListContainer"></div>
+                                <div class="user-add">
+                                    <input attrsign="_ids" name="roleMembers" type="hidden" id="roleMembers">
+                                    <div class="cp form-control-popup" htype="USER" ismul><img src="/img/user/user-add.png"/></div>
+                                    <div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="field-li content-whole sign" field="loginInfo" htype="SIGN" id="permissionSection">
+                            <div class="field-div field-sign-title3">
+                                <i class="zmdi zmdi-hdr-strong mr10"></i>
+                                <div class="title">角色权限</div>
+                            </div>
+                            <div class="field-div field-sign-content"></div>
+                        </li>
+                        <li class="field-li check content-whole" field="dataScope" htype="CHECKBOX" id="dataScopeSection">
+                            <div class="field-div field-label"><span class="requireSign">*</span><span class="title" title="权限范围">权限范围</span></div>
+                            <div class="field-div field-content-check">
+                                <div class="checkbox">
+                                    <input type="checkbox" name="dataScope" id="_dataScope1" value="selfs" data-target="checkbox" required>
+                                    <label for="_dataScope1" title="本人">本人</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" name="dataScope" id="_dataScope2" value="subs" data-target="checkbox">
+                                    <label for="_dataScope2" title="下属">下属</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" name="dataScope" id="_dataScope3" value="selfDept" data-target="checkbox">
+                                    <label for="_dataScope3" title="本部门">本部门</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" name="dataScope" id="_dataScope4" value="subDepts" data-target="checkbox">
+                                    <label for="_dataScope4" title="下级部门">下级部门</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" name="dataScope" id="_dataScope6" value="All" data-target="checkbox">
+                                    <label for="_dataScope6" title="全部">全部</label>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="menu-perm-box" id="menuPermSection">
+                        <input type="hidden" name="menuIds" id="menuIds" />
+                        <div class="menu-perm-row">
+                            <div class="menu head"><div class="first" title="菜单权限">菜单权限</div><div class="linked" id="selectAll" title="全选" onclick="selectAndDeselect($(this), 'Y')">全选</div><div class="linked" id="deSelectAll" title="全不选" onclick="selectAndDeselect($(this), 'N')">全不选</div></div>
+                            <div class="operate head" title="操作权限">操作权限</div>
+                        </div>
+                        <div class="menu-perm-row content" id="menuListContainer">
+                        </div>
+                    </div>
+                    <div class="formBtn hide">
+                        <div class="layui-layer-btn layui-submit-btn">
+                            <input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" value="保存"/>
+                            <input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" value="保存并新建"/>
+                            <button type="button" class="layui-layer-btn1 btns cp" onclick="tabReturnBack($(this))">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/common/common.js"></script>
+    <script src="/js/plugins/autosize/textSum.min.js"></script>
+    <script src="/js/form/form.js"></script>
+    <script src="/js/form/bootstrap-select.js"></script>
+    <script src="/js/form/jquery-html5Validate.js"></script>
+    <script src="/js/plugins/layer/layer.js"></script>
+
+    <div th:include="include::formFooterContent"></div>
+
+    <script>
+        var ctx = '/';
+        var roleData = null;
+        var isEdit = false;
+
+        $(function() {
+            // 延迟初始化，避免页面加载时立即关闭
+            setTimeout(function() {
+                try {
+                    initFormControl('ROLE');
+                } catch (e) {
+                    console.error('initFormControl error:', e);
+                }
+            }, 100);
+
+            $('input[name="menuId"]').on('click', function() {
+                selectSelfAndChild($(this), $(this).is(':checked'));
+                selectParent($(this), $(this).is(':checked'));
+            });
+
+            controlBtnShowPosition();
+
+            loadPageData();
+        });
+
+        function loadPageData() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var roleId = urlParams.get('id');
+            var objectType = urlParams.get('objectType');
+
+            $('#objectType').val(objectType || '');
+
+            if (roleId) {
+                isEdit = true;
+                $('#submitAndNew').hide();
+                loadRoleData(roleId, objectType);
+            }
+
+            if (objectType === 'DEPT') {
+                $('#titleSection').hide();
+                $('#permissionSection').hide();
+                $('#dataScopeSection').hide();
+                $('#menuPermSection').hide();
+            }
+        }
+
+        function loadRoleData(roleId, objectType) {
+            $.ajax({
+                url: '/sys/role/get',
+                type: 'GET',
+                data: { id: roleId },
+                success: function(result) {
+                    if (result.code === 0 && result.data) {
+                        roleData = result.data;
+                        $('#pageTitle').text('编辑角色');
+                        $('#id').val(roleData.id);
+                        $('#objectType').val(roleData.objectType);
+                        $('input[name="roleName"]').val(roleData.roleName);
+                        $('textarea[name="remark"]').val(roleData.remark);
+                        $('#roleMembers').val(roleData.roleMembers);
+
+                        if (roleData.dataScope) {
+                            var scopes = roleData.dataScope.split(',');
+                            $('input[name="dataScope"]').each(function() {
+                                $(this).prop('checked', scopes.indexOf($(this).val()) >= 0);
+                            });
+                        }
+
+                        if (roleData.userList && roleData.userList.length > 0) {
+                            renderUserList(roleData.userList);
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadPreRoleList() {
+            $.ajax({
+                url: '/sys/role/preList',
+                type: 'GET',
+                success: function(result) {
+                    if (result.code === 0 && result.data) {
+                        var options = '<option value="">请选择</option>';
+                        result.data.forEach(function(item) {
+                            options += '<option value="' + item.id + '" data-content="' + item.text + '">' + item.text + '</option>';
+                        });
+                        $('#preId').html(options);
+                        $('#preId').selectpicker('refresh');
+
+                        if (roleData && roleData.preId) {
+                            $('#preId').val(roleData.preId);
+                            $('#preId').selectpicker('refresh');
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadMenuList(objectType) {
+            $.ajax({
+                url: '/sys/menu/tree',
+                type: 'GET',
+                data: { objectType: objectType },
+                success: function(result) {
+                    if (result.code === 0 && result.data) {
+                        renderMenuList(result.data);
+                    }
+                }
+            });
+        }
+
+        function renderMenuList(menuList) {
+            var html = '';
+            menuList.forEach(function(menu) {
+                var checkedAttr = menu.checked ? 'checked' : '';
+                var disabledAttr = menu.disabled ? 'disabled' : '';
+
+                var filterFieldHtml = '';
+                if (menu.filterField === 'Y') {
+                    filterFieldHtml = '<div class="checkbox linked filterField" id="' + menu.id + '" objectType="' + menu.objectType + '" fieldIds="' + menu.filterFieldId + '" title="隐藏字段" onclick="filterField($(this))"><i class="fa fa-eye-slash"></i><span class="filterFieldName ml5" title="' + menu.filterFieldName + '">' + menu.filterFieldName + '</span></div>';
+                }
+
+                var childrenHtml = '';
+                if (menu.children && menu.children.length > 0) {
+                    menu.children.forEach(function(op) {
+                        var opChecked = op.checked ? 'checked' : '';
+                        childrenHtml += '<div class="checkbox"><input type="checkbox" name="menuId" id="' + op.id + '" value="' + op.id + '" parentId="' + op.parentId + '" ' + opChecked + ' data-target="checkbox" ' + disabledAttr + '><label for="' + op.id + '">' + op.name + '</label></div>';
+                    });
+                }
+
+                html += '<div class="menu-perm-row content" style="margin-left:' + menu.pad + 'px">';
+                html += '<div class="menu">';
+                html += '<div class="field-div field-content-check">';
+                html += '<div class="checkbox"><input type="checkbox" name="menuId" id="' + menu.id + '" value="' + menu.id + '" parentId="' + menu.parentId + '" ' + checkedAttr + ' data-target="checkbox" ' + disabledAttr + '><label for="' + menu.id + '">' + menu.name + '</label></div>';
+                html += filterFieldHtml;
+                html += '</div></div>';
+                html += '<div class="operate">' + childrenHtml + '</div>';
+                html += '</div>';
+            });
+            $('#menuListContainer').html(html);
+        }
+
+        function renderUserList(userList) {
+            var html = '';
+            userList.forEach(function(user) {
+                html += '<div class="cp" userId="' + user.id + '" title="' + user.name + '" onclick="viewUser(\'' + user.id + '\')">';
+                html += '<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>';
+                html += '<div class="user-col">';
+                html += '<img src="' + user.picId + '"/>';
+                html += '<span>' + user.name + '</span>';
+                html += '</div></div>';
+            });
+            $('#userListContainer').html(html);
+        }
+
+        function selectSelfAndChild($obj, isChecked) {
+            $children = $('input[parentid="'+$obj.val()+'"]');
+            if(!$children.length) {
+                return;
+            }
+            if($obj.is(':checked')) {
+                $children.prop('checked', true);
+            }else {
+                $children.prop('checked', false);
+            }
+
+            $children.each(function() {
+                selectSelfAndChild($(this), isChecked);
+            });
+        }
+
+        function selectParent($obj, isChecked) {
+            var parentId = $obj.attr('parentId');
+            if(!$obj.is(':checked') || !parentId ) {
+                return;
+            }
+            $parent = $('input[id="'+parentId+'"]');
+            $parent.prop('checked', true);
+
+            $parent.each(function() {
+                selectParent($(this), isChecked);
+            });
+        }
+
+        function selectAndDeselect($obj, isSel) {
+            if(isSel && isSel == 'Y') {
+                $('input[name="menuId"]').prop('checked', true);
+            }else {
+                $('input[name="menuId"]').prop('checked', false);
+            }
+        }
+
+        function getSelectMenuIds() {
+            var menuIds = '';
+            $('input[name="menuId"]:checked').each(function() {
+                if(menuIds) {
+                    menuIds += ',' + $(this).val();
+                }else {
+                    menuIds = $(this).val();
+                }
+            });
+            $('#menuIds').val(menuIds);
+
+            var filterField = {}, objectType, fieldIds;
+            $('.filterField').each(function() {
+                objectType = $(this).attr('objectType');
+                fieldIds = $(this).attr('fieldIds');
+                if(objectType && fieldIds) {
+                    filterField[objectType] = fieldIds;
+                }
+            });
+            $('#filterField').val(JSON.stringify(filterField));
+        }
+
+        $("#operate").html5Validate(function() {
+            var isContinue = $('#isContinue').val();
+            getSelectMenuIds();
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : "/sys/role/saveOrUpdate",
+                data : $('#operate').serialize(),
+                async : false,
+                success : function(data) {
+                    if (data.code == 0) {
+                        if(isContinue && isContinue == 'Y') {
+                            $('input[name="roleName"]').val('');
+                        }else {
+                            var objectType = $('#objectType').val();
+                            if(objectType && objectType == 'DEPT'){
+                                var index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index, 'role-table');
+                            }else{
+                                returnBackAndReLoad(true, false);
+                            }
+                            parent.layer.msg(data.msg);
+                        }
+
+                    } else {
+                        parent.layer.msg(data.msg);
+                    }
+
+                    hideLoading();
+                }
+            });
+        }, {
+            validate: function() {
+                return customValidate();
+            }
+        });
+
+        function filterField($obj) {
+            top.layer.open({
+                type : 2,
+                title : '隐藏字段',
+                maxmin : true,
+                shadeClose : false,
+                area : ['600px', '500px'],
+                content : '/sys/role/filterField?roleId='+$('#id').val()+'&menuId=' + $obj.attr('id') + '&fieldIds='+$obj.attr('fieldIds')+'&parentname=' + window.name,
+                end: function(menuId, fieldInfo){
+                    if(menuId){
+                        reLoadFilterField(menuId, fieldInfo);
+                    }
+                }
+            });
+        }
+
+        function reLoadFilterField(menuId, fieldInfo) {
+            var fieldNames = '', fieldIds = '', objectType = '';
+            if(fieldInfo) {
+                fieldInfo = eval('('+fieldInfo+')');
+                if(fieldInfo.fieldNames && fieldInfo.fieldIds && fieldInfo.objectType) {
+                    fieldNames = '[ '+ fieldInfo.fieldNames +' ]';
+                    fieldIds = fieldInfo.fieldIds;
+                    objectType = fieldInfo.objectType;
+                }
+            }
+            var $filterField = $('.filterField[id="'+menuId+'"]');
+            $filterField.find('.filterFieldName').attr('title', fieldNames).text(fieldNames);
+            $filterField.attr({'objectType': objectType, 'fieldIds': fieldIds});
+        }
+
+        function customValidate() {
+            return true;
+        }
+
+    </script>
+
+</body>
+</html>

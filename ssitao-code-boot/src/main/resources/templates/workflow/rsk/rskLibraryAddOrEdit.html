@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name">新建风险</div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="pageTitle" name="pageTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="id" name="id" th:value="${rskLibrary.id}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${rskLibrary.name}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li" field="typeId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="风险类别"></span></div>
+							<div class="field-div field-content">
+								<select id="typeId" class="selectpicker" name="typeId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${typeList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li" field="probabilityId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="发生概率"></span></div>
+							<div class="field-div field-content">
+								<select id="probabilityId" class="selectpicker" name="probabilityId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${probabilityList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li" field="effectId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="影响程度"></span></div>
+							<div class="field-div field-content">
+								<select id="effectId" class="selectpicker" name="effectId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${effectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li" field="gradeId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="风险等级"></span></div>
+							<div class="field-div field-content">
+								<select id="gradeId" class="selectpicker" name="gradeId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${gradeList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${rskLibrary.status} eq 'IN'" required>
+								    <label for="_status1" th:text="未发布">
+								    </label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="PB" th:checked="${rskLibrary.status} ne 'IN'">
+								    <label for="_status2" th:text="已发布">
+								    </label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="描述"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="500" name="remark" rows="8" th:text="${rskLibrary.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="effectRemark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="影响描述"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="500" name="effectRemark" rows="8" th:text="${rskLibrary.effectRemark}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="respondPlan" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="应对计划"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="500" name="respondPlan" rows="8" th:text="${rskLibrary.respondPlan}" ></textarea>
+								</div>
+							</div>
+						</li>
+					</ul>
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('RSK');
+			
+			$('.formBtn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rsk/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.msg(data.msg);
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								if(parentFrame && typeof parentFrame.returnBackAndReLoad== "function") {
+									parentFrame.returnBackAndReLoad(true);
+								}
+							}else{
+								hideLoading();
+								returnBackAndReLoad();
+							}
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('RSK');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

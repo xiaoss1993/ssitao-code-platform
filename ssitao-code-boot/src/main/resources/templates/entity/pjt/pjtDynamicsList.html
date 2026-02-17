@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+ 	body.gray-bg{overflow-y:auto}; 
+</style>
+<link rel="stylesheet" href="/css/entity/project/timeLine.css">
+<head th:include="include::listHeaderContent"></head>
+
+
+<body th:classappend="${session.theme}">
+	<div class="dynamics-box">
+		<div class="demo">
+			<div class="history">
+				<div class="history-date"></div>
+		  	</div>
+		  	<div class="none" style="display:none">无数据</div>
+		 </div>
+		 <div class="filter" th:if="${btn_SPREAD}">
+		 	<div class="title">筛选</div>
+		 	<div class="condition">
+		 		<div class="field-div field-label">日期</div>
+		 		<div class="field-div field-content">		
+		 			<input class="form-control form-control-date datetimepicker_0" id="filterDate" name="filterDate" type="text" placeholder="请选择日期" autocomplete="off" readonly="readonly" htype="DATE" >		
+		 			<i class="zmdi zmdi-calendar"></i>	
+		 		</div>
+		 	</div>
+		 	<div class="condition">
+		 		<div class="field-div field-label">用户</div>
+		 		<div class="field-div field-content">	
+		 			<input type="hidden" id="filterUserIds" name="filterUserIds" value=""/>	
+		 			<input class="form-control form-control-popup" name="filterUser" isMul type="text" placeholder="请选择用户" autocomplete="off" readonly="readonly" htype="USER" >		
+		 			<i class="zmdi zmdi-search"></i>	
+		 		</div>
+		 	</div>
+		 	<div class="condition">
+		 		<div class="field-div field-label">类型</div>
+		 		<div class="field-div field-content">		
+		 			<select class="selectpicker filterCondition" id="filterTypes" name="filterTypes" onchange="afterSelectPopup()" data-live-search-style="begins" title="请选择" multiple>
+		 				<optgroup label="模块">
+		 					<option th:each="entity:${entityList}" th:if="${entity.objectType} ne 'PJT' and ${entity.isClose} ne 'Y'" selected th:attr="data-content=${entity.simpleName}" th:value="${entity.objectType}"></option>
+		 				</optgroup>
+		 				<optgroup label="流程">
+		 					<option th:each="workflow:${workflowList}" th:if="${workflow.isClose} ne 'Y'" selected th:attr="data-content=${workflow.simpleName}" th:value="${workflow.objectType}"></option>
+		 				</optgroup>
+		 				<optgroup label="其他">
+		 					<option value="PJT" th:text="项目信息" selected></option>
+							<option value="PLN" th:text="计划" selected></option>
+							<option value="MSTNODE" th:text="里程碑" selected></option>
+							<option value="ROLE" th:text="角色成员" selected></option>
+							<option value="RELATE" th:text="关联项" selected></option>
+							<option value="ATTACHMENT" th:text="附件" selected></option>
+						</optgroup>
+					</select>
+		 		</div>
+		 	</div>
+		 </div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="operateRecordList" name="operateRecordList" th:value="${operateRecordList}"/>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], pjtRecData = [[${pjtRecData}]]</script>
+	<script src="/js/form/form.js"></script>
+
+	<script type="text/javascript">
+		var objectType = $('#objectType').val();
+		$(function() {
+			$('.dynamics-box').height(parent.$('#custom-iframe').height());
+			$('.layer-box').height(parent.$('.layer-body').height() - 110);
+			loadOperateRecordList(pjtRecData);
+			
+			$('.form-control-popup').click(function(e) {
+				showLoading();
+				selectPopup($(this), 'USER', true);
+			});
+			
+			laydate.render({
+				elem: '.datetimepicker_0',
+				eventElem: '.layicon',
+				trigger: 'click',
+				type: 'date',//date, datetime, year, month
+				theme: '',
+				range: true, // 选择日期范围或是单个日期
+				done: function(value, date) {
+					$('#filterDate').val(value);
+					showLoading();
+					afterSelectPopup();
+				}
+			});
+		});
+		
+		function afterSelectPopup(){
+			$.ajax({
+				cache : true,
+				type : 'POST',
+				url : "/pjt/getPjtDynamicsData",
+				data : {'objectId': $('#objectId').val(), 'objectType':$('#objectType').val(), 'filterUserIds':$('#filterUserIds').val(), 'filterDate':$('#filterDate').val(), 'filterTypes':$('#filterTypes').val().toString()},
+				async : false,
+				success : function(data) {
+					loadOperateRecordList(data);
+				}
+			});
+		}
+		
+		function loadOperateRecordList(pjtRecData){
+			if(pjtRecData) {
+				var yearList = pjtRecData[0];
+				var $historyDate = $('.history-date');
+				var html = '', year = '';
+				if(yearList.length){
+					$('.history').show();
+					$('.none').hide();
+					for(var i = 0; i < yearList.length; i++) {
+						year = yearList[i];
+						html += '<ul id="recordUl-'+year+'">';
+						html += '	<h2>'+year+'<i class="fa fa-clock"></i></h2>';
+						html += '</ul>';
+					}
+					$historyDate.html(html);
+					var recordData = pjtRecData[1], recList, $operateRecordUl;
+					for(var i = 0; i < yearList.length; i++) {
+						year = yearList[i];
+						recList = recordData[year];
+						html = '';
+						$operateRecordUl = $('#recordUl-'+ year);
+						for(var j = 0; j < recList.length; j++) {
+							html += '<li>';
+							html += '	<h3>'+recList[j].monthDay+'<span>'+year+'</span></h3>';
+							html += '	<i class="fa fa-circle"></i>';
+							html += '	<div class="record-content">';
+							html += 		loadRecordContent(recList[j]);
+							if(recList[j].childList) {
+								for(var h = 0; h < recList[j].childList.length; h++) {
+									html += 		loadRecordContent(recList[j].childList[h]);
+								}
+							}
+							html += '	</div>';
+							html += '</li>';
+							if(j > 0 && j%20 == 0) {
+								if(html) {
+									$operateRecordUl.append(html);
+								}
+								html = '';
+							}
+						}
+						if(html){
+							$operateRecordUl.append(html);
+						}
+					}
+				}else{
+					$('.history').hide();
+					$('.none').show();
+				}
+				
+			}
+			hideLoading(100);
+		}
+		
+		function loadRecordContent(rowData) {
+			var html = '	<div class="comment-size-name">';
+				html += '		<span class="content">';
+			if(rowData.creatorId){
+				html += '			<span class="link-btn name" onclick="viewUser(\''+rowData.creatorId+'\')">'+rowData.creatorName+'</span>';
+			}else{
+				html += '			<span>'+rowData.creatorName+'</span>';
+			}
+			html += '				<span class="green-light ml10">'+rowData.operate+'</span>';
+			var targetName = rowData.targetName, remarkContent = rowData.remarkContent;
+			if(rowData.targetId && rowData.targetType != 'PJT' && rowData.targetType != 'MSTNODE') {
+				html += '			<span class="ml10 link-btn targetNames" onclick="openEntity(\''+rowData.targetType+'\', \''+rowData.targetId+'\', \''+parentName+'\')" title="'+rowData.targetName+'">'+rowData.targetName+'</span>';
+			}else{
+				if(!targetName) {
+					targetName = remarkContent;
+					remarkContent = '';
+				}
+				html += '			<span class="ml10">'+targetName+'</span>';
+			}
+			html += '			</span>';
+			html += '			<span class="ml20">'+rowData.hourTime+'</span>';
+			if(remarkContent) {
+				html += '		<div class="remark">'+remarkContent+'</div>';
+			}
+			html += '		</div>';
+			return html;
+		}
+		
+		
+	</script>	
+</body>
+</html>

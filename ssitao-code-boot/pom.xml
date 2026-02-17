@@ -15,10 +15,22 @@
     <description>启动模块：包含应用程序入口和启动配置</description>
 
     <dependencies>
-        <!-- 依赖模块化组件 -->
+        <!-- 依赖具体业务模块（不依赖父 pom，因为它没有 jar 包） -->
         <dependency>
             <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-modulars</artifactId>
+            <artifactId>ssitao-code-modular-iam</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-modular-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-modular-meta</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-modular-devtools</artifactId>
         </dependency>
 
         <!-- Spring Boot Application -->
@@ -35,6 +47,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <!-- MySQL驱动 -->
         <dependency>
@@ -57,6 +73,8 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+
     </dependencies>
 
     <build>

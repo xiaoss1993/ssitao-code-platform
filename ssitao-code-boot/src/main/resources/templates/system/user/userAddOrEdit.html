@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${#strings.isEmpty(user.id)}?'新建用户':'编辑用户'"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" th:value="${user.id}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="#{field.sign.loginInfo}"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li" field="username" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{login.userName}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="username" type="text" th:value="${user.username}" th:attr="oldUserName=${user.username}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li" field="jobNumber" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.jobNumber}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="jobNumber" type="text" th:value="${user.jobNumber}" placeholder="" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li" field="password" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign" th:style="${isEdit} eq 'Y' ? 'display:none' : '' ">*</span><span class="title" th:text="#{login.password}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control" name="password" type="password" placeholder="" autocomplete="off"  htype="password" id="password" th:required="${isEdit} eq 'N'">
+								<i class="zmdi zmdi-eye-off"></i>
+							</div>
+						</li>
+						<li class="field-li" field="cfmPassword" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign" th:style="${isEdit} eq 'Y' ? 'display:none' : '' ">*</span><span class="title" th:text="#{sys.user.cfmPassword}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control" name="cfmPassword" type="password" placeholder="" autocomplete="off"  htype="password" id="cfmPassword" th:required="${isEdit} eq 'N'">
+								<i class="zmdi zmdi-eye-off"></i>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="baseInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="#{field.sign.basicInfo}"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{sys.user.name}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" placeholder="" th:value="${user.name}" autocomplete="off"  htype="TEXT" maxlength="30" required>
+							</div>
+						</li>
+						<li class="field-li check" field="sex" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{sys.user.sex}"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="sex" id="_sex1" value="1" data-target="radio" th:checked="${user.sex} eq '1'" required>
+								    <label for="_sex1" th:text="#{sys.user.boy}">
+								    </label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="sex" id="_sex2" value="0" th:checked="${user.sex} eq '0'">
+								    <label for="_sex2" th:text="#{sys.user.girl}">
+								    </label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li" field="telephone" htype="TEL">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.telephone}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control" name="telephone" type="tel" placeholder="" th:value="${user.telephone}" autocomplete="off"  htype="TEL">
+								<i class="zmdi zmdi-phone"></i>
+							</div>
+						</li>
+						<li class="field-li" field="email" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.email}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control" name="email" type="email" placeholder="" th:value="${user.email}" autocomplete="off"  htype="TEXT">
+								<i class="zmdi zmdi-email"></i>
+							</div>
+						</li>
+						<li class="field-li check" field="maritalStatus" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="婚姻状况"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="maritalStatus" id="_maritalStatus1" value="Y" data-target="radio" th:checked="${user.maritalStatus} eq 'Y'">
+								    <label for="_maritalStatus1" th:text="已婚">
+								    </label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="maritalStatus" id="_maritalStatus2" value="N" th:checked="${user.maritalStatus} ne 'Y'">
+								    <label for="_maritalStatus2" th:text="未婚">
+								    </label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li" field="isWorkLog" htype="DATE">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.isWorkLog}"></span></div>
+							<div class="field-div field-content">
+								<input type="checkbox" name="isWorkLog" th:value="${user.isWorkLog}" class="lcs_check lcs_tt1" th:checked="${user.isWorkLog} eq 'Y'" th:autocomplete="#{common.close}" />
+							</div>
+						</li>
+						<li class="field-li" field="deptId" htype="DEPT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{sys.user.dept}"></span></div>
+							<div class="field-div field-content">
+								<input type="hidden" id="_deptId" name="deptId" th:value="${user.deptId}">
+								<input class="form-control form-control-popup" name="deptName" th:tagName="#{sys.user.dept.select}" type="text" placeholder="" th:value="${user.deptName}" autocomplete="off" readonly="readonly" htype="DEPT"  required>
+								<i class="zmdi zmdi-search"></i>
+							</div>
+							
+						</li>
+						<li class="field-li" field="positionId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.positionId}"></span></div>
+							<div class="field-div field-content">
+								<select id="positionId" class="selectpicker" name="positionId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${positionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li" field="birthDate" htype="DATE">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.birthDate}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control form-control-date" name="birthDate" type="text" placeholder="" th:value="${user.birthDate == null} ? '' : ${#dates.format(user.birthDate, 'yyyy-MM-dd')}" autocomplete="off" readonly="readonly" htype="DATE">
+								<i class="zmdi zmdi-calendar"></i>
+							</div>
+						</li>
+						<li class="field-li" field="joinDate" htype="DATE">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.joinDate}"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control form-control-date" name="joinDate" type="text" placeholder="" th:value="${user.joinDate == null} ? '' : ${#dates.format(user.joinDate, 'yyyy-MM-dd')}" autocomplete="off" readonly="readonly" htype="DATE">
+								<i class="zmdi zmdi-calendar"></i>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="officeAddress" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.officeAddress}" th:title="#{sys.user.officeAddress}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="200" name="officeAddress" rows="8" th:text="${user.officeAddress}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field="roleIds" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{common.role}"></span></div>
+							<div class="field-div field-content-check">
+								<input type="hidden" id="roleIds" name="roleIds" th:value="${user.roleIds}"/>
+							    <div th:each="role:${roles}" class="checkbox">
+							    	<input type="checkbox" name="roleId" th:id="${role.id}" th:value="${role.id}" th:checked="${user.roleIds == null} ? 'false' : ${#strings.contains(user.roleIds, role.id)}" data-target="checkbox">
+								    <label th:for="${role.id}" th:text="${role.roleName}" th:title="${role.roleName}"></label>
+								</div>
+							</div>
+						</li>
+						
+						<li class="field-li content-whole sign" field="introductionInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="#{field.sign.introductionInfo}"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="introduction" htype="AREA">
+							<div class="field-div field-content field-content-summernote">
+								<input type="hidden" name="introduction" htype="FORMATAREA" th:value="${user.introduction}"/>
+								<div class="summernote">
+		                        </div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('USER');
+			
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var roleIds = '';
+			$('input:checkbox[name="roleId"]:checked').each(function() {
+				if(roleIds) {
+					roleIds += ',' + $(this).val();
+				}else {
+					roleIds = $(this).val();
+				}
+			})
+			$('#roleIds').val(roleIds);
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/user/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="username"], input[name="jobNumber"], input[name="name"], input[name="telephone"], input[name="email"], input[name="birthDate"]').val('');
+						}else {
+							parent.layer.msg(data.msg);
+							parent.layer.closeAll();
+						}
+						returnBackAndReLoad(true, false);
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('USER');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

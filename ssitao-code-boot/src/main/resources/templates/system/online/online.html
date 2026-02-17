@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style></style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn t-del-btn" onclick="forceLogout()" shiro:hasPermission="ONLINE:LO" >
+								<i class="fa fa-sign-out mr5"></i>
+								<span class="pt1 h18">强退</span>
+							</button>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var model = [[${model}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			var tableId = 'grid-table';
+			var leftBarHeight = parent.$('#leftsidebar').height();
+			var height = $('.table-list-box').closest('body').height();
+			if(height == null){//判断如果是弹出框，比如字段信息源详情
+				height = $('#'+tableId).closest('.layer-box').height() - $('.button-box').height();
+				var $fieldLi = $('#'+tableId).closest('.field-li');
+				if($fieldLi.length){
+					height -= $fieldLi.prevAll().length * 40 + 115;
+				}
+			}else if(leftBarHeight && height >= leftBarHeight){//判断body高度是否大于或等于以左侧菜单栏高度
+				height -= 193;
+			}else{
+				height -= 85;
+			}
+			if($('.change-tab').length){//如果是项目下的项目需求和项目测试
+				height -= 46;
+			}
+			if($('.table-list-box .search-condition').length) {//判断搜索条件是否存在
+				height -= 70;
+			}
+			if(height < 100){
+				height = $('#'+tableId).closest('body').height();
+			}
+			var table = $('#grid-table').GM({
+			    gridManagerName: 'grid-table',
+			    ajaxData: '/sys/online/list',
+			    ajaxType: 'POST',
+			    height: height + 'px',
+			    supportAjaxPage: true,
+			    supportAdjust: false,
+			    supportDrag: false,
+			    supportMenu: false,
+			    columnData: [
+			        {
+			            key: 'user',
+			            text: '用户',
+			            width: '120px',
+			        },{
+			            key: 'sex',
+			            text: '性别',
+			            width: '100px',
+			        },{
+			            key: 'dept',
+			            text: '所属部门',
+			            width: '200px',
+			        },{
+			            key: 'host',
+			            text: 'IP地址',
+			            width: '120px',
+			        },{
+			            key: 'status',
+			            text: '状态',
+			            width: '100px',
+			        },{
+			            key: 'startTimestamp',
+			            text: '登录时间',
+			            width: '130px',
+			        },{
+			            key: 'lastAccessTime',
+			            text: '最后访问时间',
+			        }
+			    ],
+				ajaxComplete: function(data) {
+				}
+			});
+			
+			$('.form-search').bind('keypress', function(event) {
+			    if (event.keyCode == "13") {
+			    	reloadTable($(this).val());
+			    }
+			});
+		});
+		
+		function reloadTable(name){
+			var query = {'name':name};
+	    	$('#grid-table').GM('setQuery', query);
+		}
+		
+		function forceLogout() {
+			var $checkedTr = $(GridManager.getCheckedTr('grid-table'));
+			if($checkedTr.length) {
+				var index = top.layer.confirm('确定把选中的用户强制下线吗？', {
+	    			btn : ['确定', '取消']
+	    		}, function() {
+	    			var ids = "";
+	    			$checkedTr.each(function(){
+	    				if(ids){
+	    					ids += ",";
+	    				}
+	    				ids += $(this).attr('id');
+	    			});
+	    			$.ajax({
+	    				type : "POST",
+	    				url : "/sys/online/forceLogout",
+	    				data: {'sessionIds': ids},
+	    				async : false,
+	    				success : function(data) {
+			    			top.layer.close(index);
+	    					parent.layer.msg('操作成功');
+	    					reloadTable($('.form-search').val());
+	    				}
+	    			});
+	    		});
+			}else {
+				alert('请选择需要强制下线的用户！');
+			}
+		}
+	</script>	
+	
+</body>
+</html>

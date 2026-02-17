@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/list.filter.css">
+<link rel="stylesheet" href="/css/list/gm.css">
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}"/>
+<link rel="stylesheet" href="/css/common/skin.css"/>
+<head th:include="include::headerContent"></head>
+
+<style>
+	
+	
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<input type="hidden" name="defaultSelectId" id="defaultSelectId"/>
+				<input type="hidden" name="model" id="model" value="WORKFLOW"/>
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar mb10"> 
+							<div class="columns pull-left t-columns">
+								<button type="button" class="btn t-btn y-active add" onclick="addWorkflow();">
+									<i class="fa fa-plus mr5"></i>
+									<span th:text="新建" class="pt1 h18"></span>
+								</button>
+							</div>
+							
+							<div class="pull-right search t-columns mr5">
+								<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+								<div class="view-btn dropdown-btn ml5">
+									<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="display:inline-block;padding: 7px 12px;">
+										<i class="fa fa-sliders mr5"></i>
+										<span class="text" id="viewFilter-text" th:text="使用中"></span>
+										<i class="fa fa-ellipsis-h ml5"></i>
+									</span>
+									<ul id="viewFilter" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+	                                     <li value="N"><a href="javascript:void(0);" class="cur"><span th:text="使用中" class="text"></span></a></li>
+	                                     <li value="Y"><a href="javascript:void(0);"><span th:text="已关闭" class="text"></span></a></li>
+	                                     <li value=""><a href="javascript:void(0);" ><span th:text="全部" class="text"></span></a></li>
+	                                </ul>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<table grid-manager="demoOne" id="grid-table"></table>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',OP,CE';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::footerContent"></div>
+
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var model = [[${model}]]</script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var model = 'WORKFLOW';
+			var headData = getHeadData(model, 'N', '', '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, model);
+			}
+			$('#grid-table').initTable({
+				model:'WORKFLOW',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				queryObject: 'N'
+			});
+			
+			$('#viewFilter li').click(function() {
+				if(!$(this).find('a').hasClass('cur')) {
+					$('#viewFilter li a').removeClass('cur');
+					$(this).find('a').addClass('cur');
+					$('#viewFilter-text').text($(this).find('.text').text());
+					
+					iFilter.props.query['queryObject'] = $(this).attr('value');
+					iFilter.props.table.GM('setQuery', iFilter.props.query);
+				}
+			});
+		});
+		
+		function addWorkflow() {
+			var url = '/workflow/baseInfoAdd?preId='+getCurRowId()+'&parentname=' + window.name;
+			intoIframePage(url, false, 'WORKFLOW');
+		}
+		
+	</script>	
+	
+</body>
+</html>

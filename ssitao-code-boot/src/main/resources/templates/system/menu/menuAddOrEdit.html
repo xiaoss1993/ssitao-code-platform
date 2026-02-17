@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	#icon-box.zmdi{margin-right:10px;}
+	#ico-btn{margin-top:7px;color:var(--theme);cursor:pointer;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="编辑菜单"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${menu.id}"/>
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="parentId" th:value="${parentId}"/>
+			<input type="hidden" id="parentType" th:value="${parentType}"/>
+			<input type="hidden" id="preId" th:value="${preId}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="显示位置"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择" onchange="changeDisplayPosition($(this))">
+									<option value="">请选择</option>
+									<option th:each="menu:${preSelectList}" th:attr="data-content=${menu.text}" th:selected="${menu.checked}" th:value="${menu.id}" th:type="${menu.type}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole check" field="type" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="类型"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio" type="0">
+								    <input type="radio" name="type" id="_type1" value="0" data-target="radio" required th:checked="${menu.type == 0}" onclick="changeType(0)" th:disabled="${#strings.isEmpty(menu.id)}?false:true">
+								    <label for="_type1" th:text="目录">
+								    </label>
+							    </div>
+							    <div class="radio" type="1">
+								    <input type="radio" name="type" id="_type2" value="1" th:checked="${menu.type == 1}" onclick="changeType(1)" th:disabled="${#strings.isEmpty(menu.id)}?false:true">
+								    <label for="_type2" th:text="菜单">
+								    </label>
+							    </div>
+		<!-- 					    <div class="radio" type="2"> -->
+		<!-- 						    <input type="radio" name="type" id="_type3" value="2" th:checked="${menu.type == 2}" onclick="changeType(2)" th:disabled="${#strings.isEmpty(menu.id)}?false:true"> -->
+		<!-- 						    <label for="_type3" th:text="按钮"> -->
+		<!-- 						    </label> -->
+		<!-- 					    </div> -->
+							</div>
+						</li>
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${menu.name}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						
+						<li class="field-li content-whole check" field="category" htype="RADIO" style="display:none;">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="类别"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="category" id="_category1" value="SYS" data-target="radio" th:checked="${menu.category} eq 'SYS'" th:disabled="${#strings.isEmpty(menu.id)}?false:true">
+								    <label for="_category1" th:text="系统">
+								    </label>
+							    </div>
+								<div class="radio">
+								    <input type="radio" name="category" id="_category2" value="LINK" data-target="radio" th:checked="${menu.category} eq 'LINK'" th:disabled="${#strings.isEmpty(menu.id)}?false:true">
+								    <label for="_category2" th:text="链接">
+								    </label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="category" id="_category3" value="CONTAIN" th:checked="${menu.category} eq 'CONTAIN'" th:disabled="${#strings.isEmpty(menu.id)}?false:true">
+								    <label for="_category3" th:text="程序">
+								    </label>
+							    </div>
+							</div>
+						</li>
+						
+						<li class="field-li content-whole" field="url" htype="TEXT" style="display:none;">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="页面地址"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="url" type="text" placeholder="请输入页面地址， 例如：https://www.baidu.com" th:value="${menu.url}" autocomplete="off"  htype="TEXT" maxlength="200">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="exeCls" htype="TEXT" style="display:none;">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="程序类路径"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="exeCls" type="text" placeholder="请输入程序类路径， 例如：com.dream.extend.PageContain" th:value="${menu.exeCls}" autocomplete="off"  htype="TEXT" maxlength="200">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="icon" htype="ICON">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="菜单图标"></span></div>
+							<div class="field-div field-content-icon">
+								<i id="icon-box" th:class="${menu.icon}"></i>
+								<span id="ico-btn">选择图标</span>
+								<input class="form-control" name="icon" type="hidden" id="ico-input" th:value="${menu.icon}" autocomplete="off" readonly="readonly" htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="描述"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" th:text="${menu.remark}"></textarea>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('menu');
+			
+			var preId = $('#preId').val(), otype = $('option[value="'+preId+'"]').attr('type');
+			
+			$('.formBtn').removeClass('hide');
+			
+			 $("#ico-btn").click(function(){
+		        layer.open({
+		            type: 2,
+					title:'图标列表',
+					shadeClose : false, // 点击遮罩关闭层
+		            content: '/icons.html',
+		            area: ['510px', '500px'],
+		            success: function(layero, index){
+		            }
+		        });
+		     });
+			 
+			 hideInfoByType(preId);
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/menu/saveOrUpdate",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('li[field="name"]').find('input[name="name"]').val('');
+						}else {
+							returnBackAndReLoad(true, false);
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function changeType(value) {
+			if(value == 0) {
+				$('.field-li[field="category"], .field-li[field="url"], .field-li[field="exeCls"], .field-li[field="perms"]').hide();
+				$('.field-li[field="icon"]').show();
+			}else if(value == 1) {
+				$('.field-li[field="icon"]').hide();
+				$('.field-li[field="category"], .field-li[field="perms"]').show();
+				var category = $('input[name="category"]:checked').val();
+				if(category && category == 'CONTAIN') {
+					$('.field-li[field="exeCls"]').show();
+					$('.field-li[field="url"]').hide();
+				}else{
+					$('.field-li[field="url"]').show();
+					$('.field-li[field="exeCls"]').hide();
+				}
+			}else if(value == 2) {
+				$('.field-li[field="category"], .field-li[field="url"], .field-li[field="exeCls"], .field-li[field="icon"]').hide();
+				$('.field-li[field="perms"]').show();
+			}
+			
+			$('input[name="category"]').change(function() {
+				if($(this).val() == 'CONTAIN') {
+					$('.field-li[field="exeCls"]').show();
+					$('.field-li[field="url"]').hide();
+				}else{
+					$('.field-li[field="url"]').show();
+					$('.field-li[field="exeCls"]').hide();
+				}
+			});
+		}
+		
+		function selectIcon(icon) {
+			$('#icon-box').attr('class', icon);
+			$('#ico-input').val(icon);
+		}
+		
+		//根据类型，隐藏或显示相关信息
+		function hideInfoByType(preId) {
+			if(preId) {
+				var type = $('#preId option[value="'+preId+'"]').attr('type');
+				var $fieldType = $('.field-li[field="type"]');
+				if(type == '0') {
+					$fieldType.find('.radio[type="0"],.radio[type="1"]').show();
+					$fieldType.find('.radio[type="2"]').hide();
+					$fieldType.find('.radio[type="0"] input').click();
+				}else if(type == '1') {
+					$fieldType.find('.radio[type="1"],.radio[type="2"]').show();
+					$fieldType.find('.radio[type="0"]').hide();
+					$fieldType.find('.radio[type="1"] input').click();
+				}else if(type == '2') {
+					$fieldType.find('.radio[type="2"]').show();
+					$fieldType.find('.radio[type="0"], .radio[type="1"]').hide();
+					$fieldType.find('.radio[type="2"] input').click();
+				}
+			}
+			changeType($('input[name="type"]:checked').val());
+		}
+		
+		function changeDisplayPosition($obj) {
+			hideInfoByType($obj.val());
+		}
+		
+	</script>
+	
+</body>
+</html>

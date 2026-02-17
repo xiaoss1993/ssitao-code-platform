@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+	<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	<input type="hidden" id="step" name="step" th:value="${step}"/>
+	<input type="hidden" id="isTemplete" name="isTemplete" th:value="N"/>
+	<input type="hidden" id="isView" name="isView" th:value="${isView}"/>
+	<input type="hidden" id="model" name="model" th:value="ROLE"/>
+	<div class="wrapper wrapper-content layer-box">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" onclick="addRole()">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建角色</span>
+							</button>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="name" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="role-table"></table>
+				</div>
+			</div>
+		</div>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="button" class="layui-layer-btn0 btns cp" onclick="complete();" th:value="完成"  th:if="${step}" />
+				<input type="button" class="layui-layer-btn0 btns cp" onClick="preStep();" th:value="上一步" th:if="${step}" />
+				<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+			</div>
+		</div>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<script type="text/javascript">
+		$(function() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val();
+			var step = $('#step').val();
+			if(step) {
+				loadNewPjtStepGuideHtml(step, objectId, parentName);
+				$('.layer-body').css('margin-top', '80px');
+			}
+			
+			$('#role-table').initTable({
+				model:'ROLE',
+				tableId:'role-table',
+				rights: rights,
+				supportPage: false,
+				supportTree: true,
+				openState: true,
+				objectType: objectType,
+				objectId: objectId,
+			});
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function addRole() {
+			top.layer.open({
+				type : 2,
+				title : '新建角色',
+				maxmin : true,
+				shadeClose : false,
+				area : ['962px', '95%'],
+				content : 'type/addOrEditRole/null?objectType='+$('#objectType').val()+'&objectId='+$('#objectId').val()+'&preId='+ getCurRowId() + '&parentname=',
+				end: function(id, name) {
+					if(id) {
+						reLoad(id, name);
+					}
+				}
+			});
+		}
+		
+		function editEntity(module, id, objectType) {
+			top.layer.open({
+				type : 2,
+				title : '新建角色',
+				maxmin : true,
+				shadeClose : false,
+				area : ['962px', '95%'],
+				content : 'type/addOrEditRole/'+id+'?objectType='+$('#objectType').val()+'&objectId='+$('#objectId').val()+'&preId='+ getCurRowId() + '&parentname=',
+				end: function(id, name) {
+					if(id) {
+						reLoad(id, name);
+					}
+				}
+			});
+		}
+		
+		function editRole() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val();
+			changeTypeTab(3, objectId, objectType, 'N', parentName);
+		}
+		
+		function preStep() {
+			var id = $('#projectId').val();
+			parent.layer.closeAll();
+			top.layer.open({
+				type : 2,
+				title : '里程碑配置',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : '/pjt/pjtMileList?id=' + $('#objectId').val() + '&parentname='+parentName,
+			});
+		}
+		
+		function complete() {
+			showLoading();
+			var id = $('#objectId').val();
+			$.ajax({
+				url : '/pjt/completeAddProject',
+				type : "post",
+				data : {
+					'id' : id
+				},
+				success : function(data) {
+					parent.layer.closeAll();
+					top.layer.open({
+						type : 2,
+						title : '基本信息',
+						maxmin : true,
+						shadeClose : false, // 点击遮罩关闭层
+						area : ['100%', '100%'],
+						content : '/entity/view/'+id+'?objectType=PJT&checkVersion=N&parentname='+parentName,
+					});
+					hideLoading();
+				}
+			});
+		}
+	</script>	
+</body>
+</html>

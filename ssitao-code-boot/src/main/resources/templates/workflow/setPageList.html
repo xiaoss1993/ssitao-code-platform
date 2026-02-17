@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}" rel="stylesheet"/>
+<link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"/>
+<link href="/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="/css/plugins/summernote/summernote.css" rel="stylesheet"/>
+<link href="/css/style.css?v=4.1.0" rel="stylesheet">
+<link href="/css/icon.css?v=4.1.0" rel="stylesheet">
+<link href="/css/form/form.css" rel="stylesheet"/>
+<link href="/css/common/common.css" rel="stylesheet"/>
+<link href="/css/form/cascader.css" rel="stylesheet"/>
+<link href="/css/form/switch.css" rel="stylesheet"/>
+<link href="/css/form/bootstrap-select.css" rel="stylesheet"/>
+<link href="/css/page/page-set.css" rel="stylesheet"/>
+<link href="/css/page/pageForm-set.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+
+<style>
+	.base-form .field-li{width:50%;}
+	#operate{padding-bottom:0px;margin-bottom:0px;}
+	.addPage #operate{margin-top:80px;}
+	.layer-box{padding:0px!important;}
+	.layer-box .row-box{margin:0px 10px 10px 10px;}
+	#boxLeft .ibox-title, #boxCenter .ibox-title, #boxRight .ibox-title{margin-left:0px!important;margin-right:0px!important;}
+	.layer-box .row-box{margin:0px;border-left:0px;border-right:0px;border-bottom:0px;}
+	.layui-submit-btn{text-align:left!important;margin-left:300px;}
+</style>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/page/page-set.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/plugins/datapicker/laydate.js"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/js/plugins/summernote/summernote.js"></script>
+<script src="/js/form/cascader.js"></script>
+<script src="/js/form/switch.js"></script>
+<script src="/js/plugins/autosize/textSum.min.js"></script>
+<script src="/js/form/form.js"></script>
+<script src="/js/form/jquery-html5Validate.js"></script>
+<script src="/js/form/bootstrap-select.js"></script>
+<script src="/js/form/paigusu.min.js"></script>
+<script src="/js/common/common.js"></script>
+
+<body class="layer-body addPage" th:classappend="${session.theme}">
+	<div class="layer-box instance">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id"/>
+			<input type="hidden" id="instanceId" name="instanceId" th:value="${instance.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+			<input type="hidden" id="instanceName" name="instanceName" th:value="${instance.name}"/>
+			<input type="hidden" id="isRunEdit" name="isRunEdit" th:value="${isRunEdit}"/>
+			<input type="hidden" id="step" name="step" th:value="${instance.step}"/>
+			<input type="hidden" id="pageFieldParams" name="pageFieldParams"/>
+			<input type="hidden" id="pageType" name="pageType" th:value="FORM"/>
+			<input type="hidden" id="subType" name="subType"/>
+			<input type="hidden" id="isAllOnlyRead" name="isAllOnlyRead"/>
+			<input type="hidden" id="signType" name="signType"/>
+			<input type="hidden" id="isSaveTranOrNodePage" name="isSaveTranOrNodePage" value="Y"/>
+			<input type="hidden" id="owerFieldIds" name="owerFieldIds"/>
+			<input type="hidden" id="actorFieldIds" name="actorFieldIds"/>
+			<input type="hidden" id="readerFieldIds" name="readerFieldIds"/>
+			<input type="hidden" id="isFirstSave" name="isFirstSave" value="Y"/>
+			<input type="hidden" id="workflowID" name="workflowID" th:value="${instance.id}"/>
+			<input type="hidden" id="nodeId" name="nodeId"/>
+			<input type="hidden" id="transitionId" name="transitionId"/>
+			<input type="hidden" id="signId" name="signId"/>
+			
+			<ul class="page-ul base-form mt5">
+				<li class="field-li" field="curId" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="当前页面"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<select id="curId" class="selectpicker" name="curId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<optgroup label="操作页面">
+								<option th:each="select:${pageList}" th:if="${select.subType ne 'VIEW'}" th:type="${select.type}" th:selected="${select.checked}" th:title="${select.tip}" th:attr="data-content=${select.text},pageId=${select.tempId},subType=${select.subType}" th:value="${select.id}"></option>
+							</optgroup>
+							<optgroup label="步骤页面">
+								<option th:each="select:${pageList}" th:if="${select.subType eq 'VIEW'}" th:type="${select.type}" th:selected="${select.checked}" th:title="${select.tip}" th:attr="data-content=${select.text},pageId=${select.tempId},subType=${select.subType}" th:value="${select.id}"></option>
+							</optgroup>
+						</select>
+					</div>
+				</li>
+				<li class="field-li" field="refId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="参考页面"></span></div>
+					<div class="field-div field-content">
+						<select id="refId" class="selectpicker" name="refId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<optgroup label="操作页面">
+								<option th:each="select:${pageList}" th:if="${select.subType ne 'VIEW'}" th:type="${select.type}" th:title="${select.tip}" th:attr="data-content=${select.text},pageId=${select.tempId},subType=${select.subType}" th:value="${select.id}"></option>
+							</optgroup>
+							<optgroup label="步骤页面">
+								<option th:each="select:${pageList}" th:if="${select.subType eq 'VIEW'}" th:type="${select.type}" th:title="${select.tip}" th:attr="data-content=${select.text},pageId=${select.tempId},subType=${select.subType}" th:value="${select.id}"></option>
+							</optgroup>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</form>
+		
+		<div class="row row-box">
+            <div id="boxLeft" class="col-sm-3">
+                 <div class="ibox float-e-margins">
+                     <div class="ibox-title">
+                         <h5>字段列表</h5>
+                     </div>
+                     <div class="ibox-content">
+                     	 
+                   	 	<div class="item-box">
+                       		<div><b>单行文本</b></div>
+                            <div class="item">
+	                            <div htype="TEXT" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'TEXT'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:value="${field.textDefault}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},isOnlyRead=${field.isOnlyRead},textLength=${field.textLength},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>用户</b></div>
+                            <div class="item">
+	                            <div htype="USER" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'USER'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>下拉框</b></div>
+                            <div class="item">
+	                            <div htype="SELECT" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'SELECT'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},setCascade=${field.setCascade},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>单选框</b></div>
+                            <div class="item">
+	                            <div htype="RADIO" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'RADIO'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>多选框</b></div>
+                            <div class="item">
+	                            <div htype="CHECKBOX" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'CHECKBOX'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>日期</b></div>
+                            <div class="item">
+	                            <div htype="DATE" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'DATE'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>数字</b></div>
+                            <div class="item">
+	                            <div htype="NUMBER" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'NUMBER'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>多行文本</b></div>
+                            <div class="item">
+	                            <div htype="AREA" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'AREA'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>富文本</b></div>
+                            <div class="item">
+	                            <div htype="FORMATAREA" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'FORMATAREA'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>其它</b></div>
+                            <div class="item">
+	                            <div class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'PJT' or field.htmlType eq 'PRD' or field.htmlType eq 'DEPT' or field.htmlType eq 'SIGN' or field.htmlType eq 'SCENE' or field.htmlType eq 'GROUP'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="htype=${field.htmlType},name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     </div>
+                 </div>
+             </div>
+            
+             <div id="boxCenter" class="col-sm-9">
+                 <div class="ibox float-e-margins">
+                     <div class="ibox-title">
+                         <h5>拖拽/点击左侧字段到此区域</h5>
+                         <div class="ibox-tools">
+                         	<button type="button" class="btn btn-warning page-view mr5">预览</button>
+                         	<button type="button ml10" class="btn btn-clear">清空</button>
+                         </div>
+                     </div>
+                     <div class="ibox-content">
+                         <div class="row form-body form-horizontal">
+                         	<ul class="droppable sortable ui-droppable ui-sortable page-ul form-box">
+                            </ul>
+                         </div>
+                         
+                         <div class="formBtn hide">
+						 	<div class="layui-layer-btn layui-submit-btn">
+								<input type="submit" id="nextStep" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, true)" th:value="下一步" th:style="${isRunEdit} eq 'Y'?'display:none':''"/>
+								<input type="submit" id="preStep" class="layui-layer-btn0 btns cp" onClick="saveAndJump(true, false)" th:value="上一步" th:style="${isRunEdit} eq 'Y'?'display:none':''"/>
+								<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, true)" th:value="保存并保留窗口"/>
+								<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false)" th:value="保存并关闭窗口"/>
+								<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+							</div>
+						  </div>
+                         
+                     </div>
+                 </div>
+             </div>
+	             
+	    </div>
+		
+	</div>
+	
+	
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+	
+	<script>
+		var objectId, objectType, isRunEdit, diffHeight = 175;
+		$(function() {
+			initFormControl('instance');
+			
+			objectId = $('#instanceId').val();
+			objectType = $('#objectType').val();
+			isRunEdit = $('#isRunEdit').val();
+			if(isRunEdit && isRunEdit == 'Y') {
+				$('.addPage').removeClass('addPage');
+				diffHeight = 140;
+			}
+			
+			loadStepGuideHtml(3, isRunEdit, objectId, objectType, $('#instanceName').val(), parentName);
+			
+			$('.formBtn').removeClass('hide');
+			$('#boxLeft .ibox-content, #boxCenter .ibox-content').height($('.layer-box').height()-diffHeight);
+			
+	 		$('.page-view').click(function() {
+				$fieldList = $('.form-box .field-li');
+				if(!$fieldList.length) {
+					alert('请拖拽/点击左侧字段到此区域进行页面配置！');
+					return;
+				}
+				
+				var newParams = packPageFieldParams($fieldList), signKey = new Date().getTime(), pageType = 'FORM';
+				$.ajax({
+					cache : true,
+					type : 'POST',
+					url : "/page/getViewData",
+					data : {'pageParams': newParams, 'signKey': signKey, 'pageType': pageType},
+					async : false,
+					success : function(data) {
+						if(data.code == 0) {
+							var url = '/page/tempView?signKey='+signKey + '&pageType=' + pageType + "&objectType=" + $('#objectType').val() + "&subType=" + $('#subType').val();
+							openWindowLikeIframe({'url':url, 'title':'预览表单页面', 'isParent':true});
+						}
+					}
+				});
+				
+			});
+	 		
+	 		$('#curId').change(function() {
+	 			changePageRestartRelateParams($(this).val(), true);
+	 			$('#refId').selectpicker('val', '');
+	 		});
+	 		$('#refId').change(function() {
+	 			changePageRestartRelateParams($(this).val(), false);
+	 		});
+	 		
+	 		changePageRestartRelateParams($('#curId').val(), true);
+		});
+		
+		//改变页面后，重置相关参数
+		var isAllOnlyRead = 'N';
+		function changePageRestartRelateParams(curId, isChangeCurPage) {
+			var $option = $('#curId').find('option[value="'+curId+'"]'), pageId = $option.attr('pageId');
+			if(isChangeCurPage) {
+				$('#signId').val(curId);
+				var subType = $option.attr('subType'), type = $option.attr('type');
+				if(subType == 'VIEW') {
+					isAllOnlyRead = 'Y';
+					$('.form-box').removeClass('showChangeRoleBtn');
+				}else {
+					isAllOnlyRead = 'N';
+					$('.form-box').addClass('showChangeRoleBtn');
+				}
+				
+				if(type == 'NODE') {
+					$('#nodeId').val(curId);
+					$('#transitionId').val('');
+				}else {
+					$('#transitionId').val(curId);
+					$('#nodeId').val('');
+				}
+				
+				$('#subType').val(subType);
+				$('#id').val(pageId);
+				$('#isAllOnlyRead').val(isAllOnlyRead);
+			}else {
+				isAllOnlyRead = $('#isAllOnlyRead').val();
+			}
+			loadPage(pageId, isAllOnlyRead);
+		}
+		
+		//保存并进行跳转
+		function saveAndJump(isPre, isNext, isKeepCurWindow) {
+			var step = $('#step').val(), id = $('#instanceId').val(), objectType = $('#objectType').val();
+			showLoading();
+			if(step) {
+				step = parseInt(step);
+			}
+			
+			var $fieldLi = $('.form-box .field-li');
+			if($fieldLi.length){
+				packPageFieldParams($fieldLi);
+		 		$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/page/save",
+					data : $('#operate').serialize_plus(),// 你的formid
+					async : false,
+					success : function(data) {
+						if(data){
+							$('#isFirstSave').val('N');
+							var curId = $('#signId').val();
+							$('#curId').find('option[value="'+curId+'"]').attr('pageId', data.id);
+							$('#refId').find('option[value="'+curId+'"]').attr('pageId', data.id);
+							
+							$('.notPageSign[signId="'+curId+'"]').removeClass('notPageSign');
+							
+							if(isKeepCurWindow) {
+								parent.layer.msg(data.msg);
+								hideLoading();
+							}else if(isPre) {
+								stepForward(id, objectType, step - 1, parentName);
+							}else if(isNext) {
+								stepForward(id, objectType, step + 1, parentName);
+							}else {
+								winCloseAndReLoad();
+								parent.layer.msg(data.msg);
+								hideLoading();
+							}
+						}
+					}
+				});
+			}else {
+				if(isKeepCurWindow) {
+					hideLoading();
+				}else if(isPre) {
+					stepForward(id, objectType, step - 1, parentName);
+				}else if(isNext) {
+					stepForward(id, objectType, step + 1, parentName);
+				}else {
+					winCloseAndReLoad();
+				}
+			}
+		}
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<link rel="stylesheet" href="/css/form/comment.css">
+<style>
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+	.dropdown-menu.dropdown-sub-menu{
+		right:124px;
+    	left:auto;
+	}
+	.line{border-bottom:1px solid #e8e8e8;}
+</style>
+
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="data" th:value="${data}"/>
+			<input type="hidden" id="type" name="type"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="isContinue" name="isContinue"/>
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="speciData" name="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="pageTitle" name="pageTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="fileInfo" name="fileInfo" />
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="pageId" name="pageId" th:value="${pageId}"/>
+			<input type="hidden" id="tempVersion" name="tempVersion" th:value="${tempVersion}"/>
+			<input type="hidden" id="_TRAN_ID_" name="_TRAN_ID_"/>
+			<input type="hidden" id="_isDerive" name="_isDerive"/>
+			<input type="hidden" id="_srcType" name="_srcType"/>
+			<input type="hidden" id="_srcObjectId" name="_srcObjectId"/>
+			<input type="hidden" id="_destType" name="_destType"/>
+			<input type="hidden" id="tabs" name="tabs" th:value="${tabs}"/>
+			<input type="hidden" id="notShowDetailTabs" name="notShowDetailTabs" th:value="${notShowDetailTabs}"/>
+			<input type="hidden" id="isKeepTopWindow" name="isKeepTopWindow" th:value="${isKeepTopWindow}"/>
+			<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+			<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+			
+			<input type="hidden" id="relateLINKOBJECT" name="relateLINKOBJECT" th:value="${btn_LINKOBJECT}"/>
+			<input type="hidden" id="relateDEL" name="relateDEL" th:value="${btn_DEL}"/>
+			<input type="hidden" id="fileADDFILE" name="fileADDFILE" th:value="${btn_ADDFILE}"/>
+			<input type="hidden" id="fileLINKDOC" name="fileLINKDOC" th:value="${btn_LINKDOC}"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			<div class="layout-box tabSign">
+				<div class="layout-left">
+					<ul class="page-ul"></ul>
+				</div>
+				<div class="layout-right"></div>
+			</div>
+		</form>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="submit" class="layui-layer-btn0 btns cp" th:value="编辑" onclick="editMyEntity();" th:style="${hasEdit} ? '':'display:none'"/>
+				<div class="more-btn" th:style="${isEdit} eq 'N' ? 'display:none' : '' ">
+					<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+						<span>更多操作</span>
+						<i class="fa fa-ellipsis-h ml5"></i>
+					</span>
+					<ul id="moreSelect" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+						<li th:each="operate:${operateList}" th:class="${operate.showLine} ? 'line':''" th:title="${operate.name}" th:attr="val=${operate.id}" th:style="${operate.id} eq '18' or ${operate.id} eq '10' ? 'display:none':''"><a href="javascript:void(0);" th:text="${operate.name}"></a></li>
+                        <li val="COMM" title="沟通" ><a href="javascript:void(0);">沟通</a></li>
+                        <li val="CV" title="切换版本" ><a href="javascript:void(0);" class="center1">切换版本<i class="fa fa-chevron-right"></i></a></li>
+                    </ul>
+                    
+                    <ul class="dropdown-menu dropdown-sub-menu hide">
+                    	<li th:each="select:${versionList}" th:attr="val=${select.id}"><a href="javascript:void(0);" th:class="${select.checked} ? 'cur':''" th:text="${select.text}" ></a></li>
+                    </ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]]</script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/form/comment.js"></script>
+	<script src="/js/list/customTable.js"></script>
+	<script src="/js/base64.js"></script>
+	
+	<script>
+		var objectType = $('#objectType').val();
+		$(function() {
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl(objectType);
+			$('.btn-box').removeClass('hide');
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			$('#moreSelect li').click(function(){
+				var val = $(this).attr('val'), name = $(this).attr('title');
+				var id = $('#id').val(), objectType = $('#objectType').val();
+				var isKeepTopWindow = $('#isKeepTopWindow').val();
+				if(val == '1') {
+					viewDoc(objectType, id, objectType);
+				}else if(val == '4') {
+					downLoad(objectType, id, objectType);
+				}else if(val == '6') {
+					checkOutOrCancel(id, objectType, val, isKeepTopWindow);
+				}else if(val == '102') {
+					checkOutOrCancel(id, objectType, val, isKeepTopWindow);
+				}else if(val == '101') {
+					checkIn(id, objectType, val, isKeepTopWindow);
+				}else if(val == '11') {
+					upgradeLargeVersion(id, objectType, val, isKeepTopWindow);
+				}else if(val == '9') {
+					rename(id, objectType, val, isKeepTopWindow);
+				}else if(val == '13') {
+					setLifecyclePhase(objectType, id, objectType, parentName, 'Y', isKeepTopWindow);
+				}else if(val == 'COMM') {//沟通
+					communication(objectType, id, objectType, parentName);
+				}else if(val == '28') {
+					assignUser(objectType, id, objectType, parentName, 'Y', isKeepTopWindow);
+				}else if(val == '50') {
+					addTsc(objectType, id, objectType, parentName);
+				}else if(val == '51') {
+					decTask(objectType, id, objectType, parentName);
+				}else if(val == '52') {
+					decPrq(objectType, id, objectType, parentName);
+				}else if(val == '61') {
+					doTsp(objectType, id, objectType, parentName);
+				}else{
+					customOperate(id, objectType, val, name);
+				}
+			});
+			
+			$('#moreSelect li').hover(function() {
+				var val = $(this).attr('val');
+				var $subMenu = $('.dropdown-sub-menu');
+				var height = $('#moreSelect').height();
+				if(val == 'CV') {
+					$subMenu.removeClass('hide').css('top', height+'px');
+				}else {
+					$subMenu.addClass('hide');
+				}
+			});
+			
+			$('.dropdown-sub-menu li').click(function(){
+				if(!$(this).find('a').hasClass('cur')) {
+					var isKeepTopWindow = $('#isKeepTopWindow').val();
+					if(isKeepTopWindow && isKeepTopWindow == 'Y') {
+						parent.layer.closeAll(null, true);
+					}else{
+						parent.layer.closeAll();
+					}
+					var id = $(this).attr('val');
+					if(id) {
+						openEntity(objectType, id, parentName);
+					}
+				}
+			});
+			
+			hideLoading();
+		});
+		
+		function editMyEntity() {
+			if(!objectType) {
+				objectType = $('#objectType').val();
+			}
+			editEntity(objectType, $('#id').val(), objectType, parentName);
+		}
+		
+		//检出或者取消检出
+		function checkOutOrCancel(id, objectType, opId, isKeepTopWindow) {
+			var title = '检出';
+			if(opId == '102') {
+				title = '取消检出';
+			}
+			top.layer.open({
+				type : 2,
+				title : title,
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '450px'],
+				content : '/entity/checkOutOrCancel?objectId='+id + '&objectType='+objectType + '&opId='+opId+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&isKeepTopWindow='+isKeepTopWindow+'&parentname='+ parentName,
+			});
+		}
+		
+		//检入
+		function checkIn(id, objectType, opId, isKeepTopWindow) {
+			top.layer.open({
+				type : 2,
+				title : '检入',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '550px'],
+				content : '/entity/uploadOne?objectId='+id + '&objectType='+objectType + '&opId='+opId+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&type=1&isKeepTopWindow='+isKeepTopWindow+'&parentname='+ parentName,
+			});
+		}
+		
+		//升级大版本
+		function upgradeLargeVersion(id, objectType, opId, isKeepTopWindow) {
+			top.layer.open({
+				type : 2,
+				title : '升级大版本',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '550px'],
+				content : '/entity/uploadOne?objectId='+id + '&objectType='+objectType + '&opId='+opId+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&type=2&isKeepTopWindow='+isKeepTopWindow+'&parentname='+ parentName,
+			});
+		}
+		
+		function rename(id, objectType, opId, isKeepTopWindow) {
+			top.layer.open({
+				type : 2,
+				title : '重命名',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '450px'],
+				content : '/entity/rename?objectId='+id + '&objectType='+objectType + '&opId='+opId+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&isKeepTopWindow='+isKeepTopWindow+'&parentname='+ parentName,
+			});
+		}
+		
+		function customOperate(id, objectType, opId, name, isKeepTopWindow) {
+			var belongId = $('#belongId').val(), belongType = $('#belongType').val();
+			if((!belongId || belongId == 'undefined') && (!belongType || belongType == 'undefined') && objectType == 'PJT') {
+				belongId = id;
+				belongType = objectType;
+			}
+			var url = '/workflow/workflowProcess/'+id+'?objectType='+objectType +'&tranId='+opId+'&belongId='+belongId+'&belongType='+belongType+'&isKeepTopWindow='+isKeepTopWindow+'&parentname='+ parentName;
+			intoIframePage(url, false, objectType);
+		}
+	</script>
+	
+</body>
+</html>

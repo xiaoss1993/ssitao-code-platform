@@ -31,11 +31,11 @@
         <profile>
             <id>full</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <maven.test.skip>true</maven.test.skip>
                 <skipTests>true</skipTests>
+                <activeByDefault>true</activeByDefault>
             </properties>
         </profile>
         <!-- 快速构建：跳过测试 -->

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn y-active add" onclick="addTask();">
+							<i class="fa fa-plus mr5"></i>
+							<span th:text="新建" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn n-active" onclick="batchAudit()">
+							<i class="fa fa-user-check mr5"></i>
+							<span th:text="批量审核" class="pt1 h18"></span>
+						</button>
+					</div>
+					
+					<div class="columns columns-right btn-group pull-right t-columns">
+						<div th:class="${viewType} eq 'LIST' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="LIST">
+							<span>
+								<i class="fa fa-th-list mr5"></i>列表
+							</span>
+						</div>
+						<div th:class="${viewType} eq 'BOARD' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="BOARD">
+							<span>
+								<i class="fa fa-th-large mr5"></i>看板
+							</span>
+						</div>
+						<div th:class="${viewType} eq 'REPORT' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="REPORT">
+							<span>
+								<i class="fa fa-bar-chart-o mr5"></i>报表
+							</span>
+						</div>
+						<div class="view-btn dropdown-btn">
+							<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="display:inline-block;padding: 7px 12px;">
+								<i class="fa fa-sliders mr5"></i>
+								<span class="text" id="dateFilter-text" th:text="${dateTypeName}"></span>
+								<i class="fa fa-ellipsis-h ml5"></i>
+							</span>
+							<ul id="dateFilter" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+                                  <li val="ALL" text="所有"><a href="javascript:void(0);" th:class="${dateType} eq 'ALL'? 'cur':''"><i class="fa fa-calendar-alt eidt-icon"></i><span class="eidt-text">所有</span></a></li>
+                                  <li val="DAY" text="本日"><a href="javascript:void(0);" th:class="${dateType} eq 'DAY'? 'cur':''"><i class="fa fa-calendar-day eidt-icon"></i><span class="eidt-text">本日</span></a></li>
+                                  <li val="WEEK" text="本周"><a href="javascript:void(0);" th:class="${dateType} eq 'WEEK'? 'cur':''"><i class="fa fa-calendar-week eidt-icon"></i><span class="eidt-text">本周</span></a></li>
+                                  <li val="MONTH" text="本月"><a href="javascript:void(0);" th:class="${dateType} eq 'MONTH'? 'cur':''"><i class="fa fa-calendar-star eidt-icon"></i><span class="eidt-text">本月</span></a></li>
+                             </ul>
+						</div>
+					</div>
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+				
+				<div id="taskBoard" class="board-box scroll-bar" style="display:none;">
+				</div>
+				
+				<div id="reportChartBox" class="reportChartBox" style="display:none;">
+					<div>
+						<div id="reportChart" class="board-box scroll-bar reportChart" height="450px"></div>
+					</div>
+					<div class="report-select">
+						<div class="report-type">报表类型：</div>
+						<ul class="report-type-list">
+							<li th:each="select:${reportSelectList}" th:class="${select.checked} ? 'curType':''" th:id="${select.id}">
+								<div class="reportImg"><img th:src="@{'../../img/report/'+${select.type}}+'.png'"></div>
+								<div class="title" th:title="${select.text}" th:text="${select.text}"></div>
+							</li>
+						</ul>
+					</div>
+					<div id="reportDetail">
+						<img id="printImg" src=""/>
+						<div class="chart-content"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="breadTabType" name="breadTabType" th:value="${breadTabType}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="TSK"/>
+		<input type="hidden" id="dateType" name="dateType" th:value="${dateType}"/>
+		<input type="hidden" id="viewType" name="viewType" th:value="${viewType}"/>
+		<input type="hidden" id="queryObject" name="queryObject" th:value="${queryObject}"/>
+		<input type="hidden" id="filterConditions" name="filterConditions" value=""/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div >
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/report/echarts.js" defer></script>
+	<script src="/js/report/echartsUtil.js" defer></script>
+	<script src="/js/report/report.js" defer></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], queryObject = [[${queryObject}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			loadViewType(true, $('#viewType').val());
+			
+			$('#dateFilter li').click(function() {
+				$(this).siblings().find('a').removeClass('cur');
+				$(this).find('a').addClass('cur');
+				$('#dateFilter-text').text($(this).attr('text'));
+				$('#dateType').val($(this).attr('val'));
+				
+				loadViewType(false, $('#viewType').val());
+			});
+			
+			$('.view-type-btn').click(function() {
+				$(this).siblings().removeClass('cur');
+				$(this).addClass('cur');
+				loadViewType(false, $(this).attr('type'));
+			});
+		});
+		
+		//加载视图类型，判断是加载列表还是看板
+		function loadViewType(isInit, viewType) {
+			$('#viewType').val(viewType);
+			if(isInit) {//如果是初始化看板，并且查询条件为空时，就根据视图创建查询条件
+				var $searchCondition = $('.search-condition');
+				if(!$searchCondition.length){
+					var headData = getHeadData('TSK', queryObject, '', '', '');
+					if(headData) {
+						var headColumn = headData.headData;
+						createSearchConditions(headColumn, 'TSK');
+					}
+				}
+			}
+			if(viewType && viewType == 'BOARD') {
+				$('#grid-table').closest('.table-wrap').hide();
+				$('#reportChartBox').hide();
+				$('#taskBoard').show();
+				initTaskBoard();
+			}else if(viewType && viewType == 'REPORT') {
+				$('#grid-table').closest('.table-wrap').hide();
+				$('#taskBoard').hide();
+				$('#reportChartBox').show();
+				initReport(viewType);
+			}else {
+				$('#grid-table').closest('.table-wrap').show();
+				$('#taskBoard, #reportChartBox').hide();
+				initTaskList();
+			}
+			
+			//如果不是初始化，就更新用户缓存
+			if(!isInit) {
+				$.ajax({
+					type : "post",
+					url : "/task/updateUserMemoryByTask",
+					data : {'taskSubType': $('#breadTabType').val(), 'taskViewType':$('#viewType').val(), 'taskDateType':$('#dateType').val()},// 你的formid
+					async : false,
+					success : function(data) {}
+				});
+			}
+		}
+		
+		//初始化任务列表
+		function initTaskList() {
+			if($('#grid-table').closest('.table-wrap').length) {
+				iFilter.props.query['dateType'] = $('#dateType').val();
+				iFilter.props.table.GM('setQuery', iFilter.props.query);
+			}else {
+				$('#grid-table').initTable({
+					model:'TSK',
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					queryObject: queryObject,
+					dateType: $('#dateType').val()
+				});
+			}
+		}
+		
+		function reLoad() {
+			loadViewType(true, $('#viewType').val());
+		}
+		
+		//初始化任务看板
+		function initTaskBoard(filterConditions) {
+			var tempHeight = parent.$('#leftsidebar').height()-146;
+			if($('.table-list-box .search-condition').length) {
+				tempHeight -= 90;
+			}
+			$('.board-box').height(tempHeight);
+			
+			var orderBy = '', orderByType = '';
+			if(!filterConditions && iFilter && iFilter.props && iFilter.props.query) {
+				filterConditions = iFilter.props.query.filterConditions;
+				orderBy = iFilter.props.query.orderBy;
+				orderByType = iFilter.props.query.orderByType;
+			}
+			$.ajax({
+				type : "post",
+				url : "/task/getTaskBoard",
+				data : {'queryObject': queryObject, 'dateType': $('#dateType').val(), 'filterConditions': filterConditions, 'orderBy':orderBy, 'orderByType':orderByType},// 你的formid
+				async : false,
+				success : function(data) {
+					if(data) {
+						data = eval('('+ data +')');
+						var html = '', trData, $taskBoard = $('#taskBoard');
+						var boardHeight = 0;
+						$taskBoard.html('');
+						if($taskBoard.width() <= 1597) {
+							boardHeight = tempHeight - 56;
+						}else {
+							boardHeight = tempHeight - 43;
+						}
+						if(data.length) {
+							for(var i = 0; i < data.length; i++) {
+								trData = data[i];
+								
+								html += '<div class="board-list col-lg-4 col-md-12">';
+								html += '	<div class="board-title">'+trData.name+'（<span>'+trData.data.length+'</span>）</div>';
+								html += '	<ul class="board-ul" style="height:'+boardHeight+'px">'+packBoardTr(trData.data)+'</ul>';
+								html += '</div>';
+								
+								$taskBoard.append(html);
+								html = '';
+							}
+						}else {
+							$taskBoard.append('<div class="tc w_100p">看板未配置，请联系管理员</div>');
+						}
+						hideLoading();
+					}
+				}
+			});
+		}
+		
+		function addTask() {
+			intoIframePage('/task/addOrEditTask?id=&taskType=OT&action=&parentname=' + window.name, false, 'TSK');
+		}
+		
+		function batchAudit() {
+			intoIframePage('/task/linkTaskList?operateType=BA&parentname=' + window.name, false, 'TSK');
+		}
+		
+		function intoMyCreateTskList() {
+			intoIframePage('/task/myTask?type=CREATE', true, 'TSK');
+		}
+	</script>	
+	
+</body>
+</html>

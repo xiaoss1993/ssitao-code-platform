@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${reportChart.id}"/>
+			<input type="hidden" name="objectType" id="objectType" th:value="${reportChart.objectType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表名称"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="simpleName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表简称"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.simpleName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置报表"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.preName}"></div>
+				</li>
+				<li class="field-li check content-whole preContent r odd" field="status" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.pjtStatus} eq 'RN'?'使用中':'未发布'"></div>
+				</li>
+				<li class="field-li check content-whole r " field="width" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="宽度占比"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.width eq '1' ? '一倍' : (reportChart.width eq '2' ? '二倍' : (reportChart.width eq '3' ? '三倍' : ''))}"></div>
+				</li>
+				<li class="field-li check content-whole r odd" field="height" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="高度占比"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.height eq '1' ? '一倍' : (reportChart.height eq '2' ? '二倍' : (reportChart.height eq '3' ? '三倍' : ''))}"></div>
+				</li>
+				<li class="field-li content-whole r" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+					<div class="field-div field-content" th:text="${reportChart.remark}"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editReport();" th:if="${btnEdit}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			$('.btn-box').removeClass('hide');
+			
+			var chartType = $('#chartType').val();
+			if(chartType) {
+				$('.chartType .type[type="'+chartType+'"]').addClass('curType');
+			}
+		});
+		
+		function editReport() {
+			top.layer.open({
+				type : 2,
+				title : '编辑报表',
+				maxmin : true,
+				shadeClose : false,
+				area : [ '800px', '550px' ],
+				content : 'report/editPjtOverview/'+$('#id').val()+'?parentname=' + parentName,
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	.table-wrap td{padding-left:0px!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn y-active" onclick="changeMonth(-1)">
+							<i class="fa fa-calendar-minus mr5"></i>
+							<span th:text="上月" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn y-active" onclick="changeMonth(0)">
+							<i class="fa fa-calendar-check mr5"></i>
+							<span th:text="本月" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn y-active" onclick="changeMonth(1)">
+							<i class="fa fa-calendar-plus mr5"></i>
+							<span th:text="下月" class="pt1 h18"></span>
+						</button>
+					</div>
+					
+					<div class="columns columns-right btn-group pull-right t-columns">
+					</div>
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" name="curDate" id="curDate" th:value="${curDate}"/>
+		<input type="hidden" name="monthNum" id="monthNum" th:value="0"/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/util/dateHelper.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], queryObject = [[${queryObject}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			var $searchCondition = $('.search-condition');
+			if(!$searchCondition.length){
+				var headData = getHeadData('MONTHLY', queryObject, '', '', '');
+				if(headData) {
+					var headColumn = headData.headData;
+					createSearchConditions(headColumn, 'MONTHLY');
+				}
+			}
+			$('#grid-table').initTable({
+				model:'MONTHLY',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				dateType: 'MONTH',
+				curDate: $('#curDate').val()
+			});
+		});
+		
+		function changeMonth(val){
+			var monthNum = 0, curDate = $('#curDate').val();
+			if(val != 0) {
+				monthNum = parseInt($('#monthNum').val()) + val;
+			}
+			$('#monthNum').val(monthNum);
+			var newDate = addMonths(curDate, monthNum, false);
+			
+			var $table = $('#grid-table');
+			var $tableWrap = $table.closest('.table-wrap');
+			if($tableWrap.length) {
+				$table.initTable('destroy');
+			}
+			$table.initTable({
+				model:'MONTHLY',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				dateType: 'MONTH',
+				curDate: newDate
+			});
+		}
+	</script>	
+	
+</body>
+</html>

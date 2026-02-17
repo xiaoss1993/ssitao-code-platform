@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.tab-ul{margin:0px;padding:0px;}
+	.col-sm-12{padding-left:0px!important;padding-right:0px!important;}
+	.windowPage .field-li.content-whole.detail-sign{width:100%!important;}
+	.windowPage .layout-left.layout-whole{width:100%!important;}
+	.windowPage .layui-submit-btn2{max-width:834px!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${isEdit} eq 'Y'?'编辑部门':'新建部门'"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${dept.id}"/>
+			<input type="hidden" name="isValid" value="Y"/>
+			<input type="hidden" name="objectType" id="objectType" value="DEPT"/>
+			<div class="layout-box" th:classappend="${isEdit} eq 'Y'?'':'new'">
+				<div class="layout-left" th:classappend="${isEdit} eq 'Y'?'layout-whole':''">
+					<ul class="page-ul" th:classappend="${isEdit} eq 'Y'?'page-ul2':''">
+						<li class="field-li content-whole detail-sign" field="detailTabs" htype="SIGN" th:style="${isEdit} eq 'Y'?'':'display:none'">	
+							<div class="relevant-tabs">
+								<div class="tab active detail-tab" type="detail" taburl="undefined" tabcls="undefined">基本信息</div>
+								<div class="tab roleAndUser-tab" type="roleAndUser" taburl="undefined" tabcls="undefined">角色成员</div>
+							</div>
+						</li>
+						<li class="field-li" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="部门名称" title="部门名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" placeholder=" " th:value="${dept.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li mt10" field="code" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="部门编号" title="部门编号"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="code" type="text" placeholder=" " th:value="${dept.code}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li" field="preDeptId" htype="DEPT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置部门"></span></div>
+							<div class="field-div field-content">
+								<input type="hidden" id="_preDeptId" name="preDeptId" th:value="${dept.preDeptId}">
+								<input class="form-control form-control-popup" name="preDeptName" th:tagName="#{sys.user.dept.select}" th:value="${dept.preDeptName}" type="text" placeholder="" autocomplete="off" readonly="readonly" htype="DEPT">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+						</li>
+						<li class="field-li" field="parentId" htype="DEPT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级部门"></span></div>
+							<div class="field-div field-content">
+								<input type="hidden" id="_parentId" name="parentId" th:value="${dept.parentId}">
+								<input class="form-control form-control-popup" name="deptName" th:tagName="#{sys.user.dept.select}" type="text" th:value="${dept.parentDeptName}" placeholder="" autocomplete="off" readonly="readonly" htype="DEPT">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+						</li>
+						<li class="field-li" field="user" htype="USER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">项目经理</span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:attr="userId=${dept.managerId}" th:title="${dept.managerUser.name}" onclick="viewUser()" th:style="${#strings.isEmpty(dept.managerUser.id)} ? 'display:none':''">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${dept.managerUser.picId}"/>
+											<span th:text="${dept.managerUser.name}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="user-add">
+									<input type="hidden" attrsign="_ids" name="managerId" th:value="${dept.managerId}" data-target="user-add" hType="user">
+									<div class="cp form-control-popup" htype="USER"><img src="/img/user/user-add.png"/></div>
+									<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="user" htype="USER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">项目助理</span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:attr="userId=${dept.assistantId}" th:title="${dept.assistantUser?.name}" onclick="viewUser()" th:style="${#strings.isEmpty(dept.assistantUser?.id)} ? 'display:none':''">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${dept.assistantUser?.picId}"/>
+											<span th:text="${dept.assistantUser?.name}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="user-add">
+									<input type="hidden" attrsign="_ids" name="assistantId" th:value="${dept.assistantId}" data-target="user-add" hType="user">
+									<div class="cp form-control-popup" htype="USER"><img src="/img/user/user-add.png"/></div>
+									<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="telPhone" htype="TEL">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门电话" title="部门电话"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control" name="telPhone" type="tel" htype="TEL" placeholder=" " th:value="${dept.telPhone}" autocomplete="off"  maxlength="30"/>
+								<i class="zmdi zmdi-phone"></i>
+							</div>
+						</li>
+						<li class="field-li" field="fax" htype="TEL">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门传真" title="部门传真"></span></div>
+							<div class="field-div field-content">
+								<input class="form-control"  name="fax" type="tel" htype="TEL" placeholder=" " th:value="${dept.fax}" autocomplete="off" maxlength="30"/>
+								<i class="zmdi zmdi-phone"></i>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="officeAddress" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="办公地址" title="办公地址"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="officeAddress" rows="8" style="padding-bottom: 30px;" th:text="${dept.officeAddress}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="职责描述" title="职责描述"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${dept.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="workflowGroupId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="流程组合"></span></div>
+							<div class="field-div field-content">
+								<select id="workflowGroupId" class="selectpicker" name="workflowGroupId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${workflowGroupList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="domainName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="域部门名称" title="域部门名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="domainName" type="text" placeholder=" " th:value="${dept.domainName}" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+					</ul>
+					<div class="content customContent" style="display:none"><iframe class="custom-iframe" id="custom-iframe" width="100%" height="500"></iframe></div>
+					 
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn" th:classappend="${isEdit} eq 'Y'?'layui-submit-btn2':''">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('DEPT');
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/dept/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							returnBackAndReLoad(true, false);
+							parent.layer.msg(data.msg, data.code);
+						}
+
+					} else {
+						parent.layer.msg(data.msg, data.code);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('DEPT');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

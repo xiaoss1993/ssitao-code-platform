@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="查看流程组合"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${workflowGroup.id}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content" th:text="${workflowGroup.name}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置组合"></span></div>
+							<div class="field-div field-content" th:text="${workflowGroup.preName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content" th:text="${workflowGroup.remark}"></div>
+						</li>
+						<li class="field-li r content-whole sign nextContent" field="workflowModel" htype="SIGN" th:style="${isEdit} eq 'N' ? 'display:none;':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="流程模型"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<table grid-manager="demoOne" id="workflowGroupRlt-table" ></table>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+		</form>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="button" class="layui-layer-btn0 btns" th:value="编辑" onclick="editWorkflowGroup()"/>
+			</div>
+		</div>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; </script>
+	
+	<script>
+		$(function() {
+			initFormControl('workflowGroup');
+			
+			loadGroupRltList();
+		});
+		
+		function editWorkflowGroup() {
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+			editEntity('WORKFLOWGROUP', $('#id').val(), "", parentName);
+		}
+		
+		function loadGroupRltList() {
+			var id = $('#id').val(), $table = $('#workflowGroupRlt-table'), $tableWrap = $table.closest('.table-wrap');
+			if(id) {
+				if($tableWrap.length) {
+					$tableWrap.show();
+					iFilter.props.table.GM('setQuery', iFilter.props.query);
+				}else {
+					$table.initTable({
+						tableId:'workflowGroupRlt-table',
+						model:'WORKFLOWGROUPRLT',
+						supportPage: true,
+						supportTree: false,
+						openState: false,
+						objectId: id,
+					});
+				}
+			}
+		}
+	
+	</script>
+	
+</body>
+</html>

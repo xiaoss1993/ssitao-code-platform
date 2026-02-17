@@ -9,16 +9,28 @@
     </parent>
 
     <artifactId>ssitao-code-modulars</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>ssitao-code-modulars</name>
     <description>模块化组件：包含可插拔的业务模块、功能组件</description>
+    <modules>
+        <module>ssitao-code-modular-iam</module>
+        <module>ssitao-code-modular-common</module>
+        <module>ssitao-code-modular-meta</module>
+        <module>ssitao-code-modular-devtools</module>
+    </modules>
 
     <dependencies>
-        <!-- 依赖框架模块 -->
+        <!-- 依赖公共模块 -->
         <dependency>
             <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-frame</artifactId>
+            <artifactId>ssitao-code-commons</artifactId>
+        </dependency>
+
+        <!-- 依赖 MyBatis-Easy 模块 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-easy</artifactId>
         </dependency>
 
         <!-- Spring Boot Security (可选) -->

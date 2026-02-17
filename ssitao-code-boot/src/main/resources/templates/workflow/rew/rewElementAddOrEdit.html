@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${rewElement.id}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="checkElement" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="检查要素"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="name" id="_name" maxlength="1000" th:text="${rewElement.name}" placeholder="请输入检查要素" required></textarea>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="pointId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="评审点"></span></div>
+					<div class="field-div field-content">
+						<select id="pointId" class="selectpicker" name="pointId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}" onchange="changePoint($(this))" required>
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${pointList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="categoryId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="评审类别"></span></div>
+					<div class="field-div field-content">
+						<select id="categoryId" class="selectpicker" name="categoryId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}" onchange="changeCategory($(this))" required>
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${categoryList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置要素"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${preElementList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole check preContent" field="status" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${rewElement.status} eq 'IN'" required>
+						    <label for="_status1" th:text="未发布">
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="status" id="_status2" value="RN" th:checked="${rewElement.status} eq 'RN'">
+						    <label for="_status2" th:text="使用中">
+						    </label>
+					    </div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="描述"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${rewElement.remark}" placeholder="请输入描述"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:if="${#strings.isEmpty(rewElement.id)}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REWELEMENT');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rew/saveCheckElement",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							resetElementList(data.id);
+							$('#_name').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name)
+							parent.layer.msg(data.msg);
+							parent.layer.close(index, 'grid-table');
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('REWELEMENT');
+			}
+		});
+		
+		function resetElementList(selectId, pointId, categoryId) {
+			if(!pointId) {
+				pointId = $('#pointId').val();
+			}
+			if(!categoryId) {
+				categoryId = $('#categoryId').val();
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rew/getPreElementList",
+				data : {
+					'selectId': selectId,
+					'pointId' : pointId,
+					'categoryId': categoryId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+		function resetCategoryList(selectId, pointId) {
+			if(!pointId) {
+				pointId = $('#pointId').val();
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rew/getPreCategoryList",
+				data : {
+					'selectId': selectId,
+					'pointId' : pointId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#categoryId').html(optionHtml).selectpicker('refresh');
+						
+						resetElementList(null, pointId, selectId);
+					}
+				}
+			});
+		}
+		
+		function changePoint($obj) {
+			resetCategoryList(null, $obj.val());
+		}
+		
+		function changeCategory($obj) {
+			resetElementList(null, null, $obj.val());
+		}
+		
+	</script>
+	
+</body>
+</html>

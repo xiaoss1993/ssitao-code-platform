@@ -1,0 +1,126 @@
+{
+  "view": "ID@###@id,TEXT@###@name,TEXT@###@username,TEXT@###@jobNumber,SELECT@###@sex,DEPT@###@deptId,,SELECT@###@positionId,TEXT@###@telephone,TEXT@###@email,TIME@###@modifyTime",
+  "pageSize": "20",
+  "headData": [
+    {
+      "search": "true",
+      "key": "name",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "TEXT",
+      "width": "150px",
+      "sorting": "",
+      "text": "姓名"
+    },
+    {
+      "search": "true",
+      "key": "username",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "TEXT",
+      "width": "150px",
+      "sorting": "",
+      "text": "用户名"
+    },
+    {
+      "search": "true",
+      "key": "jobNumber",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "TEXT",
+      "width": "150px",
+      "sorting": "",
+      "text": "工号"
+    },
+    {
+      "search": "true",
+      "key": "sex",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "SELECT",
+      "width": "90px",
+      "sorting": "",
+      "text": "性别"
+    },
+    {
+      "search": "true",
+      "key": "deptId",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "DEPT",
+      "width": "150px",
+      "sorting": "",
+      "text": "归属部门"
+    },
+    {
+      "search": "true",
+      "key": "positionId",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "SELECT",
+      "width": "150px",
+      "sorting": "",
+      "text": "职位"
+    },
+    {
+      "search": "true",
+      "key": "telephone",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "TEXT",
+      "width": "150px",
+      "text": "联系电话"
+    },
+    {
+      "search": "true",
+      "key": "email",
+      "filter": {
+        "selected": "",
+        "option": [],
+        "isMultiple": true
+      },
+      "type": "TEXT",
+      "width": "150px",
+      "text": "电子邮箱"
+    },
+    {
+      "search": "false",
+      "key": "modifyTime",
+      "type": "TIME",
+      "width": "150px",
+      "sorting": "desc",
+      "text": "最近更新时间"
+    },
+    {
+      "search": "false",
+      "key": "LastColumn",
+      "type": "TEXT",
+      "width": "AUTO",
+      "text": ""
+    }
+  ],
+  "query": "",
+  "orderBy": "modifyTime",
+  "orderByType": "desc"
+}

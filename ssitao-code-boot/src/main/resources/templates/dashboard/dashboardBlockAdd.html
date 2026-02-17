@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body th:classappend="${session.theme}" style="height:578px;">
+	<div class="layer-box">
+		<form id="operate">
+			<input type="hidden" name="id" th:value="${dashboard.id}"/>
+			<input type="hidden" name="isSaveBlock" value="Y"/>
+			<input type="hidden" name="blockType" th:value="CUSTOM"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<input type="hidden" id="selectIds" name="selectBlockIds" th:value="${dashboard.selectBlockIds}"/>
+			<input type="hidden" id="isForward" name="isForward" th:value="${dashboard.isForward}"/>
+			<input type="hidden" id="isOpenWindow" name="isOpenWindow" th:value="Y"/>
+		</form>
+		<div class="table-list">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input class="layui-layer-btn0 btns cp" id="submit" onclick="saveAddDashboard()" type="submit" value="保存">
+				<a class="layui-layer-btn1 close-btn cp">取消</a>
+			</div>
+		</div>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			$('#grid-table').initTable({
+				model:'DASHBOARDBLOCK',
+				supportPage: true,
+				supportTree: false,
+				openState:true,
+				supportCheckbox:true,
+				queryObject:'Y',
+				isOpenWindow: 'Y'
+			});
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function saveAddDashboard(){
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/dashboard/saveOrUpdateDashboard",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index, 'grid-table');
+						parent.layer.msg(data.msg);
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

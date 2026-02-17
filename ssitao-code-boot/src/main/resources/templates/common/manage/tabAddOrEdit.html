@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${page.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${page.objectType}"/>
+			<input type="hidden" id="pageType" name="pageType" th:value="${page.pageType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${page.name}" placeholder="请输入TAB页名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li check" field="subType" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="类别"></span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="subType" id="_subType1" value="LINK" data-target="radio" th:checked="${page.subType} ne 'CONTAIN'">
+						    <label for="_subType1" th:text="链接"></label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="subType" id="_subType2" value="CONTAIN" th:checked="${page.subType} eq 'CONTAIN'">
+						    <label for="_subType2" th:text="程序"></label>
+					    </div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="extPageUrl" htype="TEXT" th:style="${page.subType} ne 'CONTAIN' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="页面地址"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" id="extPageUrl" name="extPageUrl" type="text" th:value="${page.extPageUrl}" placeholder="请输入页面地址， 例如：https://www.baidu.com" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="extPageCls" htype="TEXT" th:style="${page.subType} eq 'CONTAIN' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="程序类路径"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" id="extPageCls" name="extPageCls" type="text" th:value="${page.extPageCls}" placeholder="请输入程序类路径， 例如：com.dream.extend.TabContain" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" placeholder="请输入备注" maxlength="1000" th:text="${page.remark}"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('TAB');
+			
+			$('.btn-box').removeClass('hide');
+			
+			changeRequired();
+			$('input[name="subType"]').click(function(){
+				changeRequired();
+			});
+		});
+		
+		function changeRequired(){
+			var $extPageUrl = $('#extPageUrl'), $extPageCls = $('#extPageCls');
+			if($('input[name="subType"]:checked').val() == 'LINK'){
+				$extPageUrl.attr('required', 'required');
+				$extPageCls.removeAttr('required');
+				
+				$('.field-li[field="extPageUrl"]').show();
+				$('.field-li[field="extPageCls"]').hide();
+			}else{
+				$extPageUrl.removeAttr('required');
+				$extPageCls.attr('required', 'required');
+				
+				$('.field-li[field="extPageUrl"]').hide();
+				$('.field-li[field="extPageCls"]').show();
+			}
+		}
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/page/save",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							var index = top.layer.getFrameIndex(window.name)
+							top.layer.close(index, data.id, data.name);
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('TAB');
+			}
+		});
+	</script>
+	
+</body>
+</html>

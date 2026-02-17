@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::headerContent"></head>
+<link rel="stylesheet" href="/css/list/list.filter.css">
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/list/gm.css">
+
+<body class="gray-bg theme-blue">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button shiro:hasPermission="${pathName}:${classname}:add" type="button"
+								class="btn t-btn y-active" onclick="addEntity('${modelType}')">
+								<i class="zmdi zmdi-plus mr5"></i><span th:text="#{common.new}"></span>
+							</button>
+							<button shiro:hasPermission="${pathName}:${classname}:stats" type="button"
+								class="btn t-btn n-active" onclick="statsEntity('${modelType}')">
+								<i class="zmdi zmdi-chart mr5"></i><span th:text="#{common.stats}"></span>
+							</button>
+							<button shiro:hasPermission="${pathName}:${classname}:import" type="button"
+								class="btn t-btn n-active" onclick="importEntity('${modelType}')">
+								<i class="zmdi zmdi-cloud-upload mr5"></i><span th:text="#{common.import}"></span>
+							</button>
+							<button shiro:hasPermission="${pathName}:${classname}:export" type="button"
+								class="btn t-btn n-active" onclick="exportEntity('${modelType}')">
+								<i class="zmdi zmdi-cloud-download mr5"></i><span th:text="#{common.export}"></span>
+							</button>
+							<button shiro:hasPermission="${pathName}:${classname}:batchOp" type="button"
+								class="btn t-btn n-active" onclick="batchOpEntity('${modelType}')">
+								<i class="zmdi zmdi-collection-plus mr5"></i><span th:text="#{common.batchOp}"></span>
+							</button>
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+							<button class="btn btn-default btn-outline" id="con-filter" type="button" name="refresh" title="筛选">
+								<i class="fa fa-filter"></i>
+							</button>
+							<button class="btn btn-default btn-outline" type="button" name="toggle" title="切换">
+								<i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+							</button>
+							<div class="keep-open btn-group" title="列">
+								<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown">
+									<i class="glyphicon glyphicon-th icon-th"></i> 
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li>
+										<label><input type="checkbox" data-field="tableName" value="1" checked="checked"> 表名称</label>
+									</li>
+									<li>
+										<label><input type="checkbox" data-field="engine" value="2" checked="checked"> engine</label>
+									</li>
+									<li>
+								</ul>
+							</div>
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div shiro:hasPermission="${pathName}:${classname}:add">
+		<script type="text/javascript">
+			rights += ',A';
+		</script>
+	</div>
+	<div shiro:hasPermission="${pathName}:${classname}:edit">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div shiro:hasPermission="sys:user:remove">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::footerContent"></div>
+
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/gm.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			initCommonTable('grid-table', '${modelType}', rights, true, false);
+		});
+	</script>	
+	
+</body>
+</html>

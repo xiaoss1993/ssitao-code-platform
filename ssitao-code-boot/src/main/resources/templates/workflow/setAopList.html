@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+<link rel="stylesheet" href="/css/form/filter-add.css"/>
+<style>
+	.layer-box {
+	    padding: 0px!important;overflow:hidden!important;
+	}
+	.layer-box .page-ul {
+	    padding:5px 5px 15px 5px;
+	}
+	#operate{overflow-x:auto;padding-bottom:0px!important;}
+	.page-ul .field-li .field-div .form-control{border:1px solid #e5e6e7!important;border-radius:4px!important;}
+	.page-ul .field-li .field-content input:focus, .page-ul .field-li .field-content input:hover{border:1px solid var(--theme)!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body addPage" th:classappend="${session.theme}">
+	<div class="layer-box instance">
+		<div class="layout-box new">
+			<div class="layout-left">
+				<form action="" id="operate">
+					<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+					<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+					<input type="hidden" id="instanceName" name="instanceName" th:value="${instance.name}"/>
+					<input type="hidden" id="step" name="step" th:value="${instance.step}"/>
+					<input type="hidden" id="isRunEdit" name="isRunEdit" th:value="${isRunEdit}"/>
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="operateRule" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="步骤监听器设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" htype="TEXT" th:each="node:${nodeList}" th:id="${node.id}">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${node.name}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" th:name="${node.id}" th:value="${node.exeCls}" type="text" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="operateRule" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="操作监听器设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" htype="TEXT" th:each="tran:${tranList}" th:id="${tran.id}">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${tran.name}"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" th:name="${tran.id}" th:value="${tran.exeCls}" type="text" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+					</ul>
+				</form>
+				<div class="formBtn hide">
+					<div class="layui-layer-btn layui-submit-btn">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(true)" th:value="保存并保留窗口"/>
+						<input type="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false)" th:value="保存并关闭窗口"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]]; fieldList = [[${newFieldList}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+	<script src="/js/form/filter-add.js"></script>
+	
+	<script type="text/javascript">
+		$(function() {
+			initFormControl('instance');
+			var objectId = $('#id').val(), objectType = $('#objectType').val(), isRunEdit = $('#isRunEdit').val();
+			loadStepGuideHtml(6, isRunEdit, objectId, objectType, $('#instanceName').val(), parentName);
+			
+			controlBtnShowPosition();
+		});
+		
+		function saveAndJump(isSaveWindow) {
+			var step = $('#step').val(), id = $('#id').val(), objectType = $('#objectType').val();
+			if(step) {
+				step = parseInt(step);
+			}
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/instance/saveNodeOrTranAop",
+				data : $('#operate').serialize_plus(),
+				async : false,
+				success : function(data) {
+					if(data.code == 0) {
+						if(isSaveWindow) {
+							parent.layer.msg(data.msg);
+						}else {
+							layerWinCancel();
+							parent.layer.msg(data.msg);
+						}
+					}
+				}
+			});
+		}
+	</script>	
+	
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	
+	
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10 mt10"> 
+						<div class="columns pull-left t-columns">
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="showName" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="btn-box hide">
+		<div class="layui-layer-btn layui-submit-btn">
+			<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="userId" name="userId" th:value="${userId}"/>
+		<input type="hidden" id="dateScope" name="dateScope" th:value="${dateScope}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; parentName = [[${param.parentname}]];</script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'RESTSK',
+				supportPage: true,
+				supportTree: false,
+				objectId:$('#userId').val(),
+				objectType:$('#objectType').val(),
+				queryObject:$('#dateScope').val(),
+			});
+			
+			$('.btn-box').removeClass('hide');
+		});
+	</script>	
+	
+</body>
+</html>

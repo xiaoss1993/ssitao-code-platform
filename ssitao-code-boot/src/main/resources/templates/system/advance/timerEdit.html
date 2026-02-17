@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<style>
+	.page-ul .field-li .field-label{min-width:150px;max-width:150px;padding-bottom:12px;}
+	.content-box{display:flex;margin-left:30px}
+	#timerSelect{font-size:14px;letter-spacing:0.2em;}
+	.timer-picker{left:0px!important;top:35px!important;}
+	.num-title{font-weight:bold;line-height:30px;margin-right:5px;width:100px;text-align:right;}
+	.page-ul .field-content-num .field-content-check{padding-top:2px;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box isView">
+		<form action="" id="operate">
+			<input type="hidden" name="timerParam" id="timerParam" value="">
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole sign" field="timerRunSet" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">定时器运行时间配置</div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" field="autoRunTime" htype="NUMBER">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title">每日定时运行时间</span></div>
+					<div class="field-div field-content-num">
+						<input autocomplete="off" class="num-input" id="timerSelect" name="autoRunTime" readonly="readonly" placeholder="0" type="text" th:value="${timerVal}">
+					</div>
+				</li>
+				<li class="field-li content-whole sign" field="timerRunSet" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">定时器参数配置</div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole timerSign" th:each="timer:${timerList}" th:id="${timer.id}" th:name="${timer.timerName}" htype="NUMBER">
+					<div class="field-div field-label cp-theme" ondblclick="runTimer($(this))"><span class="requireSign"></span><span class="title" th:text="${timer.name}"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" th:name="${timer.isValid}" class="lcs_check lcs_tt1 timerSwitch" on_text="开" off_text="关" th:value="${timer.isValid}" th:checked="${timer.isValid} eq 'Y'"/>
+						<div class="content-box" th:style="${timer.isValid} eq 'N' ? 'display:none' : '' ">
+							<div class="ml20 num-title">运行频率</div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input data-target="radio" th:id="${timer.id} + period1" class="timerPeriod" th:name="${timer.id} + period1" type="radio" value="1" th:checked="${timer.periodType} eq '1'">
+								    <label th:for="${timer.id} + period1">每日</label>
+							    </div>
+							    <div class="radio">
+								    <input th:id="${timer.id} + period2" th:name="${timer.id} + period1" class="timerPeriod" type="radio" value="N" value="2" th:checked="${timer.periodType} eq '2'">
+								    <label th:for="${timer.id} + period2">每周</label>
+							    </div>
+							    <div class="radio">
+								    <input th:id="${timer.id} + period3" th:name="${timer.id} + period1" class="timerPeriod" type="radio" value="N" value="3" th:checked="${timer.periodType} eq '3'">
+								    <label th:for="${timer.id} + period3">每月</label>
+							    </div>
+							</div>
+						</div>
+					</div>
+				</li>
+				
+				<li class="field-li content-whole textarea" field="" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" th:value="#{common.save}"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="window.history.back();"></a>
+					</div>
+				</li>
+			</ul>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; objectType = [[${param.objectType}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/system/timer/jquery-clock-timepicker.min.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('#timerSelect').clockTimePicker({});
+			
+			$('.layui-layer-btn').removeClass('hide');
+			
+			//初始化开关
+			$('.lcs_check').each(function(){
+				$(this).lc_switch($(this).attr('on_text'), $(this).attr('off_text'));
+			});
+			// triggered each time a field changes status
+			$('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+				var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+				
+			});
+			// triggered each time a field is checked
+			$('body').delegate('.lcs_check', 'lcs-on', function() {
+				if(typeof switchOnOrOff == 'function') {
+					switchOnOrOff($(this), 'ON');
+				}
+			});
+			// triggered each time a is unchecked
+			$('body').delegate('.lcs_check', 'lcs-off', function() {
+				if(typeof switchOnOrOff == 'function') {
+					switchOnOrOff($(this), 'OFF');
+				}
+			});
+		});
+		
+		function switchOnOrOff($obj, type) {
+			var $contentBox = $obj.closest('.lcs_wrap').next('.content-box');
+			if(type == 'ON') {
+				$contentBox.show();
+			}else{
+				$contentBox.hide();
+			}
+		}
+		
+		$("#operate").html5Validate(function() {
+			showLoading();
+			
+			var timerParam = [];
+			$('.timerSign').each(function() {
+				timerParam.push({'id':$(this).attr('id'), 'isValid':$(this).find('.timerSwitch').val(), 'period':$(this).find('.timerPeriod:checked').val()});
+			});
+			$('#timerParam').val(JSON.stringify(timerParam));
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/timerSet/save",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.msg(data.msg);
+						window.location.href = '/timerSet';
+					}
+					parent.layer.msg(data.msg);
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>
+	
+</body>
+</html>

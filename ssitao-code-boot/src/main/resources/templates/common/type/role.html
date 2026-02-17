@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/system/role/role.css">
+
+<style>
+	.menu-perm-row.content{padding-left:20px;}
+	.menu-perm-row .operate {
+	    padding-left: 13px;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="objectType" name="objectType" th:value="${role.objectType}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="角色信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole r" field="roleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="角色名称" title="角色名称"></span></div>
+							<div class="field-div field-content" th:text="${role.roleName}" th:title="${role.roleName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="parentId" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级角色" title="上级角色"></span></div>
+							<div class="field-div field-content" th:text="${role.parentName}" th:title="${role.parentName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="preId" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置角色" title="前置角色"></span></div>
+							<div class="field-div field-content" th:text="${role.preName}" th:title="${role.preName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content" th:text="${role.remark}" th:title="${role.remark}"></div>
+						</li>
+						<li class="field-li content-whole r" field="roleMembers" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="角色成员" title="角色成员"></span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:each="user:${userList}" th:attr="userId=${user.id}" th:title="${user.name}" th:onclick="|viewUser('${user.id}')|">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${user.picId}"/>
+											<span th:text="${user.name}"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="loginInfo" htype="SIGN" th:if="${role.objectType} ne 'DEPT'">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="角色权限"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li check content-whole r" field="dataScope" htype="CHECKBOX" th:if="${role.objectType} ne 'DEPT'">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="权限范围" title="权限范围"></span></div>
+							<div class="field-div field-content-check">
+								<div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope1" th:value="selfs" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'selfs')}" disabled="disabled">
+								    <label for="_dataScope1" th:text="本人" title="本人"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope2" value="subs" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'subs')}"  disabled="disabled">
+								    <label for="_dataScope2" th:text="下属" title="下属"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope3" value="selfDept" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'selfDept')}" disabled="disabled" >
+								    <label for="_dataScope3" th:text="本部门" title="本部门"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope4" value="subDepts" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'subDepts')}" disabled="disabled">
+								    <label for="_dataScope4" th:text="下级部门" title="下级部门"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope6" value="All" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'All')}" disabled="disabled">
+								    <label for="_dataScope6" th:text="全部" title="全部"></label>
+							    </div>
+							</div>
+						</li>
+					</ul>
+					<div class="menu-perm-box" th:if="${role.objectType} ne 'DEPT'">
+						<input type="hidden" name="menuIds" id="menuIds" />
+						<div class="menu-perm-row">
+							<div class="menu head"><div class="first" title="菜单权限">菜单权限</div></div>
+							<div class="operate head" title="操作权限">操作权限</div>
+						</div>
+						<div class="menu-perm-row content" th:each="menu:${menuList}" th:style="'margin-left:' + ${menu.pad} + 'px'">
+							<div class="menu">
+								<div class="field-div field-content-check">
+								    <div class="checkbox">
+								    	<input type="checkbox" name="menuId" th:id="${menu.id}" th:value="${menu.id}" th:attr="parentId=${menu.parentId}" th:checked="${menu.checked}" data-target="checkbox" disabled="disabled">
+									    <label th:for="${menu.id}" th:text="${menu.name}" th:title="${menu.name}"></label>
+									</div>
+									<div class="checkbox linked filterField" th:if="${menu.filterField} eq 'Y'" title="隐藏字段" th:id="${menu.id}"><i class="fa fa-eye-slash"></i><span class="filterFieldName ml5" th:title="${menu.filterFieldName}" th:text="${menu.filterFieldName}"></span></div>
+								</div>
+							</div>
+							<div class="operate">
+								<div class="checkbox" th:each="op:${menu.children}" >
+							    	<input type="checkbox" name="menuId" th:id="${op.id}" th:value="${op.id}" th:attr="parentId=${op.parentId}" th:checked="${op.checked}" data-target="checkbox" disabled="disabled">
+								    <label th:for="${op.id}" th:text="${op.name}" th:title="${op.name}"></label>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:if="${btn_EDIT}" th:value="#{common.eidt}" onclick="editRole();"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]]; roleId = [[${role.id}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('ROLE');
+			
+			$('input[name="menuId"]').click(function() {
+				selectSelfAndChild($(this), $(this).is(':checked'));
+				selectParent($(this), $(this).is(':checked'));
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		function editRole() {
+			var url = '/type/addOrEditRole/'+roleId+'?parentname='+(parentName ? parentName : window.name)
+			openWindowLikeIframe({'url':url, 'title':'编辑角色', 'isParent':true});
+		}
+		
+	</script>
+	
+</body>
+</html>

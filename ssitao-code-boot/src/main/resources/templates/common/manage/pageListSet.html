@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head>
+	<link th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}" rel="stylesheet"/>
+    <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"/>
+    <link href="/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="/css/plugins/summernote/summernote.css" rel="stylesheet"/>
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/css/icon.css?v=4.1.0" rel="stylesheet">
+    <link href="/css/form/form.css" rel="stylesheet"/>
+    <link href="/css/common/common.css" rel="stylesheet"/>
+	<link href="/css/form/bootstrap-select.css" rel="stylesheet"/>
+	
+	<link href="/css/list/list.filter.css" rel="stylesheet">
+	<link href="/css/list/gm.css" rel="stylesheet">
+	
+    <link href="/css/page/page-set.css" rel="stylesheet"/>
+    <link href="/css/form/filter-add.css" rel="stylesheet"/>
+    
+    <style type="text/css">
+    	.table-wrap{min-height:120px!important;}
+    	.table-box{padding-bottom:42px;}
+    	.table-box.droppable-active{padding-bottom:120px;}
+    	.operate-btn{position:absolute;right:0px;top:35px;background:#e8e8e8;padding:5px 10px;min-width:50px;display:flex;justify-content:flex-end;}
+    	.operate-btn.one{width:55px}
+    	.operate-btn.one span.D{margin-left:0px;}
+    	.table-wrap th .th-wrap{display:flex;}
+    	.table-wrap th .th-wrap .required{color:red;margin-right:5px}
+    	
+    	.gm-drag-ongoing .operate-btn, .no-select-text .operate-btn, .droppable-active tbody{display:none}
+    	.droppable-active .table-wrap{height:40px!important;min-height:40px!important;}
+    	.gm-adjust-action:hover{cursor:col-resize;}
+    	.gm-adjust-action:hover +.operate-btn{display:none;}
+    	
+    	#boxCenter .field-li:hover{
+    		background:transparent!important;
+    		cursor:pointer;
+    	}
+    	
+    	#boxCenter .page-ul{margin-left:0px;padding-bottom:20px!important;}
+    	#boxCenter .field-li{padding-left:0px;}
+    	.impList .table-wrap thead tr:first-child th[required]{color:red;}
+    	
+    	.windowPage .page-ul{padding-top:10px!important;} 
+    	#operate{background:white;margin-bottom:0px;}
+    	#boxLeft .ibox-title, #boxCenter .ibox-title, #boxRight .ibox-title{margin-left:0px;margin-right:0px;}
+    	.layer-box .row-box{margin-left:0px;margin-right:0px;border:0px;}
+    	.direction-left{display:none!important;}
+    	.layui-layer-btn.layui-submit-btn{text-align:center;}
+    </style>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/page/pageList-set.js"></script>
+    
+    <script src="/js/plugins/layer/layer.js"></script>
+    <script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/filter-add.js"></script>
+	<script src="/js/common/common.js"></script>
+</head>
+
+<body class="layer-body windowPage layerWinPage" th:classappend="${session.theme}">
+	<div class="layer-box" th:classappend="${page.pageType}">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${page.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="pageType" name="pageType" th:value="${page.pageType}"/>
+			<input type="hidden" id="winTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="pageFieldParams" name="pageFieldParams" th:value="${page.pageFieldParams}"/>
+			<input type="hidden" id="entityTypeId" name="entityTypeId" th:value="${page.entityTypeId}"/>
+			<input type="hidden" id="subType" name="subType" th:value="${page.subType}"/>
+			<input type="hidden" id="isAllOnlyRead" name="isAllOnlyRead" th:value="${isAllOnlyRead}"/>
+			<input type="hidden" id="colData" name="colData" value=""/>
+			<input type="hidden" id="filterCondition" name="filterCondition"/>
+			<ul class="page-ul base-form">
+				<li class="field-li" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${page.name}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li" field="prePageId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置页面"></span></div>
+					<div class="field-div field-content">
+						<select id="prePageId" class="selectpicker" name="prePageId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${prePageList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li" field="refPageId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="参考页面"></span></div>
+					<div class="field-div field-content">
+						<select id="refPageId" class="selectpicker" name="refPageId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${prePageList}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</form>	
+		
+	    <div class="row row-box">
+            <div id="boxLeft" class="col-sm-3">
+                 <div class="ibox float-e-margins">
+                     <div class="ibox-title">
+                         <h5>字段列表</h5>
+                     </div>
+                     <div class="ibox-content">
+                     	 
+                   	 	<div class="item-box">
+                       		<div><b>单行文本</b></div>
+                            <div class="item">
+	                            <div htype="TEXT" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'TEXT'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:value="${field.textDefault}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},isOnlyRead=${field.isOnlyRead},textLength=${field.textLength},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>用户</b></div>
+                            <div class="item">
+	                            <div htype="USER" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'USER'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>下拉框</b></div>
+                            <div class="item">
+	                            <div htype="SELECT" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'SELECT'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},setCascade=${field.setCascade},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>单选框</b></div>
+                            <div class="item">
+	                            <div htype="RADIO" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'RADIO'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>多选框</b></div>
+                            <div class="item">
+	                            <div htype="CHECKBOX" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'CHECKBOX'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>日期</b></div>
+                            <div class="item">
+	                            <div htype="DATE" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'DATE'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>数字</b></div>
+                            <div class="item">
+	                            <div htype="NUMBER" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'NUMBER'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>多行文本</b></div>
+                            <div class="item">
+	                            <div htype="AREA" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'AREA'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>富文本</b></div>
+                            <div class="item">
+	                            <div htype="FORMATAREA" class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'FORMATAREA'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                     	<div class="item-box">
+                       		<div><b>其它</b></div>
+                            <div class="item">
+	                            <div class="draggable ui-draggable btntexts fl" th:each="field:${fieldList}" th:if="${field.htmlType eq 'PJT' or field.htmlType eq 'PRD' or field.htmlType eq 'DEPT' or field.htmlType eq 'SIGN' or field.htmlType eq 'SCENE' or field.htmlType eq 'GROUP'}" th:id="${field.id}" th:text="${field.showName}" th:title="${field.showName}" th:attr="htype=${field.htmlType},name=${field.showName},field=${field.colName},layout=${field.layout},isRequired=${field.isRequired},textLength=${field.textLength},isOnlyRead=${field.isOnlyRead},displayWidth=${field.displayWidth},defaultJson=${field.defaultJson}">
+	                            </div>
+                             	<div class="clear"></div>
+                            </div>
+                     	</div>
+                           
+                     </div>
+                 </div>
+             </div>
+            
+             <div id="boxCenter" class="col-sm-9">
+                 <div class="ibox float-e-margins">
+                     <div class="ibox-title">
+                         <h5>拖拽/点击左侧字段到此区域</h5>
+                         <div class="ibox-tools">
+                         	<button type="button" class="btn btn-warning page-view mr5">预览</button>
+                         	<button type="button ml10" class="btn btn-clear">清空</button>
+                         </div>
+                     </div>
+                     <div class="ibox-content">
+                         <div class="form-body form-horizontal mt10">
+                         	<div class="droppable sortable ui-droppable ui-sortable table-box">
+	                         	<table grid-manager="demoOne" id="grid-table"></table>
+                         	</div>
+                         </div>
+                         <ul class="page-ul" th:style="${page.pageType} eq 'LIST'? '':'display:none'">
+                         	<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN">
+								<div class="field-div field-sign-title3">
+									<i class="zmdi zmdi-hdr-strong mr10"></i>
+									<div class="title" th:text="筛选条件"></div>
+								</div>
+								<div class="field-div field-sign-content"></div>
+							</li>
+							<li class="field-li content-whole" field="filterCondition" htype="TEXT">
+								<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="筛选条件"></span></div>
+								<div class="field-div field-content">
+									<div class="filter-from">
+										
+									</div>
+									<div class="filter-btn" >
+										<div class="hide-select">
+											<select class="selectpicker" name="selectField" data-live-search="true" data-live-search-style="begins" title="请选择" onchange="selectCondition($(this))">
+												<optgroup label="用户">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'USER'}" th:attr="type=${select.htmlType}"  th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+												<optgroup label="日期">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'DATE'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+												<optgroup label="选择框">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'SELECT'} or ${select.htmlType eq 'RADIO'} or ${select.htmlType eq 'CHECKBOX'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+												<optgroup label="数字">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'NUMBER'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+												<optgroup label="文本">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'TEXT'} or ${select.htmlType eq 'AREA'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+												<optgroup label="其他">
+													<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'PJT'} or ${select.htmlType eq 'PRD'} or ${select.htmlType eq 'DEPT'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+												</optgroup>
+											</select>
+										</div>
+										<span onclick="addCondition($(this))" class="add-btns"><i class="fa fa-plus mr5"></i>添加条件</span>
+										
+										<div class="hide-condition hide">
+											<div class="row-condition">
+												<div class="cell cell1"></div>
+												<div class="cell cell2"></div>
+												<div class="cell cell3"></div>
+												<div class="cell cell4"></div>
+												<div class="cell cell5" onclick="removeCondition($(this))"><i class="zmdi zmdi-delete"></i></div>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+							</li>
+                         </ul>
+                          
+					     <div class="formBtn hide">
+							<div class="layui-layer-btn layui-submit-btn">
+								<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存" onclick="$('#isContinue').val('N');$('#operate').submit();" />
+								<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+							</div>
+						 </div>
+	                     
+                     </div>
+                 </div>
+             </div>
+	             
+	     </div>
+		    
+     </div>
+     
+     <script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], objectType = [[${objectType}]],  rightList = [[${rightList}]], isEntityList = [[${isEntityList}]], fieldList = [[${newFieldList}]], filterCondition = [[${filterCondition}]]</script>
+     
+	 <script>
+	 	$(function() {
+	 		$('.formBtn').removeClass('hide');
+	 		
+	 		$('.item-box').each(function() {
+	 			if(!$(this).find('.btntexts').length) {
+	 				$(this).hide();
+	 			}
+	 		});
+	 		$('#boxLeft .ibox-content, #boxCenter .ibox-content').height($('.layer-box').height()-105);
+	 		
+	 		pagePageRightPage(rightList);
+	 		
+	 		$('.page-view').click(function() {
+				var colData = $('#colData').val();
+				if(!colData) {
+					alert('请拖拽/点击左侧字段到此区域进行页面配置！');
+					return;
+				}else {
+					colData = eval('('+colData+')');
+					if(!colData.length) {
+						alert('请拖拽/点击左侧字段到此区域进行页面配置！');
+						return;
+					}
+				}
+				
+				var viewParams = packPageFieldParams(colData), signKey = new Date().getTime(), pageType = 'LIST';
+				$.ajax({
+					cache : true,
+					type : 'POST',
+					url : "/page/getViewData",
+					data : {'pageParams': viewParams, 'signKey': signKey, 'pageType': pageType},
+					async : false,
+					success : function(data) {
+						if(data.code == 0) {
+							parent.layer.open({
+								skin: 'iframeClass',
+								type : 2,
+								title : '预览列表页面',
+								maxmin : true,
+								shadeClose : false, // 点击遮罩关闭层
+								area : ['100%', '100%'],
+								content : '/page/tempView?signKey='+signKey + '&pageType=' + pageType + "&objectType=" + $('#objectType').val()
+							});
+						}
+					}
+				});
+				
+			});
+	 		
+	 		$('#refPageId').change(function() {
+	 			$.ajax({
+					cache : true,
+					type : 'POST',
+					url : "/page/getRefPageFieldList",
+					data : {'pageId': $(this).val(), 'objectType': $('#objectType').val(), 'isAllOnlyRead': $('#isAllOnlyRead').val(), 'isListView':'Y'},
+					async : false,
+					success : function(data) {
+						pagePageRightPage(data);
+					}
+				});
+	 		});
+	 		
+	 		initFilterCondition(filterCondition);
+	 	});
+	 	
+	 	//组装页面
+	 	function pagePageRightPage($fieldList) {
+	 		if($fieldList) {
+	 			var colData = [], tdData, tdJson = {}, search, sorting, required, text = "";
+	 			for(var i = 0; i < $fieldList.length; i++) {
+	 				tdData = $fieldList[i];
+	 				if(tdData.isFilter == 'Y') {
+	 					search = 'true';
+	 				}else {
+	 					search = false;
+	 				}
+	 				if(tdData.isSort == 'Y') {
+	 					sorting = 'true';
+	 				}else {
+	 					sorting = false;
+	 				}
+	 				if(tdData.isRequired == 'Y') {
+	 					required = 'true';
+	 				}else {
+	 					required = false;
+	 				}
+	 				text = tdData.showName;
+	 				tdJson = {fid:tdData.id, key:tdData.colName, text:text, type:tdData.htmlType, width:tdData.displayWidth + 'px', search:search, sorting: sorting, required: required};
+	 				if(search == 'true') {
+	 					tdJson.filter = {selected: '', option: Array(0), isMultiple: true};
+	 				}
+	 				colData.push(tdJson);
+	 				
+	 				$('.btntexts[field="'+tdData.colName+'"]').addClass('disabled');
+	 			}
+	 			setTimeout(function(){$(".draggable.disabled").draggable("disable");},100);
+	 			
+	 			initOrReloadTable(colData);
+	 		}
+	 	}
+	 	
+	 	//初始化或者重新加载表头
+	 	function initOrReloadTable(colData) {
+	 		$('#colData').val(JSON.stringify(colData));
+	 		
+	 		if($('#grid-table').closest('.table-wrap').length) {
+				document.querySelector('#grid-table').GM('destroy');
+			}
+	 		
+	 		if(!colData.length) {
+	 			return;
+	 		}
+	 		colData.push({key: 'LastColumn', text:'', width:'auto', type:'TEXT'});
+	 		var tableWidth, thStartWidth, thEndWidth;
+ 			document.querySelector('#grid-table').GM({
+ 			    gridManagerName: 'demoOne',
+ 			   	height:'100px',
+ 			   	disableCache: false,
+ 			    ajaxData: {"status":"success","totals":0,"data":[]},
+ 				supportCheckbox:false,
+ 				supportMenu:false,
+ 			    ajaxType: 'POST',
+ 			    columnData: colData,
+ 				adjustBefore: function (event) {
+ 					thStartWidth = $('.gm-adjust-ing').closest('th').width();
+ 				},
+ 				adjustAfter: function (event) {
+ 					var $th = $('.gm-adjust-ing').closest('th');
+ 					thEndWidth = $th.width();
+					if(!tableWidth) {
+						tableWidth = $('.table-div').width();
+					}
+					var $thead = $('thead'), theadWidth = $thead.width(), $lastColumn = $('thead tr th[th-name="LastColumn"]');
+					var thNewWidth = 0;
+					if(thStartWidth < thEndWidth) {//增宽
+						var diffWidth = thEndWidth - thStartWidth, lastColumnWidth = $lastColumn.width();
+						if(lastColumnWidth > 0) {
+							var lastColumnNewWidth = 0; 
+							if(lastColumnWidth > diffWidth) {
+								lastColumnNewWidth = lastColumnWidth - diffWidth;
+							}
+							$lastColumn.css({'width':lastColumnNewWidth, 'max-width':lastColumnNewWidth});
+						}
+						thNewWidth = diffWidth;
+					}else{//变窄
+						thNewWidth = thStartWidth - thEndWidth;
+					}
+					resetColData($th, false, true);
+ 				},
+ 				// 拖拽前事件
+ 				dragBefore: function (event) {
+ 				},
+ 				// 拖拽后事件
+ 				dragAfter: function (event) {
+ 					var colData = [], tdJson = {}, id, isSearch, isSort;
+ 					$('thead[grid-manager-mock-thead="demoOne"] th').each(function() {
+ 						id = $(this).attr('fieldId'), isSort = $(this).hasProp('sorting'), isSearch = $(this).hasProp('filter'), isRequired = $(this).hasProp('required');
+ 						if(id) {
+	 						tdJson = {fid:id, key:$(this).attr('th-name'), text:$(this).attr('title'), type:$(this).attr('fieldType'), width:$(this).css('width')};
+	 						if(isSort) {
+	 							tdJson.sorting = 'true';
+		 					}else {
+		 						tdJson.sorting = false;
+		 					}
+		 					
+		 					if(isSearch) {
+		 						tdJson.search = 'true';
+		 						tdJson.filter = {selected: '', option: Array(0), isMultiple: true};
+		 					}else {
+		 						tdJson.search = false;
+		 					}
+		 					
+		 					if(isRequired) {
+		 						tdJson.required = 'true';
+		 					}else {
+		 						tdJson.required = false;
+		 					}
+		 					colData.push(tdJson);
+ 						}
+ 					});
+ 					$('#colData').val(JSON.stringify(colData));
+ 				},
+ 			});
+ 			
+ 			setTimeout(function(){
+	 			$('#grid-table thead tr th').hover(function() {
+	 				initOrRemoveBtns($(this), true);
+	 			}, function() {
+	 				initOrRemoveBtns($(this), false);
+	 			});
+ 			},300);
+	 	}
+	 	
+	 	//重新设置列参数值
+	 	function resetColData($obj, isDel, isChangeWidth) {
+	 		var colData = $('#colData').val(), name = $obj.attr('th-name'), isSort = $obj.hasProp('sorting'), isSearch = $obj.hasProp('filter'), isRequired = $obj.hasProp('required'), width = $obj.css('width');
+	 		if(colData) {
+	 			colData = eval('('+ colData +')');
+	 			var newColData = [];
+	 			for(var i = 0; i < colData.length; i++) {
+	 				if(name == colData[i].key) {
+	 					if(isDel){
+		 					continue;
+		 				}
+	 					
+	 					if(isSort) {
+	 						colData[i].sorting = 'true';
+	 					}else {
+	 						colData[i].sorting = false;
+	 					}
+	 					
+	 					if(isSearch) {
+	 						colData[i].search = 'true';
+	 						colData[i].filter = {selected: '', option: Array(0), isMultiple: true};
+	 					}else {
+	 						colData[i].search = false;
+	 					}
+	 					
+	 					if(isRequired) {
+	 						colData[i].required = 'true';
+	 					}else {
+	 						colData[i].required = false;
+	 					}
+	 					
+	 					if(isChangeWidth) {
+	 						colData[i].width = width;
+	 					}
+	 				}
+	 				newColData.push(colData[i]);
+	 			}
+	 			
+	 			$('#colData').val(JSON.stringify(newColData));
+	 			if(isDel) {
+	 				initOrReloadTable(newColData);
+	 			}
+	 		}
+	 	}
+	 	
+	 	function initOrRemoveBtns($obj, isInit) {
+	 		var thName = $obj.attr('th-name');
+	 		if(thName == 'gm_order' || thName == 'LastColumn') {
+	 			return;
+	 		}
+	 		
+	 		$thWrap = $obj.find('.th-wrap');
+	 		if(isInit) {
+		 		var content = '<div class="operate-btn '+(thName != 'extendName'? '':'one')+'">';
+		 		var pageType = $('#pageType').val();
+		 		if(pageType && (pageType == 'IMPLIST' || pageType == 'EXPLIST')){
+		 			if(pageType == 'IMPLIST') {
+		 				content += '	<span class="R '+($obj.hasProp('required') ? 'cur':'')+'" value="R">必填</span>';
+		 			}
+		 		}else if(thName != 'extendName') {
+		 			content += '	<span class="S '+($obj.hasProp('sorting') ? 'cur':'')+'" value="S">排序</span><span class="H '+($obj.hasProp('filter') ? 'cur':'')+'" value="H">搜索</span>';
+	 			}
+	 			content += '	<span class="D" value="D">删除</span>';
+	 			content += '</div>';
+	 			$thWrap.append(content);
+	 			
+	 			if($thWrap.find('.gm-adjust-action').offset().left < 450) {
+	 				$thWrap.find('.operate-btn').css({'left':'0px', 'right':'0px'});
+	 			}
+	 			$thWrap.find('.operate-btn span').click(function() {
+	 				var val = $(this).attr('value');
+	 				if(val == 'D') {
+	 					resetColData($obj, true);
+	 					var name = $obj.attr('th-name');
+	 					$(".btntexts[field='"+name+"']").removeClass('disabled').draggable("enable");
+	 				}else if(val == 'S' || val == 'H'){
+	 					if($(this).hasClass('cur')) {
+	 						$(this).removeClass('cur');
+	 						if(val == 'S') {
+	 							$thWrap.find('.gm-sorting-action').remove();
+	 							$obj.removeAttr('sorting');
+	 						}else {
+	 							$thWrap.find('.gm-filter-area').remove();
+	 							$obj.removeAttr('filter');
+	 						}
+	 					}else {
+	 						$(this).addClass('cur');
+	 						var content = '';
+	 						if(val == 'S') {
+	 							content = '<div class="gm-sorting-action"><i class="sa-icon sa-up gm-icon gm-icon-up"></i><i class="sa-icon sa-down gm-icon gm-icon-down"></i></div>';
+	 							if($thWrap.find('.gm-filter-area').length) {
+	 								$thWrap.find('.gm-filter-area').before(content);
+	 							}else {
+	 								$thWrap.find('.gm-adjust-action').before(content);
+	 							}
+	 							$obj.attr('sorting','true');
+	 						}else {
+	 							content = '<div class="gm-filter-area"><i class="fa-icon gm-icon gm-icon-filter"></i></div>';
+	 							$thWrap.find('.gm-adjust-action').before(content);
+	 							$obj.attr('filter','true');
+	 						}
+	 					}
+ 						resetColData($obj);
+	 				}else if(val == 'R'){
+	 					if($(this).hasClass('cur')) {
+	 						$(this).removeClass('cur');
+	 						$obj.removeAttr('required');
+	 					}else {
+	 						$(this).addClass('cur');
+	 						$obj.attr('required','true');
+	 					}
+	 					resetColData($obj);
+	 				}
+	 			});
+	 		}else {
+	 			$thWrap.find('.operate-btn').remove();
+	 		}
+	 	}
+	 	
+	 	//组装字段参数
+	 	function packPageFieldParams(colData) {
+	 		var rowParams = [], $btnBoxs, $li, i, h, s, t, f, w, ds, orderByType = 'desc', orderBy = '';
+			rowParams.push({'f':'id', 'a':'center', 'w':'60px', 't':'ID', 'r':'','s':false,'h':false, 'i':''});
+			if(colData.length) {
+				var col;
+				for(var j = 0; j < colData.length; j++) {
+					col = colData[j];
+					i = col.fid;
+					t = col.type;
+					f = col.key;
+					h = col.search;
+					s = col.sorting;
+					r = col.required;
+					ds = 'N';
+					if(ds && ds == 'Y') {
+						orderBy = f;
+					}
+					w = col.width;
+					rowParams.push({'f':f, 'a':'left', 'w':w, 't':t, 'r':r,'s':s,'h':h,'i':i});
+				}
+			}
+			
+			var viewParam = {'pageSize':'20', 'orderBy':orderBy, 'orderByType':orderByType, 'query':'', 'view': rowParams};
+			var pageFieldParams = JSON.stringify(viewParam);
+			$('#pageFieldParams').val(pageFieldParams);
+			return pageFieldParams;
+		}
+	 	
+	 	$("#operate").html5Validate(function() {
+	 		var colData = $('#colData').val(), pageType = $('#pageType').val();
+			if(colData) {
+				colData = eval('('+ colData +')');
+				if(!colData.length && pageType != 'IMPLIST' && pageType != 'EXPLIST') {
+					alert('请拖拽/点击左侧字段到此区域进行页面配置！');
+					hideLoading();
+					return;
+				}
+			}else if(pageType != 'IMPLIST' && pageType != 'EXPLIST'){
+				alert('请拖拽/点击左侧字段到此区域进行页面配置！');
+				hideLoading();
+				return;
+			}
+			packPageFieldParams(colData);
+			
+			$('#filterCondition').val(getFilterCondition());
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/page/save",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0] && parentName[0] != 'undefined') {
+							var parentFrame = top.frames[parentName[0]];
+							if(isEntityList && isEntityList == 'Y') {
+								parentFrame.reLoadView(data.id);
+							}else {
+								parentFrame.reLoad(data.id);
+							}
+						}
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name)
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('PAGE');
+			}
+		});
+	 </script>
+	 
+</body>
+
+</html>

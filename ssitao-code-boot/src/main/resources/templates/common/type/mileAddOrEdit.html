@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="isNotCloseWindow" value="N"/>
+			<input name="id" id="id" type="hidden" th:value="${mstNode.id}">
+			<input name="projectId" id="projectId" type="hidden" th:value="${mstNode.projectId}">
+			<input name="typeId" id="typeId" type="hidden" th:value="${mstNode.typeId}">
+			<input name="isTemplete" id="isTemplete" type="hidden" th:value="${mstNode.isTemplete}">
+			<input name="mileId" id="mileId" type="hidden" th:value="${mstNode.mileId}">
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="里程碑名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${mstNode.name}" placeholder="请输入里程碑名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="phaseId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="归属阶段"></span></div>
+					<div class="field-div field-content">
+						<select id="phaseId" class="selectpicker" name="phaseId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${phaseList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置里程碑"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择" maxHeight="350">
+							<option value="">请选择</option>
+							<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="planEndDate" htype="DATE">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="计划完成日期"></span></div>
+					<div class="field-div field-content">
+						<input class="form-control form-control-date" name="planEndDate" type="text" placeholder="" th:value="${mstNode.planEndDate == null} ? '' : ${#dates.format(mstNode.planEndDate, 'yyyy-MM-dd')}" autocomplete="off" readonly="readonly" htype="DATE">
+						<i class="zmdi zmdi-calendar"></i>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="2048" th:text="${mstNode.remark}" placeholder="请输入备注"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建" th:style="${isEdit} eq 'Y' ? 'display:none' : ''"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('MSTNODE');
+			
+			$('.layui-layer-btn').removeClass('hide');
+			hideLoading();
+			
+			$('#phaseId').change(function() {
+				resetPreList();
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var planEndDate = $('input[name="planEndDate"]').val();
+			if(planEndDate) {
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/type/judgePlanEndDate",
+					data : {
+						'id': $('#id').val(),
+						'preId' : $('#preId').val(),
+						'typeId': $('#typeId').val(),
+						'projectId': $('#projectId').val(),
+						'planEndDate': planEndDate,
+					},
+					async : false,
+					success : function(data) {
+						if(data) {
+							var index = top.layer.confirm(data, {
+					 			btn : ['确定', '取消']
+					 		}, function() {
+					 			saveMstNode();	
+					 		}, function(){
+					 			hideLoading();
+					 		});
+						}else{
+							saveMstNode();	
+						}
+					}
+				});
+			}else{
+				saveMstNode();				
+			}
+		}, {
+			validate: function() {
+				return customValidate('MSTNODE');
+			}
+		});
+		
+		function saveMstNode(){
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/type/saveMstNode",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var isContinue = $('#isContinue').val();
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoadMilestone();
+						}
+						if(isContinue && isContinue == 'Y') {
+							resetPreList(data.id);
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							if(parentName && parentName[0]) {
+								parent.layer.close(index);
+							}else{
+								parent.layer.close(index, data.id);
+							}
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}
+		
+		function resetPreList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/type/getPreMstNodeList",
+				data : {
+					'typeId' : $('#typeId').val(),
+					'projectId': $('#projectId').val(),
+					'phaseId': $('#phaseId').val()
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

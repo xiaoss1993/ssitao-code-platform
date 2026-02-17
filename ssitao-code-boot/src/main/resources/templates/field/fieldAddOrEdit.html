@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${#strings.isEmpty(field.id)}?'新建字段':'编辑字段'"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate" class="pb100" >
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${field.id}"/>
+			<input type="hidden" id="isCommon" name="isCommon" th:value="${field.isCommon}"/>
+			<input type="hidden" id="fieldType" name="fieldType" th:value="${field.fieldType}"/>
+			<input type="hidden" id="dataType" name="dataType" th:value="${field.dataType}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${field.objectType}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本属性"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole hide" field="colName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="字段列名"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="colName" type="text" th:value="${field.colName}" placeholder="请输入字段列名" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="showName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="字段名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="showName" type="text" th:value="${field.showName}" id="showName" placeholder="请输入字段名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置字段"></span></div>
+							<div class="field-div field-content">
+								<select id="preField" class="selectpicker" name="preFieldId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preFieldList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="htmlType" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="字段类型"></span></div>
+							<div class="field-div field-content">
+								<select id="htmlType" class="selectpicker" name="htmlType" data-live-search="false" data-live-search-style="begins" title="请选择" onchange="changeFieldType(this)" required th:disabled="${isEdit} eq 'Y' ? 'disabled':'false'">
+									<optgroup label="基本类型">
+										<option th:each="select:${fieldTypeList}" th:if="${select.type eq 'B'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+									</optgroup>
+									<optgroup label="高级类型">
+										<option th:each="select:${fieldTypeList}" th:if="${select.type eq 'H'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+									</optgroup>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="提示"></span><div class="field-div field-help"><i class="zmdi zmdi-info help-1" attrCalss="help-1" attrTip="用于表单页面提示"></i></div></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${field.remark}" placeholder="请输入提示"></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="paramSet" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="参数设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="displayWidth" htype="NUMBER">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="字段列宽"></span><div class="field-div field-help"><i class="zmdi zmdi-info help-2" attrCalss="help-2" attrTip="用于列表页面显示宽度"></i></div></div>
+							<div class="field-div field-content-num">
+								<input type="text" name="displayWidth" class="num-input" deci="0" placeholder="请输入字段列宽" th:value="${field.displayWidthStr}" isInt="Y" required/>
+								<div class="sumtips">像素</div>
+							</div>
+						</li>
+						<li class="field-li content-whole check" field="layout" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">字段占比</span><div class="field-div field-help"><i class="zmdi zmdi-info help-3" attrCalss="help-3" attrTip="用于表单页面显示宽度"></i></div></div>
+							<div class="field-div field-layout">
+								<input type="hidden" name="layout" id="layout" placeholder="0" th:value="${field.layout}" required data-target="field-layout"/>
+								<span class="t" value="T" th:disabled="${field.htmlType eq 'FORMATAREA' or field.htmlType eq 'SIGN'}" th:class="${field.layout eq 'T' ? 't cur' : 't'}">半行</span>
+								<span class="f" value="F" th:class="${field.layout eq 'F' ? 'f cur' : 'f'}">一行</span>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="isRequired" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">必填</span><div class="field-div field-help"><i class="zmdi zmdi-info help-6" attrCalss="help-6" attrTip="用于表单页面字段设置必填"></i></div></div>
+							<div class="field-div field-content">
+								<input type="checkbox" name="isRequired" th:value="${field.isRequired}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.isRequired} eq 'Y'" />
+							</div>
+						</li>
+						<li class="field-li content-whole" field="isRecorded" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">记录</span><div class="field-div field-help"><i class="zmdi zmdi-info help-7" attrCalss="help-7" attrTip="用于表单页面字段值发生变化时，记录到操作日志中"></i></div></div>
+							<div class="field-div field-content">
+								<input type="checkbox" name="isRecorded" th:value="${field.isRecorded}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.isRecorded} eq 'Y'" />
+							</div>
+						</li>
+						
+						<li class="field-li content-whole hide" attrType="liHide" id="TEXT" th:style="${notAlowChange} ? 'display:none' : '' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="textLength" htype="NUMBER">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="内容长度"></span><div class="field-div field-help"><i class="zmdi zmdi-info help-4" attrCalss="help-4" attrTip="允许最大输入字节数"></i></div></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="textLength" id="textLength" class="num-input" placeholder="请输入内容长度 " th:value="${field.textLength}" min="2" max="4000" required/>
+										<div class="sumtips">字节</div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="textDefault" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content textWrap wordSumTotal">
+										<input class="form-control" name="textDefault" id="textDefault" type="text" placeholder="请输入默认值" th:value="${field.textDefault}" autocomplete="off"  htype="TEXT" maxlength="128">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="AREA" th:style="${notAlowChange} ? 'display:none' : '' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="areaRows" htype="NUMBER">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="行数"></span></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="areaRows" id="areaRows" class="num-input" placeholder="请输入行数" th:value="${field.areaRows}"/>
+										<div class="sumtips">行</div>
+									</div>
+								</li>
+								<li class="field-li content-whole check" field="areaIsLimit" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="限制长度"></span></div>
+								    <div class="field-div field-content">
+										<input type="checkbox" name="areaIsLimit" th:value="${field.areaIsLimit}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.areaIsLimit} eq 'Y'" th:disabled="${isEdit} eq 'Y'"/>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="areaLength" htype="NUMBER" th:style="${field.areaIsLimit} eq 'N' ? 'display:none' : '' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="内容长度"></span><div class="field-div field-help"><i class="zmdi zmdi-info help-3" attrCalss="help-3" attrTip="文本框可输入最多字数"></i></div></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="areaLength" id="areaLength" class="num-input" placeholder="请输入内容长度" th:value="${field.areaLength}"/>
+										<div class="sumtips">字节</div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="areaDefault" htype="AREA">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content textWrap wordSumTotal">
+										<div class="textarea-box">
+											<textarea rows="8" class="input_textarea" maxlength="1024" name="areaDefault" id="areaDefault" th:text="${field.areaDefault}"></textarea>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="SELECT" th:style="${notAlowChange} ? 'display:none' : '' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="isSeached" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">显示搜索框</span></div>
+									<div class="field-div field-content">
+										<input type="checkbox" name="isSeached" th:value="${field.isSeached}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.isSeached} eq 'Y'" />
+									</div>
+								</li>
+								<li class="field-li content-whole" field="setCascade" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">设置为级联</span></div>
+									<div class="field-div field-content">
+										<input type="checkbox" name="setCascade" th:value="${field.setCascade}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.setCascade} eq 'Y'" />
+									</div>
+								</li>
+								<li class="field-li content-whole" field="selectSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content">
+										<select id="selectSource" class="selectpicker" name="selectSource" data-live-search="true" data-live-search-style="begins" title="请选择">
+											<option value="">请选择</option>
+											<option th:each="select:${field.sourceList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+										</select>
+									</div>
+									<div class="mng-btn" onclick="addDataSource($(this))"><i class="zmdi zmdi-settings cp cp-theme" title="维护数据源"></i></div>
+								</li>
+								<li class="field-li content-whole" field="selectDefault" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content">
+										<select id="selectDefault" class="selectpicker" name="selectDefault" data-live-search="true" data-live-search-style="begins" title="请选择">
+											<option value="">请选择</option>
+											<option th:each="select:${field.optionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+										</select>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="RADIO">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="radioSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content">
+										<select id="radioSource" class="selectpicker" name="radioSource" data-live-search="true" data-live-search-style="begins" title="请选择">
+											<option value="">请选择</option>
+											<option th:each="select:${field.sourceList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+										</select>
+									</div>
+									<div class="mng-btn" onclick="addDataSource($(this))"><i class="zmdi zmdi-settings cp cp-theme" title="维护数据源"></i></div>
+								</li>
+								<li class="field-li content-whole check" field="radioDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check" id="radioDefault">
+										<div class="radio" th:each="radio,radioStat:${field.optionList}">
+											<input type="radio" name="radioDefault" th:id="'radioDefault' + ${radioStat.index}" th:value="${radio.id}" data-target="radio" th:checked="${radio.checked}"/>
+											<label th:for="'radioDefault' + ${radioStat.index}" th:text="${radio.name}"></label>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="CHECKBOX">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="checkboxSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content">
+										<select id="checkboxSource" class="selectpicker" name="checkboxSource" data-live-search="true" data-live-search-style="begins" title="请选择">
+											<option value="">请选择</option>
+											<option th:each="select:${field.sourceList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+										</select>
+									</div>
+									<div class="mng-btn" onclick="addDataSource($(this))"><i class="zmdi zmdi-settings cp cp-theme" title="维护数据源"></i></div>
+								</li>
+								<li class="field-li content-whole check" field="checkboxDefault" htype="CHECKBOX">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check" id="checkboxDefault">
+										<div class="checkbox" th:each="checkbox,checkboxStat:${field.optionList}">
+											<input type="checkbox" name="checkboxDefault" th:id="'checkboxDefault'+${checkboxStat.index}" th:value="${checkbox.id}" data-target="checkbox" th:checked="${checkbox.checked}">
+											<label th:for="'checkboxDefault'+${checkboxStat.index}" th:text="${checkbox.name}"></label>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="NUMBER">
+							<ul class="li-ul">
+								<li class="field-li content-whole check" field="numberFormat" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="格式"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio" th:style="${field.colName} eq 'LampSign' ? 'display:none' : '' ">
+										    <input type="radio" name="numberFormat" id="_numberFormat1" value="D" data-target="radio" th:checked="${field.numberFormat} eq 'D'" th:disabled="${notAlowChange}"/>
+										    <label for="_numberFormat1" th:text="数字（包括：整数、小数、负数）"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="numberFormat" id="_numberFormat3" value="I" data-target="radio" th:checked="${field.numberFormat} eq 'I'" th:disabled="${notAlowChange}"/>
+										    <label for="_numberFormat3" th:text="指示灯"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="unitId" htype="SELECT" th:style="${field.numberFormat} ne 'I'? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="单位"></span></div>
+									<div class="field-div field-content">
+										<select id="unitId" class="selectpicker" name="unitId" data-live-search="true" data-live-search-style="begins" title="请选择" th:disabled="${notAlowChange}">
+											<option value="">请选择</option>
+											<optgroup label="时间">
+												<option th:each="select:${unitTypeList}" th:if="${select.type eq 'TIME'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+											</optgroup>
+											<optgroup label="财务">
+												<option th:each="select:${unitTypeList}" th:if="${select.type eq 'MONEY'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+											</optgroup>
+											<optgroup label="长度">
+												<option th:each="select:${unitTypeList}" th:if="${select.type eq 'LENGTH'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+											</optgroup>
+											<optgroup label="质量">
+												<option th:each="select:${unitTypeList}" th:if="${select.type eq 'QUALITY'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+											</optgroup>
+											<optgroup label="其他">
+												<option th:each="select:${unitTypeList}" th:if="${select.type eq 'OTHER'}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+											</optgroup>
+										</select>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="numberMin" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="最小值"></span></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="numberMin" class="num-input" placeholder="请输入最小值" th:value="${field.numberMin}"/>
+										<div class="sumtips"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="numberMax" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="最大值"></span></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="numberMax" class="num-input" placeholder="请输入最大值" th:value="${field.numberMax}"/>
+										<div class="sumtips"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="numberValue" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="numberValue" class="num-input" placeholder="请输入默认值" th:value="${field.numberValue}"/>
+										<div class="sumtips"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="numberPrecision" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="小数位数"></span></div>
+									<div class="field-div field-content-num">
+										<input type="text" name="numberPrecision" class="num-input" placeholder="请输入小数位数" th:value="${field.numberPrecision}"/>
+										<div class="sumtips">位</div>
+									</div>
+								</li>
+								
+								<li class="field-li content-whole" field="greenLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="绿灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text mr5"><i class="zmdi zmdi-lamp fz22 mr5 green-light"></i>≤</div> 
+										<input type="text" name="greenLight" class="num-input" placeholder="请输入绿灯最大值" th:value="${field.greenLight}"/>
+										<div class="sumtips"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="redLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="红灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text mr5"><i class="zmdi zmdi-lamp fz22 mr5 red-light"></i>></div>
+										<input type="text" name="redLight" class="num-input" placeholder="请输入红灯最小值" th:value="${field.redLight}"/>
+										<div class="sumtips"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="yellowLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="黄灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text mt5">
+											<span id="yellowLight1" class="mr5" th:text="${#strings.isEmpty(field.greenLight) ? '0' : field.greenLight}">0</span>< <i class="zmdi zmdi-lamp fz22 mr5 ml5 yellow-light"></i> ≤<span id="yellowLight2" class="ml5" th:text="${#strings.isEmpty(field.redLight) ? '0' : field.redLight}">0</span>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="DATE" th:style="${notAlowChange} ? 'display:none':'display:flex'">
+							<ul class="li-ul">
+								<li class="field-li content-whole check" field="dateFormatRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="格式"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule1" value="YMD" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMD'" >
+										    <label for="_dateFormatRule1" title="例如：2022-08-08">日期</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule3" value="YMDHms" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDHms'" >
+										    <label for="_dateFormatRule3" title="例如：2022-08-08 08:08:08">时间</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule6" value="YMDscope" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDscope'" >
+										    <label for="_dateFormatRule6" title="例如：2022-08-08-2023-08-08">日期范围</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule7" value="YMDHmsscope" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDHmsscope'" >
+										    <label for="_dateFormatRule7" title="例如：2022-08-08 08:08:08-2023-08-08 08:08:08">时间范围</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule4" value="YM" data-target="radio" th:checked="${field.dateFormatRule} eq 'YM'" >
+										    <label for="_dateFormatRule4" title="例如：2022-08">年月</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule5" value="Y" data-target="radio" th:checked="${field.dateFormatRule} eq 'Y'" >
+										    <label for="_dateFormatRule5" title="例如：2022">年</label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole check" field="dateDefaultRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule1" value="N" data-target="radio" th:checked="${field.dateDefaultRule} eq 'N'" >
+										    <label for="_dateDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule2" value="CD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'CD'" >
+										    <label for="_dateDefaultRule2" th:text="当前日期"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule3" value="FD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'FD'" >
+										    <label for="_dateDefaultRule3" th:text="固定日期"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule4" value="PD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'PD'" >
+										    <label for="_dateDefaultRule4" th:text="周期日期"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="fixedDate" htype="DATE" th:style="${field.dateDefaultRule} eq 'FD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">固定日期</span></div>
+									<div class="field-div field-content">
+										<input class="form-control form-control-date" name="fixedDate" th:value="${field.fixedDate}" type="text" placeholder="请输入固定日期" autocomplete="off" readonly="readonly" htype="DATE" th:required="${field.dateDefaultRule} eq 'FD'">
+										<i class="zmdi zmdi-calendar"></i>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="periodDate" htype="SELECT" setCascade="Y" th:style="${field.dateDefaultRule} eq 'PD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">周期日期</span></div>
+									<div class="field-div field-content cascade" id="periodDateSign">
+										<div class="cascader-panel-wrap">
+											<div class="cascader-panel upward"></div>
+										</div>
+										<input type="hidden" attrsign="casCadeData" value="">
+										<input type="hidden" attrSign="_levelValue" name="periodDateLevelValue" th:value="${field.periodDateLevelValue}">
+										<input type="hidden" attrSign="_ids" name="periodDate" th:value="${field.periodDate}" data-target="periodDateSign">
+										<input class="form-control form-control-select" id="periodDate" attrSign="_names" name="periodDateText" onclick="selectCascadeMenu(jQuery(this))" th:value="${field.periodDateText}" type="text" placeholder="请选择" autocomplete="off" readonly="readonly" htype="SELECT" th:required="${field.dateDefaultRule} eq 'PD'">
+										<i class="zmdi zmdi-caret-down select"></i>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="USER" th:style="${notAlowChange} ? 'display:none':'display:flex'">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="userIsMul" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许多选</span></div>
+									<div class="field-div field-content">
+										<input type="checkbox" name="userIsMul" th:value="${field.userIsMul}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.userIsMul} eq 'Y' " th:disabled="${isEdit} eq 'Y'"/>
+									</div>
+								</li>
+								<li class="field-li content-whole check" field="userDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule1" value="N" data-target="radio" th:checked="${field.userDefaultRule} eq 'N' ">
+										    <label for="_userDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule2" value="CS" data-target="radio" th:checked="${field.userDefaultRule} eq 'CS' ">
+										    <label for="_userDefaultRule2" th:text="当前操作者"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule3" value="FU" data-target="radio" th:checked="${field.userDefaultRule} eq 'FU' ">
+										    <label for="_userDefaultRule3" th:text="固定人员"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule4" value="SR" data-target="radio" th:checked="${field.userDefaultRule} eq 'SR' ">
+										    <label for="_userDefaultRule4" th:text="系统角色"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule5" value="PR" data-target="radio" th:checked="${field.userDefaultRule} eq 'PR' ">
+										    <label for="_userDefaultRule5" th:text="项目角色"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule6" value="DR" data-target="radio" th:checked="${field.userDefaultRule} eq 'DR' ">
+										    <label for="_userDefaultRule6" th:text="部门角色"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="user" htype="USER" th:style="${field.userDefaultRule} eq 'FU' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">固定人员</span></div>
+									<div class="field-div field-content user">
+										<div class="user-list">
+											<div class="cp" th:each="user:${field.userDefaultList}" th:attr="userId=${user.id}" onclick="viewUser()">
+												<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+												<div class="user-col">
+													<img th:src="${user.picId}"/>
+													<span th:text="${user.name}"></span>
+												</div>
+											</div>
+										</div>
+										<div class="user-add">
+											<input type="hidden" attrsign="_ids" name="userDefault" th:value="${field.userDefault}" data-target="user-add" hType="user" th:required="${field.userDefaultRule} eq 'FU'" >
+											<div class="cp form-control-popup" htype="USER" ismul><img src="/img/user/user-add.png"/></div>
+											<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+										</div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="sys" htype="ROLE_SYS" th:style="${field.userDefaultRule} eq 'SR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">系统角色</span></div>
+									<div class="field-div field-content">
+										<input type="hidden" attrSign="_ids" name="userSysRoleDefault" th:value="${field.userSysRoleDefault}">
+										<input class="form-control form-control-popup" name="userSysRoleDefaultText" attrName="userDefaultText" th:value="${field.userSysRoleDefaultText}" th:required="${field.userDefaultRule} eq 'SR'" type="text" placeholder="请选择系统角色" autocomplete="off" readonly="readonly" htype="ROLE_SYS">
+										<i class="zmdi zmdi-search"></i>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="pjt" htype="TEXT" th:style="${field.userDefaultRule} eq 'PR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">项目角色</span></div>
+									<div class="field-div field-content textWrap wordSumTotal">
+										<input class="form-control" name="userPjtRoleDefault" attrName="userPjtRoleDefault" th:value="${field.userPjtRoleDefault}" th:required="${field.userDefaultRule} eq 'PR'" type="text" htype="TEXT" maxlength="128" placeholder="请输入项目角色" autocomplete="off" htype="ROLE_PJT">
+									</div>
+								</li>
+								<li class="field-li content-whole" field="dpt" htype="TEXT" th:style="${field.userDefaultRule} eq 'DR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">部门角色</span></div>
+									<div class="field-div field-content textWrap wordSumTotal">
+										<input class="form-control" name="userDptRoleDefault" attrName="userDptRoleDefault" th:value="${field.userDptRoleDefault}" th:required="${field.userDefaultRule} eq 'DR'" type="text" htype="TEXT" maxlength="128" placeholder="请输入部门角色" autocomplete="off" htype="ROLE_DPT">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="FORMATAREA">
+							<ul class="li-ul">
+								<li class="field-li content-whole" field="formatareaDefault" htype="FORMATAREA">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content field-content-summernote">
+										<input type="hidden" name="formatareaDefault" htype="FORMATAREA" th:value="${field.formatareaDefault}"/>
+										<div class="summernote"></div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="DEPT">
+							<ul class="li-ul">
+								<li class="field-li content-whole check" field="deptDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule1" value="N" data-target="radio" th:checked="${field.deptDefaultRule} eq 'N' ">
+										    <label for="_deptDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule2" value="CD" data-target="radio" th:checked="${field.deptDefaultRule} eq 'CD' ">
+										    <label for="_deptDefaultRule2" th:text="当前部门"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule3" value="FD" data-target="radio" th:checked="${field.deptDefaultRule} eq 'FD' ">
+										    <label for="_deptDefaultRule3" th:text="固定部门"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="dept" htype="DEPT" th:style="${field.deptDefaultRule} eq 'FD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">固定部门</span></div>
+									<div class="field-div field-content">
+										<input type="hidden" name="deptDefault" th:value="${field.deptDefault}">
+										<input class="form-control form-control-popup" name="deptDefaultText" type="text" th:value="${field.deptDefaultText}" th:required="${field.deptDefaultRule} eq 'FD'" placeholder="请输入固定部门" autocomplete="off" readonly="readonly" htype="DEPT">
+										<i class="zmdi zmdi-search"></i>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole hide" attrType="liHide" id="SIGN">
+							<ul class="li-ul">
+								<li class="field-li content-whole check" field="signDefaultRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="标签风格"></span></div>
+									<div class="field-div field-content-check">
+										 <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule3" value="JJ" data-target="radio" th:checked="${field.signDefaultRule} eq 'JJ' ">
+										    <label for="_signDefaultRule3" th:text="简洁"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule1" value="ZT" data-target="radio" th:checked="${field.signDefaultRule} eq 'ZT' ">
+										    <label for="_signDefaultRule1" th:text="主题"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule2" value="CT" data-target="radio" th:checked="${field.signDefaultRule} eq 'CT' ">
+										    <label for="_signDefaultRule2" th:text="传统"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule4" value="BZ" data-target="radio" th:checked="${field.signDefaultRule} eq 'BZ' ">
+										    <label for="_signDefaultRule4" th:text="备注"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule5" value="ZDY" data-target="radio" th:checked="${field.signDefaultRule} eq 'ZDY' ">
+										    <label for="_signDefaultRule5" th:text="自定义"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole" field="BGColor" htype="TEXT" th:style="${field.signDefaultRule} ne 'ZDY' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.option.setColor}"></span></div>
+									<div class="field-div field-content set-color">
+										<input id="bgColor" name="bgColor" type="hidden" th:value="${field.bgColor}">
+										<input id="fColor" name="fColor" type="hidden" th:value="${field.fColor}">
+										<div class="palette" th:style="'background-color:' + ${field.bgColor} + ';border-color:' + ${field.bgColor} + ';color:' + ${field.fColor}"><i class="zmdi zmdi-palette mr5" th:style="@{'color:'+${field.fColor}}"></i><span class="ml15" th:text="#{field.option.palette}"></span></div>
+										<div class="paigusu" type="bg" th:text="#{field.option.bgColor}"></div>
+										<div class="paigusu" type="fd" th:text="#{field.option.fColor}"></div>
+									</div>
+								</li>
+								<li class="field-li content-whole sign" field="JJName" htype="SIGN" th:style="${field.signDefaultRule} eq 'JJ' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title3" th:style="'color:' + ${field.bgColor} + ';border-bottom:1px solid ' + ${field.bgColor}">
+										<i class="zmdi zmdi-hdr-strong mr10"></i>
+										<div class="title show-name" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="ZTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'ZT' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title2" th:style="'border-bottom:1px solid ' + ${field.bgColor}">
+										<div class="title-box" th:style="'background-color:' + ${field.bgColor}">
+											<div class="title show-name" th:style="'color:' + ${field.fColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+											<div class="square"></div>
+										</div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="CTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'CT' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title1 show-name" th:style="'border-left:10px solid ' + ${field.bgColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">
+										显示名称
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="BZName" htype="SIGN" th:style="${field.signDefaultRule} eq 'BZ' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title4 remark-content" th:style="'background-color:' + (${field.bgColor} eq 'var(--theme)'?'#fff':${field.bgColor}) + ';color:' + (${field.fColor} eq 'var(--font-color)'?'#555':${field.fColor})" >
+										<div class="tip-title mb10" th:style="'color:' + (${field.fColor} eq 'var(--font-color)'?'#555':${field.fColor})" ><i class="fa fa-info-circle mr10 fz20"></i><span class="fz16 show-name" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</span></div>
+										<div class="tip-content" th:utext="${#strings.isEmpty(field.remark) ? '备注内容' : field.remark }"></div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole" field="extendClass" htype="TEXT" th:style="${field.signDefaultRule} eq 'ZDY' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="扩展程序"></span></div>
+									<div class="field-div field-content textWrap wordSumTotal">
+										<input class="form-control" name="extendClass" th:value="${field.extendClass}" type="text" placeholder="请输入扩展程序类路径，如:com.dream.extend.Program" autocomplete="off"  htype="TEXT" maxlength="100">
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+					
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script src="/js/field/field.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('FIELD');
+			
+			//改变字段类型
+			changeFieldType($('#htmlType'), true);
+			
+			$('input[htype="FORMATAREA"]').each(function() {
+				$(this).next('.summernote').summernote('code', $(this).val());
+			});
+			
+			//改变显示名称时，同步修改标签显示名称
+			$('#showName').on('change', function() {
+				$('.show-name').text($(this).val());
+			});
+			//改变备注时，同步改变标签备注内容
+			$('#remarkContent').on('change', function() {
+				$('.remark-content .tip-content').html($(this).val().replace(/\n/g, '<br/>'));
+			});
+			
+			$('#textLength').on('change', function() {
+				$('#textDefault').attr('maxLength', Number($(this).val())/2);
+				$('#textDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			$('#areaLength').on('change', function() {
+				$('#areaDefault').attr('maxLength', Number($(this).val())/2);
+				$('#areaDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			//数字格式限制
+			$('input[name="numberFormat"]').click(function() {
+				var $li = $(this).closest('li');
+				if($(this).val() == 'I') {
+					$li.nextAll('li[ltype="NUMBER"]').hide();
+					$li.nextAll('li[field="unitId"]').hide();
+					$li.nextAll('li[ltype="LIGHT"]').show();
+				}else {
+					$li.nextAll('li[ltype="NUMBER"]').show();
+					$li.nextAll('li[field="unitId"]').show();
+					$li.nextAll('li[ltype="LIGHT"]').hide();
+				}
+			});
+			
+			//数字最大值、最小值、默认值限制
+			$('li[htype="NUMBER"] .num-input').on('change', function() {
+				var cValue = parseFloat($(this).val());
+				if($(this).attr('name') == 'numberMin') {
+					var maxValue = parseFloat($('input[name="numberMax"]').val());
+					var dValue = parseFloat($('input[name="numberValue"]').val());
+					if(maxValue) {
+						if(cValue > maxValue) {
+							$(this).val('').focus();
+							layer.msg('最小值不能大于最大值', {time: 3000});
+						}
+					}
+					if(dValue) {
+						if(cValue > dValue) {
+							$(this).val('').focus();
+							layer.msg('最小值不能大于默认值', {time: 3000});
+						}
+					}
+				}else if($(this).attr('name') == 'numberMax') {
+					var minValue = parseFloat($('input[name="numberMin"]').val());
+					var dValue = parseFloat($('input[name="numberValue"]').val());
+					if(minValue) {
+						if(cValue < minValue) {
+							$(this).val('').focus();
+							layer.msg('最大值不能小于最小值', {time: 3000});
+						}
+					}
+					if(dValue) {
+						if(cValue < dValue) {
+							$(this).val('').focus();
+							layer.msg('最大值不能小于默认值', {time: 3000});
+						}
+					}
+				}else if($(this).attr('name') == 'numberMax') {
+					var minValue = parseFloat($('input[name="numberMin"]').val());
+					var dValue = parseFloat($('input[name="numberValue"]').val());
+					if(minValue) {
+						if(cValue < minValue) {
+							$(this).val('').focus();
+							layer.msg('最大值不能小于最小值', {time: 3000});
+						}
+					}
+					if(dValue) {
+						if(cValue < dValue) {
+							$(this).val('').focus();
+							layer.msg('最大值不能小于默认值', {time: 3000});
+						}
+					}
+				}else if($(this).attr('name') == 'numberValue') {
+					var minValue = parseFloat($('input[name="numberMin"]').val());
+					var maxValue = parseFloat($('input[name="numberMax"]').val());
+					if(minValue) {
+						if(cValue < minValue) {
+							$(this).val('').focus();
+							layer.msg('默认值不能小于最小值', {time: 3000});
+						}
+					}
+					if(maxValue) {
+						if(cValue > maxValue) {
+							$(this).val('').focus();
+							layer.msg('默认值不能大于最大值', {time: 3000});
+						}
+					}
+				}else if($(this).attr('name') == 'numberPrecision') {
+					if(cValue) {
+						cValue = parseInt(cValue);
+					}
+					$(this).val(cValue);
+				}else if($(this).attr('name') == 'greenLight') {
+					var redValue = parseFloat($('input[name="redLight"]').val());
+					if(cValue) {
+						if(cValue > redValue || cValue == redValue) {
+							cValue = 0;
+							$(this).val('').focus();
+							layer.msg('绿灯值不能大于或等于红灯值', {time: 3000});
+						}
+						$('#yellowLight1').text(cValue);
+					}
+					$(this).val(cValue);
+				}else if($(this).attr('name') == 'redLight') {
+					var greenValue = parseFloat($('input[name="greenLight"]').val());
+					if(cValue) {
+						if(cValue < greenValue || cValue == greenValue) {
+							cValue = 0;
+							$(this).val('').focus();
+							layer.msg('红灯值不能小于或等于绿灯值', {time: 3000});
+						}
+						$('#yellowLight2').text(cValue);
+					}
+					$(this).val(cValue);
+				}
+			});
+			
+			//日期默认值切换
+			$('input[name="dateDefaultRule"]').click(function() {
+				var $li = $(this).closest('li');
+				var value = $(this).val();
+				$('input[name="fixedDate"], input[name="periodDate"]').removeAttr("required");
+				if(value == 'N' || value == 'CD') {
+					$li.nextAll('li[field="fixedDate"]').hide();
+					$li.nextAll('li[field="periodDate"]').hide();
+				}else if(value == 'FD') {
+					$li.nextAll('li[field="fixedDate"]').show();
+					$li.nextAll('li[field="periodDate"]').hide();
+					$('input[name="fixedDate"]').attr("required", true);
+				}else if(value == 'PD') {
+					$li.nextAll('li[field="fixedDate"]').hide();
+					var $periodDate = $li.nextAll('li[field="periodDate"]');
+					$periodDate.show();
+					$('input[name="periodDate"]').attr("required", true);
+					
+					var $cascadeInput = $periodDate.find('input[attrSign="casCadeData"]');
+					if(!$cascadeInput.val()) {
+						$cascadeInput.val(JSON.stringify(_data));
+					}
+				}
+			});
+			
+			//选择日期格式，如果不是日期和时间，则隐藏默认值选项
+			$('input[name="dateFormatRule"]').click(function() {
+				var $li = $(this).closest('li');
+				var value = $(this).val();
+				if(value != 'YMD' && value != 'YMDHms') {
+					$('input[name="dateDefaultRule"][value="N"]').click();
+					$('li[field="dateDefaultRule"]').hide();
+				}else {
+					$('li[field="dateDefaultRule"]').show();
+				}
+			});
+			
+			//用户默认值切换
+			$('input[name="userDefaultRule"]').click(function() {
+				var $li = $(this).closest('li');
+				var value = $(this).val();
+				$li.nextAll().hide();
+				
+				$('input[attrName="userDefaultText"]').removeAttr("required");
+				var $userDefaultLi;
+				if(value == 'FU') {
+					$userDefaultLi = $li.nextAll('li[field="user"]');
+				}else if(value == 'SR') {
+					$userDefaultLi = $li.nextAll('li[field="sys"]');
+				}else if(value == 'PR') {
+					$userDefaultLi = $li.nextAll('li[field="pjt"]');
+				}else if(value == 'DR') {
+					$userDefaultLi = $li.nextAll('li[field="dpt"]');
+				}
+				if($userDefaultLi) {
+					$userDefaultLi.show();
+					$userDefaultLi.find('input[attrName="userDefaultText"]').attr('required', true);
+				}
+			});
+			
+			//部门默认值切换
+			$('input[name="deptDefaultRule"]').click(function() {
+				var $li = $(this).closest('li');
+				var value = $(this).val();
+				$li.nextAll().hide();
+				$('input[name="deptDefaultText"]').removeAttr("required");
+				if(value == 'FD') {
+					$li.nextAll('li[field="dept"]').show();
+					$li.nextAll('li[field="dept"]').find('input[name="deptDefaultText"]').attr('required', true);
+				}
+			});
+			
+			//标签字段默认值切换
+			$('input[name="signDefaultRule"]').click(function() {
+				var $li = $(this).closest('li');
+				var value = $(this).val();
+				$li.nextAll().hide();
+				if(value == 'ZT' || value == 'CT' || value == 'JJ' || value == 'BZ') {
+					$li.nextAll('li[field="BGColor"]').show();
+					$li.nextAll('li[field="'+value+'Name"]').css('display', 'flex');
+					$('input[name="extendClass"]').removeAttr("required");
+				}else if(value == 'ZDY') {
+					$li.nextAll('li[field="extendClass"]').show();
+					$('input[name="extendClass"]').attr("required", true);
+				}
+			});
+			
+			//设置颜色
+			$('.paigusu').paigusu({
+				recommend : '255,87,34,1|255,153,72,1|249,189,101,1|4,190,91,1|70,182,254,1|0,150,136,1|153,136,255,1|121,85,72,1|158,158,158,1|0,0,0,1',
+				color : '#050505'
+			},function(event,obj){
+				var hex = obj.hex, $liUl = $('.paigusu').closest('.li-ul');
+				if($(event).attr('type') == 'bg') {
+					$('.palette').css({'background-color':'#' + hex, 'border':'1px solid '+ '#' + hex});
+					$('#bgColor').val('#' + hex);
+					$liUl.find('.field-sign-title2, .field-sign-title3').css('border-bottom', '1px solid ' + '#' + hex);
+					$liUl.find('.field-sign-title2 .title-box, .field-sign-title4').css('background-color', '#' + hex);
+					$liUl.find('.field-sign-title3').css('color', '#' + hex);
+					$liUl.find('.field-sign-title1').css('border-left', '10px solid ' + '#' + hex);
+					
+					$('.palette').css('color','#ffffff');
+					$('#fColor').val('#ffffff');
+					$(".zmdi-palette").css('color', '#ffffff');
+					$liUl.find('.field-sign-title2 .title, .field-sign-title4, .field-sign-title4 .show-name, .field-sign-title4 .zmdi').css('color', '#ffffff');
+				}else {
+					$('.palette').css('color','#' + hex);
+					$('#fColor').val('#' + hex);
+					$(".zmdi-palette").css('color', '#' + hex);
+					$liUl.find('.field-sign-title2 .title, .field-sign-title4, .field-sign-title4 .show-name, .field-sign-title4 .zmdi').css('color', '#' + hex);
+				}
+				$(".paigusu").hide();
+			});
+			
+			$(".palette").click(function() {
+				if($('.paigusu').is(':visible')) {
+					$('.paigusu').hide();
+				}else {
+					$('.paigusu').show();
+				}
+			});
+			
+			//设置字段占比
+			$(".field-layout span").click(function() {
+				if(!$(this).attr('disabled')) {
+					$(".field-layout span").removeClass('cur');
+					$(this).addClass('cur');
+					$('#layout').val($(this).attr('value'));
+				}
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var fieldData = $('#operate').serialize_plus();
+			if(fieldData.indexOf('userIsMul') < 0) {
+				fieldData += '&userIsMul=' + $('input[name="userIsMul"]').val();
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/save",
+				data : fieldData,// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						refreshList(true);
+						if(isContinue && isContinue == 'Y') {
+							resetPreFieldList(data.id);
+							$('input[name="showName"], input[name="colName"]').val('');
+						}else {
+							returnBackAndReLoad(false, false);
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		//重置前置字段
+		function resetPreFieldList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/getPreFieldList",
+				data : {
+					'objectType' : $('#objectType').val(),
+					'selectId': selectId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preField').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+		function changeFieldType(obj, isInit) {
+			var type = $(obj).val();
+			var $fieldLayout = $('.field-layout');
+			if(!isInit) {
+				$fieldLayout.find('span').removeClass('cur').removeAttr('disabled');
+				if(type == 'AREA' || type == 'FORMATAREA' || type == 'SIGN') {
+					$('#_layout2').prop("checked", true);
+					$fieldLayout.find('.f').addClass('cur');
+					$('#layout').val('F');
+					if(type == 'FORMATAREA' || type == 'SIGN') {
+						$fieldLayout.find('.o,.t,.s').attr('disabled', 'disabled');
+					}
+				}else {
+					$fieldLayout.find('.t').addClass('cur');
+					$('#layout').val('T');
+				}
+			}
+			$('li[attrType="liHide"]').addClass('hide');
+			$('#'+type).removeClass('hide');
+			initSourceSelect(type);
+		}
+		
+		//维护数据源
+		var sName, sSelectId;
+		function addDataSource($obj) {
+			var $select = $obj.prev().find('select');
+			sName = $select.attr('name');
+			sSelectId = $select.val();
+			
+			setDataSource($('#objectType').val(), sSelectId);
+		}
+		
+		//维护数据源后，刷新数据源选项
+		function refreshSource() {
+			showLoading();
+			$.ajax({
+				url : '/field/getSourceList',
+				type : "post",
+				data : {
+					'objectType' : $('#objectType').val()
+				},
+				success : function(r) {
+					var html = '<option value="">请选择</option>', item;
+					if(r) {
+						for(var i = 0; i < r.length; i++) {
+							item = r[i];
+							if(sSelectId && sSelectId == item.id) {
+								html += '<option selected="true" data-content="'+item.name+'" value="'+item.id+'"></option>';
+							}else {
+								html += '<option data-content="'+item.name+'" value="'+item.id+'"></option>';
+							}
+						}
+					}
+					
+					var $select = $('#'+ sName);
+					$select.html(html).selectpicker('refresh');
+					getDefaultOption($('#htmlType').val());
+					hideLoading();
+				}
+			});
+		}
+		
+		function initSourceSelect(type) {
+			if(type && (type == 'SELECT' || type == 'RADIO' || type == 'CHECKBOX')) {
+				$('#'+ type.toLowerCase() + 'Source').on('change', function() {
+					getDefaultOption(type);
+				});
+			}
+		}
+		
+		function getDefaultOption(type) {
+			var oSelectId = '', oName = type.toLowerCase() + 'Default', sourceId = $('#'+ type.toLowerCase() + 'Source').val();
+			if(sourceId) {
+				$.ajax({
+					url : '/field/getOptionList',
+					type : "post",
+					data : {
+						'sourceId' : sourceId,
+						'isSelect': 'Y'
+					},
+					success : function(r) {
+						var html = '', item;
+						if(type == 'SELECT') {
+							html = '<option value="">请选择</option>';
+							if(r) {
+								for(var i = 0; i < r.length; i++) {
+									item = r[i];
+									if(oSelectId && oSelectId == item.id) {
+										html += '<option selected="true" data-content="'+item.text+'" value="'+item.id+'"></option>';
+									}else {
+										html += '<option data-content="'+item.text+'" value="'+item.id+'"></option>';
+									}
+								}
+							}
+							$('#'+ oName).html(html).selectpicker('refresh');
+						}else if(type == 'RADIO') {
+							if(r) {
+								for(var i = 0; i < r.length; i++) {
+									item = r[i];
+									html += '<div class="radio">';
+									if(oSelectId && oSelectId == item.id) {
+										html += '<input type="radio" name="'+oName+'" id="_'+(oName + i)+'" value="'+item.id+'" data-target="radio" checked="true">';
+									}else {
+										html += '<input type="radio" name="'+oName+'" id="_'+(oName + i)+'" value="'+item.id+'" data-target="radio">';
+									}
+									html += '<label for="_'+(oName + i)+'">'+item.text+'</label>';
+									html += '</div>';
+								}
+							}
+							$('#'+ oName).html(html);
+						}else if(type == 'CHECKBOX') {
+							if(r) {
+								for(var i = 0; i < r.length; i++) {
+									item = r[i];
+									html += '<div class="checkbox">';
+									if(oSelectId && oSelectId == item.id) {
+										html += '<input type="checkbox" name="'+oName+'" id="_'+(oName + i)+'" value="'+item.id+'" data-target="checkbox" checked="true">';
+									}else {
+										html += '<input type="checkbox" name="'+oName+'" id="_'+(oName + i)+'" value="'+item.id+'" data-target="checkbox">';
+									}
+									html += '<label for="_'+(oName + i)+'">'+item.text+'</label>';
+									html += '</div>';
+								}
+							}
+							$('#'+ oName).html(html);
+						}
+						
+						hideLoading();
+					}
+				});
+			}else {
+				if(type == 'RADIO' || type == 'CHECKBOX') {
+					$('#'+ oName).html('<option value="">请选择</option>').selectpicker('refresh');
+				}else {
+					$('#'+ oName).html('').selectpicker('refresh');
+				}
+			}
+			
+		}
+		
+		function loadSourceList(sourceId) {
+			$.ajax({
+				url : '/field/getOptionList',
+				type : "post",
+				data : {
+					'sourceId': sourceId,
+					'isSelect': 'Y'
+				},
+				success : function(r) {
+					if(r.length) {
+						getOptionTree(r);
+					}
+					hideLoading();
+				}
+			});
+		}
+		
+		//开关
+		function switchOnOrOff($obj, type) {
+			var name = $obj.attr('name');
+			if(name && name == 'areaIsLimit') {
+				var $li = $obj.closest('li'), $nextLi = $li.next(), $defaultLi = $li.nextAll('li[field="areaDefault"]');
+				if(type == 'ON') {
+					$nextLi.show();
+					$defaultLi.find('textarea[name="areaDefault"]').attr('maxlength', $nextLi.find('input[name="areaLength"]').val());
+				}else {
+					$nextLi.hide();	
+					$defaultLi.find('textarea[name="areaDefault"]').attr('maxlength', '');
+				}
+				$defaultLi.find('.wordSumTotal').textSum();
+			}
+		}
+		
+		var _data = [{
+            value: 'WEEK',
+            label: '每周',
+            children: [{
+                value: 'mon',
+                label: '周一'
+            }, {
+                value: 'tue',
+                label: '周二'
+            }, {
+                value: 'wed',
+                label: '周三'
+            }, {
+                value: 'thu',
+                label: '周四'
+            }, {
+                value: 'fri',
+                label: '周五'
+            }, {
+                value: 'sat',
+                label: '周六'
+            }, {
+                value: 'sun',
+                label: '周日'
+            }]
+        }, {
+            value: 'MONTH',
+            label: '每月',
+            children: [{
+                value: '1',
+                label: '1日'
+            }, {
+                value: '2',
+                label: '2日',
+            }, {
+                value: '3',
+                label: '3日',
+            }, {
+                value: '4',
+                label: '4日',
+            }, {
+                value: '5',
+                label: '5日',
+            }, {
+                value: '6',
+                label: '6日',
+            }, {
+                value: '7',
+                label: '7日',
+            }, {
+                value: '8',
+                label: '8日',
+            }, {
+                value: '9',
+                label: '9日',
+            }, {
+                value: '10',
+                label: '10日',
+            }, {
+                value: '11',
+                label: '11日',
+            }, {
+                value: '12',
+                label: '12日',
+            }, {
+                value: '13',
+                label: '13日',
+            }, {
+                value: '14',
+                label: '14日',
+            }, {
+                value: '15',
+                label: '15日',
+            }, {
+                value: '16',
+                label: '16日',
+            }, {
+                value: '17',
+                label: '17日',
+            }, {
+                value: '18',
+                label: '18日',
+            }, {
+                value: '19',
+                label: '19日',
+            }, {
+                value: '20',
+                label: '20日',
+            }, {
+                value: '21',
+                label: '21日',
+            }, {
+                value: '22',
+                label: '22日',
+            }, {
+                value: '23',
+                label: '23日',
+            }, {
+                value: '24',
+                label: '24日',
+            }, {
+                value: '25',
+                label: '25日',
+            }, {
+                value: '26',
+                label: '26日',
+            }, {
+                value: '27',
+                label: '27日',
+            }, {
+                value: '28',
+                label: '28日',
+            }, {
+                value: '0',
+                label: '最后一日',
+            }]
+        }];
+		
+	</script>
+	
+</body>
+</html>

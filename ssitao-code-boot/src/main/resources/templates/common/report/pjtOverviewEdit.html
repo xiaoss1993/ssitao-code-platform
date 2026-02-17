@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+    .chartType .chart-box .right .type:hover{cursor:pointer;border:1px solid var(--theme);}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" th:value="${reportChart.id}"/>
+			<input type="hidden" name="objectType" th:value="${reportChart.objectType}"/>
+			<input type="hidden" name="parentId" th:value="${reportChart.parentId}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="报表名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${reportChart.name}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="simpleName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表简称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="simpleName" type="text" th:value="${reportChart.simpleName}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置报表"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${preReportList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li check content-whole preContent" field="status" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+					<div class="field-div field-content-check">
+					    <div class="radio">
+						    <input type="radio" name="pjtStatus" id="_status1" value="RN" th:checked="${reportChart.pjtStatus} eq 'RN'">
+						    <label for="_status1" th:text="使用中"></label>
+					    </div>
+						<div class="radio">
+						    <input type="radio" name="pjtStatus" id="_status2" value="CL" data-target="radio" th:checked="${reportChart.pjtStatus} eq 'CL'" required>
+						    <label for="_status2" th:text="关闭"></label>
+					    </div>
+					</div>
+				</li>
+				<li class="field-li content-whole check" field="width" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title">宽度占比</span><div class="field-div field-help"><i class="zmdi zmdi-info help-3" attrCalss="help-3" attrTip="控制报表图标显示宽度"></i></div></div>
+					<div class="field-div field-layout">
+						<input type="hidden" name="width" id="width" placeholder="0" th:value="${reportChart.width}" required data-target="field-layout"/>
+						<span class="t" value="1" th:class="${reportChart.width eq '1' ? 't cur' : 't'}" th:disabled="${reportChart.reportType eq 'MST'}">一倍</span>
+						<span class="s" value="2" th:class="${reportChart.width eq '2' ? 's cur' : 's'}" th:disabled="${reportChart.reportType eq 'MST'}">二倍</span>
+						<span class="f" value="3" th:class="${reportChart.width eq '3' ? 'f cur' : 'f'}" th:disabled="${reportChart.reportType eq 'MST'}">三倍</span>
+					</div>
+				</li>
+				<li class="field-li content-whole check" field="height" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title">高度占比</span><div class="field-div field-help"><i class="zmdi zmdi-info help-4" attrCalss="help-4" attrTip="控制报表图标显示高度"></i></div></div>
+					<div class="field-div field-layout">
+						<input type="hidden" name="height" id="height" placeholder="0" th:value="${reportChart.height}" required data-target="field-layout"/>
+						<span class="t" value="1" th:class="${reportChart.height eq '1' ? 't cur' : 't'}" th:disabled="${reportChart.reportType eq 'MST'}">一倍</span>
+						<span class="s" value="2" th:class="${reportChart.height eq '2' ? 's cur' : 's'}" th:disabled="${reportChart.reportType eq 'MST'}">二倍</span>
+						<span class="f" value="3" th:class="${reportChart.height eq '3' ? 'f cur' : 'f'}" th:disabled="${reportChart.reportType eq 'MST'}">三倍</span>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${reportChart.remark}" ></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.save}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			$('.btn-box').removeClass('hide');
+			
+			var chartType = $('#chartType').val();
+			if(chartType) {
+				$('.chartType .type[type="'+chartType+'"]').addClass('curType');
+			}
+			$('.chartType .type').click(function(){
+				$('.chartType .type').removeClass('curType');
+				$(this).addClass('curType');
+				$('#chartType').val($(this).attr('type'));
+			});
+			
+			$(".field-layout span").click(function() {
+				if(!$(this).attr('disabled')) {
+					$(this).closest('.field-layout').find('span').removeClass('cur');
+					$(this).addClass('cur');
+					$(this).prevAll('input').val($(this).attr('value'));
+				}
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/report/updatePjtOverview",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.closeAll();
+						parent.layer.msg(data.msg);
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('REPORT');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

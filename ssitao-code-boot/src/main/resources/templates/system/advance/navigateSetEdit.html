@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<style>
+	.page-ul .radioOrCheckboxStyle{padding-top:15px;}
+	.newTab {
+         width: 34px;
+         height: 34px;
+         border: 1px solid #e5e6e7;
+         text-align: center;
+         line-height: 34px;
+         border-radius: 4px;
+         margin-top: 2px;
+         margin-left: 2px;
+     }
+     .newTab .fa-plus {
+         font-size: 13px;
+         color: #c6c7c9;
+         font-weight: 100;
+     }
+     .newTab:hover {
+         cursor: pointer;
+         border: 1px solid var(--theme);
+     }
+     .newTab:hover .fa-plus {
+         color: var(--theme);
+     }
+     .page-ul .radioOrCheckboxStyle{padding-top:0px;background-color:transparent;box-shadow:none;}
+</style>
+<head th:include="include::headerContent"></head>
+
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="type" id="type" th:value="${type}"/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole sign" field="navigateSet" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">导航栏</div>
+					</div>
+					<div class="field-div field-sign-content">
+						<ul class="radioOrCheckboxStyle ui-sortable" id="sortable">
+							<li class="sortLi" th:each="menu:${menuList}" th:value="${menu.id}" >
+								<div class="operateBtn customBtn"><span class="btn deleteBtn" onclick="deleteMenu($(this))" title="删除"><i class="fa fa-trash-alt"></i></span></div>
+		        				<input type="checkbox" checked="checked" th:id="${menu.id}">
+		        				<label th:for="${menu.id}" th:text="${menu.name}"></label>
+			        		</li>
+					    	<li class="sortLi fixed newTab" onclick="addMenu()" title="添加菜单">
+					    		<i class="fa fa-layer-plus mr5"></i>
+					    	</li>
+					    	<li class="field-li content-whole textarea hide" htype="BTN">
+								<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center">
+									<input type="button" id="submit" class="layui-layer-btn0 btns cp mr0" onclick="saveNavigate()" th:value="#{common.save}"/>
+									<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="window.history.back();"></a>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn" th:classappend="${type} eq 'SYS' ? 'center':''">
+					<input class="layui-layer-btn0 btns cp" id="submit" onclick="saveNavigate()" type="submit" value="保存">
+					<a class="layui-layer-btn1 close-btn cp">取消</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> 
+		var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]];
+	</script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			if(type && type == 'SYS') {
+				$('.field-li[htype="BTN"]').removeClass('hide');
+			}else{
+				$('.btn-box').removeClass('hide');
+			}
+			
+			$("#sortable").sortable({
+	 	        start: function(event, ui) {},
+	 	        stop: function(event, ui) {},
+	 	       	items: 'li:not(.fixed)'
+	 	    });
+		});
+		
+		function addMenu() {
+			var selectIds = '';
+			$('.radioOrCheckboxStyle .sortLi').each(function() {
+				if(selectIds) {
+					selectIds += ',';
+				}
+				selectIds += $(this).attr('value');
+			});
+			
+			top.layer.open({
+		        type: 2,
+		        title: '选择菜单',
+		        maxmin: false,
+		        shadeClose: false, // 点击遮罩关闭层
+		        resize: true, //禁止弹出窗拉伸
+		        scrollbar:false,//禁用父页面滚动条
+		        hideBtn: true,
+		        btn: [$.i18n.prop('common.comfirm'), $.i18n.prop('common.cancel')], 
+		        area: ['500px', '520px'],
+		        content: ['sys/menu/menuTree?selectIds='+selectIds + '&type=' + $('#type').val(), 'no'],
+		        yes: function(index, layero){
+		        	var $body = top.layer.getChildFrame('body', index);
+		        	var id = '', name = '', html = '', $sortUl = $('.radioOrCheckboxStyle'), selectIds = '';
+		        	$body.find('.selected-ul li').each(function(){
+		        		id = $(this).attr('attrId'), name = $(this).find('.selected-name').text();	
+		        		if(selectIds) {
+		        			selectIds += ',';
+		        		}
+		        		selectIds += id;
+		        		if(!$sortUl.find('.sortLi[value="'+id+'"]').length) {
+			        		html += '<li class="sortLi" value="'+id+'">';
+			        		html += '	<div class="operateBtn customBtn"><span class="btn deleteBtn" onclick="deleteMenu($(this))" title="删除"><i class="fa fa-trash-alt"></i></span></div>';
+			        		html += '	<input type="checkbox" checked="checked" id="'+id+'">';
+			        		html += '	<label for="'+id+'">'+name+'</label>';
+			        		html += '</li>';
+		        		}
+		        	});
+		        	if(selectIds) {
+			        	$sortUl.find('.sortLi:not(.fixed)').each(function() {
+			        		if($(this).attr('value') && selectIds.indexOf($(this).attr('value')) < 0) {
+			        			$(this).remove();
+			        		}
+			        	});
+		        	}else{
+		        		$sortUl.find('.sortLi:not(.fixed)').remove();
+		        	}
+	        		$('.newTab').before(html);
+	        		$("#sortable").sortable({
+	    	 	        start: function(event, ui) {},
+	    	 	        stop: function(event, ui) {},
+	    	 	       	items: 'li:not(.fixed)'
+	    	 	    });
+	        		layer.close(index);
+		        },
+		        cancel: function(index, layero){  //右上角关闭按钮
+		        	layer.close(index);
+		        	hideLoading();
+		        }
+		    });
+		}
+		
+		function deleteMenu($obj) {
+			$obj.closest('.sortLi').remove();
+		}
+		
+		function saveNavigate() {
+			var selectIds = '';
+			$('.radioOrCheckboxStyle .sortLi').each(function() {
+				if(selectIds) {
+					selectIds += ',';
+				}
+				selectIds += $(this).attr('value');
+			});
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/advanceSet/saveAdvanceSet",
+				data : {'type':$('#type').val(), 'selectIds':selectIds},// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(type && type == 'SYS') {
+							parent.layer.msg(data.msg);
+							window.location.href = '/advanceSet/navigateSet?type='+$('#type').val();
+						}else{
+							window.location.reload();
+							if (window.parent !== window) {
+							    window.parent.location.reload();
+							}
+						}
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					
+					hideLoading();
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

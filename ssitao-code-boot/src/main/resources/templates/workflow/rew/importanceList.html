@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" onclick="addImportance()">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建</span>
+							</button>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div>
+		<input type="hidden" name="selectIds" id="selectIds" value="">
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+		var rights = 'E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'REWIMPORTANCE',
+				rights: rights,
+				supportPage: true,
+				supportTree: false
+			});
+		});
+		
+		function addImportance(){
+			top.layer.open({
+				type : 2,
+				title : '新建重要性',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '862px', '500px'],
+				content : 'rew/addOrEditImportance/null?parentname=' + window.name,
+			});
+		}
+		
+		function editEntity(module, id) {
+			top.layer.open({
+				type : 2,
+				title : '编辑重要性',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '862px', '500px'],
+				content : 'rew/addOrEditImportance/'+id+'?parentname=' + window.name,
+			});
+		}
+		
+		function openEntity(module, id) {
+			top.layer.open({
+				type : 2,
+				title : '查看重要性',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '862px', '500px'],
+				content : 'rew/viewImportance/'+id+'?parentname=' + window.name,
+			});
+		}
+		
+		function removeEntity(module, ids) {
+			var index = top.layer.confirm('确定要删除选中的数据？', {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/rew/removeImportance',
+					type : "post",
+					data : {
+						'ids' : ids
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							reLoad();
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			})
+		}
+	</script>	
+	
+</body>
+</html>

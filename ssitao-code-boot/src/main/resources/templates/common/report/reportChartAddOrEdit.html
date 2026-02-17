@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+    .chartType .chart-box .right .type:hover{cursor:pointer;border:1px solid var(--theme);}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" th:value="${reportChart.id}"/>
+			<input type="hidden" name="objectType" th:value="${reportChart.objectType}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="baseInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="报表名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${reportChart.name}" placeholder="请输入报表名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="simpleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="报表简称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="simpleName" type="text" th:value="${reportChart.simpleName}" placeholder="请输入报表简称" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置报表"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${preReportList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${reportChart.status} eq 'IN'" required>
+								    <label for="_status1" th:text="未发布"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="RN" th:checked="${reportChart.status} eq 'RN'">
+								    <label for="_status2" th:text="使用中"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field="scope" htype="CHECKBOX">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="应用范围" title="应用范围"></span></div>
+							<div class="field-div field-content-check">
+								<div class="checkbox">
+								    <input type="checkbox" name="scope" id="_scope1" value="L" data-target="checkbox" th:checked="${#strings.isEmpty(reportChart.scope)} ? 'false' : ${#strings.contains(reportChart.scope, 'L')}" required>
+								    <label for="_scope1" th:text="列表" title="列表"></label>
+							    </div>
+							    <div class="checkbox" th:if="${reportChart.objectType} ne 'PJT'">
+								    <input type="checkbox" name="scope" id="_scope2" value="P" data-target="checkbox" th:checked="${#strings.isEmpty(reportChart.scope)} ? 'false' : ${#strings.contains(reportChart.scope, 'P')}" >
+								    <label for="_scope2" th:text="项目概览" title="项目概览"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="scope" id="_scope3" value="S" data-target="checkbox" th:checked="${#strings.isEmpty(reportChart.scope)} ? 'false' : ${#strings.contains(reportChart.scope, 'S')}" >
+								    <label for="_scope3" th:text="仪表盘" title="仪表盘"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${reportChart.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="baseInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="报表类型"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li" field="dataFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="数据集"></span></div>
+							<div class="field-div field-content">
+								<select id="dataFieldId" class="selectpicker" name="dataFieldId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${dataList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li" field="categoryFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="分类"></span></div>
+							<div class="field-div field-content">
+								<select id="categoryFieldId" class="selectpicker" name="categoryFieldId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${categoryList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole sign chartType" field="chartType" htype="SIGN">
+							<input type="hidden" id="chartType" name="chartType" th:value="${reportChart.chartType}" required/>
+							<div class="chart-box">
+								<div class="left"><span>饼</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="pie-basic"><img src="../../img/report/pie-basic.png"/></div>
+									<div class="type" type="pie-doughnut"><img src="../../img/report/pie-doughnut.png"/></div>
+									<div class="type" type="pie-roseType"><img src="../../img/report/pie-roseType.png"/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>折</span><span>线</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="line-basic"><img src="../../img/report/line-basic.png"/></div>
+									<div class="type" type="line-stack"><img src="../../img/report/line-stack.png"/></div>
+									<div class="type" type="line-area"><img src="../../img/report/line-area.png"/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>柱</span><span>状</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="bar-basic"><img src="../../img/report/bar-basic.png"/></div>
+									<div class="type" type="bar-group"><img src="../../img/report/bar-group.png"/></div>
+									<div class="type" type="bar-stack"><img src="../../img/report/bar-stack.png"/></div>
+								</div>
+							</div>
+							<div class="chart-box">
+								<div class="left"><span>条</span><span>形</span><span>图</span></div>
+								<div class="right">
+									<div class="type" type="hbar-basic"><img src="../../img/report/hbar-basic.png"/></div>
+									<div class="type" type="hbar-group"><img src="../../img/report/hbar-group.png"/></div>
+									<div class="type" type="hbar-stack"><img src="../../img/report/hbar-stack.png"/></div>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			var chartType = $('#chartType').val();
+			if(chartType) {
+				$('.chartType .type[type="'+chartType+'"]').addClass('curType');
+			}
+			$('.chartType .type').click(function(){
+				$('.chartType .type').removeClass('curType');
+				$(this).addClass('curType');
+				$('#chartType').val($(this).attr('type'));
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/report/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"], input[name="simpleName"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('REPORT');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

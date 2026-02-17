@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/form.css"/>
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	.table-wrap{min-height:250px!important;}
+	.cp-theme{color:var(--theme);}
+	.none{display:none;width:auto;margin:10px;}
+	.windowPage{background-color:white!important;}
+	.table-wrap, .table-list{min-height:100px!important;}
+	.formBtn .layui-layer-btn{max-width:100%!important;text-align:center;margin-top:20px;}
+</style>
+
+<body class="windowPage layerWinPage" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="none">您未配置页面，<a class="cp-theme" onclick="editPage();">现在配置</a></div>
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+						</div>
+						<div class="pull-right search t-columns mr5">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+		
+		<div class="formBtn hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${btnEdit}" onclick="editPage();" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+				<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "></a>
+			</div>
+		</div>
+		
+	</div>
+	<input type="hidden" id="pageId" name="pageId" th:value="${pageId}"/>
+	<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	<input type="hidden" id="data" name="data" th:value="${data}"/>
+	<input type="hidden" id="winTitle" th:value="${pageTitle}"/>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = '';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script type="text/javascript">
+		$(function() {
+			initViewTable('grid-table', 'PAGE', $('#objectType').val());
+			
+			$('.formBtn').removeClass('hide');
+			
+			$('.close-btn').click(function() {
+				var index = top.layer.getFrameIndex(window.name)
+				top.layer.close(index);
+			});
+			
+			hideLoading();
+		});
+		
+		function initViewTable(tableId, model, type) {
+			var headData = [], headData, pageSize, view, orderBy, orderByType, height = 50, query, data = $('#data').val();
+			if(!data) {
+				return;
+			}
+			data = eval('('+data+')');
+			headData = data.headData;
+			if(!headData || !headData.length) {
+				$('.none').show();
+				$('.table-list-box').hide();
+				$('body').addClass('white-bg');
+			}
+			
+			pageSize = data.pageSize;
+			view = data.view;
+			orderBy = data.orderBy;
+			orderByType = data.orderByType;
+			query = {'view': view, 'pageSize': pageSize, 'model': model, 'orderBy': orderBy, 'orderByType': orderByType, 'type': type};
+			
+			table = document.querySelector('#' + tableId);
+			tempModel = model;
+			tempType = type;
+			
+			createSearchConditions(headData, model);
+			
+			var tempIds = "";
+			table.GM({
+				gridManagerName: 'dream',
+				disableCache: false,
+				height: height + 'px',
+				supportAjaxPage: false,
+				supportCheckbox: false,
+				supportAutoOrder: true,
+				supportTreeData: false,
+				supportConfig: true,
+				disableLine: true,
+				disableBorder:true,
+				disableAutoLoading:true,
+				checkboxConfig: {
+					 // 是否通过点击行来进行选中
+					 useRowCheck: true
+				},
+				useHideRow: true,
+				ajaxData: function () {
+		            return '';
+		        },
+		        ajaxData: function () {
+		            return '/getBodyData';
+		        },
+				ajaxType: 'POST',
+				query: query,
+				currentPageKey:'targetPage',
+				pageSizeKey:'pageSize',
+				pageSize:pageSize,
+				columnData: headData,
+				supportMoveRow:false,
+				useHideRow:false,
+				supportPrint:false,
+				supportExport:false,
+				useCellFocus:false,
+				supportMenu: true
+			});
+			
+		}
+		
+		function editPage() {
+			var url = '/page/pageSet/'+$('#pageId').val()+'?objectType='+$('#objectType').val()+'&&parentname='+parentName;
+			parent.layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '编辑列表',
+				maxmin : false,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : url,
+				end: function(id, name){
+					if(id){
+						var index = parent.layer.getFrameIndex(window.name)
+						parent.layer.close(index, 'grid-table');
+					}
+				}
+			});
+		}
+		
+	</script>	
+	
+</body>
+</html>

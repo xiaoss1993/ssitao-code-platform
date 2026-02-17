@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	#viewFilter-text{max-width:100px;overflow:hidden;text-overflow:ellipsis;}
+	.addList{text-align:center;padding:6px 0px;background-color:#f5f5f5;cursor:pointer;}
+	.view-btn .dropdown-menu.dropdown-sub-menu{right:163px!important;border-radius:5px;border:1px solid #e5e6e7;}
+	.view-btn .dropdown-menu-right{max-height:300px;overflow-y:auto;max-width:160px;}
+	.dropdown-menu-right .text{max-width:97px;overflow:hidden;text-overflow:ellipsis;height:15px;}
+	.t-btn{display:none;}
+	.change-tab{display:flex;justify-content:center;border-bottom:1px solid #e5e6e7;padding-bottom:5px;}
+	.change-tab li{padding:8px 15px;font-weight:bold;cursor:pointer;}
+	.change-tab li.active{background-color:#8ed2fe;color:white;border-radius:15px;}
+	.detail-content{margin-top:10px;}
+	.layer-box .table-list{margin:0px;}
+	.layer-box .search-condition{display:none}
+	.layer-box .pjt-box.tree .table-list .fixed-table-toolbar, .layer-box .pjt-box.tree .table-list .table-wrap{margin-left:10px;}
+	.layer-box .pjt-box.tree .table-list .table-wrap{width:calc(100% - 10px)!important;}
+	.layer-box .pjt-box .search-condition{display:block;}
+	.windowPage.layer-box{padding:0px;}
+</style>
+<link rel="stylesheet" href="/css/list/folder.css"/>
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<link rel="stylesheet" href="/css/report/report.css">
+<link rel="stylesheet" href="/css/form/form.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="windowPage layer-box" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	<ul class="title-ul" th:if="${not #strings.isEmpty(pageTitle)}">
+		<li class="field-li content-whole r title-sign" htype="TEXT">	
+			<div class="field-div field-content spec">		
+				<div class="return-back" onclick="tabReturnBack($(this));">
+					<i class="fa fa-reply mr5"></i><span>返回</span>
+				</div>		
+				<div class="line"></div>		
+				<div class="field-name" th:text="${pageTitle}"></div>	
+			</div>
+		</li>
+	</ul>
+	<div class="block-header hide"></div>
+	<div class="wrapper wrapper-content" th:classappend="${objectType} eq 'PJT' ? 'pjt-box':''">
+		<div class="tree-box" id="tree-box"></div>
+		<div class="list-box">
+			<div class="table-list-box"> 
+				<div class="table-list">
+					<div class="ibox-body">
+						<ul class="change-tab" th:if="${model} eq 'TSC'">
+							<li class="active" val="TSC">测试用例</li>
+							<li val="TSP">测试计划</li>
+							<li val="BUG">测试缺陷</li>
+						</ul>
+						<ul class="change-tab" th:if="${model} eq 'PRQ' and ${objectType} ne 'TYPE'">
+							<li class="active" val="PRQ">产品需求</li>
+							<li val="MRQ">市场需求</li>
+						</ul>
+						<div class="fixed-table-toolbar mb10"> 
+							<div class="columns pull-left t-columns">
+								<button type="button" class="btn t-btn y-active add" th:if="${btn_ADD} and ${objectType} eq 'PJT'" signBtn="common" onclick="addEntity();">
+									<i class="fa fa-plus mr5"></i>
+									<span th:text="新建" class="pt1 h18"></span>
+								</button>
+								<button type="button" class="btn t-btn n-active" th:if="${btn_EXP} and ${objectType} eq 'PJT'" signBtn="common" th:onclick="'importBill()'">
+									<i class="fa fa-cloud-upload mr5"></i>
+									<span th:text="导入" class="pt1 h18"></span>
+								</button>
+								<button type="button" class="btn t-btn n-active" th:if="${btn_EXP} and ${objectType} eq 'PJT'" signBtn="common" th:onclick="'exportBill()'">
+									<i class="fa fa-cloud-download mr5"></i>
+									<span th:text="导出" class="pt1 h18"></span>
+								</button>
+								<button type="button" class="btn t-btn n-active" th:if="${btn_EXP} and ${objectType} eq 'PJT'" signBtn="print" onclick="printReport()">
+									<i class="fa fa-print mr5"></i>
+									<span th:text="打印" class="pt1 h18"></span>
+								</button>
+							</div>
+							
+							<div class="columns columns-right btn-group pull-right t-columns">
+								<div th:class="${viewType} eq 'LIST' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="LIST">
+									<span>
+										<i class="fa fa-th-list mr5"></i>列表
+									</span>
+								</div>
+								<div th:class="${viewType} eq 'FOLDER' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="FOLDER">
+									<span>
+										<i class="fa fa-folder mr5"></i>文件夹
+									</span>
+								</div>
+								<div th:if="${objectType} eq 'PJT'" th:class="${viewType} eq 'REPORT' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="REPORT">
+									<span>
+										<i class="fa fa-bar-chart-o mr5"></i>报表
+									</span>
+								</div>
+							</div>
+							<div class="pull-right search t-columns mr5">
+								<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+							</div>
+							<div class="clear"></div>
+						</div>
+						<table grid-manager="demoOne" id="grid-table"></table>
+						
+						<div id="reportChartBox" class="reportChartBox" style="display:none;">
+							<div>
+								<div id="reportChart" class="board-box scroll-bar reportChart" height="450px"></div>
+							</div>
+							<div class="report-select">
+								<div class="report-type">报表类型：</div>
+								<ul class="report-type-list">
+									<li th:each="select:${reportSelectList}" th:class="${select.checked} ? 'curType':''" th:id="${select.id}">
+										<div class="reportImg"><img th:src="@{'../../img/report/'+${select.type}}+'.png'"></div>
+										<div class="title" th:title="${select.text}" th:text="${select.text}"></div>
+									</li>
+								</ul>
+							</div>
+							<div id="reportDetail">
+								<img id="printImg" src=""/>
+								<div class="chart-content"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+	
+	<div class="btn-box hide">
+		<div class="layui-layer-btn layui-submit-btn  layui-layer-btn-common">
+			<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${isView} eq 'Y'" onclick="editTypeEntity();"/>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="breadTabType" name="breadTabType" th:value="${breadTabType}"/>
+		<input type="hidden" id="viewId" name="viewId" th:value="${viewId}"/>
+		<input type="hidden" id="tspViewId" name="tspViewId" th:value="${tspViewId}"/>
+		<input type="hidden" id="viewType" name="viewType" th:value="${viewType}"/>
+		<input type="hidden" id="belongId" name="belongId" th:value="${objectId}"/>
+		<input type="hidden" id="belongType" name="belongType" th:value="${objectType}"/>
+		<input type="hidden" id="type" name="type" value="1"/>
+		<input type="hidden" id="selectFolderId" name="selectFolderId" value=""/>
+		<input type="hidden" id="model" name="model" th:value="${model}"/>
+		<input type="hidden" id="isView" name="isView" th:value="${isView}"/>
+		<input type="hidden" id="entityName" name="entityName" th:value="${entityName}"/>
+		
+		<input type="hidden" id="btnAdd" name="btnAdd" th:value="${btn_ADD}"/>
+		<input type="hidden" id="btnEdit" name="btnEdit" th:value="${btn_EDIT}"/>
+		<input type="hidden" id="btnDel" name="btnDel" th:value="${btn_DEL}"/>
+		<input type="hidden" id="parentName" name="parentName"/>
+		<input type="hidden" id="isKeepTopWindow" name="isKeepTopWindow" value="Y"/>
+		<input type="hidden" id="step" name="step" th:value="${step}"/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',V';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',DL';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',MV';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT} and ${model} ne 'PJT' and ${model} ne 'DOC'">
+		<script type="text/javascript">
+			rights += ',AGN';
+		</script>
+	</div>
+	<div th:if="${btn_DECOMP}">
+		<script type="text/javascript">
+			rights += ',ATSC,DPRQ,DTSK';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+ 			rights += ',STNSYMBOL';
+ 		</script> 
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',SLP';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div th:if="${btn_DEL}">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/list/folder.js"></script>
+	<script src="/js/base64.js"></script>
+	<script src="/js/report/echarts.js"></script>
+	<script src="/js/report/echartsUtil.js"></script>
+	<script src="/js/report/report.js"></script>
+	<script src="/js/common/jquery.jqprint-0.3.js"></script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];</script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#parentName').val(parentName);
+			var belongId = $('#belongId').val(), belongType = $('#belongType').val();
+			
+			if(belongType && belongType == 'TYPE') {
+				loadPjtTypeTabHtml($('#step').val(), belongId, belongType, $('#isView').val(), parentName);
+				$('.btn-box').removeClass('hide');
+			}
+			
+			loadViewType(true, $('#viewType').val(), '', false);
+			initViewList();
+			
+			$('.view-type-btn').click(function() {
+				if($('#viewType').val() != $(this).attr('type')) {
+					$('.view-type-btn').removeClass('cur');
+					$(this).addClass('cur');
+					loadViewType(false, $(this).attr('type'), $('#viewId').val(), false);
+				}
+			});
+			
+			$('.change-tab li').click(function() {
+				$('.change-tab li').removeClass('active');
+				$(this).addClass('active');
+				var val = $(this).attr('val');
+				if(val) {
+					var viewId = '', viewType = '';
+					$('.view-type-btn').removeClass('cur');
+					if(val == 'TSC' || val == 'PRQ') {
+						viewId = $('#viewId').val();
+						viewType = 'FOLDER';
+						$('.view-type-btn[type="FOLDER"], .view-type-btn[type="REPORT"]').show();
+						$('.view-type-btn[type="FOLDER"]').addClass('cur');
+					}else if(val == 'TSP' || val == 'BUG' || val == 'MRQ') {
+						if(val == 'TSP'){
+							viewId = $('#tspViewId').val();
+						}
+						viewType = 'LIST';
+						$('.view-type-btn[type="FOLDER"], .view-type-btn[type="REPORT"]').hide();
+						$('.view-type-btn[type="LIST"]').addClass('cur');
+						$('#reportChartBox').hide();
+						$('.t-btn[signBtn="common"]').show();
+						$('.t-btn[signBtn="print"]').hide();
+					}
+					$('#viewType').val(viewType);
+					$('#model').val(val);
+					reLoadTableList(val, viewId, viewType);
+				}
+			});
+		});
+		
+		function reLoadTableList(model, viewId, viewType) {
+			if($('#grid-table').closest('.table-wrap').length) {
+				$('#grid-table').initTable('destroy');
+			}
+			showOrHideFolder(viewType);
+			
+			var newRights = rights;
+			if(model == 'TSP') {
+				newRights = newRights.replace('STNSYMBOL', 'DTSP');
+			}else if(model == 'BUG'){
+				newRights = 'O,COMM';
+			}
+			
+			$('#grid-table').initTable({
+				model: model,
+				rights: newRights,
+				supportPage: true,
+				supportTree: false,
+				viewId: viewId,
+				folderId: (viewType == 'FOLDER' ? $('#selectFolderId').val() : ''),
+				objectId: $('#belongId').val(),
+				objectType: $('#belongType').val(),
+			});
+		}
+		
+		//加载视图类型，判断是加载列表还是看板
+		function loadViewType(isInit, viewType, viewId, isChangeHead) {
+			var model = $('#model').val();
+			var isChangeView = (viewId != $('#viewId').val())
+			if(isInit || isChangeView) {//如果是初始化看板，并且查询条件为空时，就根据视图创建查询条件
+				$('#viewId').val(viewId);
+				var $searchCondition = $('.search-condition');
+				var headData = getHeadData(model, '', viewId, '', '');
+				if(headData) {
+					createSearchConditions(headData.headData, model);
+				}
+			}
+			
+			if(!isInit && (isChangeView || viewType != $('#viewType').val())) {
+				$('#viewId').val(viewId);
+				isChangeHead = true;
+				
+				if(model) {
+					$.ajax({
+						type : "post",
+						url : "/entity/updateUserMemoryByEntity",
+						data : {'viewIdKey': viewId, 'viewTypeKey': $('.view-btn.cur').attr('type'), 'objectType': model},// 你的formid
+						async : false,
+						success : function(data) {}
+					});
+				}
+			}
+			
+			$('#viewType').val(viewType)
+			showOrHideFolder(viewType);
+			if(viewType && viewType == 'FOLDER') {
+				initFolderList(isChangeHead, viewType);
+			}else if(viewType && viewType == 'REPORT') {
+				initReport(viewType);
+			}else {
+				initEntityList(isChangeHead, viewType);
+			}
+		}
+		
+		function showOrHideFolder(viewType) {
+			if(viewType && viewType == 'FOLDER') {
+				$('.wrapper-content').addClass('tree');
+				$('.list-box').addClass('col-sm-11').removeClass('col-sm-12').css('width', $('.wrapper-content').width() - 230);
+				$('.tree-box').show();
+			}else if(viewType && viewType == 'LIST'){
+				$('.wrapper-content').removeClass('tree');
+				$('.list-box').addClass('col-sm-12').removeClass('col-sm-11').css('width', '100%');
+				$('.tree-box').hide();
+			}
+		}
+		
+		//初始化任务列表
+		function initEntityList(isChangeHead, viewType) {
+			$('#reportChartBox').hide();
+			$('.t-btn[signBtn="common"]').show();
+			$('.t-btn[signBtn="print"]').hide();
+			
+			if(isChangeHead) {
+				if($('#grid-table').closest('.table-wrap').length) {
+					$('#grid-table').initTable('destroy');
+				}
+				
+				$('#grid-table').initTable({
+					model: $('#model').val(),
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: (viewType == 'FOLDER' ? $('#selectFolderId').val() : ''),
+					objectId: $('#belongId').val(),
+					objectType: $('#belongType').val(),
+				});
+			}else {
+				reLoadEntityList();
+			}
+		}
+		
+		function initFolderList(isChangeHead, viewType) {
+			$('#reportChartBox').hide();
+			$('.t-btn[signBtn="common"]').show();
+			$('.t-btn[signBtn="print"]').hide();
+			
+			$('#tree-box').initFolder({
+				model:$('#model').val(),
+				objectId: $('#belongId').val(),
+				objectType: $('#belongType').val(),
+			});
+			
+			initEntityList(isChangeHead, viewType);
+		}
+		
+		function reLoad() {
+			var belongType = $('#belongType').val(), model = $('#model').val();
+			if(belongType == 'PJT' && (model == 'DOC' || model == 'PRQ' || model == 'TSC')) {
+				$('.refresh-action').click();
+			}else {
+				loadViewType(true, $('#viewType').val(), '', false);
+			}
+		}
+		
+		function addEntity() {
+			var model = $('#model').val();
+			var title = '', url = '';
+			if(isEntity(model)) {
+				title = '新建模块';
+				url = '/entity/addOrEditEntity/null?objectType='+model+'&selectFolderId=' + $('#selectFolderId').val() +'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&parentname=' + (window.name? window.name:parentName);
+			}else if(isWorkflow(model)) {
+				title = '新建流程';
+				url = '/workflow/addOrEditWorkflow/null?objectType='+model+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&parentname=' + (window.name ? window.name : parentName);
+			}
+			intoIframePage(url, false, model);
+		}
+		
+		//初始化视图列表
+		function initViewList() {
+			$('#viewFilter li').hover(function() {
+				var $subMenu = $('.dropdown-sub-menu');
+				if($(this).hasClass('addList')) {
+					$subMenu.addClass('hide');
+				}else {
+					$(this).closest('ul').attr('value', $(this).attr('value'));
+					var top = $(this).offset().top - 17;
+					if($(this).attr('isSystem') == 'Y') {
+						$subMenu.find('.isNotShow').hide();
+						$subMenu.find('li').css('border', '0px');
+					}else {
+						$subMenu.find('.isNotShow').show();
+						$subMenu.find('li:not(:last-child)').css('border-bottom', '1px dotted #e0e0e7cc');
+					}
+					$subMenu.css('top', top + 'px').removeClass('hide');
+				}
+			});
+			
+			$('#viewFilter li').click(function() {
+				$('#viewFilter li a').removeClass('cur');
+				$(this).find('a').addClass('cur');
+				$('#viewFilter-text').text($(this).attr('title'));
+				var viewId = $(this).attr('value');
+				
+				loadViewType(false, $('#viewType').val(), viewId, false);
+			});
+			
+			$('.addList').click(function() {
+				top.layer.open({
+					type : 2,
+					title : '新建列表',
+					maxmin : true,
+					shadeClose : false, // 点击遮罩关闭层
+					area : ['100%', '100%'],
+					content : 'page/pageSet/null?objectType='+$('#belongType').val()+'&entityTypeId=&subType=&pageType=LIST&isCopy=N&isEntityList=Y&parentname='+ window.name,
+				});
+			});
+		}
+		
+		//从新加载文件夹或者列表
+		function reLoadFolder(isRemoveEntity, objectType) {
+			if(isRemoveEntity) {
+				reLoadEntityList();
+			}else{
+				loadFolderList(objectType, $('#selectFolderId').val(), '1', $('#belongId').val());
+			}
+		}
+		
+		//点击文件夹或删除文件夹时，重新加载列表
+		function reLoadEntityList() {
+			var $table = $('#grid-table');
+			var $tableWrap = $table.closest('.table-wrap');
+			if($tableWrap.length) {
+				iFilter.props.query['folderId'] = $('#selectFolderId').val();
+				iFilter.props.table.GM('setQuery', iFilter.props.query);
+			}else {
+				$table.initTable({
+					model:$('#model').val(),
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: $('#selectFolderId').val(),
+					objectId: $('#belongId').val(),
+					objectType: $('#belongType').val(),
+				});
+			}
+		}
+		
+		function editTypeEntity() {
+			var belongId = $('#belongId').val(), belongType = $('#belongType').val();
+			changeTypeTab($('#step').val(), belongId, belongType, 'N', parentName);
+		}
+	</script>	
+	
+</body>
+</html>

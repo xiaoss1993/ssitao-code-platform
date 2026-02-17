@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme} + (${isForward} eq 'Y'?'':' windowPage')">
+	
+	<div class="layer-box">
+		<ul class="title-ul" th:style="${isForward} eq 'Y' ? 'display:none':'' ">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="查看用户"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li r content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li r" field="username" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{login.userName}"></span></div>
+							<div class="field-div field-content" th:text="${user.username}"></div>
+						</li>
+						<li class="field-li r" field="jobNumber" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.jobNumber}"></span></div>
+							<div class="field-div field-content-num" th:text="${user.jobNumber}"></div>
+						</li>
+						<li class="field-li r odd" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.name}"></span></div>
+							<div class="field-div field-content" th:text="${user.name}"></div>
+						</li>
+						<li class="field-li r check odd" field="sex" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.sex}"></span></div>
+							<div class="field-div field-content" th:text="${user.sexName}"></div>
+						</li>
+						<li class="field-li r" field="telephone" htype="TEL">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.telephone}"></span></div>
+							<div class="field-div field-content-num" th:text="${user.telephone}"></div>
+						</li>
+						<li class="field-li r" field="email" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.email}"></span></div>
+							<div class="field-div field-content-num" th:text="${user.email}"></div>
+						</li>
+						<li class="field-li r odd" field="maritalStatus" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="婚姻状况"></span></div>
+							<div class="field-div field-content" th:text="${user.maritalStatus} eq 'Y' ? '已婚':'未婚'"></div>
+						</li>
+						<li class="field-li r odd" field="isWorkLog" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.isWorkLog}"></span></div>
+							<div class="field-div field-content" th:text="${user.worklog}"></div>
+						</li>
+						<li class="field-li r" field="deptId" htype="DEPT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.dept}"></span></div>
+							<div class="field-div field-content" th:text="${user.deptName}"></div>
+						</li>
+						<li class="field-li r" field="positionid" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.positionId}"></span></div>
+							<div class="field-div field-content" th:text="${user.positionName}"></div>
+						</li>
+						<li class="field-li r odd" field="birthDate" htype="DATE">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.birthDate}"></span></div>
+							<div class="field-div field-content-num" th:text="${user.birthDate == null} ? '' : ${#dates.format(user.birthDate, 'yyyy-MM-dd')}"></div>
+						</li>
+						<li class="field-li r odd" field="joinDate" htype="DATE">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.joinDate}"></span></div>
+							<div class="field-div field-content-num" th:text="${user.joinDate == null} ? '' : ${#dates.format(user.joinDate, 'yyyy-MM-dd')}"></div>
+						</li>
+						<li class="field-li r content-whole" field="address" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="#{sys.user.officeAddress}"></span></div>
+							<div class="field-div field-content" th:text="${user.officeAddress}"></div>
+						</li>
+						<li class="field-li r check content-whole odd" field="roleIds" htype="TEXT" th:style="${isForward} eq 'Y' ? 'display:none':'' ">
+							<div class="field-div field-label"><span class="title" th:text="#{common.role}"></span></div>
+							<div class="field-div field-content" th:text="${user.roleNames}"></div>
+						</li>
+						<li class="field-li r content-whole sign" field="education" id="education-section" htype="SIGN" th:style="${isForward} eq 'Y' ? 'display:none':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title">学历信息</div>
+							</div>
+							<div class="field-div field-sign-content">
+								<table class="customTable mt10" id='customTable-education'></table>
+							</div>
+						</li>
+						<li class="field-li r content-whole sign" field="work" id="work-section" htype="SIGN" th:style="${isForward} eq 'Y' ? 'display:none':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title">工作经验</div>
+							</div>
+							<div class="field-div field-sign-content">
+								<table class="customTable mt10" id='customTable-work'></table>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="introductionInfo" htype="SIGN" th:style="${isForward} eq 'Y' ? 'display:none':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="#{field.sign.introductionInfo}"></div>
+							</div>
+							<div class="field-div field-sign-content pt10 pl5" th:utext="${user.introduction}"></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editUser();" th:style="${isForward} eq 'Y' ? 'display:none':'' "/>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]], userId = [[${user.id}]]; userEduList = [[${userEduList}]]; userExpList = [[${userExpList}]];</script>
+	<script src="/js/list/customTable.js"></script>
+	<script>
+		$(function() {
+			initFormControl('USER');
+			
+			$('.btn-box').removeClass('hide');
+			
+			var educationTable = Table();
+			var educationData = [];
+			if(userEduList) {
+				for(var i = 0; i < userEduList.length; i++) {
+					educationData.push([i+1, userEduList[i].school, userEduList[i].levelName, userEduList[i].startDateStr, userEduList[i].endDateStr]);
+				}
+			}
+			educationTable.init({
+			    id:'customTable-education',
+			    header:['序号','毕业学校', '学历', '入学日期', '毕业日期'],
+			    data:educationData,
+			    columnWidth:['50px', '350px', '180px', '180px', '180px'],
+			    align:'left',
+			});
+			
+			var workTable = Table();
+			var workData = [];
+			if(userExpList) {
+				for(var i = 0; i < userExpList.length; i++) {
+					workData.push([i+1, userExpList[i].company, userExpList[i].position, userExpList[i].startDateStr, userExpList[i].endDateStr]);
+				}
+			}
+			workTable.init({
+			    id:'customTable-work',
+			    header:['序号','公司名称', '职位', '入职日期', '离职日期'],
+			    data:workData,
+			    columnWidth:['50px', '350px', '180px', '180px', '180px'],
+			    align:'left',
+			});
+		});
+		
+		function editUser() {
+			editEntity('USER', userId, '', parentName);
+		}
+		
+	</script>
+	
+</body>
+</html>

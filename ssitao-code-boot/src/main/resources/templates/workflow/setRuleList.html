@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+<link rel="stylesheet" href="/css/form/filter-add.css"/>
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.page-ul{padding-bottom:20px;}	
+	.rule-box{display:flex;flex-direction:column;}
+	.rule-head, .rule-content{display:flex;width:100%;}
+	.rule-box .cell{text-align:center;height:40px;display:flex;align-items:center;flex-direction:column;justify-content:center;border-left:1px solid #ebebeb;border-bottom:1px solid #ebebeb;}
+	.rule-box .odd .cell{background-color:#f9f9f9;}
+	.rule-box .rule-head .role, .rule-box .rule-head .btn-cell .role-title{cursor:pointer;}
+	.rule-box .rule-head .role:hover, .rule-box .rule-head .btn-cell .role-title:hover{color:var(--theme);}
+	.rule-box .rule-head .cell{font-weight:700;background-color:#f9f9f9;border-top:1px solid #ebebeb;}
+	.rule-box .rule-head .name-cell{width:26%;}
+	.rule-box .rule-head .cell-part{width:100%;height:100px;}
+	.rule-box .rule-content .cell{height:35px;}
+	.rule-box .rule-content .name-cell{width:26%;padding-right:5px;padding-left:5px;
+		display: -webkit-box;
+        -webkit-box-pack: center;
+        -webkit-box-align: center;
+      	overflow: hidden;
+    }
+	.rule-box .btn-cell{width:120px;}
+	.rule-box .role-cell{width:240px;}
+	.rule-box .role-cell .role-box{display:flex;font-weight:500;width:100%;}
+	.rule-box .role-cell .role-box .role{width:25%;}
+	.rule-box .role-cell .role-box .role .checkbox label{margin-top:8px;}
+	.rule-box .none-border{border-right:1px solid #ebebeb;}
+	.rule-box .role-title{display:flex;}
+	.rule-box .checkbox, .rule-box .radio{margin-top:0px;margin-bottom:0px;}
+	
+	.rule-box .role-cell.two{width:120px;}
+	.rule-box .role-cell.two .role-box .role{width:50%;}
+	.rule-box .role-cell.three{width:180px;}
+	.rule-box .role-cell.three .role-box .role{width:33.33%;}
+	
+	.rule-box .btn-cell.four{width:660px;}
+	li[field="forkingRule"] .btn-cell .role-title:hover{color:#555!important;cursor:default;}
+	
+	.rule-box .lcs_wrap{height:22px;} 
+	.rule-box .lcs_switch{width:50px;height:22px;} 
+	.rule-box .lcs_cursor{width:16px;height:16px;} 
+	.rule-box .lcs_switch.lcs_off .lcs_label_off{width:16px;height:16px;} 
+	.rule-box .lcs_switch.lcs_on .lcs_label_on{left:0px;} 
+	.rule-box .lcs_switch.lcs_on .lcs_cursor{left:31px;} 
+	.rule-box .lcs_label{top:3px;} 
+	.rule-box .zmdi-info{font-size:15px;margin-left:5px;color:#f8ac59} 
+   	
+   	.page-ul .field-li .bs-searchbox .zmdi {
+	    position: absolute;
+	    right: 5px;
+	    bottom: 15px;
+	    color: rgb(153, 153, 153);
+	}
+	.field-li[field="forkingRule"] .filter-btn{margin-top:5px;margin-left:-27px;}
+	.field-li[field="forkingRule"] .rule-content .cell{height:100%;}
+	.field-li[field="forkingRule"] .rule-content .cell1{text-align:left;}
+	.field-li[field="forkingRule"] .field-content{align-items:flex-start!important;padding-bottom:5px;}
+	.field-li[field="forkingRule"] .field-content .cell{display:inline-block;border:0px;}
+	.field-li[field="forkingRule"] .field-content .cell .field-content{min-height:27.14px;padding-top:0px;padding-bottom:0px;}
+	.field-li[field="forkingRule"] .filter-from{margin-left:10px;}
+	.field-li[field="forkingRule"] .filter-from .row-condition{margin-top:0px;margin-bottom:5px;}
+	.field-li:not([field='filterCondition']) .bootstrap-select.btn-group .dropdown-menu li:first-child a span.text{color:black;}
+	.field-li[field="forkingRule"] .bootstrap-select.btn-group .dropdown-menu li.active a span.text{color:white!important;}
+	
+	.addPage #operate{margin-top:50px}
+	.layer-box{padding:0px!important;overflow:hidden;}
+	.layer-box .page-ul{padding:5px 15px 15px 15px;}
+	#operate{overflow-x:auto;}
+	.windowPage .instance.layer-box .layout-left{padding-left:5px;padding-right:5px;}
+	.addPage .layout-box{margin-top:40px;}
+	.addPage .page-ul{padding-top:0px!important;}
+</style>
+
+<body class="windowPage layer-body addPage" th:classappend="${session.theme}">
+	
+	<div class="layer-box instance">
+		<div class="layout-box new">
+			<div class="layout-left">
+				<form action="" id="operate">
+					<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+					<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+					<input type="hidden" id="instanceName" name="instanceName" th:value="${instance.name}"/>
+					<input type="hidden" id="step" name="step" th:value="${instance.step}"/>
+					<input type="hidden" id="isRunEdit" name="isRunEdit" th:value="${isRunEdit}"/>
+					<input type="hidden" id="operateRule" name="operateRule"/>
+					<input type="hidden" id="statusRule" name="statusRule"/>
+					<input type="hidden" id="forkingRule" name="forkingRule"/>
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="operateRule" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="操作规则批量设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole rule-box mb20" field="operateRule" htype="TEXT">
+							<ul class="rule-head">
+								<li class="name-cell cell">
+									<div class="cell-part">
+									</div>
+								</li>
+								<li class="role-cell cell">
+									<div class="role-title">操作角色<div><i attrcalss="help-1" attrtip="提示：设置对当前操作按钮具有权限的角色。" class="zmdi zmdi-info help-1"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="OP-OR">责任人</div>
+										<div class="role" type="OP-AC">参与人</div>
+										<div class="role" type="OP-CR">创建人</div>
+										<div class="role" type="OP-RR">读者</div>
+									</div>
+								</li>
+								<li class="role-cell cell two">
+									<div class="role-title">跳转条件<div><i attrcalss="help-2" attrtip="提示：1、任何人执行审批通过后，流程直接跳转到下一步骤；2、所有人执行审批通过后，流程才允许跳转到下一步骤。" class="zmdi zmdi-info help-2"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="ONE">任何人</div>
+										<div class="role" type="ALL">所有人</div>
+									</div>
+								</li>
+								<li class="role-cell cell three">
+									<div class="role-title">跳转页面<div><i attrcalss="help-3" attrtip="提示：设置执行审批通过后，页面跳转到列表、详情信息或下一个步骤操作页面。" class="zmdi zmdi-info help-3"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="LIST">列表页</div>
+										<div class="role" type="STATUS">详情页</div>
+										<div class="role" type="OPEATE">操作页</div>
+									</div>
+								</li>
+								<li class="btn-cell cell">
+									<div class="role-title" type="TRANSFER-ROLE">允许传递角色<div><i attrcalss="help-4" attrtip="提示：允许本步骤角色人员传递到下一个步骤，具有该步骤角色相同的权限。" class="zmdi zmdi-info help-4"></i></div></div>
+								</li>
+								<li class="btn-cell cell none-border">
+									<div class="role-title" type="SAVE-DATA">允许保存数据<div><i attrcalss="help-5" attrtip="提示：设置本步骤显示保存按钮，如果点击保存按钮，则只保存数据，不会进行步骤跳转。" class="zmdi zmdi-info help-5"></i></div></div>
+								</li>
+							</ul>
+							<ul th:each="tran,iterStat:${tranRuleList}" th:class="rule-content + (${iterStat.odd} ? ' odd':'')" th:id="${tran.id}">
+								<li class="name-cell cell" th:text="${tran.name}" th:title="${tran.tempName}"></li>
+								<li class="role-cell cell">
+									<div class="role-box">
+										<div class="role" th:each="role:${tran.wfRoleList}">
+											<div class="checkbox">
+									    		<input data-target="checkbox" th:class="'OP-' + ${role.type}" name="OP-ROLE" type="checkbox" th:id="${role.tempId}" th:value="${role.id}" th:checked="${role.checked}">
+										    	<label th:for="${role.tempId}" th:title="${role.text}"></label>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="role-cell cell two">
+									<div class="role-box">
+										<div class="role">
+											<div class="radio">
+									    		<input data-target="radio" class="ONE" th:name="${tran.id} + synCondition" type="radio" th:id="${tran.id} + synCondition1" value="1" th:checked="${tran.synCondition == '1'} ? true : false">
+										    	<label th:for="${tran.id} + synCondition1" title="任何人"></label>
+											</div>
+										</div>
+										<div class="role">
+											<div class="radio">
+												<input data-target="radio" class="ALL" th:name="${tran.id} + synCondition" type="radio" th:id="${tran.id} + synCondition2" value="2" th:checked="${tran.synCondition == '2'} ? true : false">
+											    <label th:for="${tran.id} + synCondition2" title="所有人"></label>
+										    </div>
+										</div>
+									</div>
+								</li>
+								<li class="role-cell cell three">
+									<div class="role-box">
+										<div class="role">
+											<div class="radio">
+									    		<input data-target="radio" class="LIST" th:name="${tran.id} + pageTo" type="radio" th:id="${tran.id} + pageTo1" value="1" th:checked="${tran.pageTo == '1'} ? true : false">
+										    	<label th:for="${tran.id} + pageTo1" title="列表页"></label>
+											</div>
+										</div>
+										<div class="role">
+											<div class="radio">
+												<input data-target="radio" class="STATUS" th:name="${tran.id} + pageTo" type="radio" th:id="${tran.id} + pageTo2" value="2" th:checked="${tran.pageTo == '2'} ? true : false">
+											    <label th:for="${tran.id} + pageTo2" title="详情页"></label>
+										    </div>
+										</div>
+										<div class="role">
+											<div class="radio">
+												<input data-target="radio" class="OPEATE" th:name="${tran.id} + pageTo" type="radio" th:id="${tran.id} + pageTo3" value="3" th:checked="${tran.pageTo == '3'} ? true : false">
+											    <label th:for="${tran.id} + pageTo3" title="操作页"></label>
+										    </div>
+										</div>
+									</div>
+								</li>
+								<li class="btn-cell cell">
+									<input type="checkbox" name="isSaveNodeUser" class="lcs_check lcs_tt1 TRANSFER-ROLE" on_text="开" off_text="关" th:checked="${tran.isSaveNodeUser == 'Y'} ? true : false" th:value="${tran.isSaveNodeUser}"/>
+								</li>
+								<li class="btn-cell cell none-border">
+									<input type="checkbox" name="hasSave" class="lcs_check lcs_tt1 SAVE-DATA" on_text="开" off_text="关" th:checked="${tran.hasSave == 'Y'} ? true : false" th:value="${tran.hasSave}"/>
+								</li>
+							</ul>
+						</li>
+						
+						<li class="field-li content-whole sign" field="forkingRule" htype="SIGN" th:classappend="${#lists.isEmpty(forkingRuleList)} ? 'hide':''">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="分支规则批量设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole rule-box mb20" field="forkingRule" htype="TEXT" th:classappend="${#lists.isEmpty(forkingRuleList)} ? 'hide':''">
+							<ul class="rule-head">
+								<li class="name-cell cell">
+									<div class="cell-part">
+									</div>
+								</li>
+								<li class="btn-cell cell">
+									<div class="role-title" type="DEFAULT-FORKING">默认分支<div><i attrcalss="help-11" attrtip="提示：所有决策条件都不满足时，系统会自动选择默认分支。" class="zmdi zmdi-info help-11"></i></div></div>
+								</li>
+								<li class="btn-cell cell none-border four">
+									<div class="role-title" type="DECISION-CONDITIONS">决策条件<div><i attrcalss="help-12" attrtip="提示：设置本分支决策条件，当条件满足时，系统会自动决策跳转到该分支。" class="zmdi zmdi-info help-12"></i></div></div>
+								</li>
+							</ul>
+							<ul th:each="tran,iterStat:${forkingRuleList}" th:class="rule-content + (${iterStat.odd} ? ' odd':'')" th:id="${tran.id}">
+								<li class="name-cell cell" th:text="${tran.name}" th:title="${tran.tempName}"></li>
+								<li class="btn-cell cell">
+									<input type="checkbox" name="isDefaultForking" class="lcs_check lcs_tt1 TRANSFER-ROLE" th:attr="nodeId=${tran.nodeId}" on_text="开" off_text="关" th:checked="${tran.isDefaultForking == 'Y'} ? true : false" th:value="${tran.isDefaultForking}"/>
+								</li>
+								<li class="btn-cell cell none-border four field-li" field="filterCondition" th:value="${tran.conditions}">
+									<div class="field-div field-content">
+										<div class="filter-from"></div>
+										<div class="filter-btn" >
+											<div class="hide-select">
+												<select class="selectpicker" name="selectField" data-live-search="true" data-live-search-style="begins" title="请选择" onchange="selectCondition($(this))">
+													<optgroup label="用户">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'USER'}" th:attr="type=${select.htmlType}"  th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+													<optgroup label="日期">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'DATE'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+													<optgroup label="选择框">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'SELECT'} or ${select.htmlType eq 'RADIO'} or ${select.htmlType eq 'CHECKBOX'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+													<optgroup label="数字">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'NUMBER'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+													<optgroup label="文本">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'TEXT'} or ${select.htmlType eq 'AREA'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+													<optgroup label="其他">
+														<option th:each="select:${newFieldList}" th:if="${select.htmlType eq 'PJT'} or ${select.htmlType eq 'PRD'} or ${select.htmlType eq 'DEPT'}" th:attr="data-content=${select.showName}" th:value="${select.id}"></option>
+													</optgroup>
+												</select>
+											</div>
+											<span onclick="addCondition($(this))" class="add-btns"><i class="fa fa-plus mr5"></i>添加条件</span>
+											
+											<div class="hide-condition hide">
+												<div class="row-condition">
+													<div class="cell cell1"></div>
+													<div class="cell cell2"></div>
+													<div class="cell cell3"></div>
+													<div class="cell cell4"></div>
+													<div class="cell cell5" onclick="removeCondition($(this))"><i class="zmdi zmdi-delete"></i></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						
+						<li class="field-li content-whole sign" field="statusRule" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="步骤规则批量设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole rule-box" field="statusRule" htype="TEXT">
+							<ul class="rule-head">
+								<li class="name-cell cell">
+									<div class="cell-part">
+										
+									</div>
+								</li>
+								<li class="role-cell cell">
+									<div class="role-title">通知提醒角色<div><i attrcalss="help-6" attrtip="提示：流程跳转到本步骤时，通知相应的角色成员。" class="zmdi zmdi-info help-6"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="EM-OR">责任人</div>
+										<div class="role" type="EM-AC">参与人</div>
+										<div class="role" type="EM-CR">创建人</div>
+										<div class="role" type="EM-RR">读者</div>
+									</div>
+								</li>
+								<li class="role-cell cell three">
+									<div class="role-title">超时提醒角色<div><i attrcalss="help-7" attrtip="提示：流程在本步骤滞留一定时间，提醒相应的角色成员。" class="zmdi zmdi-info help-7"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="NT-OR">责任人</div>
+										<div class="role" type="NT-AC">参与人</div>
+										<div class="role" type="NT-CR">创建人</div>
+									</div>
+								</li>
+								<li class="role-cell cell two">
+									<div class="role-title">驳回操作角色<div><i attrcalss="help-8" attrtip="提示：设置允许从本步骤驳回到前一个步骤的操作角色。" class="zmdi zmdi-info help-8"></i></div></div>
+									<div class="role-box">
+										<div class="role" type="RJ-OR">责任人</div>
+										<div class="role" type="RJ-AC">参与人</div>
+									</div>
+								</li>
+								<li class="btn-cell cell">
+									<div class="role-title" type="UPFILE">允许更新附件<div><i attrcalss="help-9" attrtip="提示：设置允许对本步骤页面的附件进行增删改操作。" class="zmdi zmdi-info help-9"></i></div></div>
+								</li>
+								<li class="btn-cell cell none-border">
+									<div class="role-title" type="UPRELATE">允许关联单据<div><i attrcalss="help-10" attrtip="提示：设置允许对本步骤页面的关联单据进行增删改操作。" class="zmdi zmdi-info help-10"></i></div></div>
+								</li>
+							</ul>
+							<ul th:each="node,iterStat:${nodeRuleList}" th:class="rule-content + (${iterStat.odd} ? ' odd':'')" th:id="${node.id}">
+								<li class="name-cell cell" th:text="${node.name}" th:title="${node.name}"></li>
+								<li class="role-cell cell">
+									<div class="role-box">
+										<div class="role" th:each="role:${node.emailRoleList}">
+											<div class="checkbox">
+									    		<input data-target="checkbox" th:class="'EM-' + ${role.type}" name="emailRole" type="checkbox" th:id="${role.tempId}" th:value="${role.id}" th:checked="${role.checked}">
+										    	<label th:for="${role.tempId}" th:title="${role.text}"></label>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="role-cell cell three">
+									<div class="role-box">
+										<div class="role" th:each="role:${node.notifyRoleList}">
+											<div class="checkbox">
+									    		<input data-target="checkbox" th:class="'NT-' + ${role.type}" name="notifyRole" type="checkbox" th:id="${role.tempId}" th:value="${role.id}" th:checked="${role.checked}">
+										    	<label th:for="${role.tempId}" th:title="${role.text}"></label>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="role-cell cell two">
+									<div class="role-box">
+										<div class="role" th:each="role:${node.rejectRoleList}">
+											<div class="checkbox">
+									    		<input data-target="checkbox" th:class="'RJ-' + ${role.type}" name="rejectRole" type="checkbox" th:id="${role.tempId}" th:value="${role.id}" th:checked="${role.checked}">
+										    	<label th:for="${role.tempId}" th:title="${role.text}"></label>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="btn-cell cell">
+									<input type="checkbox" name="canUpdateFile" class="lcs_check lcs_tt1 UPFILE" on_text="开" off_text="关" th:checked="${node.canUpdateFile == 'Y'} ? true : false" th:value="${node.canUpdateFile}"/>
+								</li>
+								<li class="btn-cell cell none-border">
+									<input type="checkbox" name="canUpdateRelate" class="lcs_check lcs_tt1 UPRELATE" on_text="开" off_text="关" th:checked="${node.canUpdateRelate == 'Y'} ? true : false" th:value="${node.canUpdateRelate}"/>
+								</li>
+							</ul>
+							
+						</li>
+					</ul>
+				</form>
+				
+				<div class="formBtn hide">
+					<div class="layui-layer-btn layui-submit-btn center mt10">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, true)" th:value="发布" th:style="${isRunEdit} eq 'Y'?'display:none':''"/>
+						<input type="submit" id="preStep" class="layui-layer-btn0 btns cp" onClick="saveAndJump(true, false)" th:value="上一步" th:style="${isRunEdit} eq 'Y'?'display:none':''"/>
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, false, true)" th:value="保存并保留窗口"/>
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false)" th:value="保存并关闭窗口"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]]; fieldList = [[${newFieldList}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+	<script src="/js/form/filter-add.js"></script>
+	
+	<script>
+		var objectId, objectType, isRunEdit;
+		$(function() {
+			initFormControl('instance');
+			
+			objectId = $('#id').val();
+			objectType = $('#objectType').val();
+			isRunEdit = $('#isRunEdit').val();
+			if(isRunEdit && isRunEdit == 'Y') {
+				$('.addPage').removeClass('addPage');
+			}
+			loadStepGuideHtml(4, isRunEdit, objectId, objectType, $('#instanceName').val(), parentName);
+			
+			$('.lcs_check').lc_switch($('.lcs_check').attr('on_text'), $('.lcs_check').attr('off_text'));
+			$('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+				var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+			});
+			
+			$('.rule-box .zmdi-info').hover(function() {
+				if($(this).attr('attrTip')) {
+					layer.tips($(this).attr('attrTip'), '.' + $(this).attr('attrCalss'), {
+						tips: [1, '#f8ac59']
+					});
+				}
+			}, function() {
+				layer.closeAll();
+			});
+			
+			$('.rule-box .rule-head .role, .rule-box .rule-head .btn-cell .role-title').click(function() {
+				var type = $(this).attr('type'), isSelect = $(this).attr('isSelect');
+				var $input = $(this).closest('.rule-box').find('.'+type);
+				if(isSelect && isSelect == 'Y' && $input.attr('type') != 'radio') {
+					$(this).attr('isSelect', 'N');
+					if($input.hasClass('lcs_check')) {
+						$input.not('[value="N"]').click();
+					}else{
+						$input.prop('checked', false);
+					}
+				}else {
+					$(this).attr('isSelect', 'Y');
+					if($input.hasClass('lcs_check')) {
+						$input.not('[value="Y"]').click();
+					}else{
+						$input.prop('checked', true);
+					}
+				}
+			});
+			
+			initForkingConditions();
+			
+			controlBtnShowPosition();
+		});
+		
+		//初始化分支条件
+		function initForkingConditions() {
+			$('.field-li[field="filterCondition"]').each(function() {
+				initFilterCondition($(this).attr('value'), $(this).find('.add-btns'));
+			});
+		}
+		
+		//保存并进行跳转
+		function saveAndJump(isPre, isNext, isPublish, isSaveWindow) {
+			showLoading();
+			packageData();
+			var step = $('#step').val(), id = $('#id').val(), objectType = $('#objectType').val();
+			if(step) {
+				step = parseInt(step);
+			}
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/instance/saveTransitionOrNodeRule",
+				data : {
+					'id' : id,
+					'objectType' : objectType,
+					'operateRule': $('#operateRule').val(),
+					'statusRule': $('#statusRule').val(),
+					'forkingRule': $('#forkingRule').val(),
+				},
+				async : false,
+				success : function(data) {
+					if(data.code == 0) {
+						if(isPublish) {
+							publishInstance();
+						}else if(isPre) {
+							stepForward(id, objectType, step - 1, parentName);
+						}else if(isNext) {
+							stepForward(id, objectType, step + 1, parentName);
+						}else if(isSaveWindow) {
+							hideLoading();
+							parent.layer.msg(data.msg);
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'REFRESH');	
+							hideLoading();
+							parent.layer.msg(data.msg);
+						}
+					}
+				}
+			});
+		}
+		
+		function packageData() {
+			//获取操作规则
+			var $that, tranArr = [], tranId, opearteRole, synCondition, pageTo, isSaveNodeUser, hasSave;
+			$('.rule-box[field="operateRule"] .rule-content').each(function() {
+				$that = $(this);
+				tranId = $that.attr('id');
+				opearteRole = '';
+				$that.find('input[name="OP-ROLE"]:checked').each(function() {
+					if(opearteRole) {
+						opearteRole += ',' + $(this).val();
+					}else {
+						opearteRole = $(this).val();
+					}
+				});
+				tranArr.push({'id': tranId, 'opearteRole':opearteRole, 'synCondition': $that.find('input[name="'+tranId+'synCondition"]:checked').val(), 'pageTo':$that.find('input[name="'+tranId+'pageTo"]:checked').val(), 'isSaveNodeUser':$that.find('input[name="isSaveNodeUser"]').val(), 'hasSave':$that.find('input[name="hasSave"]').val()});
+			});
+			$('#operateRule').val(JSON.stringify(tranArr));
+			
+			//获取分支规则
+			var $that3, forkingArr = [], tranId, forkingCondition;
+			$('.rule-box[field="forkingRule"] .rule-content').each(function() {
+				$that3 = $(this);
+				tranId = $that3.attr('id');
+				forkingArr.push({'id': tranId, 'isDefaultForking':$that3.find('input[name="isDefaultForking"]').val(), 'forkingCondition':getFilterCondition($that3)});
+			});
+			$('#forkingRule').val(JSON.stringify(forkingArr));
+			
+			//获取步骤规则
+			var $that2, nodeId, nodeArr = [], emailRole, notifyRole, rejectRole, canUpdateFile, canUpdateRelate;
+			$('.rule-box[field="statusRule"] .rule-content').each(function() {
+				$that2 = $(this);
+				nodeId = $that2.attr('id');
+				emailRole = '';
+				notifyRole = '';
+				rejectRole = '';
+				$that2.find('input[name="emailRole"]:checked').each(function() {
+					if(emailRole) {
+						emailRole += ',' + $(this).val();
+					}else {
+						emailRole = $(this).val();
+					}
+				});
+				
+				$that2.find('input[name="notifyRole"]:checked').each(function() {
+					if(emailRole) {
+						notifyRole += ',' + $(this).val();
+					}else {
+						notifyRole = $(this).val();
+					}
+				});
+				
+				$that2.find('input[name="rejectRole"]:checked').each(function() {
+					if(emailRole) {
+						rejectRole += ',' + $(this).val();
+					}else {
+						rejectRole = $(this).val();
+					}
+				});
+				nodeArr.push({'id': nodeId, 'emailRole':emailRole, 'notifyRole': notifyRole, 'rejectRole':rejectRole, 'canUpdateFile':$that2.find('input[name="canUpdateFile"]').val(), 'canUpdateRelate':$that2.find('input[name="canUpdateRelate"]').val()});
+			});
+			$('#statusRule').val(JSON.stringify(nodeArr));
+		}
+		
+		function publishInstance() {
+			showLoading();
+	 		$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/activiti/model/deploy",
+				data : {'id': $('#id').val()},
+				async : false,
+				success : function(data) {
+					if(data.code == 0){
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index, 'REFRESH');						
+						parent.layer.msg(data.msg);
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+	 	}
+		
+		function switchOnOrOff($obj, type) {
+			if(type == 'ON') {
+				var name = $obj.attr('name');
+				if(name == 'isDefaultForking'){
+					var nodeId = $obj.attr('nodeId');
+					$('.lcs_check[nodeId="'+nodeId+'"]').lcs_off();
+				}
+			}
+		}
+		
+	</script>
+	
+</body>
+</html>

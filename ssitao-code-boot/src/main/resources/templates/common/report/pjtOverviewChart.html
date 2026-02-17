@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.layer-box{overflow-y:auto;}
+	.container-box {
+      	display: grid;
+      	grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
+      	gap: 15px;
+      	padding-right:10px;
+      	padding-bottom:15px;
+    }
+    .container-box .itemBox {
+    	box-sizing: border-box;
+    	border: 1px solid #e5e6e7;
+    	border-radius:5px;
+    	height:400px;
+    	overflow:hidden;
+    }
+    .container-box .itemBox .header{height:40px;line-height:40px;display:flex;justify-content:space-between;}
+    .container-box .itemBox .header .title{padding-left:15px;font-size:14px;font-weight:700;}
+    .container-box .itemBox .header .report-select{padding-right:15px;position:relative;}
+    .container-box .itemBox .header .report-select .select-toggle{cursor:pointer;}
+    .container-box .itemBox .header .report-select .dropdown-menu{top:30px;right:10px;left:auto;}
+    .container-box .itemBox .header .report-select .dropdown-menu li:not(:last-child){border-bottom:1px dotted rgba(224,224,231,.8);}
+    .scroll-bar{overflow:hidden;}
+    .time-line-box{width:100%;margin-left:20px;overflow:hidden;}
+    .printImg{display:none;}
+</style>
+<link rel="stylesheet" href="/css/entity/milestone/milestone.css">
+<head th:include="include::listHeaderContent"></head>
+
+
+<body th:classappend="${session.theme}">
+	<div class="layer-box">
+		<button type="button" class="btn t-btn n-active add mb10" onclick="printChart();" th:if="${btn_PRINT}">				
+			<i class="fa fa-print mr5"></i><span class="pt1 h18">打印</span>			
+		</button>
+		<button type="button" class="btn t-refresh-btn mb10 ml3" onclick="reFreshChart();" th:if="${btn_REFRESH}">				
+			<i class="fa fa-sync mr5"></i><span class="pt1 h18">刷新</span>			
+		</button>
+		<div class="container-box"></div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="model" name="model" th:value="REPORT_CHART"/>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];var reportChartList = [[${reportChartList}]];</script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/report/echarts.js"></script>
+	<script src="/js/report/echartsUtil.js"></script>
+	<script src="/js/report/report.js"></script>
+	<script src="/js/entity/milestone/milestone.js"></script>
+	<script src="/js/common/jquery.jqprint-0.3.js"></script>
+
+	<script type="text/javascript">
+		var objectType = $('#objectType').val();
+		$(function() {
+			$('.layer-box').height(parent.$('.layer-body').height() - 100);
+			
+			loadReportChartList(reportChartList);
+		});
+		
+		function loadReportChartList(reportChartList) {
+			showLoading();
+			if(reportChartList){
+				var html = '', rows = 0, height = 0, reportId = '';
+				for(var i = 0; i < reportChartList.length; i++){
+					rows = parseInt(reportChartList[i].height);
+					reportId = reportChartList[i].id;
+					html = '';
+					if(reportId == 'pjt68397-293e-4e16-ab24-52b8apjt0002') {
+						height = 230;
+						html += '<div class="itemBox mileRow" style="grid-column: span '+reportChartList[i].width+';grid-row:span '+reportChartList[i].height+';height:'+height+'px" >';
+					}else {
+						height = rows * 400 + (rows-1)*20;
+						html += '<div class="itemBox itemRow_'+reportChartList[i].height+'" style="grid-column: span '+reportChartList[i].width+';grid-row:span '+reportChartList[i].height+';height:'+height+'px" >';
+					}
+					html += '	<div class="header" reportId="report_'+reportId+'" objectType="'+reportChartList[i].objectType+'">';
+					html += '		<div class="title">'+reportChartList[i].simpleName+'</div>';
+					html += '		<div class="report-select">';
+					if(reportChartList[i].firstChildId) {
+						html += '			<div class="select-toggle">';
+						html += '				<span class="name">'+reportChartList[i].firstChildName+'</span><i class="fa fa-ellipsis-h ml5"></i>';
+						html += '			</div>';
+						html += '			<ul class="dropdown-menu dropdown-menu-left common-menu-hide" x-placement="bottom-end">';
+						
+						var childList = reportChartList[i].childList;
+						for(var j = 0; j < childList.length; j++) {
+							html += '			<li val="'+childList[j].id+'" title="'+childList[j].simpleName+'" ><a href="javascript:void(0);">'+childList[j].simpleName+'</a></li>';
+						}
+						html += '			</ul>';
+					}
+					html += '		</div>';
+					html += '	</div>';
+					if(reportId == 'pjt68397-293e-4e16-ab24-52b8apjt0002') {
+						html += '	<div class="board-box scroll-bar reportChart mileBox" id="report_'+reportId+'" height="'+(height - 15)+'px"></div>';
+					}else{
+						html += '	<img id="printImg-report_'+reportId+'" class="printImg" src=""/>';
+						html += '	<div class="board-box scroll-bar reportChart otherBox" id="report_'+reportId+'" height="'+(height - 15)+'px"></div>';
+					}
+					html += '</div>';
+					$('.container-box').append(html);
+					
+					var echartId = 'report_' + reportId;
+					if(reportChartList[i].firstChildId) {
+						loadReportChart(echartId, reportChartList[i].firstChildId);
+					}else{
+						loadReportChart(echartId, reportId);
+					}
+				}
+				$('.select-toggle').click(function() {
+					stopPropagation();
+					var $next = $(this).next();
+					if($next.is(':visible')) {
+						$next.hide();
+					}else{
+						$('.common-menu-hide').hide();
+						$next.show();
+					}
+				});
+				
+				$('.report-select li').click(function() {
+					var $itemBox = $(this).closest('.itemBox');
+					var echartId = $itemBox.find('.board-box').attr('id'), id = $(this).attr('val'), name = $(this).attr('title');
+					$itemBox.find('.select-toggle .name').text(name);
+					loadReportChart(echartId, id);
+				});
+			}
+			hideLoading(500);
+		}
+		
+		function loadReportChart(echartId, id){
+			if(id) {
+				var $reportChart = $('#' + echartId), projectId = $('#objectId').val();
+				if(id == 'pjt68397-293e-4e16-ab24-52b8apjt0002') {
+					$.ajax({
+						url : '/type/mstData',
+						type : "post",
+						async: false,
+						data : {
+							'objectId' : projectId,
+							'objectType': objectType,
+						},
+						success : function(data) {
+							if(data) {
+								data = eval('('+data+')');
+								$reportChart.addClass('mile-box');
+								packageMileLine(data.data, data.version, true);
+							}
+						}
+					});
+				}else if(id == 'pjt68397-293e-4e16-ab24-52b8apjt0003') {//燃尽图
+					$.ajax({
+						url : '/burnDown/getChartData',
+						type : "post",
+						async: false,
+						data : {
+							'projectId' : projectId,
+						},
+						success : function(data) {
+							if(data) {
+								data = eval('('+ data +')');
+								if($reportChart.html()) {
+									$reportChart.initEcharts('destroy');
+								}
+								$reportChart.initEcharts({
+									echartId: echartId,
+									type: data.type,
+									unit: data.unit,
+									data: data.chartData,
+									left: 80,
+									right:20,
+									top:15,
+									theme: $reportChart.closest('body').hasClass('theme-dark') ? 'dark':''
+								});
+							}else {
+								$reportChart.initEcharts();
+							}
+						}
+					});
+				}else {
+					$.ajax({
+						cache : true,
+						type : "POST",
+						url : "/report/getChartData",
+						async: false,
+						data : {
+							'reportId' : id,
+							'projectId': projectId, 
+						},
+						async : false,
+						success : function(data) {
+							if(data) {
+								data = eval('('+ data +')');
+								if($reportChart.html()) {
+									$reportChart.initEcharts('destroy');
+								}
+								$reportChart.initEcharts({
+									echartId: echartId,
+									type: data.type,//报表类型，如：pie-basic
+									data: data.chartData,
+									left: 80,
+									right:20,
+									top:15,
+									theme: $reportChart.closest('body').hasClass('theme-dark') ? 'dark':''
+								});
+							}else {
+								$reportChart.initEcharts();
+							}
+						}
+					});
+				}				
+			}
+		}
+		
+		function printChart() {
+			$(".container-box").jqprint();
+		}
+		
+		function reFreshChart(){
+			$(".container-box").html('');
+			$.ajax({
+				url : '/burnDown/reFreshBurnDown',
+				type : "post",
+				data : {
+					'projectId' : $('#objectId').val(),
+				},
+				success : function(data) {
+					loadReportChartList(reportChartList);
+				}
+			});
+		}
+		
+	</script>	
+	
+</body>
+</html>

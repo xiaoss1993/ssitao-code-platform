@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/easyUpload.min.css">
+
+<style>
+	html,body{overflow:hidden;}
+	.layer-box{height:518px!important;}
+	.easy-upload{margin-top:10px;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="type" name="type" th:value="${type}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="opId" name="opId" th:value="${opId}"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="tempVersion" name="tempVersion" th:value="${tempVersion}"/>
+			<input type="hidden" id="stayCheckout" name="stayCheckout" value="false"/>	 
+			<input type="hidden" id="fileInfo" name="fileInfo"/>	 
+			<input type="hidden" id="fileName" name="fileName" th:value="${name}"/>	 
+			<input type="hidden" id="fileType" name="fileType" th:value="${extName}"/>
+			<input type="hidden" id="maxFileSize" name="maxFileSize" th:value="${maxFileSize}"/>
+			<input type="hidden" id="disabledFileTypes" name="disabledFileTypes" th:value="${disabledFileTypes}"/>
+			<input type="hidden" id='isContinue' name='isContinue' value="N"/>		 
+			<input type="hidden" id='isKeepTopWindow' name='isKeepTopWindow' th:value="${isKeepTopWindow}"/>		 
+			<input type="hidden" id='belongId' name='belongId' th:value="${belongId}"/>		 
+			<input type="hidden" id='belongType' name='belongId' th:value="${belongId}"/>		 
+			
+			<div id="easy1" class="easy-upload" ></div>
+			
+			<ul class="page-ul">
+				<li class="field-li r content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${name}"></div>
+				</li>
+				<li class="field-li r odd content-whole" field="version" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="版本"></span></div>
+					<div class="field-div field-content" th:text="${version}"></div>
+				</li>
+				<li class="field-li content-whole" field="_tran_remark_" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign" th:style="${type} eq '2' ? '':'display:none'">*</span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" maxlength="1000" name="_tran_remark_" rows="8" placeholder="请输入备注" th:required="${type} eq '2'"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定" onclick="$('#isContinue').val('N');" />
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定并检出" onclick="$('#isContinue').val('Y');" th:style="${type} eq '1' ? '':'display:none'"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], objectType = [[${objectType}]], note = [[${note}]]</script>
+	<script src="/js/form/easyUpload.min.js"></script>
+	
+	<script>
+		$(function() {
+			if(objectType && objectType == 'DOC') {
+				initDocUpload();
+			}else{
+				$('#easy1').hide();
+			}
+			
+			initFormControl(objectType);
+			$('.btn-box').removeClass('hide');
+			
+			$("#operate").html5Validate(function() {
+				if(objectType == 'DOC' && !$('#fileInfo').val()) {
+					$('.easy_upload_upbtn').click();
+				}else {
+					preConfirmSave(fileName, extendName);
+				}
+			}, {
+				validate: function() {
+					return customValidate($('#objectType').val());
+				}
+			});
+		});
+		
+		function uploadOne() {
+			var url = '', type = $('#type').val();
+			if(type == '1') {//检入
+				url = '/entity/checkIn';
+			}else if(type == '2'){//升级大版本
+				url = '/entity/upgradeLargeVersion';
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : url,
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.returnBackAndReLoad();
+						}
+						
+						var isKeepTopWindow = $('#isKeepTopWindow').val();
+						if(isKeepTopWindow && isKeepTopWindow == 'Y') {
+							parent.layer.closeAll(null, true);
+						}else{
+							parent.layer.closeAll();
+						}
+						if(data.tempId) {
+							openEntity(objectType, data.tempId, parentName);
+						}
+						
+						if($('#isContinue').val() == 'Y') {//检入并检出的时候执行
+							top.layer.open({
+								type : 2,
+								title : '检出',
+								maxmin : true,
+								shadeClose : false, // 点击遮罩关闭层
+								area : ['830px', '450px'],
+								content : '/entity/checkOutOrCancel?objectId='+data.tempId + '&objectType='+objectType + '&opId=6&isKeepTopWindow='+$('#isKeepTopWindow').val()+'&parentname='+ parentName,
+							});
+						}
+						parent.layer.msg(data.msg);
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}
+		
+		var fileName, extendName;
+		function initDocUpload() {
+			var disabledFileTypes = $('#disabledFileTypes').val(), maxFileSize = $('#maxFileSize').val();
+			$('#easy1').easyUpload({
+				disabledFileTypes: disabledFileTypes?disabledFileTypes:'',//禁止上传文件类型，格式';*.exe;*.bat'
+		        allowFileSize: maxFileSize,//允许上传文件大小(KB)
+		        selectText: '选择文件',//选择文件按钮文案
+		        multi: true,//是否允许多文件上传
+		        multiNum: 1,//多文件上传时允许的文件数
+		        showNote: true,//是否展示文件上传说明
+		        note: note,//文件上传说明
+		        isRequired:'Y',
+		        showPreview: true,//是否显示文件预览
+		        url: '/document/upload',//上传文件地址
+		        fileName: 'file',//文件filename配置参数
+		        timeout: 30000,//请求超时时间
+		        okCode: 200,//与后端返回数据code值一致时执行成功回调，不配置默认200
+		        successFunc: function(res) {
+		        	if($('.easy_upload_queue_item').length == res.success.length) {
+		        		var fileInfo = [];
+		        		var tempFileInfo;
+		        		for (var i=0;i<res.success.length;i++){
+		        			tempFileInfo = res.success[i].fileInfo;
+		        			fileInfo.push(tempFileInfo);
+		        			
+		        			fileName = tempFileInfo.fileName;
+		        			extendName = tempFileInfo.extendName;
+		                }
+		        		
+		        		$('#fileInfo').val(JSON.stringify(fileInfo));
+		        		preConfirmSave(fileName, extendName);
+		        	}
+		        },//上传成功回调函数
+		        errorFunc: function(res) {
+		        },//上传失败回调函数
+		        deleteFunc: function(res) {
+		        }//删除文件回调函数
+		    });
+		}
+		
+		//保存前判断文件是否合法
+		function preConfirmSave(fileName, extendName) {
+			if(objectType && objectType == 'DOC' && ($('#fileName').val() != fileName || $('#fileType').val() != extendName)) {
+				var msg = '', type = $('#type').val();
+				if($('#fileName').val() != fileName) {
+					if(type == '1') {
+						msg = '检入文件名不一致，是否继续检入';
+					}else {
+						msg = '检入文件名不一致，是否继续升级大版本';
+					}
+				}else if($('#fileType').val() != extendName) {
+					if(type == '1') {
+						msg = '检入文件类型不一致，是否继续检入';
+					}else {
+						msg = '检入文件类型不一致，是否继续升级大版本';
+					}
+				}
+    			confirm(msg, confirmSave, cancelSave);
+    		}else {
+        		uploadOne();
+    		}
+		}
+		
+		function confirmSave() {
+			uploadOne();
+		}
+		
+		function cancelSave() {
+			hideLoading();
+		}
+		
+	</script>
+	
+</body>
+</html>

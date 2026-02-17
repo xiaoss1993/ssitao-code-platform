@@ -15,6 +15,7 @@
     <description>框架核心模块：包含基础框架配置、核心组件、切面、拦截器等</description>
     <modules>
         <module>ssitao-code-mybatis-easy</module>
+        <module>ssitao-code-frame-mybatis-flex</module>
     </modules>
 
     <dependencies>

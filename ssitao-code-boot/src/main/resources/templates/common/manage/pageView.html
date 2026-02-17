@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.cp-theme{color:var(--theme);}
+	.none{display:none;}
+	.windowPage:not([submittask="Y"]) .page-ul:not(.showDetailTabs){padding-top:0px;}
+	.windowPage:not([submittask="Y"]) .field-li.content-whole.detail-sign{top:0px;width:100%}
+	.windowPage:not([submittask="Y"]) .layout-box:not(.new) .layout-left{width:100%;}
+	.windowPage:not([submittask="Y"]) .layout-box:not(.new) .showDetailTabs{width:930px;}
+	.windowPage:not([submittask="Y"]) .layout-box:not(.new) .layui-submit-btn{width:930px;}
+	.windowPage:not([submittask="Y"]) .field-li[field="report_report_sign"], .windowPage:not([submittask="Y"]) .field-li[field="report_audit_sign"], .windowPage:not([submittask="Y"]) .field-li[field="report_action_date"], .windowPage:not([submittask="Y"]) .field-li[field="report_rate"], .windowPage:not([submittask="Y"]) .field-li[field="audit_result"]{margin-top:10px;}
+</style>
+<body class="windowPage layer-body layerWinPage" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<div action="" id="operate" class="pb100">
+			<input type="hidden" id="data" th:value="${data}"/>
+			<input type="hidden" id="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="pageId" th:value="${pageId}"/>
+			<input type="hidden" id="winTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="subType" th:value="${subType}"/>
+			<input type="hidden" id="tabs" th:value="${tabs}"/>
+			<div class="none mt10" id="none">该页面未配置，<a class="cp-theme" onclick="editPage();">现在配置</a></div>
+			<div class="layout-box">
+				<div class="layout-left">
+					<ul class="page-ul"></ul>
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${btnEdit}" onclick="editPage();" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl('PAGE');
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			var objectType = $('#objectType').val();
+			if(objectType == 'TSK') {
+				$("input[name='audit_result']").on("input propertychange",function(){//审核通过或者不通过
+					var isBatchAudit = $('#isBatchAudit').val();
+					if($(this).val() == 'N') {
+						if(!isBatchAudit || isBatchAudit == 'N') {
+							$('li[field="audit_result"]').removeClass('content-whole');
+						}
+						$('li[field="confirmWorkload"], li[field="lastEvalId"]').hide();
+						$('li[field="confirm_rate"]').show();
+						$('li[field="operate_remark"] .requireSign').text('*');
+						$('#confirm_rate').attr('required', 'required').attr('name', 'copRate');
+						$('textarea[name="operate_remark"]').attr('required', 'required');
+					}else {
+						if(!isBatchAudit || isBatchAudit == 'N') {
+							$('li[field="audit_result"]').addClass('content-whole');
+						}
+						$('li[field="confirmWorkload"], li[field="lastEvalId"]').show();
+						$('li[field="confirm_rate"]').hide();
+						$('li[field="operate_remark"] .requireSign').text('');
+						$('#confirm_rate').removeAttr('required').attr('name', 'confirm_rate');
+						$('textarea[name="operate_remark"]').removeAttr('required');
+					}
+				});
+			}
+			
+			$('.relevant-tabs:not(.tabSign) .tab').click(function() {
+				hideLoading();
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		function editPage() {
+			var url = '/page/pageSet/'+$('#pageId').val()+'?objectType='+$('#objectType').val()+'&parentname='+ parentName;
+			parent.layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : title,
+				maxmin : false,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : url,
+				end: function(id, name){
+					var index = parent.layer.getFrameIndex(window.name)
+					parent.layer.close(index, 'grid-table');
+					parent.layer.msg('操作成功！');
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

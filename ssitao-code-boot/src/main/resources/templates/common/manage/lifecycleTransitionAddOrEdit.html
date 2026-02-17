@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+	.zmdi-info:before {
+	    content: '\f1f8';
+	    color:#f8ac59;
+	}
+	.tipMsg {
+	    padding-right: 5px;
+	}
+	.page-ul .field-li .field-content.page {
+	    display: flex;
+	    padding-top: 10px;
+	    padding-left: 5px;
+	    align-items: center;
+	    width:150px;
+	}
+	.page-ul .field-li .field-content.page .zmdi{margin-bottom:2px;margin-left:5px;color:rgb(153, 153, 153);}
+	.page-ul .field-li .field-content.page:hover, .page-ul .field-li .field-content.page:hover .zmdi{cursor:pointer;color:var(--theme);}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form id="testForm"></form>
+		<form id="operate">
+			<input type="hidden" id="id" name="id" th:value="${lifeTran.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li r content-whole sign preContent" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole preContent" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="操作名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${lifeTran.name}" placeholder="请输入操作名称" required autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置操作"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field=type htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign" th:text="${isEdit} eq 'N' ? '*':''"></span><span class="title" th:text="操作类型"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="type" id="_type1" value="COMMON" data-target="radio" th:checked="${lifeTran.type} eq 'COMMON'" required th:disabled="${isEdit} eq 'N' ? 'false':'true'">
+								    <label for="_type1" th:text="普通操作"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="type" id="_type2" value="DERIVE" th:checked="${lifeTran.type} eq 'DERIVE'" th:disabled="${isEdit} eq 'N' ? 'false':'true'">
+								    <label for="_type2" th:text="派生操作"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="operateRole" htype="checkbox">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="操作角色"></span></div>
+							<div class="field-div field-content-check">
+								<div class="checkbox">
+								    <input type="checkbox" name="operateRole" id="_operateRole1" value="OR" data-target="radio" th:checked="${#strings.contains(lifeTran.operateRole, 'OR')}" required>
+								    <label for="_operateRole1" th:text="责任人"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="operateRole" id="_operateRole2" value="AC" th:checked="${#strings.contains(lifeTran.operateRole, 'AC')}">
+								    <label for="_operateRole2" th:text="参与人"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="operateRole" id="_operateRole3" value="CR" th:checked="${#strings.contains(lifeTran.operateRole, 'CR')}">
+								    <label for="_operateRole3" th:text="创建人"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="operateRole" id="_operateRole4" value="ALL" th:checked="${#strings.contains(lifeTran.operateRole, 'ALL')}">
+								    <label for="_operateRole4" th:text="所有人"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" field="lcPhaseId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="当前阶段"></span></div>
+							<div class="field-div field-content">
+								<select id="lcPhaseId" class="selectpicker" name="lcPhaseId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="">请选择</option>
+									<option th:each="select:${lcPhaseList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" field="toLcPhaseId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="提交跳转阶段"></span></div>
+							<div class="field-div field-content">
+								<select id="toLcPhaseId" class="selectpicker" name="toLcPhaseId" data-live-search="true" data-live-search-style="begins" title="请选择" required>
+									<option value="">请选择</option>
+									<option th:each="select:${toLcPhaseList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole sign preContent" field="operateInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="操作信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" th:classappend="${lifeTran.type} eq 'COMMON' ? 'hide':''" field="deriveObject" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">派生对象</span></div>
+							<div class="field-div field-content cascade">
+								<div class="cascader-panel-wrap">
+									<div class="cascader-panel upward"></div>
+								</div>
+								<input type="hidden" attrsign="casCadeData" th:value="${deriveObject}">
+								<input type="hidden" attrsign="_levelValue" name="deriveObject" th:value="${lifeTran.deriveLevelValue}">
+								<input type="hidden" attrsign="_ids">
+								<input class="form-control form-control-select" type="text" th:value="${lifeTran.deriveLevelText}" isSeached="Y" onclick="selectCascadeMenu($(this))" placeholder="请选择" autocomplete="off" htype="TEXT" readonly="readonly" required="required" style="padding-right: 0px;">
+								<i class="zmdi zmdi-caret-down select"></i>
+							</div>
+						</li>
+						<li class="field-li" field="pageSet" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">页面配置</span></div>
+							<div class="field-div field-content page" onclick="editPage($(this))" th:id="${page.id}" required="required" >
+								<input type="hidden" name="derivePageId" id="derivePageId" th:value="${page.id}"/>
+								<span class="pageTitle" th:text="${page.name}"></span>
+								<i class="zmdi zmdi-settings cp cp-theme"></i>
+							</div>
+						</li>
+						<li class="field-li" th:classappend="${lifeTran.type} eq 'COMMON' ? 'hide':''" field="dataMapping" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">数据传递</span><div class="tipMsg"><i attrcalss="help-1" attrtip="提示：设置本模块与派生对象间的字段匹配关系，把本模块字段值传递给派生对象对应的字段。" class="zmdi zmdi-info help-1"></i></div></div>
+							<div class="field-div field-content page" onclick="dataMapping($(this))">
+								<input type="hidden" id="mapField" name="mapField" th:value="${lifeTran.mapField}">
+								<span class="dataMappingTitle">字段匹配</span>
+								<i class="zmdi zmdi-settings cp cp-theme"></i>
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" th:classappend="${isDeriveWorkflow} eq 'N' ? 'hide':''" field="lastLcPhaseId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="结束跳转阶段"></span></div>
+							<div class="field-div field-content">
+								<select id="lastLcPhaseId" class="selectpicker" name="lastLcPhaseId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${lastLcPhaseId}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="exeCls" htype="TEXT" style="width:100%;">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">执行监听器</span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="exeCls" type="text" th:value="${lifeTran.exeCls}" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="200">
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this));"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('LIFECYCLETRANSITION');
+			
+			$('.formBtn').removeClass('hide');
+			
+			$('input[name="type"]').click(function(){
+				if($(this).val() == 'DERIVE') {
+					$('.field-li[field="deriveObject"],.field-li[field="dataMapping"]').removeClass('hide');
+					var deriveObject = $('input[name="deriveObject"]').val();
+					if(deriveObject){
+						objectType = deriveObject.split(' / ')[0];
+						deriveWorkflowId = deriveObject.split(' / ')[1];
+						if(isWorkflow(objectType)){
+							$('.field-li[field="lastLcPhaseId"]').removeClass('hide');
+						}
+					}
+				}else{
+					$('.field-li[field="deriveObject"],.field-li[field="dataMapping"],.field-li[field="lastLcPhaseId"]').addClass('hide');
+				}
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/lifecycle/saveLifecycleTransition",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad();
+						}
+						
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+						parent.layer.msg('操作成功');
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('LIFECYCLETRANSITION');
+			}
+		});
+		
+		//编辑页面
+		var $pageTitle;
+		function editPage($obj) {
+			$pageTitle = $obj.find('.pageTitle');
+			var pageId = $('#derivePageId').val(), title = $pageTitle.text();
+			if(!pageId) {
+				pageId = null;
+			}
+			openPageWindow(pageId, title);
+		}
+		
+		function openPageWindow(pageId, title) {
+			var type = $('input[name="type"]:checked').val(), objectType=$('#objectType').val(), deriveWorkflowId='';
+			if(type == 'DERIVE') {
+				var deriveObject = $('input[name="deriveObject"]').val();
+				if(deriveObject){
+					objectType = deriveObject.split(' / ')[0];
+					deriveWorkflowId = deriveObject.split(' / ')[1];
+				}else {
+					top.layer.alert('请先选择派生对象！');
+					return;
+				}
+			}
+			
+			var name = $('input[name="name"]').val();
+			if(name) {
+				name = name + '页面';
+			}
+			var url = '/page/pageSet/' + pageId + '?objectType=' + objectType + '&entityTypeId=&subType='+type.toLowerCase()+
+					'&pageType=&isCopy=&isEntityList=&workflowId=&deriveWorkflowId='+deriveWorkflowId+'&pageName='+name+'&parentname='+ window.name;
+			parent.layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : title,
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : url,
+			});
+			
+		}
+		
+		function dataMapping($obj) {
+			var type = $('input[name="type"]:checked').val(), objectType = $('#objectType').val(), deriveType;
+			var derivePageId = $('#derivePageId').val();
+			if(type == 'DERIVE') {
+				var deriveObject = $('input[name="deriveObject"]').val();
+				if(deriveObject && derivePageId){
+					deriveType = deriveObject.split(' / ')[0];
+				}else {
+					if(!deriveObject){
+						top.layer.alert('请先选择派生对象！');
+						return;
+					}
+					if(!derivePageId){
+						top.layer.alert('请先配置页面！');
+						return;
+					}
+				}
+			}else {
+				return;
+			}
+			
+			var mapField = $('#mapField').val(), mappingField = '';
+			if(mapField){
+				mapField = eval('('+mapField+')');
+				mappingField = mapField.mappingField;
+			}
+			var url = '/instance/dataMapping?id=' + $('#id').val() + '&objectType=' + objectType + '&deriveType='+ deriveType +'&derivePageId='+derivePageId+'&mappingField='+mappingField+'&parentname='+ window.name;
+			parent.layer.open({
+				type : 2,
+				title : '字段匹配',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '80%'],
+				content : url,
+				end: function(mappingField){
+					changeDataMapping(mappingField);
+				}
+			});
+		}
+		
+		function changeCaseCadeValue($fieldUl) {
+			var levelValue = $('input[attrsign="_levelValue"]').val();
+			if(levelValue){
+				deriveType = levelValue.split(' / ')[0];
+				if(isWorkflow(deriveType)){
+					$('.field-li[field="lastLcPhaseId"]').removeClass('hide');
+				}else{
+					$('.field-li[field="lastLcPhaseId"]').addClass('hide');
+				}
+			}else{
+				$('.field-li[field="lastLcPhaseId"]').addClass('hide');
+			}
+		}
+		
+		function reLoadPageId(id, name) {
+			$('input[name="derivePageId"]').val(id);
+			if(name) {
+				$('.field-li[field="pageSet"]').find('.pageTitle').text(name);
+			}
+		}
+		
+		function changeDataMapping(mappingField){
+			$('#mapField').val(mappingField);
+		}
+	</script>
+	
+</body>
+</html>

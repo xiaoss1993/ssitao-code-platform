@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name">查看风险</div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="id" name="id" th:value="${rskLibrary.id}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.name}"></div>
+						</li>
+						<li class="field-li r odd" field="typeId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="风险类别"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.typeName}"></div>
+						</li>
+						<li class="field-li r odd" field="probabilityId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="发生概率"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.probabilityName}"></div>
+						</li>
+						<li class="field-li r" field="effectId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="影响程度"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.effectName}"></div>
+						</li>
+						<li class="field-li r" field="gradeId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="风险等级"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.gradeName}"></div>
+						</li>
+						<li class="field-li r odd" field="status" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.statusName}"></div>
+						</li>
+						<li class="field-li r odd" field="useTimes" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="使用次数"></span></div>
+							<div class="field-div field-content"><span th:text="${rskLibrary.useTimes}" class="mr5" style="margin-top:2px;"></span>次</div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="描述"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.remark}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="effectRemark" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="影响描述"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.effectRemark}"></div>
+						</li>
+						<li class="field-li content-whole r" field="respondPlan" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="应对计划"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.respondPlan}"></div>
+						</li>
+						<li class="field-li r odd" field="creatorId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="创建人"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.creatorName}"></div>
+						</li>
+						<li class="field-li r odd" field="createdTime" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="创建日期"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.createdTimeStr}"></div>
+						</li>
+						<li class="field-li r" field="modifyId" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="更新人"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.modifyName}"></div>
+						</li>
+						<li class="field-li r" field="modifyTime" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="更新日期"></span></div>
+							<div class="field-div field-content" th:text="${rskLibrary.modifyTimeStr}"></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editRskLibrary();" th:style="${isForward} eq 'Y' ? 'display:none':'' "/>
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="复制到项目" onclick="copyRskToPjt($('#id').val());" th:style="${isForward} eq 'Y' ? 'display:none':'' "/>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/workflow/workflow-common.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];</script>
+	<script>
+		$(function() {
+			initFormControl('RSKLIB');
+			
+			$('.btn-box').removeClass('hide');
+			hideLoading();
+		});
+		
+		function editRskLibrary() {
+			parent.layer.closeAll();
+			editEntity('RSKLIB', $('#id').val(), '', parentName);
+		}
+		
+	</script>
+	
+</body>
+</html>

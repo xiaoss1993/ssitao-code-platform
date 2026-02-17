@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include-back :: header"></head>
+
+<link rel="stylesheet" href="/css/list/list.filter.css">
+
+<!-- 复选框 -->
+<!-- 访问地址： http://127.0.0.1:8080/demo?demoType=filter -->
+<body class="theme-blue">
+ 	
+ 	<div class="fixed-table-filter">  
+		<div class="from-group-a">
+	 		<div class="from-basic">
+				<input class="form-control" name="name" id="name" type="text" placeholder="姓名" htype="TEXT">
+			</div>
+			<div class="from-basic include-icon">
+				<input id="deptIds" type="hidden" >
+				<input class="form-control" name="deptName" id="deptName" type="text" autocomplete="off" th:placeholder="#{sys.user.dept}" attrSign="DEPT" htype="DEPT">
+				<i class="zmdi zmdi-search"></i>
+			</div>
+			<div class="from-basic include-icon">
+				<input type="hidden" attrSign="_ids">
+				<input class="form-control select gray" attrSign="_names" name="name" type="text" placeholder="姓名" autocomplete="off" readonly="readonly" htype="SELECT">
+				<i class="zmdi zmdi-caret-down"></i>
+				<div class="chosen-drop common-menu-hide">
+					<div class="chosen-search">
+						<input class="form-control" type="text" attrSign="searchSelect" autocomplete="off">
+						<i class="zmdi zmdi-search"></i>
+					</div>
+					<ul class="chosen-results">
+						<li val="v1"><input type="checkbox" name="name_c" id="aaaaaa1"/><label>沙发大</label></li>
+						<li val="v2"><input type="checkbox" name="name_c" id="aaaaaa2"/><label>把圣诞树</label></li>
+						<li val="v3"><input type="checkbox" name="name_c" id="aaaaaa3"/><label>的方式发送到s时代大厦的点点滴滴多多多多</label></li>
+						<li val="v4"><input type="checkbox" name="name_c" id="aaaaaa4"/><label>阿第三方</label></li>
+						<li val="v5"><input type="checkbox" name="name_c" id="aaaaaa5"/><label>很反感</label></li>
+						<li val="v6"><input type="checkbox" name="name_c" id="aaaaaa6"/><label>让他让他让他</label></li>
+						<li val="v7"><input type="checkbox" name="name_c" id="aaaaaa7"/><label>鱼鱼鱼</label></li>
+						<li val="v8"><input type="checkbox" name="name_c" id="aaaaaa8"/><label>看见看见看见</label></li>
+						<li val="v9"><input type="checkbox" name="name_c" id="aaaaaa9"/><label>从吧橙V橙V</label></li>
+						<li val="v10"><input type="checkbox" name="name_c" id="aaaaaa10"/><label>坎坎坷坷V</label></li>
+						<li val="v11"><input type="checkbox" name="name_c" id="aaaaaa11"/><label>啦啦啦啦啦V</label></li>
+					</ul>
+					<div class="chosen-all"><input type="checkbox" class="cp"/><a class="auto-link" onclick="selectConfirm($(this))">确定</a></div>
+					<div class="no-data">没有数据</div>
+				</div>
+			</div>
+			<div class="from-basic include-icon singer">
+				<input class="form-control datetimepicker" id="startDate" name="name" type="text" autocomplete="off" placeholder="日期" readonly="readonly" htype="DATE">
+				<i class="zmdi zmdi-calendar"></i>
+			</div>
+			<div class="from-basic include-icon">
+				<input class="form-control datetimepicker" id="endDate" name="name" type="text" autocomplete="off" placeholder="日期"  readonly="readonly" htype="DATE">
+				<i class="zmdi zmdi-calendar"></i>
+			</div>
+			<div class="from-basic include-icon">
+				<input class="form-control datetimepicker" name="name" type="text" autocomplete="off" placeholder="日期" htype="DATE">
+				<i class="zmdi zmdi-calendar"></i>
+			</div>
+	 	</div>   
+	</div>
+	
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+	<script src="/js/plugins/layer/layer.js"></script>
+	<script src="/js/common/common.js"></script>
+	<script src="/js/common/list.filter.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+ 	
+ 	<script type="text/javascript">
+	 	$(function () {
+	 		
+	 		iFilter.init($('.fixed-table-filter input.form-control'), 'USER', '');	
+	 		
+	 		
+	 		$('.chosen-drop').find('.cp').click(function() {//全选和取消
+				$obj = $(this);
+				if($obj.is(':checked')) {
+					$('input[type=checkbox]:visible', $obj.closest('.chosen-drop').find('.chosen-results')).prop('checked', true);
+				}else {
+					$('input[type=checkbox]:visible', $obj.closest('.chosen-drop').find('.chosen-results')).prop('checked', false);
+				}
+			});
+	 		
+	 		$('.chosen-results').find('li').click(function() {
+	 			$checkBox = $(this).find('input[type=checkbox]');
+	 			if($checkBox.is(':checked')) {
+	 				$checkBox.prop('checked', false);
+	 			}else {
+	 				$checkBox.prop('checked', true);
+	 			}
+			});
+	 		
+	 	});
+ 	</script>
+ 	
+</body>
+</html>

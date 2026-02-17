@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.name}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="名称"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="ParentId" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.upLevel}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="上级"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r" field="ParentId" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.pre}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="前置"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="Type" htype="NUMBER">
+					<div class="field-div field-label"><span class="title" th:text="#{common.type}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="类型"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r" field="Type" htype="NUMBER">
+					<div class="field-div field-label"><span class="title" th:text="#{common.category}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="类别"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="Url" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.url}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="URL"></div>
+					<div class="field-div field-help"></div>
+				</li>
+<!-- 				<li class="field-li content-whole r" field="Perms" htype="TEXT"> -->
+<!-- 					<div class="field-div field-label"><span class="title" th:text="#{common.perm}+#{common.colon}"></span></div> -->
+<!-- 					<div class="field-div field-content" th:text="授权"></div> -->
+<!-- 					<div class="field-div field-help"></div> -->
+<!-- 				</li> -->
+				<li class="field-li content-whole r" field="Icon" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.icon}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="图标"></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="Icon" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.desc}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="描述"></div>
+					<div class="field-div field-help"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editMenu();"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], id = ""</script>
+	
+	<script>
+		var type = "menu";
+		function edit() {
+			window.location.href= getPrefix(type) + '/edit';
+		}
+		
+		$(function() {
+			initFormControl(type);
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function editUser() {
+			showLoading();
+			window.location.href= getPrefix(type) + '/edit/' + id;
+			hideLoading();
+		}
+	</script>
+	
+</body>
+</html>

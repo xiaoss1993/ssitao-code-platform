@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="id" name="id" th:value="${msg.id}"/>
+			<ul class="page-ul">
+				<li class="field-li r content-whole" field="form" htype="TEXT" th:style="${msg.type} eq 'CNT' ? '':'display:none'">
+					<div class="field-div field-label"><span class="title" th:text="发送人"></span></div>
+					<div class="field-div field-content" th:utext="${msg.form}"></div>
+				</li>
+				<li class="field-li r content-whole odd" field="tos" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="接收人"></span></div>
+					<div class="field-div field-content" th:utext="${msg.tos}"></div>
+				</li>
+				<li class="field-li r content-whole" field="form" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="时间"></span></div>
+					<div class="field-div field-content" th:text="${#dates.format(msg.createdTime, 'yyyy-MM-dd HH:mm')}"></div>
+				</li>
+				<li class="field-li r content-whole odd" field="subject" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="主题"></span></div>
+					<div class="field-div field-content" th:utext="${msg.subject}"></div>
+				</li>
+				<li class="field-li r content-whole" field="content" htype="AREA">
+					<div class="field-div field-label"><span class="title" th:text="内容"></span></div>
+					<div class="field-div field-content" th:utext="${msg.content}"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="回复" onclick="replayMessage()" th:style="${msg.type} eq 'CNT' ? '':'display:none'"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]]</script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function replayMessage() {
+			top.layer.open({
+				type : 2,
+				title : '回复沟通消息',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '600px'],
+				content : '/replayMessage?id='+$('#id').val() + '&parentname='+ window.name,
+			});
+		}
+	</script>
+	
+</body>
+</html>

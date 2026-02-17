@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/dashboard/jquery.gridster.css">
+<link rel="stylesheet" href="/css/report/report.css">
+<link rel="stylesheet" href="/css/form/form.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="id" id="id" th:value="${dashboard.id}"/>
+			<input type="hidden" name="blockType" th:value="CUSTOM"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<input type="hidden" name="isForward" id="isForward" th:value="Y"/>
+			<input type="hidden" id="btnAddBlock" th:value="${btnAddBlock}"/>
+			<input type="hidden" id="btnResdef" th:value="${btnResdef}"/>
+			<div class="layout-box">
+				<div>
+					<div class="none" th:if="${#lists.isEmpty(dashboardBlockList)}">
+						当前没有区块
+					</div>
+					<div class="gridster">
+						<ul>
+							<li th:each="block:${dashboardBlockList}" th:id="${block.id}" th:type="${block.blockType}" th:attr="data-col=${block.dataCol},data-row=${block.dataRow},data-sizex=${block.dataSizex},data-sizey=${block.dataSizey},oldData-sizey=${block.oldDataSizey},oldData-sizex=${block.oldDataSizex},isShrink=${block.isShrink}">
+								<div class="header">
+									<div class="title">
+										<div th:text="${block.name}"></div>
+										<div class="block-tab" th:if="${block.blockType eq 'LIST' && block.moduleType eq 'WORKFLOW'}">
+											<div class="tab active" type="RECIVE">指派给我的</div>
+											<div class="tab" type="READ">知会我的</div>
+											<div class="tab" type="CREATE">我创建的</div>
+										</div>
+										<div class="block-tab" th:if="${block.blockType eq 'LIST' && block.objectType eq 'TSK'}">
+											<div class="tab active" type="OWN">指派给我的</div>
+											<div class="tab" type="ACT">我参与的</div>
+											<div class="tab" type="CREATE">我创建的</div>
+										</div>
+									</div>
+									<div class="box-select" th:if="${showEllipsis} eq 'Y'">
+										<div class="select-toggle"><i class="fa fa-ellipsis-v ml5"></i></div>
+										<div class="dropdown-menu dropdown-menu-left common-menu-hide" >
+											<div class="select-li expand" onclick="expendContent($(this))" th:if="${btnExpcon}"><i class="fa fa-angle-double-down mr10"></i>展开</div>
+											<div class="select-li shrink" onclick="shrinkContent($(this))" th:if="${btnExpcon}"><i class="fa fa-angle-double-up mr10"></i>收缩</div>
+											<div class="select-li" onclick="closeBlock($(this))" th:if="${btnCl}"><i class="fa fa-power-off mr10"></i>关闭</div>
+										</div>
+									</div>
+								</div>
+								<div class="content">
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/dashboard/jquery.gridster.js"></script>
+	<script src="/js/report/echarts.js"></script>
+	<script src="/js/report/echartsUtil.js"></script>
+	<script src="/js/report/report.js"></script>
+	<script src="/js/list/customTable.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+	    $(function(){
+	    	var btnAddBlock = $('#btnAddBlock').val(), btnResdef = $('#btnResdef').val();
+	    	if(!btnAddBlock){
+	    		parent.$('#addBlockBtn').hide();
+	    	}else{
+	    		parent.$('#addBlockBtn').attr({'dashboardId':$('#id').val(), 'isForward':'Y'});
+	    	}
+	    	if(!btnResdef){
+	    		parent.$('#resdefBtn').hide();
+	    	}else{
+	    		parent.$('#resdefBtn').attr('dashboardId', $('#id').val());
+	    	}
+	    	
+	    	hideLoading();
+	    	
+	    	initGridster();
+		});
+	    
+	    function reLoadDashboard(){
+	    	window.location.reload();
+	    }
+	    
+	</script>
+	
+</body>
+</html>
