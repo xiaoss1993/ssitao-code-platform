@@ -1,0 +1,9 @@
+# Depends On Database Initialization Detectors
+org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializationDetector=\
+com.tweb.frame.mybatis.spring.boot.MybatisFlexDependsOnDatabaseInitializationDetector
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.tweb.frame.mybatis.spring.boot.FlexTransactionAutoConfiguration,\
+  com.tweb.frame.mybatis.spring.boot.MultiDataSourceAutoConfiguration,\
+  com.tweb.frame.mybatis.spring.boot.MybatisFlexAutoConfiguration,\
+  com.tweb.frame.mybatis.spring.boot.MybatisFlexAdminAutoConfiguration,\
+  com.tweb.frame.mybatis.spring.boot.MybatisLanguageDriverAutoConfiguration

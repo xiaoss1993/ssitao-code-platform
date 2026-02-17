@@ -1,0 +1,52 @@
+
+package com.ssitao.code.frame.mybatisflex.core.query;
+
+
+import com.ssitao.code.frame.mybatisflex.core.dialect.IDialect;
+import com.ssitao.code.frame.mybatisflex.core.util.SqlUtil;
+
+import java.util.List;
+
+/**
+ * 原生排序字段。
+ *
+ * @author michael
+ * @author 王帅
+ */
+public class RawQueryOrderBy extends QueryOrderBy {
+
+    protected String content;
+
+    public RawQueryOrderBy(String content) {
+        this(content, true);
+    }
+
+    public RawQueryOrderBy(String content, boolean checkSafe) {
+        if (checkSafe) {
+            SqlUtil.keepOrderBySqlSafely(content);
+        }
+        this.content = content;
+    }
+
+    @Override
+    public String toSql(List<QueryTable> queryTables, IDialect dialect) {
+        return content;
+    }
+
+    @Override
+    public String toString() {
+        return "RawQueryOrderBy{" +
+            "content='" + content + '\'' +
+            '}';
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    @Override
+    public RawQueryOrderBy clone() {
+        return (RawQueryOrderBy) super.clone();
+    }
+
+}
