@@ -16,6 +16,7 @@
     <modules>
         <module>ssitao-code-mybatis-easy</module>
         <module>ssitao-code-frame-mybatis-flex</module>
+        <module>ssitao-code-frame-aggregate</module>
     </modules>
 
     <dependencies>
