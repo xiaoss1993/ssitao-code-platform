@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ssitao-code-frame-extra</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ssitao-code-frame-extra</name>
+    <description>扩展功能模块：包含幂等控制、数据脱敏、代码生成等</description>
+
+    <modules>
+        <module>ssitao-code-extra-idempotent</module>
+        <module>ssitao-code-extra-desensitize</module>
+        <!-- TODO: 暂时注释掉代码生成模块，等待修复 MyBatis-Flex API 兼容性问题 -->
+        <!--<module>ssitao-code-extra-codegen</module>-->
+    </modules>
+
+</project>

@@ -22,7 +22,7 @@ public class GeneratorTest {
     public void testCodeGen1() {
         // 配置数据源
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/tweb?characterEncoding=utf-8");
+        dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/ssitao_code?characterEncoding=utf-8");
         dataSource.setUsername("root");
         dataSource.setPassword("123456");
 
@@ -38,7 +38,7 @@ public class GeneratorTest {
         // 设置生成文件目录和根包
         globalConfig.setSourceDir(System.getProperty("user.dir") + "/src/test/java");
         globalConfig.setMapperXmlPath(System.getProperty("user.dir") + "/src/test/java/resources/mapper");
-        globalConfig.setBasePackage("com.tweb.modular.iam");
+        globalConfig.setBasePackage("com.ssitao.code.modular.iam");
 
         // 设置表前缀和只生成哪些表
         //globalConfig.setTablePrefix("sys_", "tb_");
@@ -147,8 +147,6 @@ public class GeneratorTest {
         dataSource.setPassword("123456");
 
         // 通过 datasource 和 globalConfig 创建代码生成器
-        new Generator(dataSource, globalConfig()).generate();
-        new Generator(dataSource, globalConfig()).generate();
         new Generator(dataSource, globalConfig()).generate();
     }
 

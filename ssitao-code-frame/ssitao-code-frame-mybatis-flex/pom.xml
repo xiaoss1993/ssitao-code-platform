@@ -7,7 +7,6 @@
         <groupId>com.ssitao.code</groupId>
         <artifactId>ssitao-code-frame</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ssitao-code-frame-mybatis-flex</artifactId>

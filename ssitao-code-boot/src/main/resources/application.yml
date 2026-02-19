@@ -81,7 +81,7 @@ spring:
 
 # MyBatis-Flex 配置
 mybatis-flex:
-  type-aliases-package: com.tweb.modular.**.entity
+  type-aliases-package: com.ssitao.code.modular.**.entity,com.ssitao.code.modular.**.dataobject
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     map-underscore-to-camel-case: true
@@ -109,3 +109,67 @@ knife4j:
 
 fastjson:
   features: WriteDateUseDateFormat
+
+# Sa-Token 配置
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: Authorization
+  # token 有效期（单位：秒），-1 代表永久有效
+  timeout: 2592000
+  # token 临时有效期（指定时间内无操作就视为 token 过期）单位：秒
+  activity-timeout: -1
+  # 是否允许同一账号多地同时登录
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token
+  is-share: false
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+  # 是否从 cookie 中读取 token
+  is-read-cookie: false
+  # 是否从 header 中读取 token
+  is-read-header: true
+  # token 前缀
+  token-prefix: Bearer
+  # 是否在初始化配置时打印版本字符画
+  is-print: false
+  # jwt 秘钥
+  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+  # 是否启用 JWT 模式
+  jwt-enabled: true
+  # 存储方式：redis-Redis存储
+  dao-type: redis
+
+# SSITAO 平台配置
+ssitao:
+  # 多租户配置
+  tenant:
+    # 是否启用多租户
+    enabled: true
+    # 租户ID 请求头名称
+    header-name: Tenant-Id
+    # 租户ID 请求参数名称
+    param-name: tenantId
+    # 默认租户ID
+    default-tenant-id: default
+    # 忽略租户隔离的表
+    ignore-tables:
+      - iam_tenant
+      - iam_permission
+      - iam_role_permission
+      - system_dict_type
+      - system_dict_data
+    # 忽略租户隔离的 URL
+    ignore-urls:
+      - /api/auth/login
+      - /api/auth/captcha
+      - /api/auth/logout
+  # 数据权限配置
+  data-permission:
+    # 是否启用数据权限
+    enabled: true
+    # 忽略数据权限的表
+    ignore-tables:
+      - iam_user
+      - iam_role

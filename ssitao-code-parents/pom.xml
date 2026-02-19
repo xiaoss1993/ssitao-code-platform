@@ -30,6 +30,7 @@
                 <artifactId>ssitao-code-commons</artifactId>
                 <version>${revision}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.ssitao.code</groupId>
                 <artifactId>ssitao-code-frame</artifactId>
@@ -131,6 +132,13 @@
                 <artifactId>ssitao-code-modular-devtools</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <!-- Sa-Token API -->
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-satoken-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -182,7 +190,7 @@
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>1.5.0</version>
                     <configuration>
-                        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                        <flattenMode>oss</flattenMode>
                         <updatePomFile>true</updatePomFile>
                     </configuration>
                     <executions>

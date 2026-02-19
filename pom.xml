@@ -44,7 +44,7 @@
         <module>ssitao-code-commons</module>
         <module>ssitao-code-frame</module>
         <module>ssitao-code-modulars</module>
-        <module>ssitao-code-boot</module>
+<!--        <module>ssitao-code-boot</module>-->
         <module>ssitao-code-boot-starters</module>
     </modules>
 
@@ -113,7 +113,7 @@
                     <artifactId>flatten-maven-plugin</artifactId>
                     <version>${flatten-maven-plugin.version}</version>
                     <configuration>
-                        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                        <flattenMode>oss</flattenMode>
                         <updatePomFile>true</updatePomFile>
                     </configuration>
                     <executions>
