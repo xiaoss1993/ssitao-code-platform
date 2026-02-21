@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<form action="" id="operate">
+		<div class="layer-box">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${scrumBoard.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${scrumBoard.objectType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="看板名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${scrumBoard.name}" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置看板"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${preBoardList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="rltStatus" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="关联状态"></span></div>
+					<div class="field-div field-content">
+						<select id="rltStatus" class="selectpicker" name="rltStatus" data-live-search="true" multiple data-live-search-style="begins" title="请选择" required>
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${statusList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${scrumBoard.remark}" ></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('SCRUM_BOARD');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/board/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('SCRUM_BOARD');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

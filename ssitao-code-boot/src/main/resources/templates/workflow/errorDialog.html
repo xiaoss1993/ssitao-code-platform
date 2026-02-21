@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<input type="hidden" id="errorMsg" name="errorMsg" th:value="${errorMsg}">
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+			</div>
+		</div>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			alert($('#errorMsg').val());
+		});
+		
+		var index = 0;
+		function alert(msg) {
+			top.layer.alert(msg, {
+			 	end: function() {
+			 		tabReturnBack();
+			    }
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

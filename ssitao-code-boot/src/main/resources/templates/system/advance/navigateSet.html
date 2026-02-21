@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<style>
+	.page-ul .radioOrCheckboxStyle{padding-top:15px;}
+	.newTab {
+         width: 34px;
+         height: 34px;
+         border: 1px solid #e5e6e7;
+         text-align: center;
+         line-height: 34px;
+         border-radius: 4px;
+         margin-top: 2px;
+         margin-left: 2px;
+     }
+     .newTab .fa-plus {
+         font-size: 13px;
+         color: #c6c7c9;
+         font-weight: 100;
+     }
+     .newTab:hover {
+         cursor: pointer;
+         border: 1px solid var(--theme);
+     }
+     .newTab:hover .fa-plus {
+         color: var(--theme);
+     }
+     .page-ul .radioOrCheckboxStyle{padding-top:0px;background-color:transparent;box-shadow:none;}
+</style>
+<head th:include="include::headerContent"></head>
+
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="type" id="type" th:value="${type}"/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole sign" field="navigateSet" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">导航栏</div>
+					</div>
+					<div class="field-div field-sign-content">
+						<ul class="radioOrCheckboxStyle ui-sortable" id="sortable">
+							<li class="sortLi" th:each="menu:${menuList}" th:value="${menu.id}" >
+		        				<input type="checkbox" checked="checked" th:id="${menu.id}" disabled>
+		        				<label th:for="${menu.id}" th:text="${menu.name}"></label>
+			        		</li>
+			        		<li class="content-whole none" th:if="${#lists.isEmpty(menuList)}">
+			        			没数据
+			        		</li>
+					    	<li class="field-li content-whole textarea" htype="BTN">
+								<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide">
+									<input type="button" id="submit" class="layui-layer-btn0 btns cp mr0" shiro:hasPermission="ADV:EDIT" onclick="editNavigteSet();" th:value="#{common.edit}"/>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> 
+		var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]];
+			
+		
+	</script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('.layui-submit-btn').removeClass('hide');
+		});
+		
+		function editNavigteSet(){
+			window.location.href = '/advanceSet/navigateSetEdit?type=' + $('#type').val();
+		}
+	</script>
+	
+</body>
+</html>

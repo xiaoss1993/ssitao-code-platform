@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	.gray-bg .col-sm-12{padding-left:0px;padding-right:0px;}
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content layer-box">
+		<div class="col-sm-12 mt15">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="model" name="model" th:value="REPORT_CHART"/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+ 		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];</script>
+
+	<script type="text/javascript">
+		var objectType = $('#objectType').val();
+		$(function() {
+			$('.btn-box').removeClass('hide');
+			$('#grid-table').initTable({
+				model:'OVERVIEW_CHART',
+				rights: rights,
+				supportPage: false,
+				supportTree: true,
+				openState:true,
+				objectType: objectType,
+			});
+		});
+		
+		function openEntity(model, id) {
+			top.layer.open({
+				type : 2,
+				title : '打开报表',
+				maxmin : true,
+				shadeClose : false,
+				area : [ '800px', '550px' ],
+				content : 'report/pjtOverview/'+id+'?parentname=' + window.name,
+				end: function(id){
+					GridManager.refreshGrid('grid-table');
+				}
+			});
+		}
+		
+		function editEntity(model, id) {
+			top.layer.open({
+				type : 2,
+				title : '编辑报表',
+				maxmin : true,
+				shadeClose : false,
+				area : [ '800px', '550px' ],
+				content : 'report/editPjtOverview/'+id+'?parentname=' + window.name,
+				end: function(id){
+					GridManager.refreshGrid('grid-table');
+				}
+			});
+		}
+		
+	</script>	
+	
+</body>
+</html>

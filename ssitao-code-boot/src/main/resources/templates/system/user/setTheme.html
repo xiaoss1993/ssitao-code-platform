@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css"/>
+<style>
+	.choose-skin{
+	    display:flex;
+	    justify-content:space-between;
+	    font-size:0;
+	    margin-top:2px;
+	}
+	.choose-skin li{margin-right:10px;margin-left:5px;cursor:pointer;position:relative;}
+	.choose-skin li div{
+	    -webkit-border-radius: 3px;
+	    -moz-border-radius: 3px;
+	    -ms-border-radius: 3px;
+	    border-radius: 3px;
+	    width: 33px;
+	    height: 25px;
+	}
+	
+	.choose-skin li.active:after{
+	    color: #fff;
+	    font-family: 'Font Awesome 5 Free';
+	    position: absolute;
+	    top: 6px;
+	    right: 9px;
+	    content: '\f00c';
+	    font-size: 13px;
+	}
+	.choose-skin .purple{
+	    background-color:#6f42c1;
+	}
+	.choose-skin .blue{
+	    background-color:#46b6fe;
+	}
+	.choose-skin .cyan{
+	    background-color:#5CC5CD;
+	}
+	.choose-skin .green{
+	    background-color:#04BE5B;
+	}
+	.choose-skin .orange{
+	    background-color:#FF9948;
+	}
+	.choose-skin .blush{
+	    background-color:#e47297;
+	}
+	.choose-skin li:hover div{opacity:0.8;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="id" id="id" th:value="${id}"/>
+			<input type="hidden" name="theme" id="theme" th:value="${session.theme}"/>
+			<input type="hidden" name="skin" id="skin" th:value="${session.skin}"/>
+			<ul class="page-ul">
+				<li class="field-li check" field="theme" htype="RADIO">
+					<div class="field-div field-label"><span class="title" th:text="主题风格"></span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="theme" id="_theme1" value="theme-light" data-target="radio" th:checked="${session.theme} eq 'theme-light'">
+						    <label for="_theme1" th:text="浅色模式"></label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="theme" id="_theme2" value="theme-dark" th:checked="${session.theme} eq 'theme-dark'">
+						    <label for="_theme2" th:text="深色模式"></label>
+					    </div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="password" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="皮肤颜色"></span></div>
+					<div class="field-div field-content">
+						<ul class="choose-skin list-unstyled">
+	                        <li data-theme="blue" th:class="${session.skin} eq 'blue' ? 'active':''" title="蓝色"><div class="blue"></div></li>
+	                        <li data-theme="purple" th:class="${session.skin} eq 'purple' ? 'active':''" title="紫色"><div class="purple"></div></li>                   
+	                        <li data-theme="cyan" th:class="${session.skin} eq 'cyan' ? 'active':''" title="蓝绿色"><div class="cyan"></div></li>
+	                        <li data-theme="green" th:class="${session.skin} eq 'green' ? 'active':''" title="绿色"><div class="green"></div></li>
+	                        <li data-theme="orange" th:class="${session.skin} eq 'orange' ? 'active':''" title="橙色"><div class="orange"></div></li>
+	                        <li data-theme="blush" th:class="${session.skin} eq 'blush' ? 'active':''" title="粉色"><div class="blush"></div></li>
+	                    </ul>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.save}" onclick="saveThemeOrSKin(null, null, 'Y')"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> 
+		var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]];
+			
+		
+	</script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('USER');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('.choose-skin li').click(function() {
+				$('.choose-skin li').removeClass('active');
+				$(this).addClass('active');
+			});
+		});
+		
+		function saveThemeOrSKin(theme, skin, isSave) {//isSave代表是否保存到数据库
+			if(!theme){
+				theme = $('input[name="theme"]:checked').val();
+			}
+			if(!skin) {
+				skin = $('.choose-skin .active').attr('data-theme');
+			}
+			setCookie("skin", skin);
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/user/saveThemeOrSKin",
+				data : {"theme": theme, "skin": skin, "isSave": isSave},// 你的formid
+				async : false,
+				success : function(data) {
+					if(data.code == 0) {
+						if(isSave && isSave == 'Y') {
+							window.location.reload();
+							if (window.parent !== window) {
+							    window.parent.location.reload();
+							}
+						}
+					}
+					hideLoading();
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<link rel="stylesheet" href="/css/entity/milestone/milestone.css">
+<link rel="stylesheet" href="/css/common/common.css">
+<style>
+	.layer-box{overflow:hidden;}
+	.mile-table-box{overflow:auto;}
+	.mile-table-box table{margin-bottom:30px;}
+	.mile-box .mile-version {
+	    right: 10px;
+	    top:50px;
+	}
+	.time-line-box{padding-right:20px;padding-bottom:5px;padding-top:10px;padding-left:10px;}
+	.mile-box .time-line {
+	    position: relative;
+	    width: calc(100% - 50px);
+	}
+	.layui-layer-btn{max-width:100%!important;}
+	.layer-box .mileTypeBox{padding-left:0px!important;padding-right:0px!important;}
+	.mile-box{padding-right:15px;padding-left:15px;}
+	.time-line-box:nth-child(even), .mile-box .time-line-box:nth-child(even) .mile-line .icons, .mile-box .time-line-box:nth-child(even) .mile-line .info{
+		background-color:#f9f9f9;
+	}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	
+	<div class="layer-box" th:classappend="${objectType} eq 'PJT' ? 'pjt-box':''">
+		<form action="" id="operate" class="mileTypeBox">
+			<input type="hidden" id="milestoneHisVersionInfo" name="milestoneHisVersionInfo" th:value="${milestoneHisVersionInfo}"/>
+			<div class="mile-box scroll-bar"></div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+<!-- 					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a> -->
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/entity/milestone/milestone.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	
+
+	<script type="text/javascript">
+		$(function() {
+			var mstInfo = $('#milestoneHisVersionInfo').val();
+			if(mstInfo) {
+				mstInfo = eval('('+mstInfo+')');
+				for(var i = 0; i < mstInfo.length; i++) {
+					packageMileLine(mstInfo[i].data, mstInfo[i].version, false);
+				}
+			}
+			
+			$('.mile-box').height('490');
+			$('.btn-box').removeClass('hide');
+		});
+		
+	</script>
+</body>
+</html>

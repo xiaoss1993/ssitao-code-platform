@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ssitao-code-frame-satoken</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ssitao-code-frame-satoken</name>
+    <description>Sa-Token 认证授权框架集成模块</description>
+
+    <modules>
+        <module>ssitao-code-satoken-core</module>
+        <module>ssitao-code-satoken-api</module>
+        <module>ssitao-code-satoken-spring-boot-starter</module>
+    </modules>
+
+</project>

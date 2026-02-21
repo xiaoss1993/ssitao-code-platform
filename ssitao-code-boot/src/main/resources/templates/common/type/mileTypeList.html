@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<link rel="stylesheet" href="/css/entity/milestone/milestone.css">
+<link rel="stylesheet" href="/css/common/common.css">
+<style>
+	.layer-box{overflow:hidden;}
+	.mileTypeBox{overflow:auto;}
+	.mile-table-box table{margin-bottom:20px;}
+	.time-line-box{padding-right:80px;}
+	.btns{display:flex;}
+	.btns .btn{display:block;}
+	.windowPage .btn-box {
+	    position: absolute;
+	    top: 8px;
+	    right: 20px;
+	    left: auto;
+	    width: 80%;
+	    height: 40px;
+	    background-color: transparent;
+	}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	
+	<div class="layer-box" th:classappend="${objectType} eq 'PJT' ? 'pjt-box':''">
+		<ul class="title-ul" th:if="${not #strings.isEmpty(pageTitle)}">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${pageTitle}"></div>	
+				</div>
+			</li>
+		</ul>
+		<div class="block-header hide"></div>
+		<form action="" id="operate" class="mileTypeBox">
+			<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="mstData" name="mstData" th:value="${mstData}"/>
+			<input type="hidden" id="mileId" name="mileId"/>
+			<input type="hidden" id="isTemplete" name="isTemplete" th:value="Y"/>
+			<input type="hidden" id="isView" name="isView" th:value="${isView}"/>
+			<input type="hidden" id="btn_EDIT" name="btn_EDIT" th:value="${btn_EDIT}"/>
+			<input type="hidden" id="btn_DEL" name="btn_DEL" th:value="${btn_DEL}"/>
+			<div class="btns">
+				<button class="btn t-btn y-active add mr5" id="addMile" th:classappend="${objectType} eq 'TYPE'? 'mt10':''" onclick="addMiles();" type="button" th:if="${isView} eq 'N' and ${btn_ADD}">
+					<i class="fa fa-plus mr5"></i>
+					<span class="pt1 h18">新建</span>
+				</button>
+				<button class="btn t-btn green mr5 hide" id="publishMile" onclick="publishMiles();" type="button" th:if="${objectType} eq 'PJT' and ${btn_PUBLISH}">
+					<i class="fa fa-check-circle mr5"></i>
+					<span class="pt1 h18">发布</span>
+				</button>
+				<button class="btn red mr5 hide" onclick="stopMiles();" id="stopMile" type="button" th:if="${objectType} eq 'PJT' and ${btn_STOP}">
+					<i class="fa fa-ban mr5"></i>
+					<span class="pt1 h18">暂停</span>
+				</button>
+				<button class="btn yellow mr5 hide" onclick="changeMiles();" id="changeMile" type="button" th:if="${objectType} eq 'PJT' and ${btn_STARTCHANGE}">
+					<i class="fa fa-user-edit mr5"></i>
+					<span class="pt1 h18">发起变更</span>
+				</button>
+			</div>
+			
+			<div class="noData"><div class="none">没有数据</div></div>
+			
+			<div class="mile-box scroll-bar"></div>
+				
+			<div class="mile-table-box"></div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn layui-layer-btn-common">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${isView} eq 'Y'" onclick="intoEditMile();"/>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/entity/milestone/milestone.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	
+
+	<script type="text/javascript">
+		$(function() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val(), isView = $('#isView').val();
+			if(objectType == 'TYPE') {
+				loadPjtTypeTabHtml(2, objectId, objectType, isView, parentName);
+				$('.btn-box').removeClass('hide');
+			}
+			
+			initMstLine();
+			var diffHeight = 0;
+			if($('.block-header:visible').length) {
+				diffHeight = 80;
+			}
+			$('.mileTypeBox').height($('.layer-body').height() - diffHeight);
+			
+			hideLoading();
+		});
+		
+		function intoEditMile() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val();
+			changeTypeTab(2, objectId, objectType, 'N', parentName);
+		}
+		
+		//发布里程碑
+		function publishMiles() {
+			$.ajax({
+				url : "/type/publishMile",
+				type : "post",
+				data : {'mileId': $('#mileId').val(), 'projectId':$('#objectId').val()},
+				async : false,
+				success : function(data) {
+					if(data) {
+						$('#mileId').val(data.id);
+						$('.mile-version').text(data.version);
+						$('#addMile, #publishMile, .operate-col').addClass('hide');
+						$('#stopMile, #changeMile').removeClass('hide');
+					}
+				}
+			});
+		}
+		
+		//暂停里程碑
+		function stopMiles() {
+			$.ajax({
+				url : "/type/stopMile",
+				type : "post",
+				data : {'mileId': $('#mileId').val(), 'projectId':$('#objectId').val()},
+				async : false,
+				success : function(data) {
+					if(data) {
+						$('#addMile, #publishMile, .operate-col').removeClass('hide');
+						$('#stopMile, #changeMile').addClass('hide');
+					}
+				}
+			});
+		}
+		
+		function milestoneHisVersion() {
+			var url = '/type/milestoneHisVersion?objectId=' + $('#objectId').val() + '&parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'里程碑历史版本', 'isParent':true});
+		}
+		
+		function changeMiles() {
+			var url = '/workflow/addOrEditWorkflow/null?objectType=CHG&belongId='+$('#objectId').val()+'&belongType='+$('#objectType').val()+'&parentname=' + (window.name ? window.name : parentName);
+			intoIframePage(url);
+		}
+	</script>	
+</body>
+</html>

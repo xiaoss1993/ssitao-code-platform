@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.addPage #operate{margin-top:80px}
+	.layer-box{padding:0px!important;}
+	.layer-box .page-ul{padding-top:20px}
+	.windowPage:not([submittask="Y"]) .new .page-ul{margin-top:5px;}
+</style>
+
+<body class="windowPage layer-body addPage" th:classappend="${session.theme}">
+	
+	<div class="layer-box instance">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+			<input type="hidden" id="instanceName" name="instanceName" th:value="${instance.name}"/>
+			<input type="hidden" id="step" name="step" th:value="${instance.step}"/>
+			<input type="hidden" id="isNext" name="isNext" value="N"/>
+			<input type="hidden" id="isRunEdit" name="isRunEdit" th:value="${isRunEdit}"/>
+			<input type="hidden" id="isCurWindow" name="isCurWindow" value="N"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${instance.name}" placeholder="请输入名称" autocomplete="off"  htype="TEXT" maxlength="100" required="required">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="title" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="显示标题"></span><div class="field-div field-help"><i class="zmdi zmdi-info help-1" attrCalss="help-1" attrTip="用于创建业务单据时，显示的标题"></i></div></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="title" type="text" th:value="${instance.title}" placeholder="请输入显示标题" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置模型"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole r" field="status" htype="SELECT" th:style="${instance.status} eq 'IN'?'':'display:none'">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content" th:text="初始化"></div>
+						</li>
+						<li class="field-li check" field="status" htype="TEXT" th:style="${instance.status} ne 'IN'?'':'display:none'">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content">
+								<input type="checkbox" name="status" th:value="${instance.status}" class="lcs_check lcs_tt1" on_text="启用" off_text="暂停" th:checked="${instance.status} eq 'RN'" />
+							</div>
+						</li>
+						<li class="field-li content-whole" field="isDefault" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">默认模型</span></div>
+							<div class="field-div field-content">
+								<input type="checkbox" name="isDefault" th:value="${instance.isDefault}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${instance.isDefault} eq 'Y'" />
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${instance.remark}"></textarea>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isNext').val('Y');$('#isCurWindow').val('N')" th:value="下一步" th:style="${isRunEdit} eq 'Y'?'display:none':''"/>
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isNext').val('N');$('#isCurWindow').val('Y')" th:value="保存并保留窗口"/>
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isNext').val('N');$('#isCurWindow').val('N')" th:value="保存并关闭窗口"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this), 'grid-table')"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+	
+	<script>
+		var objectId, objectType, isRunEdit;
+		$(function() {
+			initFormControl('instance');
+			objectId = $('#id').val();
+			objectType = $('#objectType').val();
+			isRunEdit = $('#isRunEdit').val();
+			if(isRunEdit && isRunEdit == 'Y') {
+				$('.addPage').removeClass('addPage');
+			}
+			
+			loadStepGuideHtml(1, isRunEdit, objectId, objectType, $('#instanceName').val(), parentName);
+			
+			$('.formBtn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isNext = $('#isNext').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/instance/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isNext && isNext == 'Y') {
+							parent.layer.closeAll();
+							stepForward(data.id, $('#objectType').val(), 2, parentName) 
+						}else {
+							var isCurWindow = $('#isCurWindow').val();	
+							if(!isCurWindow || isCurWindow == 'N') {
+								var index = parent.layer.getFrameIndex(window.name);
+								parent.layer.close(index, 'grid-table');
+							}
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

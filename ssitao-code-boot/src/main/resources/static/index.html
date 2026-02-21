@@ -1,0 +1,331 @@
+<!doctype html>
+<html class="no-js " lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <meta name="keywords" content="项目管理,管理软件,软件管理,管理,项目">
+    <title>EWeb管理平台</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/theme/blue/theme.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/common/style.min.css">
+    <link rel="stylesheet" href="/css/jquery.rollbar.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/common/message.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+</head>
+
+<body class="light">
+<input type="hidden" name="menuType" id="menuType" value="top"/>
+
+<!-- 顶部导航栏 -->
+<div class="head-nav">
+    <div class="nav-l pl18">
+        <a href="index.html" class="companyInfo">
+            <img src="/img/common/logo.png" class="companLogo" alt="EWeb">
+        </a>
+    </div>
+    <div class="nav-c">
+        <ul class="navigate-list">
+            <li class="active" url="myDesktop">
+                <a class="auto-link" href="javascript:void(0);" title="工作台" onclick="intoMenuUrl('myDesktop', '工作台', '工作台')">工作台</a>
+            </li>
+            <li url="projectList">
+                <a class="auto-link" href="javascript:void(0);" title="项目管理" onclick="intoMenuUrl('projectList', '项目管理', '项目管理')">项目管理</a>
+            </li>
+            <li url="entityList">
+                <a class="auto-link" href="javascript:void(0);" title="实体管理" onclick="intoMenuUrl('entityList', '实体管理', '实体管理')">实体管理</a>
+            </li>
+            <li url="workflowList">
+                <a class="auto-link" href="javascript:void(0);" title="流程管理" onclick="intoMenuUrl('workflowList', '流程管理', '流程管理')">流程管理</a>
+            </li>
+            <li url="systemSetting">
+                <a class="auto-link" href="javascript:void(0);" title="系统设置" onclick="intoMenuUrl('systemSetting', '系统设置', '系统设置')">系统设置</a>
+            </li>
+        </ul>
+    </div>
+    <div class="nav-r">
+        <a class="head-app notices" href="javascript:void(0);" title="通知" onclick="alert('消息通知功能')">
+            <i class="zmdi zmdi-notifications"></i>
+        </a>
+        <a class="head-app app_calendar mr50" href="javascript:void(0);" title="日历" onclick="intoMenuUrl('myCalendar', '工作台', '我的日历')">
+            <i class="zmdi zmdi-calendar"></i>
+        </a>
+        <div class="head-app user-img" title="管理员">
+            <div class="user-info">
+                <img src="/img/common/user-avatar.png" height="40" width="40"/>
+                <span class="ml5 roleName">管理员</span>
+            </div>
+            <ul class="dropdown-head-menu slideUp2" id="userInfo-ul">
+                <li><a class="auto-link" href="javascript:void(0);" title="我的档案"><i class="zmdi zmdi-account"></i>我的档案</a></li>
+                <li><a class="auto-link" href="javascript:void(0);" title="修改密码" onclick="alert('修改密码')"><i class="zmdi zmdi-lock-open"></i>修改密码</a></li>
+                <li><a class="auto-link" href="javascript:void(0);" title="主题设置" onclick="alert('主题设置')"><i class="zmdi zmdi-palette"></i>主题设置</a></li>
+                <li><a class="auto-link" href="javascript:void(0);" title="导航栏配置" onclick="alert('导航栏配置')"><i class="zmdi zmdi-settings"></i>导航栏配置</a></li>
+                <li><a class="auto-link" href="login.html" title="退出"><i class="zmdi zmdi-power"></i>退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Page Loader -->
+<aside class="page-loader-wrapper" id="page-loader-wrapper">
+    <div class="loader-box"></div>
+    <img class="loader" src="/img/loading.gif" width="200"/>
+</aside>
+
+<!-- Overlay For Sidebars -->
+<aside class="overlay"></aside>
+
+<!-- Left Sidebar -->
+<aside id="leftsidebar" class="sidebar">
+    <div class="menu">
+        <ul class="list" id="right-menu-list">
+            <!-- 工作台 -->
+            <li class="f-menu active">
+                <a class="menu-toggle">
+                    <i class="zmdi zmdi-hc-fw">T</i>
+                    <span class="nav-label">工作台</span>
+                </a>
+                <ul class="ml-menu">
+                    <li><a href="javascript:void(0);" data-src="myDesktop.html" data-type="desktop">我的桌面</a></li>
+                    <li><a href="javascript:void(0);" data-src="common/resource/myCalendar.html" data-type="calendar">我的日历</a></li>
+                    <li><a href="javascript:void(0);" data-src="task/myTask.html" data-type="task">我的任务</a></li>
+                </ul>
+            </li>
+            <!-- 项目管理 -->
+            <li class="f-menu">
+                <a class="menu-toggle">
+                    <i class="zmdi zmdi-folder"></i>
+                    <span class="nav-label">项目管理</span>
+                </a>
+                <ul class="ml-menu">
+                    <li><a href="javascript:void(0);" data-src="projectList.html" data-type="project">项目列表</a></li>
+                    <li><a href="javascript:void(0);" data-src="myProject.html" data-type="project">我的项目</a></li>
+                </ul>
+            </li>
+            <!-- 实体管理 -->
+            <li class="f-menu">
+                <a class="menu-toggle">
+                    <i class="zmdi zmdi-file"></i>
+                    <span class="nav-label">实体管理</span>
+                </a>
+                <ul class="ml-menu">
+                    <li><a href="javascript:void(0);" data-src="entityList.html" data-type="entity">实体列表</a></li>
+                    <li><a href="javascript:void(0);" data-src="myEntity.html" data-type="entity">我的实体</a></li>
+                </ul>
+            </li>
+            <!-- 流程管理 -->
+            <li class="f-menu">
+                <a class="menu-toggle">
+                    <i class="zmdi zmdi-shape"></i>
+                    <span class="nav-label">流程管理</span>
+                </a>
+                <ul class="ml-menu">
+                    <li><a href="javascript:void(0);" data-src="workflowList.html" data-type="workflow">流程列表</a></li>
+                </ul>
+            </li>
+            <!-- 系统设置 -->
+            <li class="f-menu">
+                <a class="menu-toggle">
+                    <i class="zmdi zmdi-settings"></i>
+                    <span class="nav-label">系统设置</span>
+                </a>
+                <ul class="ml-menu">
+                    <li><a href="javascript:void(0);" data-src="sys/user/userList" data-type="user">用户管理</a></li>
+                    <li><a href="javascript:void(0);" data-src="sys/role/roleList" data-type="role">角色管理</a></li>
+                    <li><a href="javascript:void(0);" data-src="sys/menu/menuList" data-type="menu">菜单管理</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="ml-menu" id="ml-menu"></ul>
+
+        <div class="btn-menu ls-toggle-btn" style="height:35px;width:100%;display:flex;justify-content:center;align-items:center;background-color:var(--theme);">
+            <a title="" class="sidebar-toggle"><i class="zmdi zmdi-format-indent-decrease"></i></a>
+        </div>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<div class="block-header">
+    <div class="nav-title">
+        <a href="javascript:void(0);" id="returnBack" onclick="returnBack($(this));" class="linked" title="返回"><i class="zmdi zmdi-chevron-left mr10"></i></a>
+        <a href="javascript:void(0);" id="tabReturnBack" onclick="tabReturnBackCallback($(this))" class="hide"></a>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item first-title active">工作台</li>
+        </ul>
+    </div>
+    <ul class="breadTab"></ul>
+    <div class="btn-box">
+        <div class="columns pull-left t-columns dashboardBtn">
+            <button class="btn t-btn y-active add" id="addBlockBtn" type="button">
+                <i class="fa fa-layer-plus mr5"></i>
+                <span class="pt1 h18">添加模块</span>
+            </button>
+            <button class="btn t-btn n-active" id="resdefBtn" type="button">
+                <i class="fa fa-undo mr5"></i>
+                <span class="pt1 h18">恢复默认</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<section class="content" style="">
+    <iframe id="J_iframe" class="J_iframe" name="iframe0" width="100%" height="100%" src="myDesktop.html" frameborder="0" data-id="" seamless></iframe>
+</section>
+
+<!-- Scripts -->
+<script src="/js/bundles/libscripts.bundle.js"></script>
+<script src="/js/bundles/vendorscripts.bundle.js"></script>
+<script src="/js/bundles/mainscripts.bundle.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/jquery.mousewheel.js"></script>
+<script src="/js/default.js"></script>
+<script src="/js/plugins/jquery.i18n.properties.js"></script>
+<script src="/js/common/common.js"></script>
+<script src="/js/drag.js"></script>
+<script src="/js/kTree.js"></script>
+
+
+<script>
+    var ctx = '/',
+        userId = 1,
+        isLogin = 'Y',
+        homePage = 'myDesktop.html',
+        firstTitle = '工作台',
+        secondTitle = '我的桌面';
+
+    $(function() {
+        if(sessionStorage.hasOwnProperty('logout')){
+            top.location.href = '/login.html';
+        }else if(!sessionStorage.hasOwnProperty(homePage)) {
+            changeNav(2, homePage, firstTitle, secondTitle);
+        }
+    });
+
+    function intoMenuUrl(url, pName, cName) {
+        if(url && cName) {
+            intoIframePage(url + '.html');
+            changeNav(2, url, pName, cName);
+        }
+    }
+
+    function returnBack($elem) {
+        window.history.back();
+    }
+
+    function tabReturnBackCallback($elem) {
+        console.log('Tab return back');
+    }
+
+    function updateBreadcrumb(title1, title2) {
+        var $breadcrumb = $(".breadcrumb");
+        $breadcrumb.find("li").not(":first").remove();
+
+        var $li1 = $('<li class="breadcrumb-item first-title"><a class="linked" href="javascript:void(0);">' + title1 + '</a></li>');
+        var $li2 = $('<li class="breadcrumb-item second-title active"><a class="linked" href="javascript:void(0);">' + title2 + '</a></li>');
+
+        $breadcrumb.append($li1).append($li2);
+    }
+
+    function changeNav(level, url, title1, title2) {
+        $('.navigate-list li').removeClass('active');
+        $('.navigate-list li[url="'+url+'"]').addClass('active');
+
+        var $breadcrumb = $(".breadcrumb");
+        $breadcrumb.find("li").removeClass("active");
+
+        if(level == 2) {
+            $breadcrumb.find('li.first-title').html('<a class="linked" href="javascript:void(0);">'+title1+'</a>');
+            $breadcrumb.find('li.second-title, li.third-title').remove();
+            $breadcrumb.append('<li class="breadcrumb-item second-title active"><a class="linked" href="javascript:void(0);">'+title2+'</a></li>');
+        }
+    }
+
+    function intoIframePage(url) {
+        showLoading();
+        $("#J_iframe").attr("src", url);
+        setTimeout(function() {
+            hideLoading();
+        }, 500);
+    }
+
+    function showLoading() {
+        $("#page-loader-wrapper").show();
+    }
+
+    function hideLoading() {
+        $("#page-loader-wrapper").fadeOut();
+    }
+
+    // 初始化菜单状态
+    $(".f-menu").removeClass("open");
+    $(".f-menu:first").addClass("active").find(".ml-menu").show();
+
+    // 初始化面包屑
+    updateBreadcrumb('工作台', '我的桌面');
+
+    // 菜单折叠/展开 - 点击菜单标题
+    $(".f-menu > .menu-toggle").on("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $parent = $(this).parent();
+        var isOpen = $parent.hasClass("open");
+
+        // 关闭所有其他菜单
+        $(".f-menu").not($parent).removeClass("open").find(".ml-menu").slideUp(200);
+
+        // 切换当前菜单状态
+        if(isOpen) {
+            $parent.removeClass("open");
+            $parent.find(".ml-menu").slideUp(200);
+        } else {
+            $parent.addClass("open");
+            $parent.find(".ml-menu").slideDown(200);
+        }
+    });
+
+    // 左侧菜单项点击事件
+    $(".ml-menu a").on("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var $this = $(this);
+        var src = $this.attr("data-src");
+
+        if(src) {
+            // 高亮当前菜单
+            $this.parents(".f-menu").addClass("active").siblings(".f-menu").removeClass("active");
+            $this.addClass("active").siblings("a").removeClass("active");
+
+            // 加载页面到 iframe
+            var url = src.startsWith('/') ? src : '/' + src;
+            $("#J_iframe").attr("src", url);
+
+            // 更新面包屑
+            var text = $this.text();
+            var parentText = $this.parents(".f-menu").find(".nav-label").text();
+            updateBreadcrumb(parentText, text);
+        }
+    });
+
+    // 顶部菜单点击事件
+    $(".navigate-list li a").on("click", function(e) {
+        e.preventDefault();
+        $(this).parent().addClass("active").siblings().removeClass("active");
+    });
+
+    // 用户下拉菜单
+    $(".user-img").on("click", function(e) {
+        e.stopPropagation();
+        $("#userInfo-ul").toggle();
+    });
+
+    $(document).on("click", function() {
+        $("#userInfo-ul").hide();
+    });
+</script>
+
+</body>
+</html>

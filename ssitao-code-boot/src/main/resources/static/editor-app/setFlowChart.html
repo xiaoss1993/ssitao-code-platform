@@ -1,0 +1,849 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Activiti Editor</title>
+    <meta name="description" content="">
+    <meta name="viewport"
+          content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <link rel="Stylesheet" media="screen" href="../editor-app/libs/ng-grid-2.0.7.min.css" type="text/css"/>
+
+    <link rel="Stylesheet" media="screen" href="../editor-app/editor/css/editor.css" type="text/css"/>
+    <link rel="stylesheet" href="../editor-app/css/style.css" type="text/css"/>
+
+	<link rel="stylesheet" href="../js/plugins/layer/theme/default/layer.css">
+	<link rel="stylesheet" href="../editor-app/css/style-common.css">
+    <link rel="stylesheet" href="../editor-app/css/style-editor.css">
+    <link rel="stylesheet" href="../css/workflow/operate-guide.css">
+    <link rel="stylesheet" href="../css/form/bootstrap-select.css"/>
+    <link rel="stylesheet" href="../css/form/switch.css">
+    <link rel="stylesheet" href="../css/form/filter-add.css"/>
+    <link rel="stylesheet" href="../css/common/common.css"/>
+
+    <style>
+      	.addPage #canvasHelpWrapper{margin-top:70px;}
+    	.addPage .block-header{display:none;}
+    	#canvasSection{overflow:auto;margin-left:95px;}
+
+    	.lcs_wrap{margin-top:6px;margin-left:5px;}
+
+    	.add-btns .zmdi-plus{margin-right:5px;}
+    	.tipMsg{padding-right:5px;padding-top:2px}
+    	.filter-btn{margin-top:11px;}
+
+    	.filter-from .row-condition{margin-bottom:0px;}
+    	.filter-from .row-condition:first-child .cell1{margin-top:-2px}
+    	.cell4 .field-content .form-control{margin-top:0px!important;}
+
+    	.bootstrap-select, .bootstrap-select.open + .selectpicker{display:block!important;}
+    	.filter-btn .hide-select .dropup .dropdown-menu, .filter-btn .hide-select .navbar-fixed-bottom .dropdown .dropdown-menu{margin-bottom:0px;}
+    	.hide {display:none !important;}
+
+    	.cascader-panel.upward{bottom:18px;}
+    	.field-content.cascade{margin-left:5px;}
+    	.field-content.cascade .zmdi-caret-down{top:12px;}
+    	.bootstrap-select.btn-group .dropdown-toggle .carets{font-size:15px;top:7px;}
+    	.dropdown-header{height:25px;line-height:35px;}
+    	.bootstrap-select.btn-group.show-tick .dropdown-menu li.selected a span.check-mark{margin-top:3px;}
+
+    	.num-input::-webkit-inner-spin-button, .num-input::-webkit-outer-spin-button {
+    		-webkit-appearance: none;
+    		margin: 0;
+		}
+		.step-guide{padding-top:0px!important;}
+		.block-header .breadTab-item.active{margin-top:5px;}
+		.layui-submit-btn{text-align:left;margin-left:450px;}
+    </style>
+
+</head>
+<body class="addPage">
+	<!--[if lt IE 9]>
+	<div class="unsupported-browser">
+	    <p class="alert error">You are using an unsupported browser. Please upgrade your browser in order to use the
+	        editor.</p>
+	</div>
+	<![endif]-->
+	<div class="layer-box instance">
+		<div id="main" class="wrapper full clearfix" ng-style="{height: window.height + 'px'}" ng-app="activitiModeler" ng-include="'./editor-app/editor.html'">
+		</div>
+		<div class="hide">
+			<input type="hidden" id="isOnlySave" name="isOnlySave"/>
+			<input type="hidden" id="status" name="status"/>
+			<input type="hidden" id="isRunEdit" name="isRunEdit"/>
+			<input type="hidden" id="isEditNodeOrTran" name="isEditNodeOrTran"/>
+			<input type="hidden" id="isPublish" name="isPublish" value="N"/>
+			<input type="hidden" id="workflowId" name="workflowId" value=""/>
+			<input type="hidden" id="objectType" name="objectType" value=""/>
+			<input type="hidden" id="nodeOrTranType" name="nodeOrTranType" value=""/>
+			<input type="hidden" id="nodeOrTranId" name="nodeOrTranId" value=""/>
+			<input type="hidden" id="isEditFlowChart" name="isEditFlowChart" value="Y"/>
+			<input type="hidden" id="fieldList" name="fieldList" value=""/>
+			<input type="hidden" id="isFlowChanged" name="isFlowChanged" value=""/>
+		</div>
+
+		<div class="nodeOrTran" id="curNode">
+			<div class="bg"></div>
+			<div class="chtml">
+				<div class="header">
+					<div class="title"></div>
+					<div class="cbtn-box"><a class="cbtn btn-warning btn-save">保存</a><a class="cbtn btn-cancel">取消</a></div>
+				</div>
+				<div class="bodyForm">
+					<ul class="page-ul">
+						<li class="field-li first" field="emailRole" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">通知提醒角色</span><div class="tipMsg"><i attrcalss="help-1" attrtip="提示：流程跳转到本步骤时，通知相应的角色成员。" class="zmdi zmdi-info help-1"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="emailRole" type="checkbox" id="email_OR" value="OR">
+								    <label for="email_OR" title="责任人">责任人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="emailRole" type="checkbox" id="email_AC" value="AC">
+								    <label for="email_AC" title="参与人">参与人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="emailRole" type="checkbox" id="email_RR" value="RR">
+								    <label for="email_RR" title="读者">读者</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="emailRole" type="checkbox" id="email_CR" value="CR">
+								    <label for="email_CR" title="创建人">创建人</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="notifyRole" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">超时提醒角色</span><div class="tipMsg"><i attrcalss="help-2" attrtip="提示：流程在本步骤滞留一定时间，提醒相应的角色成员。" class="zmdi zmdi-info help-2"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="notifyRole" type="checkbox" id="notify_OR" value="OR">
+								    <label for="notify_OR" title="责任人">责任人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="notifyRole" type="checkbox" id="notify_AC" value="AC">
+								    <label for="notify_AC" title="参与人">参与人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="notifyRole" type="checkbox" id="notify_CR" value="CR">
+								    <label for="notify_CR" title="创建人">创建人</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="rejectRole" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">驳回操作角色</span><div class="tipMsg"><i attrcalss="help-3" attrtip="提示：设置允许从本步骤驳回到前一个步骤的操作角色。" class="zmdi zmdi-info help-3"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="rejectRole" type="checkbox" id="reject_OR" value="OR">
+								    <label for="reject_OR" title="责任人">责任人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="rejectRole" type="checkbox" id="reject_AC" value="AC">
+								    <label for="reject_AC" title="参与人">参与人</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="canUpdateFile" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许更新附件</span><div class="tipMsg"><i attrcalss="help-4" attrtip="提示：设置允许对本步骤页面的附件进行增删改操作。" class="zmdi zmdi-info help-4"></i></div></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="canUpdateFile" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="canUpdateRelate" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许关联单据</span><div class="tipMsg"><i attrcalss="help-5" attrtip="提示：设置允许对本步骤页面的关联单据进行增删改操作。" class="zmdi zmdi-info help-5"></i></div></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="canUpdateRelate" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="pageSet" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">页面配置</span></div>
+							<div class="field-div field-content page" onclick="editPage(jQuery(this))">
+								<span class="pageTitle"></span>
+								<i class="zmdi zmdi-settings cp cp-theme"></i>
+							</div>
+						</li>
+						<li class="field-li" field="orderNum" htype="NUMBER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">排列序号</span><div class="tipMsg"><i attrcalss="help-22" attrtip="提示：设置步骤的显示顺序" class="zmdi zmdi-info help-22"></i></div></div>
+							<div class="field-div field-content">
+								<input type="number" name="orderNum" id="orderNum" class="num-input" value="" placeholder="请输入序号" max="" min="" deci="1" autocomplete="off">
+							</div>
+						</li>
+						<li class="field-li" field="exeCls" htype="TEXT" style="width:100%;">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">执行监听器</span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="exeCls" type="text" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="200">
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="nodeOrTran" id="curTran">
+			<div class="bg"></div>
+			<div class="chtml">
+				<div class="header">
+					<div class="title"></div>
+					<div class="cbtn-box"><a class="cbtn btn-warning btn-save">保存</a><a class="cbtn btn-cancel">取消</a></div>
+				</div>
+				<div class="bodyForm">
+					<ul class="page-ul">
+						<li class="field-li first" field="operateRole" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">操作角色</span><div class="tipMsg"><i attrcalss="help-6" attrtip="提示：设置对当前操作按钮具有权限的角色。" class="zmdi zmdi-info help-6"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="operateRole" type="checkbox" id="operate_OR" value="OR">
+								    <label for="operate_OR" title="责任人">责任人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="operateRole" type="checkbox" id="operate_AC" value="AC">
+								    <label for="operate_AC" title="参与人">参与人</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="operateRole" type="checkbox" id="operate_RR" value="RR">
+								    <label for="operate_RR" title="读者">读者</label>
+								</div>
+							    <div class="checkbox">
+							    	<input data-target="checkbox" name="operateRole" type="checkbox" id="operate_CR" value="CR">
+								    <label for="operate_CR" title="创建人">创建人</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="synCondition" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">跳转条件</span><div class="tipMsg"><i attrcalss="help-7" attrtip="提示：1、任何人执行审批通过后，流程直接跳转到下一步骤；2、所有人执行审批通过后，流程才允许跳转到下一步骤。" class="zmdi zmdi-info help-7"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="radio">
+							    	<input data-target="radio" name="synCondition" type="radio" id="syn_ONE" value="1" checked="checked">
+								    <label for="syn_ONE" title="任何人">任何人</label>
+								</div>
+							    <div class="radio">
+							    	<input data-target="radio" name="synCondition" type="radio" id="syn_ALL" value="2">
+								    <label for="syn_ALL" title="所有人">所有人</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="isOnlyOnce" htype="TEXT" style="display:none">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">限制执行一次</span><div class="tipMsg"><i attrcalss="help-11" attrtip="提示：设置该操作执行一次后，操作按钮不再显示。" class="zmdi zmdi-info help-11"></i></div></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="isOnlyOnce" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="pageTo" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">跳转页面</span><div class="tipMsg"><i attrcalss="help-8" attrtip="提示：设置执行审批通过后，页面跳转到列表、详情信息或下一个步骤操作页面。" class="zmdi zmdi-info help-8"></i></div></div>
+							<div class="field-div field-content-check">
+							    <div class="radio">
+							    	<input data-target="radio" name="pageTo" type="radio" id="pageTo_1" value="1" checked="checked">
+								    <label for="pageTo_1" title="列表页">列表页</label>
+								</div>
+							    <div class="radio">
+							    	<input data-target="radio" name="pageTo" type="radio" id="pageTo_2" value="2">
+								    <label for="pageTo_2" title="详情页">详情页</label>
+								</div>
+							    <div class="radio">
+							    	<input data-target="radio" name="pageTo" type="radio" id="pageTo_3" value="3">
+								    <label for="pageTo_3" title="操作页">操作页</label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="isSaveNodeUser" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许传递角色</span><div class="tipMsg"><i attrcalss="help-9" attrtip="提示：允许本步骤角色人员传递到下一个步骤，具有该步骤角色相同的权限。" class="zmdi zmdi-info help-9"></i></div></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="isSaveNodeUser" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="hasSave" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许保存数据</span><div class="tipMsg"><i attrcalss="help-10" attrtip="提示：设置本步骤显示保存按钮，如果点击保存按钮，则只保存数据，不会进行步骤跳转。" class="zmdi zmdi-info help-10"></i></div></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="hasSave" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li" field="deriveObject" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">派生对象</span></div>
+							<div class="field-div field-content cascade">
+								<div class="cascader-panel-wrap">
+									<div class="cascader-panel upward"></div>
+								</div>
+								<input type="hidden" attrsign="casCadeData" value="">
+								<input type="hidden" attrsign="_levelValue" name="deriveObject" value="">
+								<input type="hidden" attrsign="_ids" value="">
+								<input class="form-control form-control-select" type="text" value="" isSeached="Y" onclick="selectCascadeMenu(jQuery(this))" placeholder="请选择" autocomplete="off" htype="TEXT" readonly="readonly" required="required" style="padding-right: 0px;">
+								<i class="zmdi zmdi-caret-down select"></i>
+							</div>
+						</li>
+						<li class="field-li" field="pageSet" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">页面配置</span></div>
+							<div class="field-div field-content page" onclick="editPage(jQuery(this))">
+								<span class="pageTitle"></span>
+								<i class="zmdi zmdi-settings cp cp-theme"></i>
+							</div>
+						</li>
+						<li class="field-li" field="dataMapping" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">数据传递</span><div class="tipMsg"><i attrcalss="help-11" attrtip="提示：设置本流程与派生对象间的字段匹配关系，把本流程字段值传递给派生对象对应的字段。" class="zmdi zmdi-info help-11"></i></div></div>
+							<div class="field-div field-content page" onclick="dataMapping(jQuery(this))">
+								<span class="dataMappingTitle">字段匹配</span>
+								<i class="zmdi zmdi-settings cp cp-theme"></i>
+							</div>
+						</li>
+						<li class="field-li" field="orderNum" htype="NUMBER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">排列序号</span><div class="tipMsg"><i attrcalss="help-21" attrtip="提示：设置操作按钮的显示顺序" class="zmdi zmdi-info help-21"></i></div></div>
+							<div class="field-div field-content">
+								<input type="number" name="orderNum" id="orderNum" class="num-input" value="" placeholder="请输入序号" max="" min="" deci="1" autocomplete="off">
+							</div>
+						</li>
+						<li class="field-li" field="exeCls" htype="TEXT" style="width:66.667%;">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">执行监听器</span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="exeCls" type="text" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="200">
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="nodeOrTran" id="curForking">
+			<div class="bg"></div>
+			<div class="chtml">
+				<div class="header">
+					<div class="title"></div>
+					<div class="cbtn-box"><a class="cbtn btn-warning btn-save">保存</a><a class="cbtn btn-cancel">取消</a></div>
+				</div>
+				<div class="bodyForm">
+					<ul class="page-ul">
+						<li class="field-li first" field="filterCondition" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">决策条件</span></div>
+							<div class="field-div field-content">
+								<div class="filter-from"></div>
+								<div class="filter-btn" >
+									<div class="hide-select"></div>
+									<span onclick="addConditions(jQuery(this))" class="add-btns"><i class="zmdi zmdi-plus mr5"></i>添加条件</span>
+
+									<div class="hide-condition hide">
+										<div class="row-condition">
+											<div class="cell cell1"></div>
+											<div class="cell cell2"></div>
+											<div class="cell cell3"></div>
+											<div class="cell cell4"></div>
+											<div class="cell cell5" onclick="removeCondition(jQuery(this))"><i class="zmdi zmdi-delete"></i></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li first" field="isDefaultForking" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">默认分支</span></div>
+							<div class="field-div field-content-check">
+								<div class="lcs_wrap">
+									<input class="lcs_check lcs_tt1" name="isDefaultForking" off_text="否" on_text="是" type="checkbox" value="N">
+									<div class="lcs_switch  lcs_off lcs_checkbox_switch">
+										<div class="lcs_cursor"></div>
+										<div class="lcs_label lcs_label_on">是</div>
+										<div class="lcs_label lcs_label_off">否</div>
+									</div>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="submit" id="nextStep" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, true, true, false)" value="下一步" style="display:none;"/>
+				<input type="submit" id="publish" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, false, true)" value="发布" style="display:none;"/>
+				<input type="submit" id="preStep" class="layui-layer-btn0 btns cp" onClick="saveAndJump(true, false, true, false)" value="上一步" style="display:none;"/>
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, false, false)" value="保存并保留窗口"/>
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveAndJump(false, false, true, false)" value="保存并关闭窗口"/>
+				<a class="layui-layer-btn1 close-btn cp" onclick="layerWinCancel($(this))">取消</a>
+			</div>
+		</div>
+	</div>
+
+	<!--[if lt IE 9]>
+	<script src="../editor-app/libs/es5-shim-15.3.4.5/es5-shim.js"></script>
+	<script src="../editor-app/libs/json3_3.2.6/lib/json3.min.js"></script>
+	<![endif]-->
+
+	<script src="../editor-app/libs/jquery_1.11.0/jquery.min.js"></script>
+	<script src="../editor-app/libs/jquery-ui-1.10.3.custom.min.js"></script>
+
+	<script src="../editor-app/libs/angular_1.2.13/angular.min.js"></script>
+	<script src="../editor-app/libs/angular_1.2.13/angular-animate.min.js"></script>
+	<script src="../editor-app/libs/bootstrap_3.1.1/js/bootstrap.min.js"></script>
+	<script src="../editor-app/libs/angular-resource_1.2.13/angular-resource.min.js"></script>
+	<script src="../editor-app/libs/angular-cookies_1.2.13/angular-cookies.min.js"></script>
+	<script src="../editor-app/libs/angular-sanitize_1.2.13/angular-sanitize.min.js"></script>
+	<script src="../editor-app/libs/angular-route_1.2.13/angular-route.min.js"></script>
+	<script src="../editor-app/libs/angular-translate_2.4.2/angular-translate.min.js"></script>
+	<script src="../editor-app/libs/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+	<script src="../editor-app/libs/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+	<script src="../editor-app/libs/angular-strap_2.0.5/angular-strap.min.js"></script>
+	<script src="../editor-app/libs/angular-strap_2.0.5/angular-strap.tpl.min.js"></script>
+	<script src="../editor-app/libs/momentjs_2.5.1/momentjs.min.js"></script>
+
+	<script src="../editor-app/libs/ui-utils.min-0.0.4.js" type="text/javascript"></script>
+	<script src="../editor-app/libs/ng-grid-2.0.7-min.js" type="text/javascript"></script>
+	<script src="../editor-app/libs/angular-dragdrop.min-1.0.3.js" type="text/javascript"></script>
+	<script src="../editor-app/libs/mousetrap-1.4.5.min.js" type="text/javascript"></script>
+	<script src="../editor-app/libs/jquery.autogrow-textarea.js" type="text/javascript"></script>
+
+	<script src="../editor-app/libs/prototype-1.5.1.js" type="text/javascript"></script>
+	<script src="../editor-app/libs/path_parser.js" type="text/javascript"></script>
+
+	<script src="../editor-app/libs/angular-scroll_0.5.7/angular-scroll.min.js" type="text/javascript"></script>
+
+	<!-- Configuration -->
+	<script src="../editor-app/app-cfg.js?v=1"></script>
+	<script src="../editor-app/editor-config.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/url-config.js" type="text/javascript"></script>
+
+	<script src="../editor-app/editor/i18n/translation_en_us.js" type="text/javascript"></script>
+	<script src="../editor-app/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></script>
+	<script src="../editor-app/editor/oryx.debug.js" type="text/javascript"></script>
+
+	<script src="../editor-app/app.js"></script>
+
+	<script src="../editor-app/eventbus.js" type="text/javascript"></script>
+
+	<script src="../editor-app/editor-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/stencil-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/toolbar-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/header-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/select-shape-controller.js" type="text/javascript"></script>
+
+	<script src="../editor-app/editor-utils.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/toolbar-default-actions.js" type="text/javascript"></script>
+
+	<script src="../editor-app/configuration/properties-default-controllers.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-execution-listeners-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-event-listeners-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-assignment-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-fields-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-form-properties-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-in-parameters-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-multiinstance-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-out-parameters-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-task-listeners-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-sequenceflow-order-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-condition-expression-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-signal-definitions-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-signal-scope-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-message-definitions-controller.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-message-scope-controller.js" type="text/javascript"></script>
+
+	<script src="../editor-app/configuration/toolbar.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/toolbar-custom-actions.js" type="text/javascript"></script>
+
+	<script src="../editor-app/configuration/properties.js" type="text/javascript"></script>
+	<script src="../editor-app/configuration/properties-custom-controllers.js" type="text/javascript"></script>
+	<script src="../js/workflow/operate-guide.js"></script>
+	<script src="../js/workflow/workflow-common.js"></script>
+	<script src="../js/common/common.js"></script>
+	<script src="../js/form/switch.js"></script>
+	<script src="../js/form/filter-add.js"></script>
+	<script src="../js/form/bootstrap-select.js"></script>
+	<script src="../js/plugins/datapicker/laydate.js"></script>
+
+	<script type="text/javascript">
+		init();
+
+		var status, objectId, objectType, parentname, isRunEdit, btnEdit, fieldList;
+		function init() {
+			hideLoading();
+
+			var skin = getCookie('skin');
+	    	if(!skin) {
+	    		skin = 'blue';
+	    	}
+	    	var link = document.createElement("link");
+	    	link.rel = "stylesheet";
+	    	link.type = "text/css";
+	    	link.href = "/css/theme/"+skin+"/theme.css";
+	    	document.head.appendChild(link);
+
+			jQuery('.btn-box').removeClass('hide');
+
+			jQuery('.close-btn').click(function() {
+				top.layer.closeAll();
+			});
+			jQuery('body').addClass(getParam('theme'));
+
+			status = getParam('status');
+			objectId = getParam('objectId');
+			objectType = getParam('objectType');
+			parentname = getParam('parentname');
+			isRunEdit = getParam('isRunEdit');
+			btnEdit = getParam('btnEdit');
+			if(isRunEdit && isRunEdit == 'Y') {
+				jQuery('.addPage').removeClass('addPage');
+				if(status != 'RN' && status != 'IN') {
+					jQuery('#publish').show();
+				}
+			}else {
+				jQuery('#preStep, #nextStep').show();
+			}
+			if(btnEdit && btnEdit == 'N'){
+				jQuery('.layui-layer-btn0').hide();
+				jQuery('#saveBtn').attr('disabled', 'disabled');
+			}
+			loadStepGuideHtml(2, isRunEdit, objectId, objectType, getParam('instanceName'), parentname);
+			jQuery('#status').val(status);
+			jQuery('#isRunEdit').val(isRunEdit);
+			jQuery('#objectType').val(objectType);
+			jQuery('#workflowId').val(objectId);
+
+			jQuery('.lcs_check').each(function(){
+				jQuery(this).lc_switch(jQuery(this).attr('on_text'), jQuery(this).attr('off_text'));
+			});
+			// triggered each time a field changes status
+			jQuery('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+				var status = (jQuery(this).is(':checked')) ? 'checked' : 'unchecked';
+			});
+
+			//初始化提示控件
+			var tipIndex;
+			jQuery('.field-label .zmdi-info').hover(function() {
+				if(jQuery(this).attr('attrTip')) {
+					tipIndex = parent.layer.tips(jQuery(this).attr('attrTip'), '.' + jQuery(this).attr('attrCalss'), {
+						tips: [3, '#f8ac59'],
+						btnObj: jQuery(this)
+					});
+				}
+			}, function() {
+				parent.layer.close(tipIndex);
+			});
+
+			//节点或者操作编辑弹出层保存或取消
+			jQuery('.btn-cancel').click(function(){
+				jQuery(this).closest('.nodeOrTran').hide();
+			});
+
+			jQuery('.btn-save').click(function(){
+				saveNodeOrTranParams(jQuery(this));
+			});
+
+			jQuery('body').click(function() {
+				jQuery('.field-content.cascade').removeClass('is-focus');
+				jQuery('.cascader-panel-wrap').hide();
+			});
+
+			jQuery('.form-control-select, .cascader-panel-wrap').click(function(e) {
+				stopPropagation(e);
+			});
+		}
+
+		var isPre, isNext, isClose = false, isPublish = false;
+		function saveAndJump(isCurPre, isCurNext, isCurClose, isCurPublish) {
+			isPre = isCurPre;
+			isNext = isCurNext;
+			isClose = isCurClose;
+			isPublish = isCurPublish;
+			showLoading();
+
+			var $saveBtn = jQuery('#saveBtn');
+			if(isPublish) {
+				hideLoading();
+				var index = top.layer.confirm('模型发布后，现有单据将按照新发布的模型进行流转，确定发布吗？', {
+	    			btn : ['确定', '取消']
+	    		}, function() {
+					parent.layer.hide(index);
+	    			showLoading();
+					jQuery('#isPublish').val('Y');
+					if($saveBtn.attr('disabled')) {
+						successSave();
+					}else{
+						$saveBtn.click();
+					}
+					parent.layer.close(index);
+	    		}, function() {
+	    		});
+			}else {
+				if($saveBtn.attr('disabled')) {
+					hideLoading();
+					if(isPre || isNext || isClose) {
+						successSave();
+					}
+				}else{
+					$saveBtn.click();
+				}
+			}
+		}
+
+		function getParam(paramName) {
+		    var reg = new RegExp("(^|&)" + paramName + "=([^&]*)(&|$)");
+		    var r = window.location.search.substr(1).match(reg);
+		    if (r != null) return decodeURI(r[2]);
+		    return null;
+		}
+
+		function successSave(msg) {
+			if(msg) {
+				parent.layer.msg(msg, 1);
+				return;
+			}
+			var step = getParam('step');
+			if(step) {
+				step = parseInt(step);
+			}
+			if(isPre) {
+				hideLoading();
+				stepForward(objectId, objectType, step - 1, parentname);
+			}else if(isNext) {
+				hideLoading();
+				stepForward(objectId, objectType, step + 1, parentname);
+			}else if(isPublish) {
+				publishInstance();
+			}else if(isClose){
+				hideLoading();
+				winCloseAndReLoad();
+				parent.layer.msg('操作成功');
+			}else {
+				hideLoading();
+				parent.layer.msg('操作成功');
+			}
+		}
+
+		function publishInstance() {
+			showLoading();
+	 		jQuery.ajax({
+				cache : true,
+				type : "POST",
+				url : "/activiti/model/deploy",
+				data : {'id': objectId},
+				async : false,
+				success : function(data) {
+					if(data.code == 0) {
+						jQuery('#publish').hide();
+						hideLoading();
+						winCloseAndReLoad();
+						parent.layer.msg(data.msg);
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+				}
+			});
+	 	}
+
+		//编辑页面
+		var $pageTitle;
+		function editPage($obj) {
+			$pageTitle = $obj.find('.pageTitle');
+			var pageId = $pageTitle.attr('id'), title = $pageTitle.text();
+			if(!pageId) {
+				pageId = null;
+			}
+			openPageWindow(pageId, title);
+		}
+
+		function openPageWindow(pageId, title) {
+			var nodeOrTranType = jQuery('#nodeOrTranType').val(), objectType='', deriveWorkflowId='';
+			if(nodeOrTranType == 'derive') {
+				var deriveObject = jQuery('input[name="deriveObject"]').val();
+				if(deriveObject){
+					objectType = deriveObject.split(' / ')[0];
+					deriveWorkflowId = deriveObject.split(' / ')[1];
+				}else {
+					top.layer.alert('请先选择派生对象！');
+					return;
+				}
+			}else {
+				objectType = jQuery('#objectType').val();
+			}
+			var url = '/page/pageSet/' + pageId + '?objectType=' + objectType + '&entityTypeId=' + jQuery('#nodeOrTranId').val() +
+							'&subType='+nodeOrTranType+'&pageType=&isCopy=&isEntityList=&workflowId='+jQuery('#workflowId').val()+'&deriveWorkflowId='+deriveWorkflowId+'&parentname='+ window.name;
+
+			openWindowLikeIframe({'url':url, 'title':('配置' + title), 'isParent':true});
+		}
+
+		function dataMapping($obj) {
+			var nodeOrTranType = jQuery('#nodeOrTranType').val(), objectType = jQuery('#objectType').val(), deriveType;
+			var derivePageId = $obj.closest('.page-ul').find('.pageTitle').attr('id');
+			if(nodeOrTranType == 'derive') {
+				var deriveObject = jQuery('input[name="deriveObject"]').val();
+				if(deriveObject && derivePageId){
+					deriveType = deriveObject.split(' / ')[0];
+				}else {
+					if(!deriveObject){
+						top.layer.alert('请先选择派生对象！');
+						return;
+					}
+					if(!derivePageId){
+						top.layer.alert('请先配置页面！');
+						return;
+					}
+				}
+			}else {
+				return;
+			}
+
+			var url = 'instance/dataMapping?id=' + jQuery('#nodeOrTranId').val() + '&objectType=' + objectType + '&deriveType='+ deriveType +'&derivePageId='+derivePageId+'&parentname='+ window.name;
+			top.layer.open({
+				type : 2,
+				title : '字段匹配',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['800px', '80%'],
+				content : url,
+			});
+		}
+
+		//如果是流程图 新建页面的情况下，把id设置，便于重新编辑页面
+		function reLoadPageId(id) {
+			if($pageTitle) {
+				$pageTitle.attr('id', id);
+			}
+		}
+
+		//保存或编辑操作参数
+		function saveNodeOrTranParams($obj) {
+			var nodeOrTranId = jQuery('#nodeOrTranId').val(), nodeOrTranType = jQuery('#nodeOrTranType').val();
+			var nodeOrTranParam, $nodeOrTran = $obj.closest('.nodeOrTran');
+			var exeCls = $nodeOrTran.find('input[name="exeCls"]').val();
+			if(nodeOrTranType == 'state' || nodeOrTranType == 'end-state') {
+				var emailRole = '', notifyRole = '', rejectRole = '';
+				$nodeOrTran.find('input[name="emailRole"]:checked').each(function() {
+					if(emailRole) {
+						emailRole += ',' + jQuery(this).val();
+					}else {
+						emailRole = jQuery(this).val();
+					}
+				});
+				$nodeOrTran.find('input[name="notifyRole"]:checked').each(function() {
+					if(notifyRole) {
+						notifyRole += ',' + jQuery(this).val();
+					}else {
+						notifyRole = jQuery(this).val();
+					}
+				});
+				$nodeOrTran.find('input[name="rejectRole"]:checked').each(function() {
+					if(rejectRole) {
+						rejectRole += ',' + jQuery(this).val();
+					}else {
+						rejectRole = jQuery(this).val();
+					}
+				});
+
+				var canUpdateFile = $nodeOrTran.find('input[name="canUpdateFile"]').val();
+				var canUpdateRelate = $nodeOrTran.find('input[name="canUpdateRelate"]').val();
+				var orderNum = $nodeOrTran.find('input[name="orderNum"]').val();
+				nodeOrTranParam = {'emailRole':emailRole, 'notifyRole':notifyRole, 'rejectRole':rejectRole, 'canUpdateFile':canUpdateFile, 'canUpdateRelate':canUpdateRelate, 'orderNum':orderNum, 'exeCls':exeCls};
+			}else if(nodeOrTranType == 'common' || nodeOrTranType == 'countSign' || nodeOrTranType == 'derive') {
+				var operateRole = ''
+				$nodeOrTran.find('input[name="operateRole"]:checked').each(function() {
+					if(operateRole) {
+						operateRole += ',' + jQuery(this).val();
+					}else {
+						operateRole = jQuery(this).val();
+					}
+				});
+
+				var synCondition = $nodeOrTran.find('input[name="synCondition"]:checked').val();
+				var pageTo = $nodeOrTran.find('input[name="pageTo"]:checked').val();
+				var isSaveNodeUser = $nodeOrTran.find('input[name="isSaveNodeUser"]').val();
+				var hasSave = $nodeOrTran.find('input[name="hasSave"]').val();
+				var isOnlyOnce = 'N';
+				if($nodeOrTran.find('.field-li[field="isOnlyOnce"]').is(':visible')){
+					isOnlyOnce = $nodeOrTran.find('input[name="isOnlyOnce"]').val();
+				}
+				var deriveObject = $nodeOrTran.find('input[name="deriveObject"]').val();
+				if(nodeOrTranType == 'derive' && !deriveObject) {
+					top.layer.alert('请选择派生对象');
+					return;
+				}
+
+				var orderNum = $nodeOrTran.find('input[name="orderNum"]').val();
+				nodeOrTranParam = {'operateRole':operateRole, 'synCondition':synCondition, 'pageTo':pageTo, 'isSaveNodeUser':isSaveNodeUser, 'hasSave':hasSave, 'isOnlyOnce':isOnlyOnce, 'deriveObject': deriveObject, 'orderNum':orderNum, 'exeCls':exeCls};
+			}else if(nodeOrTranType == 'forking') {
+				var forkingCondition = getFilterCondition($nodeOrTran);
+				var isDefaultForking = $nodeOrTran.find('input[name="isDefaultForking"]').val();
+				var orderNum = $nodeOrTran.find('input[name="orderNum"]').val();
+				nodeOrTranParam = {'isDefaultForking':isDefaultForking, 'forkingCondition':forkingCondition, 'orderNum':orderNum, 'exeCls':exeCls};
+			}
+
+			jQuery.ajax({
+				cache : true,
+				type : "POST",
+				url : "/instance/saveNodeOrTranParams",
+				data : {'id': nodeOrTranId, 'nodeOrTranType': nodeOrTranType, 'objectType': jQuery('#objectType').val(), 'nodeOrTranParam':JSON.stringify(nodeOrTranParam)},
+				async : false,
+				success : function(data) {
+					if(data.code == 0) {
+						$nodeOrTran.hide();
+						parent.layer.msg(data.msg);
+						if(nodeOrTranType == 'derive' && data.returnName) {
+							var dataArr = data.returnName.split(',');
+							var $samllText = jQuery('#svg-sid-' + dataArr[1]).find('.samll-derive-text');
+							$samllText.find('tspan').text(dataArr[0])
+							$samllText.show();
+						}
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+				}
+			});
+		}
+
+		function addConditions($obj) {
+			jQuery.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/getFieldList",
+				data : {'objectType': jQuery('#objectType').val()},
+				async : false,
+				success : function(data) {
+					fieldList = data;
+					if(fieldList){
+						loadFilterFieldSelect(fieldList);
+					}
+					addCondition($obj);
+				}
+			});
+		}
+	</script>
+
+</body>
+</html>

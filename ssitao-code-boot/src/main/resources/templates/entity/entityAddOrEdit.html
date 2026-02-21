@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/easyUpload.min.css">
+<link rel="stylesheet" href="/css/list/gm.css">
+<link rel="stylesheet" href="/css/form/comment.css">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="data" th:value="${data}"/>
+			<input type="hidden" id="type" name="type"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="isContinue" name="isContinue"/>
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="speciData" name="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="pageTitle" name="pageTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="fileInfo" name="fileInfo" />
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="pageId" name="pageId" th:value="${pageId}"/>
+			<input type="hidden" id="pageTo" name="pageTo" th:value="${pageTo}"/>
+			<input type="hidden" id="selectFolderId" name="selectFolderId" th:value="${selectFolderId}"/>
+			<input type="hidden" id="notShowOtherTabs" name="notShowOtherTabs" value="Y"/>
+			<input type="hidden" id="notShowDetailTabs" name="notShowDetailTabs" value="N"/>
+			
+			<input type="hidden" id="_tran_id_" name="_tran_id_" th:value="${transitionId}"/>
+			<input type="hidden" id="_destType" name="_destType"/>
+			
+			<input type="hidden" id="srcObjectId" name="srcObjectId" th:value="${srcObjectId}"/>
+			<input type="hidden" id="srcObjectType" name="srcObjectType" th:value="${srcObjectType}"/>
+			<input type="hidden" id="srcWorkflowId" name="srcWorkflowId" th:value="${srcWorkflowId}"/>
+			<input type="hidden" id="srcWorkflowType" name="srcWorkflowType" th:value="${srcWorkflowType}"/>
+			<input type="hidden" id="transitionId" name="transitionId" th:value="${transitionId}"/>
+			<input type="hidden" id="toNodeId" name="toNodeId" th:value="${toNodeId}"/>
+			<input type="hidden" id="lcPhaseId" name="lcPhaseId" th:value="${isDerive} eq 'Y' ? '':${toNodeId}"/>
+			<input type="hidden" id="currentNodeId" name="currentNodeId" th:value="${currentNodeId}"/>
+			<input type="hidden" id="isDerive" name="isDerive" th:value="${isDerive}"/>
+			<input type="hidden" id="allowUpdateDoc" name="allowUpdateDoc" th:value="${allowUpdateDoc}"/>
+			<input type="hidden" id="tabs" name="tabs" th:value="${tabs}"/>
+			<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+			<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+			
+			<input type="hidden" id="isNext" name="isNext" value="N"/>
+			<input type="hidden" id="step" name="step" th:value="${step}"/>
+			
+			<div class="layout-box new">
+				<div class="layout-left">
+					<div id="easy1" class="easy-upload mt20" th:style="${allowUpdateDoc} ? '':'display:none'"></div>
+					<ul class="page-ul"></ul>
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存" onclick="$('#isContinue').val('N');" th:style="${isDerive} eq 'Y' ? 'display:none':''"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存并新建" onclick="$('#isContinue').val('Y');" th:style="${isEdit} eq 'Y' or ${isDerive} eq 'Y' or ${objectType} eq 'PJT' ? 'display:none':''"/>
+<!-- 							<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isNext').val('Y');" th:value="下一步" th:if="${not #strings.isEmpty(step)}" th:style="${objectType} ne 'PJT'?'display:none':''"/> -->
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定" onclick="$('#isContinue').val('N');" th:style="${isDerive} ne 'Y' ? 'display:none':''"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+				<div class="layout-right"></div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], maxFileNum = [[${maxFileNum}]], maxFileSize = [[${maxFileSize}]], fileType = [[${fileType}]], fileTips = [[${fileTips}]]</script>
+	<script src="/js/form/comment.js"></script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/form/easyUpload.min.js"></script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/list/customTable.js"></script>
+	
+	<script>
+		var objectType = $('#objectType').val();
+		$(function() {
+			initDocUpload();
+			/**
+			if(objectType && objectType == 'PJT' && $('#step').val()){
+				loadNewPjtStepGuideHtml(1, $('#id').val(), parentName);
+				$('.page-ul').css('margin-top', '90px');
+			}**/
+			
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl(objectType);
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			initTypeSelect();
+			
+			$("#operate").html5Validate(function() {
+				var isContinue = $('#isContinue').val();
+				if(objectType == 'DOC' && $('#allowUpdateDoc').val() == 'true') {
+					$('.easy_upload_upbtn').click();
+				}else {
+					submitEntity();
+				}
+			}, {
+				validate: function() {
+					return customValidate($('#objectType').val());
+				}
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		//初始化类型下拉框，监控类型选项，进行阶段和页面的更新
+		function initTypeSelect() {
+			$('select[name="typeId"]').change(function() {
+				showLoading();
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url: "/entity/getPageInfoByType",
+					data:{'typeId': $(this).val(), 'objectType': $('#objectType').val(), 'objectId': $('#id').val()},// 你的formid
+					async: false,
+					success : function(data) {
+						hideLoading();
+						if(data) {
+							data = eval('('+ data +')');
+							if($('#pageId').val() != data.pageId){
+								$('#pageId').val(data.pageId);
+								if(data.data) {
+									var isDerive = $('#isDerive').val();
+									if(isDerive && isDerive == 'Y') {
+									}else {
+										initFormList(data.data, true);
+									}
+									initFormControl(objectType);
+									$('select').selectpicker('refresh');
+									
+								}
+								$('.summernote').each(function() {
+									$(this).summernote('code', $(this).prev().val());
+								});
+							}
+							
+							if(data.phaseList){
+								var phaseList = data.phaseList;
+								var optionHtml = '<option value="">请选择</option>';
+								var selectId;
+								for(var i = 0; i < phaseList.length; i++) {
+									optionHtml += '<option selected="'+phaseList[i].checked+'" data-content="'+phaseList[i].text+'" value="'+phaseList[i].id+'"></option>';
+									if(phaseList[i].checked) {
+										selectId = phaseList[i].id;
+									}
+								}
+								$('select[name="phaseId"]').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+							}
+							$('select[name="lifecycleId"]').selectpicker('val', data.lifecycleId);
+						}
+					}
+				});
+			});
+			
+			$('select[name="lifecycleId"]').change(function() {
+				showLoading();
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url: "/lifecycle/getPhaseList",
+					data:{'lifecycleId': $(this).val()},// 你的formid
+					async: false,
+					success : function(data) {
+						hideLoading();
+						if(data) {
+							var optionHtml = '<option value="">请选择</option>';
+							var selectId;
+							for(var i = 0; i < data.length; i++) {
+								optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+								if(data[i].checked) {
+									selectId = data[i].id;
+								}
+							}
+							$('select[name="phaseId"]').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+						}
+					}
+				});
+			});
+		}
+		
+		function submitEntity() {
+			var isContinue = $('#isContinue').val();
+			var _action = $('#_action').val();
+			var objectType = $('#objectType').val();
+			var isNext = $('#isNext').val();
+			if(_action) {
+				$('#action').val(_action);
+			}
+			var belongId = $('#belongId').val(), belongType = $('#belongType').val();
+			if(belongId) {
+				if(belongType == 'PJT'){
+					if(!$('#_projectId').length) {
+						$('#operate').append('<input name="projectId" value="'+belongId+'"/>');
+					}
+				}else if(belongType == 'PRD') {
+					if(!$('#_productId').length) {
+						$('#operate').append('<input name="productId" value="'+belongId+'"/>');
+					}
+				}else if(belongType == 'DEPT') {
+					if(!$('#_departmentId').length) {
+						$('#operate').append('<input name="departmentId" value="'+belongId+'"/>');
+					}
+				}
+			}
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/entity/saveMyEntity",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var isDerive = $('#isDerive').val();
+						var srcObjectId = $('#srcObjectId').val(), srcObjectType = $('#srcObjectType').val();
+						if(srcObjectId && srcObjectType) {//如果是需求分解需求、或者任务、或者测试用例，则进入
+							saveRelateObject(srcObjectId, srcObjectType, data.id, data.objectType);
+						}
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+							$('input[name="code"]').val('');
+							
+							if(data.objectType == 'DOC') {
+								$('.easy_upload_delbtn').click();
+								initDocUpload();
+							}
+						}else if(objectType && objectType == 'PJT' && isNext && isNext == 'Y') {
+							parent.layer.closeAll();
+							parent.layer.msg(data.msg);
+							var pjtId = $('#id').val();
+							if(!pjtId) {
+								pjtId = data.id;
+							}
+							intoIframePage('/pjt/pjtMileList?id=' + pjtId + '&parentname='+parentName, false, objectType);
+						}else {
+							if(isDerive && isDerive == 'Y') {
+								var msgData = {};
+								msgData.srcObjectType = $('#srcWorkflowType').val();
+								msgData.srcObjectId = $('#srcObjectId').val();
+								msgData.tranId = $('#_tran_id_').val();
+								msgData.hasDerived = 'Y';
+								msgData.pageTo = $('#pageTo').val();
+								disposeTransition(msgData, parentName, data.msg);
+							}else{
+								if(parentName && parentName[0]) {
+									var parentFrame = top.frames[parentName[0]];
+									if(parentFrame && typeof parentFrame.returnBackAndReLoad== "function") {
+										parentFrame.returnBackAndReLoad(true);
+									}
+								}else{
+									hideLoading();
+									returnBackAndReLoad();
+								}
+								parent.layer.msg(data.msg);
+							}
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}
+		
+		function initDocUpload() {
+			$('#easy1').easyUpload({
+				disabledFileTypes: fileType ? fileType : '',//允许禁止上传文件类型，格式';*.exe;*.bat'
+		        allowFileSize: maxFileSize ? maxFileSize : '1024',//允许上传文件大小(KB)
+		        selectText: '选择文件',//选择文件按钮文案
+		        multi: true,//是否允许多文件上传
+		        multiNum: maxFileNum ? maxFileNum : '10',//多文件上传时允许的文件数
+		        showNote: true,//是否展示文件上传说明
+		        note: fileTips,//文件上传说明
+		        isRequired:'Y',
+		        showPreview: true,//是否显示文件预览
+		        url: '/document/upload',//上传文件地址
+		        fileName: 'file',//文件filename配置参数
+		        timeout: 30000,//请求超时时间
+		        okCode: 200,//与后端返回数据code值一致时执行成功回调，不配置默认200
+		        successFunc: function(res) {
+		        	if($('.easy_upload_queue_item').length == res.success.length) {
+		        		var fileInfo = [];
+		        		for (var i=0;i<res.success.length;i++){
+		        			fileInfo.push(res.success[i].fileInfo);
+		                }
+		        		$('#fileInfo').val(JSON.stringify(fileInfo));
+		        		
+		        		submitEntity();
+		        	}
+		        },//上传成功回调函数
+		        errorFunc: function(res) {
+		        },//上传失败回调函数
+		        deleteFunc: function(res) {
+		        }//删除文件回调函数
+		    });
+		}
+		
+	</script>
+	
+</body>
+</html>

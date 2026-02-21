@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	.table-list-box .table-list{padding-left:0px;padding-right:0px;}
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn y-active add" onclick="addInstance();" th:style="${objectType} ne 'TSK' ? '':'display:none'">
+							<i class="fa fa-plus mr5"></i>
+							<span th:text="新建" class="pt1 h18"></span>
+						</button>
+					</div>
+					
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',CP';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var objectType = [[${objectType}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'INSTANCE',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				objectType: objectType
+			});
+		});
+		
+		function addInstance() {
+			var url = '/instance/addOrEditInstance/null?objectType=' + objectType + '&preId='+getCurRowId()+'&parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'新建模型', 'isParent':true});
+		}
+		
+		function reLoad(){
+			GridManager.refreshGrid('grid-table', true);
+		}
+	</script>	
+	
+</body>
+</html>
