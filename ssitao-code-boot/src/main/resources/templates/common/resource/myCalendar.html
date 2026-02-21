@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/plugins/fullcalendar/fullcalendar.css">
+<style>
+	.container-calendar{display:flex;}
+	.myResource{width:250px;padding:15px;padding-left:0px;}
+	.myResource .search{position:relative;}
+	.myResource .search .form-search{padding:5px 12px;}
+	.myResource .search .zmdi-search{position:absolute;right:5px;top:8px;color:rgb(153, 153, 153);}    
+	.myResource .resource{margin-top:15px;}
+	.myResource .title{font-size:12px;font-weight:bolder;display:flex;align-items:baseline;justify-content:space-between;}
+	.myResource .title .fa-plus-circle{color:var(--theme);font-size:16px;cursor:pointer;}
+	.myResource .userList li{margin-top:10px;height:30px;line-height:30px;position:relative;}
+	.myResource .userList li .fa-check-circle{position:absolute;right:0px;top:8px;cursor:pointer;color:#e5e6e7;font-size:16px;}
+	.myResource .userList li .fa-check-circle:hover{opacity:0.5;}
+	.myResource .userList .userImg{width:30px;border-radius:50%;margin-right:5px;}
+	.myCalendar{width:100%;margin-top:15px;}
+	
+	.fc-header-toolbar .fc-state-active{background-color:var(--theme)!important;border-color:var(--theme)!important;}
+	.fc-header-toolbar .fc-center h3{margin-top:7px;}
+	.wholeRow{width:100%;position:relative;}
+	.wholeRow .zmdi-calendar{position:absolute;right:5px;top:7px;}
+	.form-control, .input_textarea{padding-left:5px!important;}
+	.input_textarea{padding-top:5px!important;}
+	.col-md-12{padding-right:5px!important;}
+	.modal-footer .btn{height:31px;line-height:31px;padding:0px 12px;background-color:white;border:1px solid #e5e6e7;margin-left:3px!important;margin-right:5px;}
+	.modal-footer .btn.save-btn{background-color:var(--theme)!important;border:1px solid var(--theme)!important;color:white;}
+	.modal-footer .btn.delete-btn{background-color:#f75942!important;border:1px solid #f75942!important;color:white;}
+	.modal-dialog .singleRow .sumtips{bottom:25px!important;}
+	.modal-dialog .multiRow .sumtips{bottom:1px!important;right:5px!important;}
+	.modal-dialog .textarea-box {
+	    padding-bottom: 10px;
+	    border:1px solid #e5e6e7;
+	    border-radius:4px;
+	}
+	.modal-dialog .textarea-box .input_textarea{width:100%;border:0px;resize:none;border-radius:4px;margin-bottom:5px;}
+	.noData{height:50px!important;line-height:50px!important;background-color:#f5f5f5;color:#999;text-align:center;}
+	#eventViewModal .col-md-12{padding-top:15px}
+	#eventViewModal .modal-body{padding-top:0px}
+	#eventViewModal .odd{background-color:#f9f9f9!important;}
+	
+	.fc-left .checkbox{margin-top:3px!important;margin-bottom:0px!important;margin-left:10px;}
+	.myResource .zmdi-search:hover{cursor:pointer;color:var(--theme);}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<input type="hidden" id="myBg" th:value="bg-color1"/>
+		<input type="hidden" id="taskList" th:value="${taskList}"/>
+		<input type="hidden" id="curUserId" th:value="${curUserId}"/>
+		<input type="hidden" id="btnAdd" th:value="${btnAdd}"/>
+		<input type="hidden" id="btnEdit" th:value="${btnEdit}"/>
+		<input type="hidden" id="btnDel" th:value="${btnDel}"/>
+		<input type="hidden" id="btnMember" th:value="${btnMember}"/>
+		
+		<div class="container-calendar">
+            <div class="myResource">
+            	<div class="search">
+	            	<input class="form-control input-outline form-search" id="searchInput" name="name" placeholder="搜索用户" type="text" autocomplete="off"/>
+	            	<i class="zmdi zmdi-search"></i>
+            	</div>
+            	<div class="resource">
+            		<div class="title">我的日历</div>
+            		<ul class="userList" id="myList">
+            		</ul>
+            	</div>
+            	<div class="resource" th:if="${btnMember}">
+            		<div class="title"><span>成员日历</span><span class="fa fa-plus-circle" onclick="selectUser($(this), 'Y')" th:attr="userId=${memoryUserIds}"></span></div>
+            		<ul class="userList" id="memberList">
+            		</ul>
+            	</div>
+            </div>        
+            <div class="myCalendar">
+                <div id="calendar"></div>
+            </div>
+        </div>
+        
+        <div class="modal fade" id="addDirectEvent" tabindex="-1" role="dialog" th:if="${btnAdd}">
+		    <div class="modal-dialog" role="document">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h4 class="modal-title">新建日程</h4>
+		            </div>
+		            <div class="modal-body">
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign">*</span>名称</label>
+		                            <div class="singleRow wordSumTotal wholeRow">
+			                            <input class="form-control" name="event-name" type="text" autocomplete="off" placeholder="请输入名称" maxlength="100"/>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign">*</span>时间段</label>
+		                            <div class="wholeRow">
+			                            <input class="form-control form-control-date" name="event-time" type="text" dateformat="YMDHmsscope" placeholder="请选择时间段" autocomplete="off" readonly="readonly" htype="DATE" required>
+			                            <i class="zmdi zmdi-calendar"></i>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign"></span>备注</label>
+		                            <div class="wholeRow wordSumTotal multiRow">
+		                            	<div class="textarea-box">
+				                            <textarea rows="8" class="input_textarea" name="event-remark" id="remarkContent" maxlength="1000" placeholder="请输入备注"></textarea>
+			                            </div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="modal-footer">
+		                <button class="btn save-btn">保存</button>
+		                <button class="btn" data-dismiss="modal">取消</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		<!-- Event Edit Modal popup -->
+		<div class="modal fade" id="eventEditModal" tabindex="-1" role="dialog" th:if="${btnEdit}">
+		    <div class="modal-dialog" role="document">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h4 class="modal-title">编辑日程</h4>
+		            </div>
+		            <div class="modal-body">
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign">*</span>名称</label>
+		                            <div class="singleRow wordSumTotal wholeRow">
+			                            <input class="form-control" name="event-name" type="text" autocomplete="off" placeholder="请输入名称" maxlength="100"/>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign">*</span>时间段</label>
+		                            <div class="wholeRow">
+			                            <input class="form-control form-control-date" name="event-time" type="text" dateformat="YMDHmsscope" placeholder="请选择时间段" autocomplete="off" readonly="readonly" htype="DATE" required>
+			                            <i class="zmdi zmdi-calendar"></i>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign"></span>备注</label>
+		                            <div class="wholeRow wordSumTotal multiRow">
+		                            	<div class="textarea-box">
+				                            <textarea rows="8" class="input_textarea" name="event-remark" id="remarkContent" maxlength="1000" placeholder="请输入备注"></textarea>
+			                            </div>
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="modal-footer">
+		                <button class="btn save-btn">保存</button>
+		                <button class="btn mr-auto delete-btn" th:if="${btnDel}">删除</button>
+		                <button class="btn" data-dismiss="modal">取消</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		
+		<div class="modal fade" id="eventViewModal" tabindex="-1" role="dialog">
+		    <div class="modal-dialog" role="document">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h4 class="modal-title">查看日程</h4>
+		            </div>
+		            <div class="modal-body">
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign"></span>名称</label>
+		                            <div class="singleRow wordSumTotal wholeRow" id="event-name" style="min-height:21px;padding-left:5px;">
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row odd">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign"></span>时间段</label>
+		                            <div class="wholeRow" id="event-time" style="min-height:18px;padding-left:5px;">
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		                <div class="row">
+		                    <div class="col-md-12">
+		                        <div class="form-group">
+		                            <label><span class="requireSign"></span>备注</label>
+		                            <div class="wholeRow wordSumTotal multiRow" id="event-remark" style="min-height:21px;padding-left:5px;">
+		                            </div>
+		                        </div>
+		                    </div>
+		                </div>
+		            </div>
+		            <div class="modal-footer">
+		                <button class="btn" data-dismiss="modal">取消</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+        
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; curUser = [[${curUser}]]; userList = [[${userList}]];</script>
+	<script src="/js/bundles/fullcalendarscripts.bundle.js"></script>
+	<script src="/js/bundles/calendar.js"></script>
+	
+	
+	<script>
+		$(function() {
+			initFormControl('CALENDAR');
+			
+			if(curUser) {
+				var html = getUserLi(curUser, 1);
+				$("#myList").html(html);
+			}
+			
+			if(userList) {
+				var html = '';
+				for(var i = 0; i < userList.length; i++) {
+					html += getUserLi(userList[i], i + 2);
+				}
+				if(!html) {
+					html = "<li class='noData'>没有成员</li>";
+				}
+				$('#memberList').html(html);
+			}
+			
+			$('#searchInput').on('keyup', function(event) {
+				if(event.key === 'Enter') {
+					performSearch();
+				}
+			});
+			$('.myResource .zmdi-search').click(function(){
+				performSearch();
+			});
+			
+			hideLoading();
+		});
+		
+		function performSearch() {
+			var searchText = $('#searchInput').val();
+			$('#memberList .userName').each(function() {
+				var itemText = $(this).text(), $li = $(this).closest('li'), num = $li.find('.fa-check-circle').attr('num'), chColor = 'ck-color'+ num, bgColor = 'bg-color'+ num;
+			    if(itemText.indexOf(searchText) !== -1) {
+			    	$li.show();
+			    	if($li.find('.fa-check-circle').hasClass(chColor)) {
+			    		$('.' + bgColor).removeClass('hideColor');
+			    	}
+			    } else {
+			    	$li.hide();
+			    	$('.' + bgColor).addClass('hideColor');
+			    }
+			});
+		}
+		
+		function getUserLi(user, i) {
+			var html = '';
+			html += '<li>';
+			html += '	<a class="link" onclick="viewUser(\''+user.id+'\')" id="'+user.id+'">';
+			html += '		<img class="userImg" src="'+user.picId+'"/>';
+			html += '		<span class="userName">'+user.name+'</span>';
+			html += '	</a>';
+			html += '	<i class="fa fa-check-circle ck-color'+i+'" num="'+i+'" userId="'+user.id+'" onclick="checkOrCancelUser($(this))"></i>';
+			html += '</li>';
+			return html;
+		}
+		
+		function checkOrCancelUser($obj) {
+			var num = $obj.attr('num');
+			var chColor = 'ck-color'+ num, bgColor = 'bg-color'+ num;
+			if($obj.hasClass(chColor)) {
+				$obj.removeClass(chColor);
+				$('.' + bgColor).addClass('hideColor');
+			}else{
+				$obj.addClass(chColor);
+				$('.' + bgColor).removeClass('hideColor');
+			}
+		}
+		
+		function reloadCalendar(userIds, type) {
+			$.ajax({
+				url : "/getUserCalendar",
+				type : "post",
+				data : {'userIds': userIds, 'type': type},
+				async : false,
+				success : function(data) {
+					if(data) {
+						data = eval('('+data+')');
+					}
+					var $calendar = $('#calendar');
+					$calendar.fullCalendar('removeEvents');
+					$calendar.fullCalendar('addEventSource', data);
+				}
+			});
+		}
+		
+		function filterSchedule($obj) {
+			var type = '';
+			$('input[name="scheduleType"]:checked').each(function(){
+				if(type) {
+					type += ',';
+				}
+				type += $(this).val();
+			});
+			
+			var userId = '';
+			$('#memberList .fa-check-circle[class*="ck-color"]').each(function() {
+				if(userId) {
+					userId += ',';
+				}
+				userId += $(this).attr('userId');
+			});
+			reloadCalendar(userId, type);
+		}
+		
+	</script>
+	
+</body>
+</html>

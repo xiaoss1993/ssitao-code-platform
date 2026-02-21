@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<ul class="page-ul">
+				<li class="field-li content-whole sign" field="basicInfo" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="基本信息"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole r" field="opUserId" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="操作人" title="操作人"></span></div>
+					<div class="field-div field-content" th:utext="${operateRecord.opUserId}" th:utitle="${operateRecord.opUserId}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="transitionName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="操作" title="操作"></span></div>
+					<div class="field-div field-content" th:text="${operateRecord.transitionName}" th:title="${operateRecord.transitionName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="objectTypeName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="类型" title="类型"></span></div>
+					<div class="field-div field-content" th:text="${operateRecord.objectTypeName}" th:title="${operateRecord.objectTypeName}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="objectName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="对象" title="对象"></span></div>
+					<div class="field-div field-content" th:text="${operateRecord.objectName}" th:title="${operateRecord.objectName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="opTime" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="操作时间" title="操作时间"></span></div>
+					<div class="field-div field-content" th:text="${#calendars.format(operateRecord.opTime, 'yyyy-MM-dd HH:mm')}" th:title="${#calendars.format(operateRecord.opTime, 'yyyy-MM-dd HH:mm')}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="ip" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="IP地址" title="IP地址"></span></div>
+					<div class="field-div field-content" th:text="${operateRecord.ip}" th:title="${operateRecord.ip}"></div>
+				</li>
+				<li class="field-li content-whole r" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+					<div class="field-div field-content" th:utext="${operateRecord.remark}" th:utitle="${operateRecord.remark}"></div>
+				</li>
+			</ul>
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('OPERATE_RECORD');
+			
+			$('.btn-box').removeClass('hide');
+		});
+	</script>
+	
+</body>
+</html>

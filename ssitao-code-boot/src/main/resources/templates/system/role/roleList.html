@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" shiro:hasPermission="ROLE:ADD" onclick="addEntity('ROLE')">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建</span>
+							</button>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="name" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="refresh-action hide" onclick="reLoad()"></div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div shiro:hasPermission="ROLE:EDIT" >
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div shiro:hasPermission="ROLE:DEL" >
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+
+	<script type="text/javascript">
+		$(function() {
+			var model = 'ROLE';
+			var headData = getHeadData(model, 'N', '', '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, model);
+			}
+			$('#grid-table').initTable({
+				model:'ROLE',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				objectType: 'SYS'
+			});
+		});
+		
+		function addEntity(){
+			var url = '/sys/role/addOrEditRole/null?preId=&parentname=' + window.name;
+			intoIframePage(url);
+		}
+		
+		function openEntity(type, id, parentName){
+			var url = '/sys/role/view/'+id+'?isKeepTopWindow=&parentname='+parentName;
+			intoIframePage(url);
+		}
+		
+		function editEntity(type, id, parentName){
+			var url = '/sys/role/addOrEditRole/'+id+'?&parentname='+parentName;
+			intoIframePage(url);
+		}
+	</script>	
+	
+</body>
+</html>

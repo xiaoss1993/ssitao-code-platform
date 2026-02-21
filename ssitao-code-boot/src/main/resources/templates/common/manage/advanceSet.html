@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<head th:include="include::headerContent"></head>
+
+<style>
+	.page-ul{margin-top:10px;}
+	.page-ul .field-li .field-label{min-width:150px;max-width:150px;}
+	.num-title{font-weight:bold;line-height:30px;margin-right:5px;}
+	.page-ul .field-li .field-content-num{padding-top:6px;}
+	.layer-box{padding:0px;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="objectType" th:value="${objectType}"/>
+			<ul class="page-ul page-ul2">
+				<!-- 任务高级设置 -->
+				<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="任务发布相关规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" field="autoPublishTask" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="自动发布任务"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" name="autoPublishTask" class="lcs_check lcs_tt1" on_text="开" off_text="关" th:value="${autoPublishTask}" th:checked="${autoPublishTask} eq 'Y'"/>
+						<div class="content-box" th:style="${autoPublishTask} eq 'N' ? 'display:none' : '' ">
+							<div class="ml20 num-title">提前发布天数</div>
+							<input type="text" name="autoPublishTaskNum" class="num-input" deci="0" min="0" placeholder="0" isInt="Y" th:value="${autoPublishTaskNum}"/>
+							<div class="sumtips">天</div>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="autoCloseTask" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="自动关闭审核通过的任务"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" name="autoCloseTask" class="lcs_check lcs_tt1" on_text="开" off_text="关" th:value="${autoCloseTask}" th:checked="${autoCloseTask} eq 'Y'"/>
+						<div class="content-box" th:style="${autoCloseTask} eq 'N' ? 'display:none' : '' ">
+							<div class="ml20 num-title">自动关闭天数</div>
+							<input type="text" name="autoCloseTaskNum" class="num-input" deci="0" min="0" placeholder="0" isInt="Y" th:value="${autoCloseTaskNum}"/>
+							<div class="sumtips">天</div>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="allowFillHisWork" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许填写历史工作进展"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" name="allowFillHisWork" class="lcs_check lcs_tt1" on_text="开" off_text="关" th:value="${allowFillHisWork}" th:checked="${allowFillHisWork} eq 'Y'"/>
+						<div class="content-box" th:style="${allowFillHisWork} eq 'N' ? 'display:none' : '' ">
+							<div class="ml20 num-title">允许历史天数</div>
+							<input type="text" name="allowFillHisWorkNum" class="num-input" deci="0" min="0" placeholder="0" autocomplete="off" isInt="Y" th:value="${allowFillHisWorkNum}"/>
+							<div class="sumtips">天</div>	
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="setWorkTop" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="设置每天工时上限"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" name="setWorkTop" class="lcs_check lcs_tt1" on_text="开" off_text="关" th:value="${setWorkTop}" th:checked="${setWorkTop} eq 'Y'"/>
+						<div class="content-box" th:style="${setWorkTop} eq 'N' ? 'display:none' : '' ">
+							<div class="ml20 num-title">允许最大工时</div>
+							<input type="text" name="setWorkTopWorkNum" class="num-input" deci="0" min="0" placeholder="0" autocomplete="off" isInt="Y" th:value="${setWorkTopNum}"/>
+							<div class="sumtips">小时</div>	
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="allowTaskTransmit" htype="TEXT" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许任务转发"></span></div>
+					<div class="field-div field-content-num">
+						<input type="checkbox" name="allowTaskTransmit" class="lcs_check lcs_tt1" on_text="开" off_text="关" th:value="${allowTaskTransmit}" th:checked="${allowTaskTransmit} eq 'Y'"/>
+					</div>
+				</li>
+				<!-- 任务高级设置 -->
+				
+				<!-- 文档高级设置 -->
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="文档上传限制规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" field="maxFileNum" htype="NUMBER" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许上传文件数"></span></div>
+					<div class="field-div field-content-num">
+						<input type="text" name="maxFileNum" class="num-input" deci="0" min="1" placeholder="0" autocomplete="off" isInt="Y" th:value="${maxFileNum}"/>
+						<div class="sumtips">个</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="maxFileSize" htype="NUMBER" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许上传文件大小"></span></div>
+					<div class="field-div field-content-num">
+						<input type="text" name="maxFileSize" class="num-input" deci="0" min="10" placeholder="0" autocomplete="off" isInt="Y" th:value="${maxFileSize}"/>
+						<div class="sumtips">KB</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="fileType" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="禁止上传文件类型"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="fileType" type="text" th:value="${fileType}" pattern="^((\*){1}(.){1}([a-zA-Z0-9])+(;){1})+$" placeholder="请输入禁止上传文件类型，例如：*.exe;*.bat;" autocomplete="off"  htype="TEXT" maxlength="200">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="fileTips" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上传文件提示"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="fileTips" type="text" th:value="${fileTips}" placeholder="请输入上传文件提示" autocomplete="off"  htype="TEXT" maxlength="200">
+					</div>
+				</li>
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="文档存储路径"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" field="fileAddress" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="文档存储路径"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="fileAddress" type="text" th:value="${fileAddress}" pattern="^([a-zA-Z]:){1}((\\{2}|\/){1}([a-zA-Z0-9])+(\\{2}|\/)?)+$" placeholder="请输入文档存储路径，例如：D:/easyDo/repository" autocomplete="off"  htype="TEXT" maxlength="200">
+					</div>
+				</li>
+				<!-- 文档高级设置 -->
+				
+				<!-- 项目高级设置 -->
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'PJT' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="偏差率计算规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li check" field="planDevCalc" htype="RADIO" th:style="${objectType} eq 'PJT' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="里程碑偏差率计算方式"></span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="planDevCalc" id="_planDevCalc1" value="PC" data-target="radio" th:checked="${planDevCalc} eq 'PC'" required>
+						    <label for="_planDevCalc1" th:text="分阶段计算">
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="planDevCalc" id="_planDevCalc2" value="WC" th:checked="${planDevCalc} eq 'WC'">
+						    <label for="_planDevCalc2" th:text="整体计算">
+						    </label>
+					    </div>
+					</div>
+				</li>
+				
+				<!-- 公共设置 -->
+				<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN" th:style="${showSendType} eq 'Y'?'':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="推送相关规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li check content-whole" field="sendType" htype="TEXT" th:style="${showSendType} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="title" th:text="推送方式"></span></div>
+					<div class="field-div field-content-check">
+					    <div class="checkbox">
+					    	<input type="checkbox" th:name="sendType" th:id="sendType-EMAIL" th:value="EMAIL" th:checked="${sendType == null} ? 'false' : ${#strings.contains(sendType, 'EMAIL')}" data-target="checkbox">
+						    <label th:for="sendType-EMAIL" th:text="邮件推送" th:title="邮件推送"></label>
+						</div>
+					    <div class="checkbox">
+					    	<input type="checkbox" th:name="sendType" th:id="sendType-SYS" th:value="SYS" th:checked="${sendType == null} ? 'false' : ${#strings.contains(sendType, 'SYS')}" data-target="checkbox">
+						    <label th:for="sendType-SYS" th:text="系统推送" th:title="系统推送"></label>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="timeoutReminderStart" htype="NUMBER" th:style="${showTimeoutReminder} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="超时提醒启动"></span></div>
+					<div class="field-div field-content-num">
+						<input type="text" name="timeoutReminderStart" class="num-input" deci="0" min="1" placeholder="0" autocomplete="off" isInt="Y" th:value="${timeoutReminderStart}"/>
+						<div class="sumtips">小时</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="timeoutReminderFrequency" htype="NUMBER" th:style="${showTimeoutReminder} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="超时提醒频率"></span></div>
+					<div class="field-div field-content-num">
+						<input type="text" name="timeoutReminderFrequency" class="num-input" deci="0" min="1" placeholder="0" autocomplete="off" isInt="Y" th:value="${timeoutReminderFrequency}"/>
+						<div class="sumtips">小时</div>
+					</div>
+				</li>
+				<!-- 公共设置 -->
+				
+				<li class="field-li content-whole textarea" field="" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" th:value="#{common.save}"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="showBtnBox();window.history.back();"></a>
+					</div>
+				</li>
+				
+			</ul>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; objectType = [[${param.objectType}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			hideLoading();
+			$('.layui-submit-btn').removeClass('hide');
+		});
+		
+		function switchOnOrOff($obj, type) {
+			if(type == 'ON') {
+				$obj.closest('.field-div').find('.content-box').show();
+			}else {
+				$obj.closest('.field-div').find('.content-box').hide();
+			}
+		}
+		
+		$("#operate").html5Validate(function() {
+			showLoading();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/advanceSet/save",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						showBtnBox();
+						parent.layer.msg(data.msg);
+						window.location.href = '/advanceSet/advance?objectType=' + objectType;
+					}
+					parent.layer.msg(data.msg);
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>
+	
+</body>
+</html>

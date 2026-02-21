@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<style>
+	.layer-box{padding:0px;}
+	.layer-box .page-ul{padding-left:15px;padding-right:15px;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${pageTitle}"></div>	
+				</div>
+			</li>
+		</ul>
+		<div class="block-header hide"></div>
+		<div id="operate">
+			<input name="id" id="id" type="hidden" th:value="${type.id}">
+			<input name="objectType" id="objectType" type="hidden" th:value="${type.objectType}">
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="类型名称"></span></div>
+							<div class="field-div field-content" th:text="${type.name}" ></div>
+						</li>
+						<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置类型"></span></div>
+							<div class="field-div field-content" th:utext="${type.preName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="lifecycleId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="生命周期"></span></div>
+							<div class="field-div field-content" th:utext="${type.lifecycleName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="planTemplateId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="计划模板"></span></div>
+							<div class="field-div field-content" th:utext="${type.planTemplateName}"></div>
+						</li>
+						<li class="field-li content-whole r" field="lifecycleId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="流程组合"></span></div>
+							<div class="field-div field-content" th:utext="${type.workflowGroupName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="codeRule" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="编码规则"></span></div>
+							<div class="field-div field-content" th:text="${codeRule}"></div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content" th:text="${type.remark}"></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" onclick="editType();"/>
+					<div class="more-btn">
+						<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+							<span>配置页面</span>
+							<i class="fa fa-ellipsis-h ml5"></i>
+						</span>
+						<ul id="setPage" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+	                         <li val="ADD" title="配置新建页面" ><a href="javascript:void(0);">配置新建页面</a></li>
+	                         <li val="VIEW" title="配置查看页面" ><a href="javascript:void(0);">配置查看页面</a></li>
+	                         <li val="EDIT" title="配置编辑页面"><a href="javascript:void(0);">配置编辑页面</a></li>
+	                    </ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; </script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('TYPE');
+			hideLoading();
+			
+			var objectType = $('#objectType').val(), objectId = $('#id').val();
+			if(objectType && objectType == 'PJT'){
+				loadPjtTypeTabHtml(1, objectId, objectType, 'Y', parentName);
+			}
+			initPageSet();
+			$('.formBtn').removeClass('hide');
+		});
+		
+		function editType() {
+			var objectType = $('#objectType').val();
+			var url = '/type/addOrEditType/'+$('#id').val()+'?objectType=' + objectType + '&preId=&parentId=&parentname=' + parentName;
+			intoIframePage(url, false, 'TYPE', true);
+		}
+	</script>
+	
+</body>
+</html>

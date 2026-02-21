@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" onclick="addPosition(1)">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建职位</span>
+							</button>
+							<button type="button" class="btn t-btn y-active add" onclick="addPosition(2)">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建下级职位</span>
+							</button>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'POSITION',
+				rights: rights,
+				supportPage: false,
+				supportTree: true,
+				openState: true
+			});
+		});
+		
+		function addPosition(type) {
+			var curId = getCurRowId();
+			if(type == 2 && !curId) {
+				top.layer.alert('请选择上级职位', {icon: 6});
+				return;
+			}
+			top.layer.open({
+				type : 2,
+				title : type == 1 ? '新建职位':'新建下级职位',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '800px', '500px' ],
+				content : 'position/addOrEditPisition/null?preId='+curId+'&type='+type+'&parentname=' + window.name,
+			});
+		}
+	</script>	
+	
+</body>
+</html>

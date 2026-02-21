@@ -1,0 +1,22 @@
+package ${package}.service;
+
+import ${package}.domain.${className}DO;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${className}Service {
+	
+	${className}DO get(String id);
+	
+	int saveOrUpdate(${className}DO ${classname});
+	
+	int remove(String id);
+}

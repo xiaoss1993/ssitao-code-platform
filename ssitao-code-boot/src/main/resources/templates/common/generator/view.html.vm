@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::headerContent"></head>
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+
+<body class="layer-body">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<ul class="page-ul">
+			#foreach($column in $columns)
+			#if($column.columnName != $pk.columnName)
+				<li class="field-li content-whole r" field="${column.attrname}" htype="${column.fieldType}">
+				#if($column.fieldType == 'TEXT')
+					<div class="field-div field-label"><span class="title" th:text="${column.comments}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="${column.comments}"></div>
+					<div class="field-div field-help"></div>
+				#end
+				#if($column.fieldType == 'NUMBER' || $column.fieldType == 'INT')
+					<div class="field-div field-label"><span class="title" th:text="${column.comments}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="${column.comments}"></div>
+					<div class="field-div field-help"></div>
+				#end
+				#if($column.fieldType == 'DATE')
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${column.comments}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="${column.comments}"></div>
+				#end
+				#if($column.fieldType == 'AREA')
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${column.comments}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="${column.comments}"></div>
+				#end
+				#if($column.fieldType == 'DEPT' || $column.fieldType == 'PJT' || $column.fieldType == 'PRD')
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${column.comments}+#{common.colon}"></span></div>
+					<div class="field-div field-content" th:text="${column.comments}"></div>
+				#end
+				</li>
+				#end
+				#end
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="edit();"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], id = "";</script>
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	
+	<script>
+		var type = "${classname}";
+		function edit() {
+			window.location.href= getPrefix(type) + '/edit';
+		}
+		
+		$(function() {
+			initFormControl(type);
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function edit() {
+			showLoading();
+			window.location.href= getPrefix(type) + '/edit/' + id;
+			hideLoading();
+		}
+	</script>
+	
+</body>
+</html>

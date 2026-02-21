@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${position.id}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${position.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="parentId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级职位"></span></div>
+					<div class="field-div field-content" th:text="${position.parentName}">
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置职位"></span></div>
+					<div class="field-div field-content" th:text="${position.preName}">
+					</div>
+				</li>
+				<li class="field-li content-whole r odd" field="avgCost" htype="NUMBER">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="职位费用"></span></div>
+					<div class="field-div field-content-num"><span class="numValue mr5" th:text="${position.avgCostStr}"></span><span th:if="${not #strings.isEmpty(position.avgCostStr)}">人天</span></div>
+				</li>
+				<li class="field-li content-whole r" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content" th:text="${position.remark}">
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="editPosition()" th:value="#{common.eidt}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('POSITION');
+		});
+		
+		function editPosition(){
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+			editEntity('POSITION', $('#id').val(), null, parentName);
+		}
+	</script>
+	
+</body>
+</html>

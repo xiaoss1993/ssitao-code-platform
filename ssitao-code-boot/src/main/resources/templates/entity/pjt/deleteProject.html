@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	.ul-tip-box{
+		counter-reset: my-counter;
+  		list-style-type: none;
+  		padding-left: 1px;
+	}
+	.ul-tip-box li::before {
+		counter-increment: my-counter;
+		content: counter(my-counter) "、";
+		margin-right: 0px;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<input type="hidden" id="ids" name="ids" th:value="${ids}"/>
+		<ul class="page-ul mt10">
+			<li class="field-li content-whole sign" field="BZName" htype="SIGN">
+				<div class="field-div field-sign-title4 remark-content" style="background-color:var(--theme);color:white;border-color:var(--theme);">
+					<div><span class="fz16 show-name">确定删除项目：<span th:text="${projectNames}"></span></span></div>
+				</div>
+			</li>
+			<li class="field-li content-whole sign" field="BZName" htype="SIGN">
+				<div class="field-div field-sign-title4 remark-content">
+					<div class="tip-title mb10" style="color:null"><i class="fa fa-info-circle mr10 fz20" style="color:var(--theme);"></i><span class="fz16 show-name">确定删除内容：</span></div>
+					<ul class="ul-tip-box">
+						<li class="tip-content" th:each="info:${deleteInfoList}" th:text="${info}"></li>
+					</ul>
+				</div>
+				<div class="field-div field-sign-content"></div>
+			</li>
+		</ul>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="确定删除"/>
+				<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; </script>
+	
+	<script>
+		$(function() {
+			initFormControl('plan');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('#submit').click(function(){
+				showLoading();
+				$.ajax({
+					url : "/pjt/remove",
+					type : "post",
+					data : {
+						'ids' : $('#ids').val()
+					},
+					success : function(r) {
+						hideLoading();
+						var index = top.layer.getFrameIndex(window.name)
+						if (r.code == 0) {
+							if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								parentFrame.reLoad();
+							}
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			});
+		});
+		
+	</script>
+	
+</body>
+</html>

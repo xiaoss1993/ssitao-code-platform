@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<head th:include="include::headerContent"></head>
+
+<style>
+	.windowPage:not([submittask="Y"]) .page-ul{padding-top:10px;}
+	.page-ul .field-li.r .field-content-num{padding-top:13px;display:flex;align-items:center;}
+	.page-ul .field-li .field-label{width:150px;min-width:150px;max-width:150px;}
+	.num-title{font-weight:bold;line-height:16px;margin-right:5px;}
+	.content-box{display:flex;}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box module">
+		<form action="" id="operate">
+			<ul class="page-ul page-ul2">
+				<!-- 任务高级设置 -->
+				<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="任务发布相关规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole r" field="autoPublishTask" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="自动发布任务"></span></div>
+					<div class="field-div field-content-num">
+						<span th:text="${autoPublishTask} eq 'Y' ? '开':'关'"></span>
+						<span class="content-box" th:style="${autoPublishTask} eq 'N' ? 'display:none' : '' ">
+							<span class="ml20 num-title mr5">提前发布天数</span>
+							<span class="numValue mr5" th:text="${autoPublishTaskNum}">0</span>
+							天
+						</span>
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="autoCloseTask" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="自动关闭审核通过的任务"></span></div>
+					<div class="field-div field-content-num">
+						<span th:text="${autoCloseTask} eq 'Y' ? '开':'关'"></span>
+						<span class="content-box" th:style="${autoCloseTask} eq 'N' ? 'display:none' : '' ">
+							<span class="ml20 num-title">自动关闭天数</span>
+							<span class="numValue mr5" th:text="${autoCloseTaskNum}">0</span>天
+						</span>
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="allowFillHisWork" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许填写历史工作进展"></span></div>
+					<div class="field-div field-content-num">
+						<span th:text="${allowFillHisWork} eq 'Y' ? '开':'关'"></span>
+						<span class="content-box" th:style="${allowFillHisWork} eq 'N' ? 'display:none' : '' ">
+							<span class="ml20 num-title">允许历史天数</span>
+							<span class="numValue mr5" th:text="${allowFillHisWorkNum}">0</span>天
+						</span>
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="setWorkTop" htype="NUMBER" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="设置每天工时上限"></span></div>
+					<div class="field-div field-content-num">
+						<span th:text="${setWorkTop} eq 'Y' ? '开':'关'"></span>
+						<span class="content-box" th:style="${setWorkTop} eq 'N' ? 'display:none' : '' ">
+							<span class="ml20 num-title">允许最大工时</span>
+							<span class="numValue mr5" th:text="${setWorkTopNum}">0</span>小时
+						</span>
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="allowTaskTransmit" htype="TEXT" th:style="${objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许任务转发"></span></div>
+					<div class="field-div field-content-num">
+						<span th:text="${allowTaskTransmit} eq 'Y' ? '开':'关'"></span>
+					</div>
+				</li>
+				<!-- 任务高级设置 -->
+				
+				<!-- 文档高级设置 -->
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="文档上传限制规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole r" field="maxFileNum" htype="NUMBER" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许上传文件数"></span></div>
+					<div class="field-div field-content-num">
+						<span class="numValue mr5" th:text="${maxFileNum}">0</span>个
+					</div>
+				</li>
+				<li class="field-li content-whole r odd" field="maxFileSize" htype="NUMBER" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="允许上传文件大小"></span></div>
+					<div class="field-div field-content-num">
+						<span class="numValue mr5" th:text="${maxFileSize}">0</span>KB
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="fileType" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="禁止上传文件类型"></span></div>
+					<div class="field-div field-content" th:text="${fileType}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="fileTips" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上传文件提示"></span></div>
+					<div class="field-div field-content" th:text="${fileTips}"></div>
+				</li>
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="文档存储路径"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole r" field="fileAddress" htype="TEXT" th:style="${objectType} eq 'DOC' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="文档存储路径"></span></div>
+					<div class="field-div field-content" th:text="${fileAddress}"></div>
+				</li>
+				<!-- 文档高级设置 -->
+				
+				<!-- 项目高级设置 -->
+				<li class="field-li content-whole sign" field="fileNameRule" htype="SIGN" th:style="${objectType} eq 'PJT' ? '':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="偏差率计算规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li r" field="planDevCalc" htype="RADIO" th:style="${objectType} eq 'PJT' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="里程碑偏差率计算方式"></span></div>
+					<div class="field-div field-content" th:text="${planDevCalcName}"></div>
+				</li>
+				
+				<!-- 公共设置 -->
+				<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN" th:style="${showSendType} eq 'Y'?'':'display:none'">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="推送相关规则"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li check content-whole r" field="sendType" htype="TEXT" th:style="${showSendType} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="title" th:text="推送方式"></span></div>
+					<div class="field-div field-content" th:text="${sendTypeNames}"></div>
+				</li>
+				<li class="field-li content-whole odd r" field="timeoutReminderStart" htype="NUMBER" th:style="${showTimeoutReminder} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="超时提醒启动"></span></div>
+					<div class="field-div field-content-num">
+						<span class="numValue mr5" th:text="${timeoutReminderStart}">0</span>小时
+					</div>
+				</li>
+				<li class="field-li content-whole r" field="timeoutReminderFrequency" htype="NUMBER" th:style="${showTimeoutReminder} eq 'Y'?'':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="超时提醒频率"></span></div>
+					<div class="field-div field-content-num">
+						<span class="numValue mr5" th:text="${timeoutReminderFrequency}">0</span>小时
+					</div>
+				</li>
+				<!-- 公共设置 -->
+			</ul>
+			
+		</form>
+		
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; objectType = [[${param.objectType}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			hideLoading();
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function switchOnOrOff($obj, type) {
+			if(type == 'ON') {
+				$obj.closest('.field-div').find('.content-box').show();
+			}else {
+				$obj.closest('.field-div').find('.content-box').hide();
+			}
+		}
+		
+		function editAdvance() {
+			window.location.href = '/advanceSet/advanceSet?objectType=' + objectType;
+		}
+	</script>
+	
+</body>
+</html>

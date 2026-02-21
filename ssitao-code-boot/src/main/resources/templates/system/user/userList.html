@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" >
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box">
+			<div class="table-list">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10">
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add"  onclick="addEntity('USER')">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建</span>
+							</button>
+							<button type="button" class="btn t-btn n-active"  onclick="importBill('USER')">
+								<i class="fa fa-cloud-download mr5"></i>
+								<span class="pt1 h18">导入</span>
+							</button>
+							<button type="button" class="btn t-btn n-active" onclick="exportBill('USER')">
+								<i class="fa fa-cloud-upload mr5"></i>
+								<span class="pt1 h18">导出</span>
+							</button>
+						</div>
+
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript" >
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript" >
+			rights += ',SR';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript" >
+			rights += ',D';
+		</script>
+	</div>
+
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+
+	<script type="text/javascript">
+		$(function() {
+			var model = 'USER';
+			var headData = getHeadData(model, 'N', '', '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, model);
+			}
+			$('#grid-table').initTable({
+				model:'USER',
+				rights: rights,
+				supportPage: true,
+				supportTree: false
+			});
+		});
+	</script>
+
+</body>
+</html>

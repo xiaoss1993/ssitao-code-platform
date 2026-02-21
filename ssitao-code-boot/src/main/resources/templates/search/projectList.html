@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/popup-search.css"/>
+<style>
+	.table-wrap{table-wrap:hidden;}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<input type="hidden" id="hasExistIds" name="hasExistIds" th:value="${selectIds}"/>
+	<input type="hidden" id="selectIds" name="selectIds" th:value="${selectIds}"/>
+	<input type="hidden" id="selectNames" name="selectNames" />
+	<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	<input type="hidden" id="preId" name="preId" th:value="${preId}"/>
+	<input type="hidden" id="isMul" name="isMul" th:value="${isMul}"/>
+	<input type="hidden" id="isOpenWindow" name="isOpenWindow" th:value="Y"/>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = '';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/form/popup-search.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script type="text/javascript">
+		$(function() {
+			var isMul = $('#isMul').val();
+			if(isMul) {
+				isMul = JSON.parse(isMul)
+			}
+			$('#grid-table').initTable({
+				model:'PJT',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				queryObject: $('#objectType').val(),
+				supportCheckbox: isMul,
+				supportRadio: !isMul,
+				isOpenWindow: 'Y'
+			});
+			
+			
+			$('.list-box').height($('.box-left').height() - 64);
+			$('.btn-box').removeClass('hide');
+		});
+		
+		//双击选择项目
+		function dblSelectObject(row, rowIndex, tr){
+			var isMul = $('#isMul').val();
+			if(isMul) {
+				isMul = JSON.parse(isMul)
+			}
+			if(tr.getAttribute("checked") == 'true' && !isMul){
+				var id = row.id, name = row.name;
+				if(name){
+					name = name.replaceAll(/<[^>]*>/g, '');
+				}
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index, id, name);
+			}
+		}
+	</script>	
+	
+</body>
+</html>

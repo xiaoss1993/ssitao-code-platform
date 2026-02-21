@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+<style>
+	
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<div class="btn-box hide">
+		<div class="layui-layer-btn layui-submit-btn">
+			<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="saveOrCancelLinkField()" th:value="#{common.save}"/>
+			<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+		</div>
+	</div>
+	<input type="hidden" id="hasExistIds" name="hasExistIds" th:value="${selectIds}"/>
+	<input type="hidden" id="selectIds" name="selectIds" th:value="${selectIds}"/>
+	<input type="hidden" id="selectNames" name="selectNames"/>
+	<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	<input type="hidden" id="preId" name="preId" th:value="${preId}"/>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = '';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'FIELD',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				queryObject: 'COM-LINK',
+				supportCheckbox: true
+			});
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('.close-btn').click(function() {
+				var index = top.layer.getFrameIndex(window.name)
+				top.layer.close(index);
+			});
+		});
+		
+		//保存或取消链接字段
+		var flag = true, objectType= '', delIds = '', newIds = '', preId = '';
+		function saveOrCancelLinkField() {
+			var selectIds = $('#selectIds').val(), hasExistIds = $('#hasExistIds').val();
+			objectType = $('#objectType').val();
+			preId = $('#preId').val();
+			if(hasExistIds) {
+				if(selectIds) {
+					//判断是否链接已存在的公共字段
+					var selectIdArry = selectIds.split(',');
+					for(var i = 0; i < selectIdArry.length; i++) {
+						if(hasExistIds.indexOf(selectIdArry[i]) < 0) {
+							if(newIds) {
+								newIds += ',' + selectIdArry[i];
+							}else {
+								newIds = selectIdArry[i];
+							}
+						}
+					}
+					
+					//判断是链接公共字段同时是否存在删除的字段
+					var hasExistIdArry = hasExistIds.split(',');
+					for(var i = 0; i < hasExistIdArry.length; i++) {
+						if(selectIds.indexOf(hasExistIdArry[i]) < 0) {
+							if(delIds) {
+								delIds += ',' + hasExistIdArry[i];
+							}else {
+								delIds = hasExistIdArry[i];
+							}
+						}
+					}
+				}else {
+					delIds = hasExistIds;
+				}
+			}else {
+				newIds = selectIds;
+			}
+			
+			if(delIds) {
+				$.ajax({
+					url : "/field/getFieldNames",
+					type : "post",
+					data : {'ids': delIds},
+					async : false,
+					success : function(r) {
+						confirm('确定取消链接 ' + r + ' 字段吗？', confirmSaveOrDelLinkField);
+					}
+				});
+			}else {
+				confirmSaveOrDelLinkField();
+			}
+		}
+		
+		//保存链接字段
+		function confirmSaveOrDelLinkField() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/saveOrDelLinkField",
+				data : {'objectType': objectType, 'selectIds': newIds, 'preId': preId, 'delIds': delIds},
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad();
+						}
+						parent.layer.closeAll();
+						parent.layer.msg(data.msg, data.code);
+					} else {
+						parent.layer.msg(data.msg, data.code);
+					}
+					hideLoading();
+				}
+			});
+		}
+		
+	</script>	
+	
+</body>
+</html>

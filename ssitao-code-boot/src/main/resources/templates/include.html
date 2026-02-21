@@ -1,0 +1,266 @@
+<head th:fragment="header">
+	<meta charset="utf-8">
+</head>
+
+<aside th:fragment="navbarHead">
+	<div class="head-nav">
+		<div class="nav-l pl18">
+	        <a href="index" class="companyInfo">
+	        	<img th:src="${company.logoAddress}" th:if="${not #strings.isEmpty(company.logoAddress)}" class="companLogo" th:alt="${company.simpleName}">
+	        	<span class="m-l-10 companyName" th:if="${#strings.isEmpty(company.logoAddress)}" th:text="${company.simpleName}"></span>
+	        </a>
+		</div>
+	    <div class="nav-c">
+	    	<ul class="navigate-list">
+	    		<li th:each="menu, iterStat:${menuList}" th:class="${iterStat.index == 0} ? 'active' : ''" th:attr="url=${menu.url}">
+	    			<a class="auto-link" href="javascript:void(0);" th:title="${menu.name}" th:attr="onclick='intoMenuUrl(\'' + ${menu.url} + '\', \'' + ${menu.parentName} + '\', \'' + ${menu.name} + '\')'" th:text="${menu.name}"></a>
+	    		</li>
+	    	</ul>
+	    </div>
+	    <div class="nav-r">
+	    	<a class="head-app notices" href="javascript:void(0);" title="通知" onclick="showNoticesList();">
+	    		<i class="zmdi zmdi-notifications"></i>
+                <div class="notify" th:style="${hasNewMessage}? 'display:block':'display:none'">
+                	<span class="heartbit"></span>
+                	<span class="point"></span>
+                </div>
+			    <div class="notices-list common-menu-hide" onclick="$('.more-box').hide();">
+			    	<div class="head">
+			    		<div class="message-type">
+			    			<div class="type-box">
+				    			<div class="type cur-type" onclick="changeMessageTypeOrStatus($(this), 'NR', '')" type="NR"><i class="zmdi zmdi-notifications-active icon"></i>提醒</div>
+				    			<div class="type" onclick="changeMessageTypeOrStatus($(this), 'CT', '')" type="CT"><i class="zmdi fa fa-comment-dots icon"></i>沟通</div>
+			    			</div>
+			    			<div class="delete-btn" onclick="hideNoticeList()"><i class="zmdi zmdi-close icon"></i></div>
+			    		</div>
+			    		<div class="message-status">
+			    			<div class="status-box">
+			    				<div class="status cur-status" onclick="changeMessageTypeOrStatus($(this), '', 'ALL')" status="ALL">全部消息</div>
+			    				<div class="status" onclick="changeMessageTypeOrStatus($(this), '', 'INR')" status="INR">未读</div>
+			    			</div>
+			    			<div class="more-btn" onclick="showMessageBtn($(this))">
+			    				<i class="zmdi zmdi-more icon"></i>
+			    				<div class="more-box">
+			    					<div class="more" onclick="markAsRead($(this))"><i class="zmdi zmdi-check-all icon mr15"></i>标记所有消息已读</div>
+			    					<div class="more" onclick="clearRead($(this))"><i class="zmdi zmdi-delete icon mr15"></i>清空所有已读消息</div>
+			    				</div>
+			    			</div>
+			    		</div>
+			    	</div>
+		    		<ul class="slideUp2 notices-content scroll-bar"></ul>
+		    		<div class="none">暂无消息</div>
+		    	</div>
+            </a>
+            <a class="head-app app_calendar mr50" href="javascript:void(0);" onclick="intoMenuUrl('myCalendar', '工作台', '我的日历')" title="日历">
+            	<i class="zmdi zmdi-calendar"></i>
+            </a>
+	    	<div class="head-app user-img" th:title="${name}">
+	    		<div class="user-info">
+		    		<img th:src="${picUrl}" height="40" width="40"/>
+		    		<span class="ml5 roleName" th:text="${name}"></span>
+	    		</div>
+		    	<ul class="dropdown-head-menu slideUp2" id="userInfo-ul">
+		    		<li><a class="auto-link" href="javascript:void(0);" title="我的档案" onclick="intoMenuUrl('sys/user/personal', '个人中心', '我的档案')"><i class="zmdi zmdi-account"></i>我的档案</a></li>
+		    		<li><a class="auto-link" href="javascript:void(0);" title="修改密码" onclick="updatePassword()"><i class="zmdi zmdi-lock-open"></i>修改密码</a></li>
+		    		<li><a class="auto-link" href="javascript:void(0);" title="主题设置" onclick="setTheme()"><i class="zmdi zmdi-palette"></i>主题设置</a></li>
+		    		<li><a class="auto-link" href="javascript:void(0);" title="导航栏配置" onclick="setNavigate()"><i class="zmdi zmdi-settings"></i>导航栏配置</a></li>
+		    		<li><a class="auto-link" href="logout" title="退出" onclick="sessionStorage.setItem('logout', 'Y');"><i class="zmdi zmdi-power"></i>退出</a></li>
+		        </ul>
+	    	</div>
+	    </div>
+
+	</div>
+</aside>
+
+<aside th:fragment="leftsidebar">
+    <div class="menu">
+        <ul class="list" id="right-menu-list">
+        	<li th:each="menu, mIndex : ${menus}" class="f-menu">
+            	<a class="menu-toggle">
+            		<i th:class="${#strings.isEmpty(menu.attributes.icon) ? 'zmdi zmdi-hc-fw': menu.attributes.icon}" th:text="${#strings.isEmpty(menu.attributes.replaceIcon) ? '' : menu.attributes.replaceIcon}"></i>
+            		<span class="nav-label" th:text="${menu.text}"></span>
+            	</a>
+
+                <ul class="ml-menu">
+                    <li th:each="cmenu : ${menu.children}">
+                    	<a href="javascript:void(0);"
+                           th:data-src="${cmenu.attributes.url}"
+                           th:data-type="${cmenu.attributes.category}"
+                           th:src="${cmenu.attributes.url}"
+                           th:text="${cmenu.text}" ></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+	    <ul class="ml-menu" id="ml-menu"></ul>
+
+	    <div class="btn-menu ls-toggle-btn" style="height:35px;width:100%;display:flex;justify-content:center;align-items:center;background-color:var(--theme);"><a title="" th:openTitle="#{common.sidebar.open}" th:closeTitle="#{common.sidebar.close}" class="sidebar-toggle"><i class="zmdi zmdi-format-indent-decrease"></i></a></div>
+
+    </div>
+</aside>
+
+<div th:fragment="content-nav">
+	<div class="nav-title">
+		<a href="javascript:void(0);" id="returnBack" onclick="returnBack($(this));" class="linked" title="返回"><i class="zmdi zmdi-chevron-left mr10"></i></a>
+		<a href="javascript:void(0);" id="tabReturnBack" onclick="tabReturnBackCallback($(this))" class="hide"></a>
+		<ul class="breadcrumb">
+	        <li class="breadcrumb-item first-title active"></li>
+	    </ul>
+    </div>
+   	<ul class="breadTab">
+    </ul>
+    <div class="btn-box">
+    	<div class="columns pull-left t-columns dashboardBtn">
+			<button class="btn t-btn y-active add" id="addBlockBtn" onclick="addDashboardBlock($(this));" type="button">
+				<i class="fa fa-layer-plus mr5"></i>
+				<span class="pt1 h18">添加模块</span>
+			</button>
+			<button class="btn t-btn n-active" id="resdefBtn" onclick="undoDashboardBlock($(this))" type="button">
+				<i class="fa fa-undo mr5"></i>
+				<span class="pt1 h18">恢复默认</span>
+			</button>
+		</div>
+    </div>
+</div>
+
+<div th:fragment="page-loader-wrapper">
+	<div class="loader-box"></div>
+	<img class="loader" src="/img/loading.gif" width="200"/>
+</div>
+
+<!-- Jquery Core Js -->
+<foot th:fragment="foot">
+	<script src="/js/bundles/libscripts.bundle.js"></script> <!-- Lib Scripts Plugin Js ( jquery.v3.2.1, Bootstrap4 js) -->
+	<script src="/js/bundles/vendorscripts.bundle.js"></script> <!-- slimscroll, waves Scripts Plugin Js -->
+	<script src="/js/bundles/mainscripts.bundle.js"></script>
+	<script src="/js/plugins/layer/layer.js"></script>
+	<script src="/js/jquery.mousewheel.js"></script>
+	<script src="/js/default.js"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+	<script src="/js/common/common.js"></script>
+
+</foot>
+
+
+<!-- 弹出框查询等引用页面样式 -->
+<header th:fragment="headerContent">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title></title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}">
+	<link href="css/bootstrap.min.css?v=3.3.6" th:href="@{/css/bootstrap.min.css?v=3.3.6}" rel="stylesheet">
+	<link href="/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	<link href="/css/plugins/jqTreeGrid/jquery.treegrid.css" rel="stylesheet">
+	<link href="css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet">
+	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+	<link href="/css/style.css?v=4.1.0" th:href="@{/css/style.css?v=4.1.0}" rel="stylesheet">
+	<link href="/css/icon.css?v=4.1.0" th:href="@{/css/icon.css?v=4.1.0}" rel="stylesheet">
+	<link rel="stylesheet" href="/css/common/common.css">
+</header>
+<div th:fragment="footerContent">
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="/js/plugins/jsTree/jstree.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/layer/layer.js"></script>
+	<script src="/js/content.js?v=1.0.0"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+	<script src="/js/common/common.js"></script>
+	<script src="/js/common/navbar.js"></script>
+
+</div>
+<!-- 弹出框查询等引用页面样式 -->
+
+<!-- 列表引用JS和CSS样式 -->
+<header th:fragment="listHeaderContent">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}">
+	<link href="css/bootstrap.min.css?v=3.3.6" th:href="@{/css/bootstrap.min.css?v=3.3.6}" rel="stylesheet">
+	<link href="/css/plugins/jsTree/style.min.css" rel="stylesheet">
+	<link href="css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet">
+	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+	<link href="/css/style.css?v=4.1.0" th:href="@{/css/style.css?v=4.1.0}" rel="stylesheet">
+	<link href="/css/icon.css?v=4.1.0" th:href="@{/css/icon.css?v=4.1.0}" rel="stylesheet">
+
+	<link rel="stylesheet" href="/css/list/list.filter.css">
+	<link rel="stylesheet" href="/css/list/gm.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+	<link rel="stylesheet" href="/css/common/common.css">
+</header>
+
+<div th:fragment="listFooterContent">
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="/js/plugins/jsTree/jstree.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/layer/layer.js"></script>
+	<script src="/js/content.js?v=1.0.0"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+
+	<script src="/js/common/common.js"></script>
+	<script src="/js/common/navbar.js"></script>
+
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+
+</div>
+<!-- 列表引用JS和CSS样式 -->
+
+<!-- 表单引用JS和CSS样式 -->
+<header th:fragment="formHeaderContent">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title></title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}">
+	<link href="css/bootstrap.min.css?v=3.3.6" th:href="@{/css/bootstrap.min.css?v=3.3.6}" rel="stylesheet">
+	<link href="css/animate.css" th:href="@{/css/animate.css}" rel="stylesheet">
+	<link href="/css/style.css?v=4.1.0" th:href="@{/css/style.css?v=4.1.0}" rel="stylesheet">
+	<link href="/css/icon.css?v=4.1.0" th:href="@{/css/icon.css?v=4.1.0}" rel="stylesheet">
+	<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+	<link rel="stylesheet" href="/css/form/form.css"/>
+	<link rel="stylesheet" href="/css/form/switch.css"/>
+	<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/common/common.css">
+</header>
+
+<div th:fragment="formFooterContent">
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="/js/plugins/layer/layer.js"></script>
+	<script src="/js/content.js?v=1.0.0"></script>
+	<script src="/js/plugins/jquery.i18n.properties.js"></script>
+	<script src="/js/common/common.js"></script>
+	<script src="/js/common/navbar.js"></script>
+
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+</div>
+<!-- 表单引用JS和CSS样式 -->

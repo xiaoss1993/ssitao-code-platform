@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::headerContent"></head>
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+
+<!-- 访问地址： http://127.0.0.1:8080/demo?demoType=form -->
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="">
+			<ul class="page-ul">
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">用户名</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" placeholder="" autocomplete="off"  htype="TEXT" maxlength="300">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">姓名</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" placeholder="" autocomplete="off"  htype="TEXT" maxlength="30">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">密码</span></div>
+					<div class="field-div field-content">
+						<input class="form-control" name="name" type="text" placeholder="" autocomplete="off"  htype="TEXT">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help help-1" attrCalss="help-1" attrTip="提示提示提示山东省地方是的所得到的多多多"></i>
+					</div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">是多少是多少嗯嗯嗯发发发是的是的是确认密码</span></div>
+					<div class="field-div field-content">
+						<input class="form-control" name="name" type="text" placeholder="" autocomplete="off"  htype="TEXT">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help help-2" attrCalss="help-2" attrTip="1提示提示提示山东省地方是的所得到的多多多"></i>
+					</div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">下拉选项</span></div>
+					<div class="field-div field-content">
+						<input type="hidden" attrSign="_ids">
+						<input class="form-control form-control-select" attrSign="_names" name="name" type="text" placeholder="请选择..." autocomplete="off" readonly="readonly" htype="SELECT">
+						<i class="zmdi zmdi-caret-down form-control-select"></i>
+						<div class="chosen-drop common-menu-hide">
+							<div class="chosen-search">
+								<input class="form-control" type="text" attrSign="searchSelect" autocomplete="off">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+							<ul class="chosen-results">
+								<li val="v1"><input type="checkbox" name="name_c" id="aaaaaa1"/><label>沙发大</label></li>
+								<li val="v2"><input type="checkbox" name="name_c" id="aaaaaa2"/><label>把圣诞树</label></li>
+								<li val="v3"><input type="checkbox" name="name_c" id="aaaaaa3"/><label>的方式发送到s时代大厦的点点滴滴多多多多</label></li>
+								<li val="v4"><input type="checkbox" name="name_c" id="aaaaaa4"/><label>阿第三方</label></li>
+								<li val="v5"><input type="checkbox" name="name_c" id="aaaaaa5"/><label>很反感</label></li>
+								<li val="v6"><input type="checkbox" name="name_c" id="aaaaaa6"/><label>让他让他让他</label></li>
+								<li val="v7"><input type="checkbox" name="name_c" id="aaaaaa7"/><label>鱼鱼鱼</label></li>
+								<li val="v8"><input type="checkbox" name="name_c" id="aaaaaa8"/><label>看见看见看见</label></li>
+								<li val="v9"><input type="checkbox" name="name_c" id="aaaaaa9"/><label>从吧橙V橙V</label></li>
+								<li val="v10"><input type="checkbox" name="name_c" id="aaaaaa10"/><label>坎坎坷坷V</label></li>
+								<li val="v11"><input type="checkbox" name="name_c" id="aaaaaa11"/><label>啦啦啦啦啦V</label></li>
+							</ul>
+							<div class="chosen-all"><input type="checkbox" class="cp"/><a class="auto-link" onclick="selectConfirm($(this))">确定</a></div>
+							<div class="no-data">没有数据</div>
+						</div>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						<select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" title="请选择">
+					        <option>Hot Dog, Fries and a Soda</option>
+					        <option>Burger, Shake and a Smile</option>
+					        <option>Sugar, Spice and all things nice</option>
+					        <option>Baby Back Ribs</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					      </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select class="selectpicker" multiple data-live-search="true" data-live-search-placeholder="Search" data-actions-box="true">
+				            <optgroup label="filter1">
+				              <option>option1</option>
+				              <option>option2</option>
+				              <option>option3</option>
+				              <option>option4</option>
+				            </optgroup>
+				            <optgroup label="filter2">
+				              <option>option1</option>
+				              <option>option2</option>
+				              <option>option3</option>
+				              <option>option4</option>
+				            </optgroup>
+				            <optgroup label="filter3">
+				              <option>option1</option>
+				              <option>option2</option>
+				              <option>option3</option>
+				              <option>option4</option>
+				            </optgroup>
+				          </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						<select id="tokens" class="selectpicker" multiple data-live-search="true">
+						    <option data-tokens="first">I actually am called "first"</option>
+						    <option data-tokens="second">And me "second"</option>
+						    <option data-tokens="last">I am "last"</option>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						<select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" title="Please select a lunch ...">
+					        <option>Hot Dog, Fries and a Soda</option>
+					        <option>Burger, Shake and a Smile</option>
+					        <option>Sugar, Spice and all things nice</option>
+					        <option>Baby Back Ribs</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					      </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="basic" class="selectpicker show-tick form-control">
+					          <option>cow</option>
+					          <option data-subtext="option subtext">bull</option>
+					          <option class="get-class" disabled>ox</option>
+					          <optgroup label="test" data-subtext="optgroup subtext">
+					            <option>ASD</option>
+					            <option selected>Bla</option>
+					            <option>Ble</option>
+					          </optgroup>
+					        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="basic" class="selectpicker show-tick form-control" data-live-search="true">
+				          <option>cow</option>
+				          <option data-subtext="option subtext">bull</option>
+				          <option class="get-class" disabled>ox</option>
+				          <optgroup label="test" data-subtext="optgroup subtext">
+				            <option>ASD</option>
+				            <option selected>Bla</option>
+				            <option>Ble</option>
+				          </optgroup>
+				        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="basic2" class="show-tick form-control" multiple>
+				          <option>cow</option>
+				          <option>bull</option>
+				          <option class="get-class" disabled>ox</option>
+				          <optgroup label="test" data-subtext="another test">
+				            <option>ASD</option>
+				            <option selected>Bla</option>
+				            <option>Ble</option>
+				          </optgroup>
+				        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						  <select id="maxOption2" class="selectpicker show-menu-arrow form-control" multiple data-max-options="2">
+					          <option>chicken</option>
+					          <option>turkey</option>
+					          <option disabled>duck</option>
+					          <option>goose</option>
+					        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						   <select id="error" class="selectpicker show-tick form-control">
+					          <option>pen</option>
+					          <option>pencil</option>
+					          <option selected>brush</option>
+					        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						  <select id="country" name="country" class="form-control selectpicker">
+					          <option>Argentina</option>
+					          <option>United State</option>
+					          <option>Mexico</option>
+					        </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						  <select id="first-disabled" class="selectpicker" data-hide-disabled="true" data-live-search="true">
+						    <optgroup disabled="disabled" label="disabled">
+						      <option>Hidden</option>
+						    </optgroup>
+						    <optgroup label="Fruit">
+						      <option>Apple</option>
+						      <option>Orange</option>
+						    </optgroup>
+						    <optgroup label="Vegetable">
+						      <option>Corn</option>
+						      <option>Carrot</option>
+						    </optgroup>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="first-disabled2" class="selectpicker" multiple data-hide-disabled="true" data-size="5">
+						    <option>Apple</option>
+						    <option>Banana</option>
+						    <option>Orange</option>
+						    <option>Pineapple</option>
+						    <option>Apple2</option>
+						    <option>Banana2</option>
+						    <option>Orange2</option>
+						    <option>Pineapple2</option>
+						    <option>Apple2</option>
+						    <option>Banana2</option>
+						    <option>Orange2</option>
+						    <option>Pineapple2</option>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="first-disabled2" class="selectpicker" multiple data-hide-disabled="true" data-size="5">
+						     <select class="form-control selectpicker">
+							      <option>One</option>
+							      <option>Two</option>
+							      <option>Three</option>
+							    </select>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="first-disabled2" class="selectpicker" multiple data-hide-disabled="true" data-size="5">
+						    <select class="form-control selectpicker" data-mobile="true">
+						      <option>One</option>
+						      <option>Two</option>
+						      <option>Three</option>
+						    </select>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="done" class="selectpicker" multiple data-done-button="true">
+						    <option>Apple</option>
+						    <option>Banana</option>
+						    <option>Orange</option>
+						    <option>Pineapple</option>
+						    <option>Apple2</option>
+						    <option>Banana2</option>
+						    <option>Orange2</option>
+						    <option>Pineapple2</option>
+						    <option>Apple2</option>
+						    <option>Banana2</option>
+						    <option>Orange2</option>
+						    <option>Pineapple2</option>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						<select id="tokens" class="selectpicker" multiple data-live-search="true">
+						    <option data-tokens="first">I actually am called "first"</option>
+						    <option data-tokens="second">And me "second"</option>
+						    <option data-tokens="last">I am "last"</option>
+						  </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.position}"></span></div>
+					<div class="field-div field-content">
+						 <select id="lunchBegins" class="selectpicker" data-live-search="true" data-live-search-style="begins" title="Please select a lunch ...">
+					        <option>Hot Dog, Fries and a Soda</option>
+					        <option>Burger, Shake and a Smile</option>
+					        <option>Sugar, Spice and all things nice</option>
+					        <option>Baby Back Ribs</option>
+					        <option>A really really long option made to illustrate an issue with the live search in an inline form</option>
+					      </select>
+					</div>
+					<div class="field-div field-help">
+					</div>
+				</li>
+				
+				
+				<li class="field-li content-whole sign" field="Name" htype="SIGN">
+					<div class="field-div field-sign-title1">
+						基本信息
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole sign" field="Name" htype="SIGN">
+					<div class="field-div field-sign-title2">
+						<div class="title-box">
+							<div class="title">基本信息</div>
+							<div class="square"></div>
+						</div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole sign" field="Name" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-assignment mr10"></i>
+						<div class="title">基本信息</div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole sign" field="Name" htype="SIGN">
+					<div class="field-div field-sign-title4">
+						1.道氏深水虱ssss是的<br/>
+						2.道氏深水虱少时诵诗书所但是<br/>
+						3.的点点滴滴多多多<br/>
+						4.道氏深水虱ssss+<br/>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">搜索框</span></div>
+					<div class="field-div field-content">
+						<input type="hidden" >
+						<input class="form-control form-control-popup" name="name" type="text" placeholder="请搜索..." autocomplete="off" readonly="readonly" htype="TEXT">
+						<i class="zmdi zmdi-search"></i>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">级联菜单</span></div>
+					<div class="field-div field-content">
+						<input type="hidden" attrSign="_ids">
+						<input class="form-control form-control-select" id="testC" attrSign="_names" name="name" type="text" placeholder="请选择..." autocomplete="off" readonly="readonly" htype="SELECT">
+						<i class="zmdi zmdi-caret-down"></i>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				
+				<li class="field-li mb0" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">附件</span></div>
+					<div class="field-div field-content-file">
+						<div class="cloud-upload-btn cp btn-skin"><i class="zmdi zmdi-attachment-alt mr10"></i>附件</div>
+						<div class="cloud-upload-list hide">
+							<div class="cp"><i class="zmdi zmdi-attachment-alt"></i><span class="attachment-name">测试文件是所得到的多多多撒啊啊啊啊啊啊啊001</span><i class="zmdi zmdi-close-circle-o"></i></div>
+							<div class="cp"><i class="zmdi zmdi-attachment-alt"></i><span class="attachment-name">测试文件002</span><i class="zmdi zmdi-close-circle-o"></i></div>
+							<div class="cp"><i class="zmdi zmdi-attachment-alt"></i><span class="attachment-name">测试文件003</span><i class="zmdi zmdi-close-circle-o"></i></div>
+						</div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li mb0" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">数字</span></div>
+					<div class="field-div field-content-num">
+						<div class="num-icon btn-skin"><i class="zmdi zmdi-minus"></i></div>
+						<input type="number" class="num-input" placeholder="0"/>
+						<div class="num-icon btn-skin"><i class="zmdi zmdi-plus"></i></div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">日期</span></div>
+					<div class="field-div field-content">
+						<input class="form-control form-control-date datetimepicker" name="name" type="text" placeholder="" autocomplete="off" readonly="readonly" htype="DATE">
+						<i class="zmdi zmdi-calendar"></i>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				<li class="field-li" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">日期2</span></div>
+					<div class="field-div field-content">
+						<input class="form-control form-control-date datetimepicker" name="name" type="text" placeholder="" autocomplete="off" readonly="readonly" htype="DATE">
+						<i class="zmdi zmdi-calendar"></i>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">富文本</span></div>
+					<div class="field-div field-content field-content-summernote">
+						<div class="summernote">
+                            Hello there,
+                            <br/>
+                            <p>The toolbar can be customized and it also supports various callbacks such as <code>oninit</code>, <code>onfocus</code>, <code>onpaste</code> and many more.</p>
+                            <p>Please try <b>paste some texts</b> here</p>
+                        </div>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				<li class="field-li check" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">性别</span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="radio1" id="radio2" value="option2" >
+						    <label for="radio2">
+						        Radio is off但是所得到的多多多多多都是对的多多多多多多但事实上
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio1" id="radio3" value="option3" >
+						    <label for="radio3">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio1" id="radio4" value="option4" >
+						    <label for="radio4">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio1" id="radio5" value="option5" >
+						    <label for="radio5">
+						        Radio is off
+						    </label>
+					    </div>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				<li class="field-li content-whole check" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">性别</span></div>
+					<div class="field-div field-content-check">
+						<div class="radio">
+						    <input type="radio" name="radio2" id="radio11" value="option2" >
+						    <label for="radio11">
+						        Radio is off但是所得到的多多多多多都是对的多多多多多多但事实上
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio12" value="option3" >
+						    <label for="radio12">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio13" value="option4" >
+						    <label for="radio13">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio14" value="option5" >
+						    <label for="radio14">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio15" value="option5" >
+						    <label for="radio15">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio16" value="option5" >
+						    <label for="radio16">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="radio">
+						    <input type="radio" name="radio2" id="radio17" value="option5" >
+						    <label for="radio17">
+						        Radio is off
+						    </label>
+					    </div>
+					</div>
+					<div class="field-div field-help">
+						<i class="zmdi zmdi-help"></i>
+					</div>
+				</li>
+				<li class="field-li check" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">复选框</span></div>
+					<div class="field-div field-content-check">
+						<div class="checkbox">
+						    <input type="checkbox" name="checkbox1" id="checkbox2" value="option2"  checked="checked">
+						    <label for="checkbox2">
+						        Radio is off但是所得到的多多多多多都是对的多多多多多多但事实上
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox1" id="checkbox3" value="option3">
+						    <label for="checkbox3">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox1" id="checkbox4" value="option3">
+						    <label for="checkbox4">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox1" id="checkbox5" value="option3">
+						    <label for="checkbox5">
+						        Radio is off
+						    </label>
+					    </div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole check" field="Name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">性别</span></div>
+					<div class="field-div field-content-check">
+						<div class="checkbox">
+						    <input type="checkbox" name="checkbox2" id="checkbox6" value="option2"  checked="checked">
+						    <label for="checkbox6">
+						        Radio is off但是所得到的多多多多多都是对的多多多多多多但事实上
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox2" id="checkbox7" value="option3">
+						    <label for="checkbox7">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox2" id="checkbox8" value="option3">
+						    <label for="checkbox8">
+						        Radio is off
+						    </label>
+					    </div>
+					    <div class="checkbox">
+						    <input type="checkbox" name="checkbox2" id="checkbox9" value="option3">
+						    <label for="checkbox9">
+						        Radio is off
+						    </label>
+					    </div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li" field="Name" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">复选框1</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<textarea rows="8" class="input_textarea" maxlength="1000"></textarea>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				
+				<li class="field-li content-whole" field="Name" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title">复选框2</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<textarea rows="8" class="input_textarea" maxlength="1000"></textarea>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				
+			</ul>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('menu');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('#testC').zdCascader({
+                data:_data
+            });
+			
+		});
+		
+		function showSelect($obj, isCheckBox, name, param) {
+			var $s = this, $chosenDrop = $obj.nextAll('.chosen-drop'), $ul = $chosenDrop.find('.chosen-results');
+			if($ul.children().length) {
+				if($chosenDrop.is(':visible')) {
+					$chosenDrop.hide();
+				}else {
+					$chosenDrop.show();
+				}
+			}else {
+				$.ajax({
+					type: "POST",
+					url: ctx+"getSelect",
+					data: param,
+					success: function (data) {
+						data = eval('('+ data +')');
+						var html = '';
+						for(var i = 0; i < data.length; i++) {
+							html += '<li val="'+data[i].id+'"><input name="'+name+'_c" type="checkbox"><label>'+data[i].name+'</label></li>';
+						}
+						
+						$ul.html(html);
+						if($chosenDrop.is(':visible')) {
+							$chosenDrop.hide();
+						}else {
+							$chosenDrop.show();
+						}
+						
+						if(isCheckBox) {
+							$ul.find('li').click(function() {//监听li点击事件，点击li时触发checkbox选中
+								$checkBox = $(this).find('input[type=checkbox]');
+					 			if($checkBox.is(':checked')) {
+					 				$checkBox.prop('checked', false);
+					 			}else {
+					 				$checkBox.prop('checked', true);
+					 			}
+							});
+						}
+						
+						$chosenDrop.find('.cp').click(function() {//全选和取消
+							$obj = $(this);
+							if($obj.is(':checked')) {
+								$('input[type=checkbox]:visible', $obj.closest('.chosen-drop').find('.chosen-results')).prop('checked', true);
+							}else {
+								$('input[type=checkbox]:visible', $obj.closest('.chosen-drop').find('.chosen-results')).prop('checked', false);
+							}
+						});
+					},
+				});
+			}
+		}
+		
+		function selectConfirm($obj) {
+			
+			var $chosenDrop = $obj.closest('.chosen-drop'), ids, names;
+			$('input[type=checkbox]:checked', $chosenDrop.find('.chosen-results')).each(function() {
+				if(ids) {
+					ids += ',' + $(this).parent().attr('val');
+					names += ', ' + $(this).next().text();
+				}else {
+					ids = $(this).parent().attr('val');
+					names = $(this).next().text();
+				}
+			});
+			
+			var $fromBasic = $chosenDrop.closest('.from-basic');
+			if(ids) {
+				$fromBasic.find('input[attrSign="_ids"]').val(ids);
+				$fromBasic.find('input[attrSign="_names"]').val(names);
+			}else {
+				$fromBasic.find('input[attrSign="_ids"]').val('');
+				$fromBasic.find('input[attrSign="_names"]').val('');
+			}
+			$chosenDrop.hide();
+		}
+		
+		function selectPopup($obj, type) {
+			var $selectIds = $obj.prev();
+		    layer.open({
+		        type: 2,
+		        title: $.i18n.prop('select.dept'),
+		        maxmin: false,
+		        shadeClose: true, // 点击遮罩关闭层
+		        resize: true, //禁止弹出窗拉伸
+	            btn: [$.i18n.prop('common.comfirm'), $.i18n.prop('common.cancel')], //按钮
+		        area: ['500px', '550px'],
+		        content: [ctx +'search?type='+type+'&selectIds='+$selectIds.val(), 'no'],
+		        yes: function(index, layero){
+		        	var $body = layer.getChildFrame('body', index);
+		        	$li = $body.find('.selected-ul li');
+		        	var selectIds = '', selectNames = '';
+		        	if($li && $li.length) {
+		        		$li.each(function() {
+		        			if(selectIds) {
+		        				selectIds += ',' + $(this).attr('attrId');
+		        				selectNames += ', ' + $(this).find('.selected-name').text();
+		        			}else {
+		        				selectIds = $(this).attr('attrId');
+		        				selectNames = $(this).find('.selected-name').text();
+		        			}
+		        		});
+		        	}
+		        	$selectIds.val(selectIds);
+		        	$obj.val(selectNames);
+		        	layer.close(index);
+		        },
+		        btn2:function(index, layero){
+		        	layer.close(index);
+	            },
+		        cancel: function(index, layero){  //右上角关闭按钮
+		        	layer.close(index);
+	            }
+		    });
+		}
+		
+		function showDate($obj) {
+			var isRange = $obj.closest('.include-icon').hasClass('singer'), newDateClass = 'datetimepicker';
+			$obj.addClass(newDateClass);
+			laydate.render({
+		        elem: '.' + newDateClass,
+		        eventElem: '.layicon',
+		        trigger: 'click',
+		        theme: 'double-red',//我改成了蓝色(有需要直接改css就可以了或者新建一个主题)
+		        type: 'date',
+		        value: '',
+		        newType: 'date', //新增的配置字段 表示输出格式 month(月) date(日期) year(年)
+		        range: isRange, // 选择日期范围或是单个日期
+		        btns: [],
+		        change: function (value, date, edate) {
+		            $('.' + newDateClass).val(value);
+		            $('.layui-laydate').remove();
+		        }
+		    });
+		}
+		
+		var _data = [{
+            value: 'shanghai',
+            label: '上海',
+            children: [{
+                value: 'shanghaishi',
+                label: '上海市',
+                children: [{
+                    value: 'baoshan1',
+                    label: '宝山区saa发送飞洒发送'
+                }, {
+                    value: 'fengxian1',
+                    label: '奉贤区'
+                }, {
+                    value: 'putuo1',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou1',
+                    label: '虹口区'
+                }, {
+                    value: 'fengxian1',
+                    label: '奉贤区'
+                }, {
+                    value: 'putuo1',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou1',
+                    label: '虹口区'
+                }, {
+                    value: 'fengxian1',
+                    label: '奉贤区'
+                }, {
+                    value: 'putuo1',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou1',
+                    label: '虹口区'
+                }]
+            }]
+        }, {
+            value: 'hunan',
+            label: '湖南省',
+            children: [{
+                value: 'shaoyang',
+                label: '邵阳市',
+                children: [{
+                    value: 'baoshan2',
+                    label: '宝山区'
+                }, {
+                    value: 'fengxian2',
+                    label: '奉贤区'
+                }, {
+                    value: 'putuo2',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou2',
+                    label: '虹口区'
+                }]
+            }, {
+                value: 'hengyang',
+                label: '衡阳市',
+                children: [{
+                    value: 'baoshan3',
+                    label: '宝山区'
+                }, {
+                    value: 'putuo3',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou3',
+                    label: '虹口区'
+                }]
+            }]
+        }, {
+            value: 'sichuan',
+            label: '四川省',
+            children: [{
+                value: 'leshanshi',
+                label: '乐山市',
+                children: [{
+                    value: 'baoshan4',
+                    label: '宝山区'
+                }, {
+                    value: 'fengxian4',
+                    label: '奉贤区'
+                }, {
+                    value: 'putuo4',
+                    label: '普陀区'
+                }, {
+                    value: 'hongkou4',
+                    label: '虹口区'
+                }]
+            }]
+        }, {
+            value: 'beijing',
+            label: '北京'
+        }];
+	
+	</script>
+	
+</body>
+</html>

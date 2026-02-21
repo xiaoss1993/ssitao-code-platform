@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+	
+	.windowPage .layout-box{overflow-x:hidden;}
+	.windowPage .layout-box .layout-left{width:100%!important;}
+	.windowPage .field-li.content-whole.detail-sign{width:100%!important;}
+</style>
+<link rel="stylesheet" href="/css/dashboard/jquery.gridster.css">
+<link rel="stylesheet" href="/css/report/report.css">
+<link rel="stylesheet" href="/css/form/form.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${dashboard.name}"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" name="id" id="id" th:value="${dashboard.id}"/>
+			<input type="hidden" name="blockType" th:value="CUSTOM"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<input type="hidden" name="blockIds" id="blockIds" value=""/>
+			<div class="layout-box">
+				<div>
+					<ul class="page-ul page-ul2">
+						<li class="field-li content-whole detail-sign" field="detailTabs" htype="SIGN">	
+							<div class="relevant-tabs tabSign">
+								<div class="tab baseInfo-tab" type="baseInfo" taburl="dashboard/addOrEditDashboard" onclick="intoDashboardTab($(this))">基本信息</div>
+								<div class="tab dashboard-tab active" type="dashboard" taburl="dashboard/dashboardSet" onclick="intoDashboardTab($(this))">仪表盘配置</div>
+							</div>
+						</li>
+					</ul>
+					<div class="none" th:if="${#lists.isEmpty(dashboardBlockList)}">
+						当前没有区块
+					</div>
+					<div class="gridster">
+						<ul>
+							<li th:each="block:${dashboardBlockList}" th:id="${block.id}" th:type="${block.blockType}" th:attr="data-col=${block.dataCol},data-row=${block.dataRow},data-sizex=${block.dataSizex},data-sizey=${block.dataSizey},oldData-sizey=${block.oldDataSizey},oldData-sizex=${block.oldDataSizex},isShrink=${block.isShrink}">
+								<div class="header">
+									<div class="title">
+										<div th:text="${block.name}"></div>
+										<div class="block-tab" th:if="${block.blockType eq 'LIST' && block.moduleType eq 'WORKFLOW'}">
+											<div class="tab active" type="RECIVE">指派给我的</div>
+											<div class="tab" type="READ">知会我的</div>
+											<div class="tab" type="CREATE">我创建的</div>
+										</div>
+										<div class="block-tab" th:if="${block.blockType eq 'LIST' && block.objectType eq 'TSK'}">
+											<div class="tab active" type="OWN">指派给我的</div>
+											<div class="tab" type="ACT">我参与的</div>
+											<div class="tab" type="CREATE">我创建的</div>
+										</div>
+									</div>
+									<div class="box-select">
+										<div class="select-toggle"><i class="fa fa-ellipsis-v ml5"></i></div>
+										<div class="dropdown-menu dropdown-menu-left common-menu-hide" >
+											<div class="select-li expand" onclick="expendContent($(this))"><i class="fa fa-angle-double-down mr10"></i>展开</div>
+											<div class="select-li shrink" onclick="shrinkContent($(this))"><i class="fa fa-angle-double-up mr10"></i>收缩</div>
+											<div class="select-li" onclick="closeBlock($(this))"><i class="fa fa-power-off mr10"></i>关闭</div>
+										</div>
+									</div>
+								</div>
+								<div class="content">
+								</div>
+							</li>
+							
+						</ul>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+		
+		<div class="btn-box" signtype="baseInfo">
+			<div class="columns pull-right t-columns">
+				<button class="btn t-btn y-active add" onclick="addDashboardBlock();" type="button">
+					<i class="fa fa-plus mr5"></i>
+					<span class="pt1 h18">添加区块</span>
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/dashboard/jquery.gridster.js"></script>
+	<script src="/js/report/echarts.js"></script>
+	<script src="/js/report/echartsUtil.js"></script>
+	<script src="/js/report/report.js"></script>
+	<script src="/js/list/customTable.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+	    $(function(){
+	    	hideLoading();
+	    	
+	    	initGridster();
+		});
+	    
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	#viewFilter-text{max-width:100px;overflow:hidden;text-overflow:ellipsis;}
+	.addList{text-align:center;padding:6px 0px;background-color:#f5f5f5;cursor:pointer;}
+	.view-btn .dropdown-menu.dropdown-sub-menu{right:138px!important;left:auto;border-radius:5px;border:1px solid #e5e6e7;}
+	.view-btn .dropdown-menu-right{max-height:300px;overflow-y:auto;width:135px;}
+	.dropdown-menu-right .text{max-width:97px;overflow:hidden;text-overflow:ellipsis;}
+	.t-btn{display:none;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg windowPage" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content">
+		<ul class="title-ul" th:if="${#strings.isEmpty(planId) && not #strings.isEmpty(pageTitle)}">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${pageTitle}"></div>	
+				</div>
+			</li>
+		</ul>
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn n-active" th:if="${btnExp} and ${btn_EXP}" signBtn="common" onclick="exportBill()">
+							<i class="fa fa-cloud-download mr5"></i>
+							<span th:text="导出" class="pt1 h18"></span>
+						</button>
+					</div>
+					
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="viewId" name="viewId" th:value="${viewId}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+		<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+		<input type="hidden" id="oldFilterConditions" name="oldFilterConditions" th:value="${filterConditions}"/>
+		<input type="hidden" id="dateType" name="dateType" th:value="${dateType}"/>
+		<input type="hidden" id="queryObject" name="queryObject" th:value="${queryObject}"/>
+		<input type="hidden" id="isSignWindow" name="isSignWindow" th:value="Y"/>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div th:if="${btnEdit} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div th:if="${btnChange} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',CU';
+		</script>
+	</div>
+	<div th:if="${btnChange} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',RB';
+		</script>
+	</div>
+	<div th:if="${btnDel} and ${btn_DEL}">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/base64.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			var $searchCondition = $('.search-condition'), objectType = $('#objectType').val(), viewId = $('#viewId').val();
+			var headData = getHeadData(objectType, $('#queryObject').val(), viewId, '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, objectType);
+			}
+			loadReportBill();
+		});
+		
+		//点击文件夹或删除文件夹时，重新加载列表
+		function loadReportBill() {
+			var $gridTable = $('#grid-table');
+			if($gridTable.closest('.table-wrap').length) {
+				$gridTable.initTable('destroy');
+			}
+			var filterConditions = getNewFilterConditions();
+			$gridTable.initTable({
+				model:$('#objectType').val(),
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				viewId: $('#viewId').val(),
+				folderId: $('#selectFolderId').val(),
+				objectId:$('#belongId').val(),
+				objectType:$('#belongType').val(),
+				queryObject:$('#queryObject').val(),
+				dateType:$('#dateType').val(),
+				filterConditions: filterConditions
+			});
+		}
+	</script>	
+	
+</body>
+</html>

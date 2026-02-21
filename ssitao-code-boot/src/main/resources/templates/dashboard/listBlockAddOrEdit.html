@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+	.field-li .onlyTask{display:none!important;}
+	.field-li.MYTASK .noTask{display:none!important;}
+	.field-li.MYTASK .onlyTask{display:flex!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" th:value="${dashboardBlock.id}"/>
+			<input type="hidden" name="blockType" th:value="LIST"/>
+			<input type="hidden" name="moduleType" id="moduleType" th:value="${dashboardBlock.moduleType}"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="区块名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${dashboardBlock.name}" placeholder="请输入区块名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置区块"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${preDashboardList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${dashboardBlock.status} eq 'IN'" required>
+								    <label for="_status1" th:text="未发布"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="RN" th:checked="${dashboardBlock.status} eq 'RN'">
+								    <label for="_status2" th:text="使用中"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="moduleIds" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="数据来源"></span></div>
+							<div class="field-div field-content">
+								<select id="moduleIds" class="selectpicker" name="moduleIds" data-live-search="true" data-live-search-style="begins" title="请选择" required onchange="changeModule($(this))">
+									<optgroup label="业务流程">
+										<option th:each="select:${moduleList}" th:if="${select.type eq 'WORKFLOW'}" th:selected="${select.checked}" th:attr="data-content=${select.text},data-type=${select.type}" th:value="${select.id}"></option>
+									</optgroup>
+									<optgroup label="业务模块">
+										<option th:each="select:${moduleList}" th:if="${select.type eq 'ENTITY'}" th:selected="${select.checked}" th:attr="data-content=${select.text},data-type=${select.type}" th:value="${select.id}"></option>
+									</optgroup>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="showField" htype="RADIO" th:attr="moduleType=${dashboardBlock.moduleType}" th:classappend="${dashboardBlock.objectType} eq 'TSK' ? 'MYTASK':''">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="显示字段"></span></div>
+							<div class="field-div field-content-check">
+								<div class="checkbox workflowField">
+								    <input type="checkbox" name="showField" id="_showField1" value="lampSign" dateType="NUMBER" data-target="checkbox" th:checked="${lampSignWidth} != null">
+								    <label for="_showField1" th:text="指示灯"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${lampSignWidth}==null?50:${lampSignWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+								<div class="checkbox">
+								    <input type="checkbox" name="showField" id="_showField2" value="name" dateType="TEXT" data-target="checkbox" required th:checked="${nameWidth} != null">
+								    <label for="_showField2" th:text="名称"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${nameWidth}==null?250:${nameWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox noTask">
+								    <input type="checkbox" name="showField" id="_showField3" value="code" dateType="TEXT" th:checked="${codeWidth} != null">
+								    <label for="_showField3" th:text="编号"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${codeWidth}==null?150:${codeWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox PJT" th:style="${dashboardBlock.moduleIds} eq '07698511-fa9f-47e2-9f4c-5fbentity007'?'display:none':''">
+								    <input type="checkbox" name="showField" id="_showField4" value="projectId" dateType="PJT" th:checked="${projectIdWidth} != null">
+								    <label for="_showField4" th:text="归属项目"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${projectIdWidth}==null?120:${projectIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox noTask">
+								    <input type="checkbox" name="showField" id="_showField5" value="departmentId" dateType="DEPT" th:checked="${departmentIdWidth} != null">
+								    <label for="_showField5" th:text="归属部门"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${departmentIdWidth}==null?120:${departmentIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							     <div class="checkbox onlyTask">
+								    <input type="checkbox" name="showField" id="_showField6" value="typeId" dateType="TEXT" th:checked="${typeIdWidth} != null">
+								    <label for="_showField6" th:text="任务类型"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${typeIdWidth}==null?150:${typeIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox onlyTask">
+								    <input type="checkbox" name="showField" id="_showField7" value="levelId" dateType="TEXT" th:checked="${levelIdWidth} != null">
+								    <label for="_showField7" th:text="优先级"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${levelIdWidth}==null?120:${levelIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox workflowField">
+								    <input type="checkbox" name="showField" id="_showField8" value="statusId" dateType="SELECT" th:checked="${statusIdWidth} != null">
+								    <label for="_showField8" th:text="状态"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${statusIdWidth}==null?120:${statusIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox onlyTask">
+								    <input type="checkbox" name="showField" id="_showField9" value="planStartDate" dateType="TEXT" th:checked="${planStartDateWidth} != null">
+								    <label for="_showField9" th:text="计划开始日期"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${planStartDateWidth}==null?120:${planStartDateWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox onlyTask">
+								    <input type="checkbox" name="showField" id="_showField10" value="planEndDate" dateType="TEXT" th:checked="${planEndDateWidth} != null">
+								    <label for="_showField10" th:text="计划完成日期"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${planEndDateWidth}==null?120:${planEndDateWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox entityField noTask">
+								    <input type="checkbox" name="showField" id="_showField11" value="lifecycleId" dateType="SELECT" th:checked="${lifecycleIdWidth} != null">
+								    <label for="_showField11" th:text="生命周期"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${lifecycleIdWidth}==null?120:${lifecycleIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox entityField noTask">
+								    <input type="checkbox" name="showField" id="_showField12" value="phaseId" dateType="SELECT" th:checked="${phaseIdWidth} != null">
+								    <label for="_showField12" th:text="生命阶段"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${phaseIdWidth}==null?120:${phaseIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="showField" id="_showField13" value="creatorId" dateType="USER" th:checked="${creatorIdWidth} != null">
+								    <label for="_showField13" th:text="创建人"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${creatorIdWidth}==null?120:${creatorIdWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="showField" id="_showField14" value="createdTime" dateType="DATE" th:checked="${createdTimeWidth} != null">
+								    <label for="_showField14" th:text="创建时间"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${createdTimeWidth}==null?120:${createdTimeWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="showField" id="_showField15" value="modifyTime" dateType="DATE" th:checked="${modifyTimeWidth} != null">
+								    <label for="_showField15" th:text="更新时间"></label>
+								    <div class="widthbox">
+								    	<div class="name">显示宽度</div>
+								    	<div class="field-div field-content-num">
+											<input class="num-input" deci="0" isint="Y" name="displayWidth" placeholder="请输入字段列宽" required="" type="text" th:value="${modifyTimeWidth}==null?120:${modifyTimeWidth}">
+											<div class="sumtips">像素</div>
+										</div>
+								    </div>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="displayWidth" htype="NUMBER">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title">显示数量</span></div>
+							<div class="field-div field-content-num">
+								<input class="num-input" deci="0" isint="Y" name="displayNum" placeholder="请输入显示数量" required type="text" th:value="${dashboardBlock.pageSize}">
+								<div class="sumtips">条</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${dashboardBlock.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var fieldArr = [];
+			$('.field-content-check input[name="showField"]:checked').each(function(){
+				var $checkBox = $(this).closest('.checkbox');
+				fieldArr.push({'f':$(this).val(), 't':$(this).attr('dateType'), 'w':$checkBox.find('input[name="displayWidth"]').val()+'px'});
+			});
+			var params = {'pageSize':$('.num-input[name="displayNum"]').val(), 'moduleType':$('#moduleType').val(), 'moduleIds':$('#moduleIds').val(), 'view':fieldArr};
+			$('#params').val(JSON.stringify(params));
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/dashboard/saveOrUpdateBlock",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('REPORT');
+			}
+		});
+		
+		function changeModule($obj){
+			var id = $obj.val();
+			var dataType = $('option[value="'+id+'"]').attr('data-type');
+			var $showField = $('.field-li[field="showField"]');
+			$showField.attr('moduleType', dataType);
+			if(id == 'MYTASK' || id == '07698511-fa9f-47e2-9f4c-5fbentity001'){
+				$showField.addClass('MYTASK');
+			}else{
+				$showField.removeClass('MYTASK');
+			}
+			if(id == '07698511-fa9f-47e2-9f4c-5fbentity007'){//如果数据来源是所属项目
+				$('.checkbox.PJT').hide();
+			}else{
+				$('.checkbox.PJT').show();
+			}
+			$('#moduleType').val(dataType);
+		}
+	</script>
+	
+</body>
+</html>

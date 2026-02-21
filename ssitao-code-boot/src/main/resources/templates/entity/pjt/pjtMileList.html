@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<link rel="stylesheet" href="/css/entity/milestone/milestone.css">
+<link rel="stylesheet" href="/css/common/common.css">
+<head th:include="include::listHeaderContent"></head>
+<style>
+	.layer-box{overflow:hidden;padding-left:15px;padding-right:15px;}
+	.mile-table-box{overflow:auto;}
+	.mile-table-box table{margin-bottom:30px;}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="mstData" name="mstData" th:value="${mstData}"/>
+			<input type="hidden" id="objectId" name="objectId" th:value="${project.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="PJT"/>
+			<input type="hidden" id="step" name="step" th:value="${project.step}"/>
+			<input type="hidden" id="isPre" name="isPre" th:value="N"/>
+			<input type="hidden" id="isNext" name="isNext" th:value="N"/>
+			<input type="hidden" id="btn_EDIT" name="btn_EDIT" th:value="Y"/>
+			<input type="hidden" id="btn_DEL" name="btn_DEL" th:value="Y"/>
+			
+			<button class="btn t-btn y-active add mt10" onclick="addMiles();" type="button">
+				<i class="fa fa-plus mr5"></i>
+				<span class="pt1 h18">新建里程碑</span>
+			</button>
+			<div class="noData"><div class="none">没有数据</div></div>
+			<div class="mile-box scroll-bar"></div>
+			
+			<div class="mile-table-box"></div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" class="layui-layer-btn0 btns cp" onclick="preStep();" th:value="上一步"  th:if="${project.step}" />
+					<input type="button" class="layui-layer-btn0 btns cp" onClick="nextStep();" th:value="下一步" th:if="${project.step}" />
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/entity/milestone/milestone.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	
+
+	<script type="text/javascript">
+		$(function() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val(), isView = $('#isView').val();
+			var step = $('#step').val();
+			if(step) {
+				loadNewPjtStepGuideHtml(step, $('#objectId').val(), parentName);
+				$('#operate').css('margin-top', '100px');
+			}
+			initMstLine();
+			
+			$('.btn-box').removeClass('hide');
+			
+			if($('#step_container').length) {
+				var index = parent.layer.getFrameIndex(window.name);
+ 				var $titleUl = $('.title-ul'), diffHeight = 0;
+ 				if($titleUl.length) {
+ 					diffHeight = $titleUl.height();
+ 				}
+ 				$('.layer-box').height($('.layer-body').height() - diffHeight);
+ 				var diffHeight = 0;
+ 				if($('.block-header').length) {
+ 					diffHeight = 318;
+ 				}else {
+ 					diffHeight = 350;
+ 				}
+ 				$('.mile-table-box').height($('.layer-body').height() - diffHeight);
+			}
+		});
+		
+		function preStep() {
+			var id = $('#objectId').val();
+			parent.layer.closeAll();
+			top.layer.open({
+				type : 2,
+				title : '基本信息',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : '/entity/addOrEditEntity/'+id+'?objectType=PJT&selectFolderId=&belongId='+$('#objectId').val()+'&belongType='+$('#objectType').val()+'&step=1&parentname='+parentName,
+			});
+		}
+		
+		function nextStep() {
+			var id = $('#objectId').val();
+			parent.layer.closeAll();
+			top.layer.open({
+				type : 2,
+				title : '基本信息',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : '/pjt/pjtRoleList?objectId='+id+'&objectType=PJT&parentname='+parentName,
+			});
+		}
+	</script>	
+</body>
+</html>

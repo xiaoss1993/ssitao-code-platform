@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="查看字段"></div>	
+				</div>
+			</li>
+		</ul>
+		<div id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${field.id}"/>
+			<input type="hidden" id="dataType" name="dataType" th:value="${field.dataType}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${field.objectType}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本属性"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole r" field="colName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="字段列名"></span></div>
+							<div class="field-div field-content" th:text="${field.colName}" ></div>
+						</li>
+						<li class="field-li content-whole r odd" field="showName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="字段名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal" th:text="${field.showName}" ></div>
+						</li>
+						<li class="field-li content-whole r" field="preFieldId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置字段"></span></div>
+							<div class="field-div field-content" th:utext="${field.preFieldId}"></div>
+						</li>
+		<!-- 				<li class="field-li content-whole r odd" field="parentId" htype="SELECT"> -->
+		<!-- 					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="所属分组"></span></div> -->
+		<!-- 					<div class="field-div field-content" th:utext="${field.parentId}"></div> -->
+		<!-- 				</li> -->
+						<li class="field-li content-whole r odd" field="htmlType" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="字段类型"></span></div>
+							<div class="field-div field-content" th:text="${field.htmlTypeText}"></div>
+						</li>
+						<li class="field-li content-whole r" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="提示"></span></div>
+							<div class="field-div field-content" th:text="${field.remark}"></div>
+						</li>
+						<li class="field-li content-whole sign" field="paramSet" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="参数设置"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole r" field="displayWidth" htype="NUMBER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="字段列宽"></span></div>
+							<div class="field-div field-content-num"><span class="numValue mr5" th:text="${field.displayWidthStr}"></span>像素</div>
+						</li>
+						<li class="field-li content-whole check r odd" field="layout" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">字段占比</span></div>
+							<div class="field-div field-content-num" th:text="${field.layout}"></div>
+						</li>
+						<li class="field-li content-whole check r" field="isRequired" htype="TEXT" th:style="${notAlowChange} ? 'display:none' : '' ">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">必填</span></div>
+							<div class="field-div field-content" th:text="${field.isRequired eq 'Y' ? '是' : '否'}"></div>
+						</li>
+						<li class="field-li content-whole check r odd" field="isRequired" htype="TEXT" th:style="${notAlowChange} ? 'display:none' : '' ">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">记录</span></div>
+							<div class="field-div field-content" th:text="${field.isRecorded eq 'Y' ? '是' : '否'}"></div>
+						</li>
+						<li class="field-li content-whole" id="TEXT" th:style="${field.htmlType} eq 'TEXT' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole r" field="textLength" htype="NUMBER">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="内容长度"></span></div>
+									<div class="field-div field-content-num"><span class="numValue mr5" th:text="${field.textLength}"></span>字节</div>
+								</li>
+								<li class="field-li content-whole r odd" field="textDefault" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content" th:text="${field.textDefault}"></div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="AREA" th:style="${field.htmlType} eq 'AREA' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole r" field="areaRows" htype="NUMBER">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="行数"></span></div>
+									<div class="field-div field-content-num"><span class="numValue mr5" th:text="${field.areaRows}"></span>行</div>
+								</li>
+								<li class="field-li content-whole check r odd" field="areaIsLimit" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="限制长度"></span></div>
+								    <div class="field-div field-content" th:text="${field.areaIsLimit eq 'Y' ? '是' : '否'}">
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="areaLength" htype="NUMBER" th:style="${field.areaIsLimit} eq 'N' ? 'display:none' : '' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="内容长度"></span></div>
+									<div class="field-div field-content-num"><span class="numValue mr5" th:text="${field.areaLength}"></span>字节</div>
+								</li>
+								<li class="field-li content-whole r odd" field="areaDefault" htype="AREA">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content" th:text="${field.areaDefault}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="FORMATAREA" th:style="${field.htmlType} eq 'FORMATAREA' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole odd r" field="formatareaDefault" htype="FORMATAREA">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content field-content-summernote" th:utext="${field.formatareaDefault}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="SELECT" th:style="${field.htmlType} eq 'SELECT' and ${notAlowChange} ne true ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole check r" field="isSeached" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">显示搜索框</span></div>
+									<div class="field-div field-content" th:text="${field.isSeached eq 'Y' ? '是' : '否'}"></div>
+								</li>
+								<li class="field-li content-whole check r" field="setCascade" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">设置为级联</span></div>
+									<div class="field-div field-content" th:text="${field.setCascade eq 'Y' ? '是' : '否'}"></div>
+								</li>
+								<li class="field-li content-whole r check odd" field="selectSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content" th:text="${field.selectSource}">
+									</div>
+								</li>
+								<li class="field-li content-whole r check" field="selectDefault" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content" th:text="${field.selectDefault}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="RADIO" th:style="${field.htmlType} eq 'RADIO' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole odd r" field="radioSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content" th:text="${field.radioSource}"></div>
+								</li>
+								<li class="field-li content-whole check r" field="radioDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check" id="radioDefault">
+										<div class="radio" th:each="radio,radioStat:${field.optionList}">
+											<input type="radio" name="radioDefault" th:id="'radioDefault' + ${radioStat.index}" th:value="${radio.id}" data-target="radio" th:checked="${radio.checked}" disabled="disabled"/>
+											<label th:for="'radioDefault' + ${radioStat.index}" th:text="${radio.name}"></label>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="CHECKBOX" th:style="${field.htmlType} eq 'CHECKBOX' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole odd r" field="checkboxSource" htype="SELECT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="数据源"></span></div>
+									<div class="field-div field-content" th:text="${field.checkboxSource}"></div>
+								</li>
+								<li class="field-li content-whole check r" field="checkboxDefault" htype="CHECKBOX">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check" id="checkboxDefault">
+										<div class="checkbox" th:each="checkbox,checkboxStat:${field.optionList}">
+											<input type="checkbox" name="checkboxDefault" th:id="'checkboxDefault'+${checkboxStat.index}" th:value="${checkbox.id}" data-target="checkbox" th:checked="${checkbox.checked}" disabled="disabled">
+											<label th:for="'checkboxDefault'+${checkboxStat.index}" th:text="${checkbox.name}"></label>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="NUMBER" th:style="${field.htmlType} eq 'NUMBER' and ${field.colName} ne 'DueSign' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole check r" field="numberFormat" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="格式"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio"  th:style="${field.colName} eq 'LampSign' ? 'display:none' : '' ">
+										    <input type="radio" name="numberFormat" id="_numberFormat1" value="D" data-target="radio" th:checked="${field.numberFormat} eq 'D'" disabled="disabled"/>
+										    <label for="_numberFormat1" th:text="默认（包括整数、小数、负数）"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="numberFormat" id="_numberFormat3" value="I" data-target="radio" th:checked="${field.numberFormat} eq 'I'" disabled="disabled"/>
+										    <label for="_numberFormat3" th:text="指示灯"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole r odd " field="unitId" htype="SELECT" th:style="${field.numberFormat} ne 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="单位"></span></div>
+									<div class="field-div field-content-num" th:text="${field.unitName}"></div>
+								</li>
+								<li class="field-li content-whole r" field="numberMin" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="最小值"></span></div>
+									<div class="field-div field-content-num" th:text="${field.numberMin}">
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="numberMax" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="最大值"></span></div>
+									<div class="field-div field-content-num" th:text="${field.numberMax}">
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="numberValue" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-num" th:text="${field.numberValue}">
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="numberPrecision" htype="NUMBER" ltype="NUMBER" th:style="${field.numberFormat} ne 'I' and not ${notAlowChange} ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="小数位数"></span></div>
+									<div class="field-div field-content-num"><span class="numValue mr5" th:text="${field.numberPrecision}"></span>位</div>
+								</li>
+								
+								<li class="field-li content-whole r odd " field="greenLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="绿灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text mr5"><i class="zmdi zmdi-lamp fz22 mr5 green-light"></i>≤<span class="ml5" th:text="${field.greenLight}"></span></div> 
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="redLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="红灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text mr5"><i class="zmdi zmdi-lamp fz22 mr5 red-light"></i>><span class="ml5" th:text="${field.redLight}"></span></div>
+									</div>
+								</li>
+								<li class="field-li content-whole r odd " field="yellowLight" htype="NUMBER" ltype="LIGHT" th:style="${field.numberFormat} eq 'I' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="黄灯"></span></div>
+									<div class="field-div field-content-num">
+										<div class="c-text">
+											<span id="yellowLight1" class="mr5" th:text="${#strings.isEmpty(field.greenLight) ? '0' : field.greenLight}">0</span>< <i class="zmdi zmdi-lamp fz22 mr5 ml5 yellow-light"></i> ≤<span id="yellowLight2" class="ml5" th:text="${#strings.isEmpty(field.redLight) ? '0' : field.redLight}">0</span>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="DATE" th:style="${field.htmlType} eq 'DATE' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole check r" field="dateFormatRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="格式"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule1" value="YMD" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMD'" disabled="disabled">
+										    <label for="_dateFormatRule1" title="例如：2022-08-08">日期</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule3" value="YMDHms" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDHms'" disabled="disabled">
+										    <label for="_dateFormatRule3" title="例如：2022-08-08 08:08:08">时间</label>
+									    </div>
+									     <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule6" value="YMDscope" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDscope'" disabled="disabled">
+										    <label for="_dateFormatRule6" title="例如：2022-08-08-2023-08-08">日期范围</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule7" value="YMDHmsscope" data-target="radio" th:checked="${field.dateFormatRule} eq 'YMDHmsscope'" disabled="disabled">
+										    <label for="_dateFormatRule7" title="例如：2022-08-08 08:08:08-2023-08-08 08:08:08">时间范围</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule4" value="YM" data-target="radio" th:checked="${field.dateFormatRule} eq 'YM'" disabled="disabled">
+										    <label for="_dateFormatRule4" title="例如：2022-08">年月</label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateFormatRule" id="_dateFormatRule5" value="Y" data-target="radio" th:checked="${field.dateFormatRule} eq 'Y'" disabled="disabled">
+										    <label for="_dateFormatRule5" title="例如：2022">年</label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole check r" field="dateDefaultRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule1" value="N" data-target="radio" th:checked="${field.dateDefaultRule} eq 'N'" disabled="disabled">
+										    <label for="_dateDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule2" value="CD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'CD'" disabled="disabled" >
+										    <label for="_dateDefaultRule2" th:text="当前日期"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule3" value="FD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'FD'" disabled="disabled" >
+										    <label for="_dateDefaultRule3" th:text="固定日期"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="dateDefaultRule" id="_dateDefaultRule4" value="PD" data-target="radio" th:checked="${field.dateDefaultRule} eq 'PD'" disabled="disabled" >
+										    <label for="_dateDefaultRule4" th:text="周期日期"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="fixedDate" htype="DATE" th:style="${field.dateDefaultRule} eq 'FD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">固定日期</span></div>
+									<div class="field-div field-content" th:text="${field.fixedDate}">
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="periodDate" htype="SELECT" setCascade="Y" th:style="${field.dateDefaultRule} eq 'PD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">周期日期</span></div>
+									<div class="field-div field-content" id="periodDateSign" th:text="${field.periodDateText}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="USER" th:style="${field.htmlType} eq 'USER' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole r" field="userIsMul" htype="TEXT">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">允许多选</span></div>
+									<div class="field-div field-content" th:text="${field.userIsMul eq 'Y' ? '是' : '否'}"></div>
+								</li>
+								<li class="field-li content-whole check r odd" field="userDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule1" value="N" data-target="radio" th:checked="${field.userDefaultRule} eq 'N' " disabled="disabled">
+										    <label for="_userDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule2" value="CS" data-target="radio" th:checked="${field.userDefaultRule} eq 'CS' " disabled="disabled">
+										    <label for="_userDefaultRule2" th:text="当前操作者"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule3" value="FU" data-target="radio" th:checked="${field.userDefaultRule} eq 'FU' " disabled="disabled">
+										    <label for="_userDefaultRule3" th:text="固定人员"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule4" value="SR" data-target="radio" th:checked="${field.userDefaultRule} eq 'SR' " disabled="disabled">
+										    <label for="_userDefaultRule4" th:text="系统角色"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule5" value="PR" data-target="radio" th:checked="${field.userDefaultRule} eq 'PR' " disabled="disabled">
+										    <label for="_userDefaultRule5" th:text="项目角色"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="userDefaultRule" id="_userDefaultRule6" value="DR" data-target="radio" th:checked="${field.userDefaultRule} eq 'DR' " disabled="disabled">
+										    <label for="_userDefaultRule6" th:text="部门角色"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="user" htype="USER" th:style="${field.userDefaultRule} eq 'FU' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">固定人员</span></div>
+									<div class="field-div field-content user">
+										<div class="user-list">
+											<div class="cp" th:each="user:${field.userDefaultList}" th:attr="userId=${user.id}" onclick="viewUser()">
+												<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+												<div class="user-col">
+													<img th:src="${user.picId}"/>
+													<span th:text="${user.name}"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="sys" htype="ROLE_SYS" th:style="${field.userDefaultRule} eq 'SR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">系统角色</span></div>
+									<div class="field-div field-content" th:text="${field.userSysRoleDefaultText}">
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="pjt" htype="ROLE_PJT" th:style="${field.userDefaultRule} eq 'PR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">项目角色</span></div>
+									<div class="field-div field-content" th:text="${field.userPjtRoleDefaultText}">
+									</div>
+								</li>
+								<li class="field-li content-whole odd r" field="dpt" htype="ROLE_DPT" th:style="${field.userDefaultRule} eq 'DR' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign">*</span><span class="title">部门角色</span></div>
+									<div class="field-div field-content" th:text="${field.userDptRoleDefaultText}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole" id="DEPT" th:style="${field.htmlType} eq 'DEPT' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole check odd r" field="deptDefault" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="默认值"></span></div>
+									<div class="field-div field-content-check">
+										<div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule1" value="N" data-target="radio" th:checked="${field.deptDefaultRule} eq 'N' " disabled="disabled">
+										    <label for="_deptDefaultRule1" th:text="无"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule2" value="CD" data-target="radio" th:checked="${field.deptDefaultRule} eq 'CD' " disabled="disabled">
+										    <label for="_deptDefaultRule2" th:text="当前部门"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="deptDefaultRule" id="_deptDefaultRule3" value="FD" data-target="radio" th:checked="${field.deptDefaultRule} eq 'FD' " disabled="disabled">
+										    <label for="_deptDefaultRule3" th:text="固定部门"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole r" field="dept" htype="DEPT" th:style="${field.deptDefaultRule} eq 'FD' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title">固定部门</span></div>
+									<div class="field-div field-content" th:text="${field.deptDefaultText}">
+									</div>
+								</li>
+							</ul>
+						</li>
+						<li class="field-li content-whole r" id="SIGN" th:style="${field.htmlType} eq 'SIGN' ? 'display:flex' : 'display:none' ">
+							<ul class="li-ul">
+								<li class="field-li content-whole check r mb10" field="signDefaultRule" htype="RADIO">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="标签类型"></span></div>
+									<div class="field-div field-content-check">
+										 <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule3" value="JJ" data-target="radio" th:checked="${field.signDefaultRule} eq 'JJ' " disabled="disabled">
+										    <label for="_signDefaultRule3" th:text="简洁"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule1" value="ZT" data-target="radio" th:checked="${field.signDefaultRule} eq 'ZT' " disabled="disabled">
+										    <label for="_signDefaultRule1" th:text="主题"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule2" value="CT" data-target="radio" th:checked="${field.signDefaultRule} eq 'CT' " disabled="disabled">
+										    <label for="_signDefaultRule2" th:text="传统"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule4" value="BZ" data-target="radio" th:checked="${field.signDefaultRule} eq 'BZ' " disabled="disabled">
+										    <label for="_signDefaultRule4" th:text="备注"></label>
+									    </div>
+									    <div class="radio">
+										    <input type="radio" name="signDefaultRule" id="_signDefaultRule5" value="ZDY" data-target="radio" th:checked="${field.signDefaultRule} eq 'ZDY' " disabled="disabled">
+										    <label for="_signDefaultRule5" th:text="自定义"></label>
+									    </div>
+									</div>
+								</li>
+								<li class="field-li content-whole sign" field="JJName" htype="SIGN" th:style="${field.signDefaultRule} eq 'JJ' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title3" th:style="'color:' + ${field.bgColor} + ';border-bottom:1px solid ' + ${field.bgColor}">
+										<i class="zmdi zmdi-hdr-strong mr10"></i>
+										<div class="title show-name" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="ZTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'ZT' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title2" th:style="'border-bottom:1px solid ' + ${field.bgColor}">
+										<div class="title-box" th:style="'background-color:' + ${field.bgColor}">
+											<div class="title show-name" th:style="'color:' + ${field.fColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+											<div class="square"></div>
+										</div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="CTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'CT' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title1 show-name" th:style="'border-left:10px solid ' + ${field.bgColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">
+										显示名称
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole sign" field="BZName" htype="SIGN" th:style="${field.signDefaultRule} eq 'BZ' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+									<div class="field-div field-sign-title4 remark-content" th:style="'background-color:' + (${field.bgColor} eq 'var(--theme)'?'#fff':${field.bgColor}) + ';color:' + (${field.fColor} eq 'var(--font-color)'?'#555':${field.fColor})">
+										<div class="tip-title mb10" th:style="'color:' + (${field.fColor} eq 'var(--font-color)'?'#555':${field.fColor})" ><i class="fa fa-info-circle mr10 fz20"></i><span class="fz16 show-name" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</span></div>
+										<div class="tip-content" th:utext="${#strings.isEmpty(field.remark) ? '备注内容' : field.remark }"></div>
+									</div>
+									<div class="field-div field-sign-content"></div>
+								</li>
+								<li class="field-li content-whole" field="extendClass" htype="TEXT" th:style="${field.signDefaultRule} eq 'ZDY' ? 'display:flex' : 'display:none' ">
+									<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="扩展程序"></span></div>
+									<div class="field-div field-content" th:text="${field.extendClass}">
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="编辑" onclick="editField();" th:if="${btnEdit}"/>
+			</div>
+		</div>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; objectType = [[${field.objectType}]]; fieldId = [[${field.id}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function editField() {
+			var objectType = $('#objectType').val();
+			var url = '/field/addOrEditField/'+$('#id').val()+'?objectType=' + objectType + '&preId=&&parentname='+parentName;
+			intoIframePage(url, false, 'FIELD', true);
+		}
+		
+	</script>
+	
+</body>
+</html>

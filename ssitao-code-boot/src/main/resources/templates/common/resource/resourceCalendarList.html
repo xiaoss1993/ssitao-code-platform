@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	html{overflow:hidden;}
+	.table-list{padding:0px!important;}
+	.dataBox{height:100%;border-radius:5px;border:1px solid #e5e6e7;margin:15px;}
+	.dataBox .dataHeader{display:flex;border-radius:5px;}
+	.dataBox .userHeader, .dataBox .userInfo{width:430px;overflow:hidden;}
+	.dataBox .dataInfo{display:flex;}
+	.dataBox .userInfo, .dataBox .effortInfo, .dataBox .effortHeader{background-color:white;}
+	.dataBox .userHeaderTable{width:430px;}
+	.dataBox .userHeaderTable .title-box{display:flex;align-items:center;justify-content:center;}
+	.dataBox .userHeaderTable .title-box .checkbox{margin:0px;margin-left:30px;}
+	.dataBox .userHeaderTable .title-box .checkbox label{margin-top:2px;}
+	.dataBox .userHeaderTable .title-box .type{display:flex;}
+	.dataBox .userHeaderTable td, .dataBox .userInfoTable td{border-right:1px solid #e5e6e7;}
+	.dataBox .userHeaderTable td:last-child, .dataBox .userInfoTable td:last-child{border-right:0px;}
+	.dataBox table{width:100%;border-collapse:collapse;}
+	.dataBox table .header{font-weight:bold;background-color:white;}
+	.dataBox table tr{border-bottom:1px solid #e5e6e7;}
+	.dataBox table td{text-align:center;height:40px;background-color:white;}
+	.dataBox table .yellow, .dataBox table .green, .dataBox table .red{display:inline-block;padding-left:30px;padding-left:30px;}
+	.dataBox table .yellow{color:#f9bd65;}
+	.dataBox table .green{color:#8BC34A;}
+	.dataBox table .red{color:#FF5722;}
+	.dataBox table .col1{width:100px;}
+	.dataBox table .col2{width:81px;}
+	.dataBox table .col3{width:52px;}
+	.dataBox .effortHeaderTable, .dataBox .effortInfoTable{table-layout:fixed;}
+	.dataBox .effortHeaderTable td, .dataBox .effortInfoTable td{min-width:100px;border-left:1px solid #e5e6e7;}
+	.dataBox .effortHeaderTable td:nth-child(1), .dataBox .effortInfoTable td:nth-child(1){border-left:0px;}
+	.dataBox .weekend{background-color:#f5f5f5;}
+	.dataBox .currentday{background-color:#fcf8e3;}
+	.dataBox .yellow-bg{background-color:#f9bd65;color:white;}
+	.dataBox .green-bg{background-color:#8BC34A;color:white;}
+	.dataBox .red-bg{background-color:#FF5722;color:white;}
+	
+	.dataBox .effortHeader{overflow:hidden;border-left:1px solid #e5e6e7;}
+	.dataBox .effortInfo{overflow-x:auto;overflow-y:auto;border-left:1px solid #e5e6e7;}
+</style>
+<link rel="stylesheet" href="/css/list/list.filter.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="search-condition">
+				<div class="seach-collapse">
+					<div class="seach-list">
+						<div class="condition">
+							<div class="field-div field-label"><span class="title">部门</span></div>
+							<div class="field-div field-content">
+								<input id="_deptId" name="deptId" type="hidden" th:value="${deptIds}">
+								<input autocomplete="off" class="form-control form-control-popup filter-conditions" htype="DEPT" name="deptName" placeholder="请选择部门" isMul readonly="readonly" th:tagname="#{sys.user.dept.select}" type="text" th:value="${deptName}">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+						</div>
+						<div class="condition">
+							<div class="field-div field-label"><span class="title">职位</span></div>
+							<div class="field-div field-content">
+								<select id="positionId" class="selectpicker bs-select-hidden filter-conditions" name="positionId" data-live-search="true" multiple data-live-search-style="begins" title="请选择">
+									<option th:each="select:${positionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</div>
+						<div class="condition">
+							<div class="field-div field-label"><span class="title">用户</span></div>
+							<div class="field-div field-content">
+								<input id="_userId" name="userId" type="hidden" value="">
+								<input autocomplete="off" class="form-control form-control-popup filter-conditions" htype="USER" name="userName" placeholder="请选择用户" isMul readonly="readonly" th:tagname="#{sys.user.dept.select}" type="text" value="">
+								<i class="zmdi zmdi-search"></i>
+							</div>
+						</div>
+						<div class="condition dataScope">
+							<div class="field-div field-label"><span class="title">日期范围</span></div>
+							<div class="field-div field-content">
+								<input autocomplete="off" class="form-control form-control-date filter-conditions" dateformat="YMDscope" id="dateScope" htype="DATE" name="event-time" placeholder="请选择日期范围" th:value="${dateScope}" readonly="readonly" type="text" lay-key="1">
+						        <i class="zmdi zmdi-calendar"></i>
+							</div>
+						</div>
+						<div class="condition btn">
+							<button class="btn t-btn n-active ml10" onclick="searchBodyData('N');" type="button">
+								<i class="fa fa-search mr5"></i><span class="pt1 h18">查询</span>
+							</button>				
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="table-list">
+				<div class="dataBox">
+					<div class="dataHeader">
+						<div class="userHeader">
+							<table class="userHeaderTable">
+								<tr>
+									<td colspan="6" class="col0 header">
+										<div class="title-box">
+		<!-- 									<div class="checkbox"><input data-target="checkbox" type="checkbox" checked="" id="taskId" name="scheduleType" value="task" onclick="filterSchedule($(this))"><label for="taskId" title="包含节假日">包含节假日</label></div> -->
+											<div class="type">
+												<span class="yellow"><i class="fa fa-circle mr5"></i>轻松</span>
+												<span class="green"><i class="fa fa-circle mr5"></i>正常</span>
+												<span class="red"><i class="fa fa-circle mr5"></i>过载</span>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td class="col1 header">部门</td>
+									<td class="col1 header">用户</td>
+									<td class="col2 header" th:if="${objectType} eq 'PENDING'">剩余工作量（小时）</td>
+									<td class="col2 header" th:if="${objectType} eq 'PENDING'">待处理任务数</td>
+									<td class="col2 header" th:if="${objectType} eq 'PROCESSED'">投入工作量（小时）</td>
+									<td class="col2 header" th:if="${objectType} eq 'PROCESSED'">已处理任务数</td>
+									<td class="col3 header">负载率</td>
+								</tr>
+							</table>
+						</div>
+						<div class="effortHeader scroll-bar">
+							<table class="effortHeaderTable">
+							</table>
+						</div>
+					</div>
+					<div class="dataInfo">
+						<div class="userInfo">
+							<table class="userInfoTable">
+							</table>
+						</div>
+						<div class="effortInfo scroll-bar">
+							<table class="effortInfoTable">
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" name="objectType" id="objectType" th:value="${objectType}"/>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], bodyDataList = [[${bodyDataList}]]</script>
+
+	<script type="text/javascript">
+		$(function() {
+			initFormControl('RESOURCE');
+			hideLoading();
+			
+			$(document).ready(function() {
+				initTable();
+				loadTableData(bodyDataList);
+			});
+		});
+		
+		function initTable() {
+			var $effortInfo = $(".effortInfo"), $effortHeader = $('.effortHeader'), $userInfo = $(".userInfo"), $userInfoTable = $('.userInfoTable'), $effortHeaderTable = $('.effortHeaderTable'), $effortInfoTable = $('.effortInfoTable'), 
+			bodyHeight = $('.gray-bg').height(), bodyWidth = $('.gray-bg').width(), dataInfoHeight = bodyHeight - 173, dataInfoWidth = bodyWidth - 454;
+			
+			$effortInfo.width(dataInfoWidth);
+			$effortHeader.width(dataInfoWidth);
+			$effortInfo.height(dataInfoHeight);
+			$userInfo.height(dataInfoHeight);
+			
+			$effortInfo.on("scroll", function() {
+		    	var scrollTop = $(this).scrollTop();
+		    	$userInfo.scrollTop(scrollTop);
+		    	
+		    	var scrollLeft = $(this).scrollLeft();
+		    	$effortHeader.scrollLeft(scrollLeft);
+		  	});
+			
+			if ($effortInfo[0].scrollHeight > $effortInfo[0].clientHeight) {
+				var scrollbarHeight = $effortInfo.height() - $effortInfo[0].clientHeight;
+				$userInfoTable.css('margin-bottom', scrollbarHeight + 'px');
+			}
+			
+			if ($effortInfo[0].scrollWidth > $effortInfo[0].clientWidth) {
+				var scrollbarWidth = $effortInfo.width() - $effortInfo[0].clientWidth;
+				$effortHeaderTable.css('margin-right', scrollbarWidth + 'px');
+			}
+		}
+		
+		function viewTasks(userId) {
+			var objectType = $('#objectType').val();
+			top.layer.open({
+				type : 2,
+				title : objectType == 'PROCESSED'?'执行任务':'计划任务',
+				maxmin : true,
+				shadeClose : false,
+				area : ['80%', '80%'],
+				content : '/myResTaskList?userId='+userId+'&dateScope='+$('#dateScope').val()+'&objectType='+objectType+'&parentname=' + window.name,
+			});
+		}
+		
+		function searchBodyData(isClear) {
+			var postionIds = '';
+			$('#positionId').each(function() {
+				if(postionIds) {
+					postionIds += ',';
+				}
+				postionIds += $(this).val();
+			});
+			$.ajax({
+				type : "post",
+				url : "/searchResTaskBodyData",
+				data : {'type':$('#objectType').val(), 'deptIds': $('#_deptId').val(), 'positionIds': postionIds, 'userIds':$('#_userId').val(), 'dateScope':$('#dateScope').val()},// 你的formid
+				async : false,
+				success : function(data) {
+					loadTableData(data);
+				}
+			});
+		}
+		
+		function loadTableData(bodyData) {
+			if(bodyData) {
+				var effortHeaderWidth = $('.effortHeader').width();
+				var tableWidth = parseInt(bodyData[0]) * 35;
+				if(tableWidth > effortHeaderWidth) {
+					$('.effortHeaderTable, .effortInfoTable').width(tableWidth);
+				}else{
+					$('.effortHeaderTable, .effortInfoTable').width(effortHeaderWidth);
+				}
+				var headScopeList = bodyData[1];
+				var headDateList = bodyData[2];
+				var bodyList = bodyData[3];
+				var headHtml = '';
+				if(headScopeList) {
+					headHtml += '<tr>';
+					var headScope;
+					for(var i = 0; i < headScopeList.length; i++) {
+						headScope = headScopeList[i];
+						headHtml += '<td colspan="'+headScope[1]+'" class="header">'+headScope[0]+'</td>';
+					}
+					headHtml += '</tr>';
+				}
+				
+				if(headDateList) {
+					headHtml += '<tr>';
+					for(var i = 0; i < headDateList.length; i++) {
+						headHtml += '<td class="header">'+headDateList[i]+'</td>';
+					}
+					headHtml += '</tr>';
+				}
+				$('.effortHeaderTable').html(headHtml);
+				
+				if(bodyList){
+					var deptId = '', userHtml = '', effortHtml = '', effortArr;
+					var $userInfoTable = $('.userInfoTable'), $effortInfoTable = $('.effortInfoTable');
+					$userInfoTable.html('');
+					$effortInfoTable.html('');
+					for(var i = 0; i < bodyList.length; i++){
+						userHtml += '<tr>';
+						if(bodyList[i].deptName){
+							userHtml += '<td class="col1" rowspan="'+bodyList[i].deptUserCount+'">'+bodyList[i].deptName+'</td>';
+						}
+						userHtml += '	<td class="col1">'+bodyList[i].userName+'</td>';
+						userHtml += '	<td class="col2">'+bodyList[i].totalWorkLoad+'</td>';
+						if(bodyList[i].taskSum) {
+							userHtml += '	<td class="col2"><a onclick="viewTasks(\''+bodyList[i].userId+'\')">'+bodyList[i].taskSum+'</a></td>';
+						}else{
+							userHtml += '	<td class="col2">'+bodyList[i].taskSum+'</td>';
+						}
+						userHtml += '	<td class="col3">'+bodyList[i].loadRate+'</td>';
+						userHtml += '</tr>';
+						
+						effortHtml += '<tr>';
+						for(var j = 0; j < bodyList[i].efforts.length; j++){
+							effortArr = bodyList[i].efforts[j];
+							if(effortArr) {
+								effortHtml += '<td class="'+effortArr[1]+'-bg">'+effortArr[0]+'</td>';
+							}else{
+								effortHtml += '<td></td>';
+							}
+						}
+						effortHtml += '</tr>';
+						
+						if(i%10 == 0 || i == (bodyList.length - 1)) {
+							$userInfoTable.append(userHtml);
+							$effortInfoTable.append(effortHtml);
+							userHtml = '';
+							effortHtml = '';
+						}
+					}
+				}
+			}
+		}
+		
+	</script>	
+	
+</body>
+</html>

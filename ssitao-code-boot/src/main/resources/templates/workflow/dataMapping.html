@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head>
+	<link th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}" rel="stylesheet"/>
+    <link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"/>
+    <link href="/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/css/icon.css?v=4.1.0" rel="stylesheet">
+    <link href="/css/form/form.css" rel="stylesheet"/>
+    <link href="/css/common/common.css" rel="stylesheet"/>
+	<link href="/css/form/bootstrap-select.css" rel="stylesheet"/>
+	
+	<style>
+		.layer-box{overflow:hidden!important;}
+		.layer-box .row-box {
+		    border: 1px dashed rgba(0,0,0,0.12);
+		    margin-top:10px;
+		}
+		.layer-box .row-box .title-box{display:flex;}
+		.layer-box .row-box .ibox-title{
+		    border: 0;
+		    display: flex;
+		    align-items: center;
+		    justify-content: space-between;
+		    height: 48px;
+		    border-bottom: 1px solid var(--default-border);
+		    margin-left: 15px;
+		    margin-right: 15px;
+		    width:35%;
+		}
+		.layer-box .row-box .ibox-title.right{width:65%;}
+		#content-box{overflow-y:auto;position:relative;}
+		#content-box .ibox-content{padding:0px 15px 10px 15px;}
+		#content-box .line{width:1px;border-left:1px dashed rgba(0,0,0,0.12);position:fixed;left:36.5%;}
+		#content-box .field-select{width:430px;position:relative;padding-bottom: 4px;}
+		#content-box .field-select input:focus +.zmdi-search, #content-box .field-select input:hover +.zmdi-search {
+		    color: var(--theme)!important;
+		}
+		#content-box .cascader-node{border-bottom:1px dashed rgba(0,0,0,0.12);}
+		#content-box .cascader-node:last-child{border-bottom:0px}
+	</style>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/page/page-set.js"></script>
+    
+    <script src="/js/plugins/layer/layer.js"></script>
+    <script src="/js/plugins/datapicker/laydate.js"></script>
+    <script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/common/common.js"></script>
+</head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="deriveType" name="deriveType" th:value="${deriveType}"/>
+			
+	    <div class="row row-box">
+	    	<div class="title-box">
+	    		<div class="ibox-title">
+	            	<h5>字段列表</h5>
+	            </div>
+	            <div class="ibox-title right">
+	                <h5>字段匹配规则</h5>
+	            </div>
+	    	</div>
+            <div id="content-box">
+<!--             	<div class="line"></div> -->
+                 <div class="ibox float-e-margins">
+                     <div class="ibox-content">
+                     	<ul class="cascader-menu-list">
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(textFieldList)} ? 'hide':''"><span class="text">单行文本</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${textFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" multiple="" data-live-search-style="begins" title="请选择" >
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(userFieldList)} ? 'hide':''"><span class="text">用户</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${userFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(selectFieldList)} ? 'hide':''"><span class="text">下拉框</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${selectFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(radioFieldList)} ? 'hide':''"><span class="text">单选框</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${radioFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(checkboxFieldList)} ? 'hide':''"><span class="text">复选框</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${checkboxFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(dateFieldList)} ? 'hide':''"><span class="text">日期</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${dateFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(numberFieldList)} ? 'hide':''"><span class="text">数字</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${numberFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     		<li class="dropdown-header" th:classappend="${#lists.isEmpty(otherFieldList)} ? 'hide':''"><span class="text">其他</span></li>
+                     		<li class="cascader-node" th:each="select,iterStat:${otherFieldList}" th:classappend="${iterStat.odd} ? 'odd':''" >
+                     			<span class="cascader-node-label" th:title="${select.showName}" th:text="${select.showName}" th:name="${select.colName}"></span>
+                     			<div class="field-select">
+	                     			<select class="selectpicker bs-select-hidden" data-live-search="true" maxHeight="250" data-live-search-style="begins" title="请选择" >
+	                     				<option value="">请选择</option>
+	                     				<option th:each="select:${select.mappingList}" th:attr="data-content=${select.text}" th:selected="${select.checked}" th:value="${select.id}"></option>
+	                     			</select>
+                     			</div>
+                     		</li>
+                     	</ul>
+                     	
+                     </div>
+                 </div>
+             </div>
+	     </div>
+		    
+		 <div class="btn-box">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input class="layui-layer-btn0 btns cp" type="submit" onclick="saveDataMapping()" value="保存">
+				<a class="layui-layer-btn1 close-btn cp" onclick="layerWinCancel()">取消</a>
+			</div>
+		 </div>
+     </div>
+     
+     <script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];</script>
+	 <script>
+	 	$(function() {
+	 		var height = jQuery('.layer-body').height() - 105;
+	 		jQuery('#content-box').height(height);
+	 		jQuery('#content-box .line').height(height);
+	 	});
+	 	
+	 	function saveDataMapping() {
+	 		var mappingField = '';
+	 		$('.cascader-node').each(function(){
+	 			var data = $(this).find('.selectpicker').val();
+	 			if(data) {
+	 				var fieldName = $(this).find('.cascader-node-label').attr('name');
+	 				if(mappingField) {
+	 					mappingField += ';';
+	 				}
+	 				mappingField += fieldName + ":" + data;
+	 			}
+	 		});
+	 		var fieldMapping = {'deriveType': $('#deriveType').val(), 'mappingField':mappingField};
+	 		if(isWorkflow($('#objectType').val())) {
+		 		$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/instance/saveDataMapping",
+					data : {'id': $('#id').val(), 'fieldMapping': JSON.stringify(fieldMapping)},
+					async : false,
+					success : function(data) {
+						if(data.code == 0) {
+							var index = parent.layer.getFrameIndex(window.name);
+				 			parent.layer.close(index);
+							parent.layer.msg(data.msg);
+						}else {
+							parent.layer.msg(data.msg, 1);
+						}
+					}
+				});
+	 		}else{
+	 			var index = parent.layer.getFrameIndex(window.name);
+	 			parent.layer.close(index, JSON.stringify(fieldMapping));
+	 		}
+	 	}
+	 		
+	 </script>
+	 
+</body>
+
+</html>

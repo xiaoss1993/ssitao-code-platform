@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame-mybatis-flex</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ssitao-code-mybatis-dependencies</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ssitao-code-mybatis-dependencies</name>
+    <description>TWeb MyBatis-Flex BOM (Bill of Materials).</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-annotation</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-codegen</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-processor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-spring</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-mybatis-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

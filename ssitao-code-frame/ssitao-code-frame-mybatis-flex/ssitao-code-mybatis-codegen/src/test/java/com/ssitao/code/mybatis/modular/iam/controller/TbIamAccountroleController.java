@@ -1,0 +1,95 @@
+package com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.controller;
+
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbIamAccountrole;
+import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.service.TbIamAccountroleService;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
+/**
+ * 账号部门角色 控制层。
+ *
+ * @author ssitao
+ * @since 1.0.0
+ */
+@RestController
+@RequestMapping("/tbIamAccountrole")
+public class TbIamAccountroleController {
+
+    @Autowired
+    private TbIamAccountroleService tbIamAccountroleService;
+
+    /**
+     * 保存账号部门角色。
+     *
+     * @param tbIamAccountrole 账号部门角色
+     * @return {@code true} 保存成功，{@code false} 保存失败
+     */
+    @PostMapping("save")
+    public boolean save(@RequestBody TbIamAccountrole tbIamAccountrole) {
+        return tbIamAccountroleService.save(tbIamAccountrole);
+    }
+
+    /**
+     * 根据主键删除账号部门角色。
+     *
+     * @param id 主键
+     * @return {@code true} 删除成功，{@code false} 删除失败
+     */
+    @DeleteMapping("remove/{id}")
+    public boolean remove(@PathVariable String id) {
+        return tbIamAccountroleService.removeById(id);
+    }
+
+    /**
+     * 根据主键更新账号部门角色。
+     *
+     * @param tbIamAccountrole 账号部门角色
+     * @return {@code true} 更新成功，{@code false} 更新失败
+     */
+    @PutMapping("update")
+    public boolean update(@RequestBody TbIamAccountrole tbIamAccountrole) {
+        return tbIamAccountroleService.updateById(tbIamAccountrole);
+    }
+
+    /**
+     * 查询所有账号部门角色。
+     *
+     * @return 所有数据
+     */
+    @GetMapping("list")
+    public List<TbIamAccountrole> list() {
+        return tbIamAccountroleService.list();
+    }
+
+    /**
+     * 根据主键获取账号部门角色。
+     *
+     * @param id 账号部门角色主键
+     * @return 账号部门角色详情
+     */
+    @GetMapping("getInfo/{id}")
+    public TbIamAccountrole getInfo(@PathVariable String id) {
+        return tbIamAccountroleService.getById(id);
+    }
+
+    /**
+     * 分页查询账号部门角色。
+     *
+     * @param page 分页对象
+     * @return 分页对象
+     */
+    @GetMapping("page")
+    public Page<TbIamAccountrole> page(Page<TbIamAccountrole> page) {
+        return tbIamAccountroleService.page(page);
+    }
+
+}

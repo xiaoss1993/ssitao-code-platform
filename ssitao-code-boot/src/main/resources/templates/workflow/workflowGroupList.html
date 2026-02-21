@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/list.filter.css">
+<link rel="stylesheet" href="/css/list/gm.css">
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" th:href="@{'/css/theme/'+${session.skin}+'/theme.css'}"/>
+<link rel="stylesheet" href="/css/common/skin.css"/>
+<head th:include="include::headerContent"></head>
+
+<style>
+	
+	
+</style>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<input type="hidden" name="defaultSelectId" id="defaultSelectId"/>
+				<input type="hidden" name="model" id="model" value="WORKFLOWGROUP"/>
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar mb10"> 
+							<div class="columns pull-left t-columns">
+								<button type="button" class="btn t-btn y-active add" onclick="addWorkflowGroup();">
+									<i class="fa fa-plus mr5"></i>
+									<span th:text="新建" class="pt1 h18"></span>
+								</button>
+							</div>
+							
+							<div class="pull-right search t-columns mr5">
+								<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+							</div>
+							<div class="clear"></div>
+						</div>
+						<table grid-manager="demoOne" id="grid-table"></table>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::footerContent"></div>
+
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var model = 'WORKFLOWGROUP';
+			var headData = getHeadData(model, 'N', '', '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, model);
+			}
+			$('#grid-table').initTable({
+				model:'WORKFLOWGROUP',
+				rights: rights,
+				supportPage: true,
+				supportTree: false
+			});
+		});
+		
+		function addWorkflowGroup() {
+			var url = '/workflowGroup/addOrEditWorkflowGroup/null?preId='+getCurRowId()+'&parentname=' + window.name;
+			intoIframePage(url, false, 'WorkflowGroup');
+		}
+		
+	</script>	
+	
+</body>
+</html>

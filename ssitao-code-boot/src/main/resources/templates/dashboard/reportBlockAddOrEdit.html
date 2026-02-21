@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="showField"] .field-content-check{flex-wrap:wrap;align-items:flex-start!important;flex-direction:column;padding-top:0px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox{max-width:400px!important;display:flex;margin-bottom:5px!important;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox{display:flex;align-items: center;}
+	.field-li[field="showField"] .field-content-check .checkbox .widthbox .name{margin-top:5px;margin-right:5px;}
+	.field-li[field="showField"] .field-content-check .checkbox label{width:120px;margin-top:10px;}
+	.field-li[moduletype="ENTITY"] .workflowField, .field-li[moduletype="WORKFLOW"] .entityField{display:none!important;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" th:value="${dashboardBlock.id}"/>
+			<input type="hidden" name="blockType" th:value="REPORT"/>
+			<input type="hidden" name="moduleType" id="moduleType" th:value="${dashboardBlock.moduleType}"/>
+			<input type="hidden" name="params" id="params" value=""/>
+			<input type="hidden" name="selectReportIds" id="selectReportIds" th:value="${dashboardBlock.selectReportIds}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="区块名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${dashboardBlock.name}" placeholder="请输入区块名称" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置区块"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${preDashboardList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${dashboardBlock.status} eq 'IN'" required>
+								    <label for="_status1" th:text="未发布"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="RN" th:checked="${dashboardBlock.status} eq 'RN'">
+								    <label for="_status2" th:text="使用中"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="moduleIds" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="数据来源"></span></div>
+							<div class="field-div field-content">
+								<select id="moduleIds" class="selectpicker" name="moduleIds" data-live-search="true" data-live-search-style="begins" title="请选择" required onchange="changeModule($(this))">
+									<optgroup label="业务流程">
+										<option th:each="select:${moduleList}" th:if="${select.type eq 'WORKFLOW'}" th:selected="${select.checked}" th:attr="data-content=${select.text},data-type=${select.type}" th:value="${select.id}"></option>
+									</optgroup>
+									<optgroup label="业务模块">
+										<option th:each="select:${moduleList}" th:if="${select.type eq 'ENTITY'}" th:selected="${select.checked}" th:attr="data-content=${select.text},data-type=${select.type}" th:value="${select.id}"></option>
+									</optgroup>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="showReportIds" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="显示报表"></span></div>
+							<div class="field-div field-content">
+								<select id="showReportIds" class="selectpicker" name="showReportIds" multiple data-live-search="true" data-live-search-style="begins" title="请选择" required >
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="showDetails" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">显示详情</span></div>
+							<div class="field-div field-content">
+								<div class="lcs_wrap"><input class="lcs_check lcs_tt1" name="showDetails" off_text="否" on_text="是" type="checkbox" th:value="${dashboardBlock.showDetails}"><div class="lcs_switch lcs_checkbox_switch" th:classappend="${dashboardBlock.showDetails} eq 'Y' ? 'lcs_on':'lcs_off'"><div class="lcs_cursor"></div><div class="lcs_label lcs_label_on">是</div><div class="lcs_label lcs_label_off">否</div></div></div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${dashboardBlock.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('REPORT');
+			
+			controlBtnShowPosition();
+			
+			resetShowReportList($('#moduleType').val(), $('#moduleIds').val(), $('#selectReportIds').val());
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var params = {'moduleType':$('#moduleType').val(), 'moduleIds':$('#moduleIds').val(), 'showReportIds':$('#showReportIds').val(), 'showDetails':$('input[name="showDetails"]').val()};
+			$('#params').val(JSON.stringify(params));
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/dashboard/saveOrUpdateBlock",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('REPORT');
+			}
+		});
+		
+		function changeModule($obj){
+			var moduleId = $obj.val();
+			var moduleType = $('option[value="'+moduleId+'"]').attr('data-type');
+			$('#moduleType').val(moduleType);
+			resetShowReportList(moduleType, moduleId, '');
+		}
+		
+		function resetShowReportList(moduleType, moduleId, selectReportIds) {
+			var selectReportIds = $('#selectReportIds').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/dashboard/getShowReportList",
+				data : {
+					'moduleType' : moduleType,
+					'moduleId': moduleId,
+					'selectIds': selectReportIds,
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option '+(data[i].checked?'selected':'')+' data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#showReportIds').html(optionHtml).selectpicker('refresh');
+					}
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

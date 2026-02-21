@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::headerContent"></head>
+
+<link rel="stylesheet" href="/css/form/form.css"/>
+
+<style>
+	.page-ul .field-li .field-label {
+	    max-width: 60px;
+	    min-width: 60px;
+	}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="id" th:value="${user.id}"/>
+			<ul class="page-ul">
+				<li class="field-li r content-whole sign" field="loginInfo" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<div class="title" th:text="${user.name}"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				
+				<li class="field-li check content-whole" field="roleIds" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{common.role}"></span></div>
+					<div class="field-div field-content-check">
+					    <div th:each="role:${roles}" class="checkbox">
+					    	<input type="checkbox" name="roleIds" th:id="${role.id}" th:value="${role.id}" th:checked="${#strings.contains(user.roleIds, role.id)}" data-target="checkbox">
+						    <label th:for="${role.id}" th:text="${role.roleName}" th:title="${role.roleName}"></label>
+						</div>
+					    
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.save}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> 
+		var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]];
+			
+		
+	</script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('USER');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/user/updateRole",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad();
+						}
+						parent.layer.closeAll();
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('USER');
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/easyUpload.min.css">
+<style>
+	.down_templete{color:var(--theme);}
+	.down_templete:hover{opacity:0.7;}
+	
+	.ul-tip-box{
+		counter-reset: my-counter;
+  		list-style-type: none;
+  		padding-left: 1px;
+	}
+	.ul-tip-box li::before {
+	  counter-increment: my-counter;
+	  content: counter(my-counter) "、";
+	  margin-right: 0px;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<ul class="title-ul" th:if="${#strings.isEmpty(planId)}">
+		<li class="field-li content-whole r title-sign" htype="TEXT">	
+			<div class="field-div field-content spec">		
+				<div class="return-back" onclick="tabReturnBack($(this));">
+					<i class="fa fa-reply mr5"></i><span>返回</span>
+				</div>		
+				<div class="line"></div>		
+				<div class="field-name" th:text="${#strings.isEmpty(pageTitle)}?'导入':${pageTitle}"></div>	
+			</div>
+		</li>
+	</ul>
+	<form action="" id="operate">
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="folderId" name="folderId" th:value="${folderId}"/>
+		<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+		<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+		<input type="hidden" id="planId" name="planId" th:value="${planId}"/>
+		<input type="hidden" id="isTemplate" name="isTemplate" th:value="${isTemplate}"/>
+		<input type="hidden" id="importExcelInfo" name="importExcelInfo"/>
+		<div class="layer-box">
+			<div class="layout-box new">
+				<div class="layout-left">
+					<div id="importExcel" class="easy-upload mt20 mb20"></div>
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="errorInfo" htype="SIGN" style="display:none">
+							<div class="field-div field-sign-title4 remark-content" style="border:1px solid rgb(255, 87, 34);background-color:white; color:rgb(255, 87, 34);">
+								<div class="tip-title mb10"><i class="zmdi zmdi-alert-triangle mr10 fz20" style="color:rgb(255, 87, 34);"></i><span class="fz16 show-name" style="color:rgb(255, 87, 34);">数据验证失败：</span></div>
+								<div class="tip-content"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole sign" field="BZName" htype="SIGN" >
+							<div class="field-div field-sign-title4 remark-content">
+								<div class="tip-title mb10" style="color:null"><i class="fa fa-info-circle mr10 fz20" style="color:var(--theme);"></i><span class="fz16 show-name">导入规则：</span></div>
+								<ul class="ul-tip-box">
+									<li class="tip-content">标题字段必须与系统字段保持一致；</li>
+									<li class="tip-content">红色字段列为必填列；</li>
+									<li class="tip-content">某个字段存在多个值，则用逗号隔开；</li>
+									<li class="tip-content">某个字段是下拉选项，则必须与系统数据源保持一致；</li>
+									<li class="tip-content" th:if="${objectType} eq 'USER'">如果用户名存在，则对该用户数据进行覆盖更新；</li>
+									<li class="tip-content">可下载<a class="down_templete" onclick="dowloadTemplete()"> 导入模板 </a>编辑后导入；</li>
+								</ul>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="确定"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="cancel()"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+		</div>
+	</form>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/form/easyUpload.min.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('IMPORTBILL');
+			
+			initImportUpload();
+			$('.formBtn').removeClass('hide');
+			
+			$("#operate").html5Validate(function() {
+				$('.easy_upload_upbtn').click();
+			}, {
+				validate: function() {
+					return customValidate('IMPORTBILL');
+				}
+			});
+		});
+		
+		function initImportUpload() {
+			var formParams = {};
+			$('#operate input[type="hidden"]').each(function() {
+				var paramName = $(this).attr('name');
+				var paramValue = $(this).val();
+				if (paramName) {
+				    formParams[paramName] = paramValue;
+				}
+			});
+			$('#importExcel').easyUpload({
+		        allowFileTypes: '*.xlsx;*.xls;',//允许上传文件类型，格式';*.doc;*.pdf'
+		        allowFileSize: '1024000',//允许上传文件大小(KB)
+		        selectText: '选择导入文件',//选择文件按钮文案
+		        multi: false,//是否允许多文件上传
+		        multiNum: '2',//多文件上传时允许的文件数
+		        showNote: true,//是否展示文件上传说明
+		        note: '提示：只允许导入Excel格式类型的文件',//文件上传说明
+		        isRequired:'Y',
+		        showPreview: true,//是否显示文件预览
+		        url: '/uploadBill',//上传文件地址
+		        fileName: 'file',//文件filename配置参数
+		        formParam: formParams,
+		        timeout: 30000,//请求超时时间
+		        okCode: 200,//与后端返回数据code值一致时执行成功回调，不配置默认200
+		        changeFunc: function(file) {
+		        	$('.field-li[field="errorInfo"]').hide();
+		        },
+		        successFunc: function(res) {
+					parent.layer.msg(res.msg);
+					var planId = $('#planId').val();
+					if(planId){
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index, planId);
+					}else{
+						returnBackAndReLoad(false, false);
+					}
+		        	hideLoading();
+		        },//上传成功回调函数
+		        errorFunc: function(res) {
+		        	var $errorInfo = $('.field-li[field="errorInfo"]');
+		        	$errorInfo.find('.tip-content').html(res.msg);
+		        	$errorInfo.show();
+		        	hideLoading();
+		        },//上传失败回调函数
+		        deleteFunc: function(res) {
+		        	$('.field-li[field="errorInfo"]').hide();
+		        }//删除文件回调函数
+		    });
+			
+		}
+		
+		function dowloadTemplete() {
+			stopPropagation();
+			var $downloadForm = $("<form method='post' id='downloadForm' style='display:none'><input name='objectType' value='"+$('#objectType').val()+"'></form>");
+			$downloadForm.attr("action", "/downloadTemplete");
+		    $(document.body).append($downloadForm);
+		   	$downloadForm.submit();
+		}
+		
+		function cancel(){
+			var planId = $('#planId').val();
+			if(planId){
+				layerWinCancel();
+			}else{
+				tabReturnBack($(this));
+			}
+		}
+	</script>
+	
+</body>
+</html>

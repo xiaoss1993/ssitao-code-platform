@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.radioOrCheckboxStyle .sortLi{margin-right:10px;margin-bottom:10px;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="menuId" name="menuId" th:value="${menuId}"/>
+			<input type="hidden" id="roleId" name="roleId" th:value="${roleId}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole sign mt10" field="BZName" htype="SIGN" >
+					<div class="field-div field-sign-title4 remark-content">
+						<div class="tip-title" style="color:null"><i class="fa fa-info-circle mr10 fz20" ></i><span class="fz16 show-name">点击字段名可选中需要隐藏的字段</span></div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="filterName" htype="TEXT">
+					<ul class="radioOrCheckboxStyle">
+					    <li class="sortLi" th:each="select:${fieldList}" th:value="${select.id}">
+					        <input type="checkbox" th:id="${select.id}" th:checked="${select.checked}"/>
+					        <label th:for="${select.id}" th:text="${select.text}"></label>
+				    	</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.save}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('ROLE');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('#submit').click(function() {
+				var menuId = $('#menuId').val();
+				$.ajax({
+					cache : true,
+					type : 'POST',
+					url : "/sys/role/saveFilterField",
+					data : {'roleId': $('#roleId').val(), 'menuId': menuId, 'filterField': getFilterField()},
+					async : false,
+					success : function(data) {
+						if(data.code == 0) {
+							var index = parent.layer.getFrameIndex(window.name)
+							parent.layer.close(index, menuId, data.fieldName);
+							parent.layer.msg(data.msg);
+						} else {
+							parent.layer.msg(data.msg, 1);
+						}
+						hideLoading();
+					}
+				});
+			});
+		});
+		
+		function getFilterField(){
+	 		var filterField = "";
+	 		$('.sortLi input[type="checkbox"]:checked').each(function(){
+	 			id = $(this).attr('id');
+	 			if(filterField){
+	 				filterField += ",";
+	 			}
+	 			filterField += id;
+	 		});
+	 		return filterField;
+	 	}
+		
+	</script>
+	
+</body>
+</html>

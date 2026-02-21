@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/resource/workReport.css">
+<style id="wordExPortCss">
+	.workReport{margin-top:10px;margin-bottom:100px;}
+	.reportTable{width:100%;border-collapse:collapse;}
+	.reportTable .colTitle{text-align:center;font-weight:bolder;background-color:#f5f5f5;padding-left:0px!important;}
+	.totalTitle{text-align:center;font-weight:bolder;background-color:#f5f5f5;padding-left:0px!important;height:50px!important;}
+	.reportTable td{border:1px solid #e5e6e7;height:40px;padding-left:10px;font-size:12px;}
+	.reportTable td.center{padding-left:0px;text-align:center;}
+	.reportTable .question{height:80px;padding:10px;text-align:left;}
+	.reportTable .summary{height:160px;padding:10px;text-align:left;}
+	.reportTable td .fa{width:15px;text-align:center;margin-right:5px;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<ul class="title-ul">
+		<li class="field-li content-whole r title-sign" htype="TEXT">	
+			<div class="field-div field-content spec">		
+				<div class="return-back" onclick="tabReturnBack($(this));">
+					<i class="fa fa-reply mr5"></i><span>返回</span>
+				</div>		
+				<div class="line"></div>		
+				<div class="field-name" th:text="查看周报"></div>	
+			</div>
+		</li>
+	</ul>
+	<div class="layer-box">
+		<input type="hidden" id="id" name="id" th:value="${id}"/>
+		<input type="hidden" id="reportName" name="reportName" th:value="${reportName}"/>
+		<div class="layout-box new">
+			<div class="layout-left">
+				<div id="workReport-box">
+					<div class="workReport">
+						<table class="reportTable">
+							<tr>
+								<td class="totalTitle" colspan="8">工作周报</td>
+							</tr>
+							<tr>
+								<td class="colTitle">姓名</td>
+								<td colspan="3" th:utext="${userName}"></td>
+								<td class="colTitle">归属部门</td>
+								<td colspan="3" th:utext="${deptName}"></td>
+							</tr>
+							<tr>
+								<td class="colTitle">职位</td>
+								<td colspan="3" th:utext="${positionName}"></td>
+								<td class="colTitle">报告周期</td>
+								<td colspan="3" th:text="${reportCycle}"></td>
+							</tr>
+							<tr>
+								<td class="colTitle" colspan="8">本周工作完成情况</td>
+							</tr>
+							<tr>
+								<td class="colTitle">序号</td>
+								<td class="colTitle" colspan="4">任务名称</td>
+								<td class="colTitle">状态</td>
+								<td class="colTitle">投入工时</td>
+								<td class="colTitle">偏差率</td>
+							</tr>
+							<tr th:each="task, userStat:${thisWeekOrMonthTaskList}">
+								<td class="center" th:text="${userStat.count}"></td>
+								<td colspan="4" th:utext="${task[1]}"></td>
+								<td class="center" th:text="${task[2]}"></td>
+								<td class="center" th:text="${task[3]}"></td>
+								<td class="center" th:text="${task[4]}"></td>
+							</tr>
+							<tr>
+								<td class="colTitle">存在问题</td>
+								<td class="question" colspan="7" th:utext="${question}"></td>
+							</tr>
+							<tr>
+								<td class="colTitle" colspan="8">下周工作安排计划</td>
+							</tr>
+							<tr>
+								<td class="colTitle">序号</td>
+								<td class="colTitle" colspan="4">任务名称</td>
+								<td class="colTitle">状态</td>
+								<td class="colTitle">预估工时</td>
+								<td class="colTitle">计划完成日期</td>
+							</tr>
+							<tr th:each="task, userStat:${nextWeekOrMonthTaskList}">
+								<td class="center" th:text="${userStat.count}"></td>
+								<td colspan="4" th:utext="${task[1]}"></td>
+								<td class="center" th:text="${task[2]}"></td>
+								<td class="center" th:text="${task[3]}"></td>
+								<td class="center" th:text="${task[4]}"></td>
+							</tr>
+							<tr>
+								<td class="colTitle">周总结</td>
+								<td class="summary" colspan="7" th:utext="${summary}"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+        
+        <div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn">
+				<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:if="${isAlowEdit} and ${btnEdit}" th:value="编辑" onclick="editWorkReport('WEEKLY')"/>
+				<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:if="${btnEpr}" th:value="导出" onclick="exportWorkReport('WEEKLY')"/>
+			</div>
+		</div>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/resource/fileExport.js"></script>
+	<script src="/js/resource/jquery.wordexport.js"></script>
+	<script src="/js/resource/workReport.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; curUser = [[${curUser}]]; userList = [[${userList}]];</script>
+	
+	<script>
+		$(function() {
+			$('.btn-box').removeClass('hide');
+			
+			$('.layout-left').height($('.layer-body').height() - 50);
+			hideLoading();
+		});
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.rollBack-ul{display:flex;width:780px;flex-wrap:wrap;}
+	.rollBack-ul li{display:flex;flex-direction:column;justify-content:center;align-items:center;margin-right:10px;margin-top:10px;height:88px;border-radius:5px;}
+	.rollBack-ul li .node-name{padding:5px;width:120px;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:white;}
+	.rollBack-ul li .node-name.bw{border-top:1px solid white;}
+	.rollBack-ul li.state{background-color:#cbe0f7;}
+	.rollBack-ul li.state img{content:url(../../editor-app/images/status.png);}
+	.rollBack-ul li.start-state{background-color:#8dd07e;}
+	.rollBack-ul li.start-state img{content:url(../../editor-app/images/start.png);}
+	.rollBack-ul li.end-state{background-color:#fca39e;}
+	.rollBack-ul li.curNode img{content:url(../../editor-app/images/status-red.png);}
+	.rollBack-ul li.end-state img{content:url(../../editor-app/images/end.png);}
+	.rollBack-ul li.curNode{background-color:#fca39e;}
+	.rollBack-ul li.select{background-color:#46b6fe;}
+	.rollBack-ul li.select.state img{content:url(../../editor-app/images/status-blue.png);}
+	.rollBack-ul li.select.start-state img{content:url(../../editor-app/images/start-blue.png);}
+	.rollBack-ul li:not(.curNode):hover{opacity:0.7;cursor:pointer;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="currentNodeId" name="currentNodeId" th:value="${currentNodeId}"/>
+			<input type="hidden" id="canRollback" name="canRollback" th:value="${canRollback}"/>
+			<input type="hidden" id="roll_toNodeId" name="toNodeId"/>
+			<input type="hidden" id="roll_toNodeType" name="toNodeType"/>
+			<input type="hidden" id="transitionId" name="transitionId" value="rollBack"/>
+			<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+			<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+			<ul class="rollBack-ul">
+				<li th:each="node:${newNodeList}" th:class="${node[0]}" th:attr="nodeType=${node[0]},nodeId=${node[1]}" th:classappend="${node[5]} ? 'curNode':''">
+					<div><img/></div>
+					<div class="node-name" th:text="${node[2]}" th:style="${#strings.isEmpty(node[2])} ? 'display:none':''"></div>
+					<div class="node-name bw" th:text="${node[4]}" th:style="${#strings.isEmpty(node[4])} ? 'display:none':''"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="确定"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('ROLLBACK');
+			hideLoading();
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('.rollBack-ul li').not('.curNode').click(function(){
+				$('.rollBack-ul li').removeClass('select');
+				$(this).addClass('select');
+				$('#roll_toNodeId').val($(this).attr('nodeId'));
+				$('#roll_toNodeType').val($(this).attr('nodeType'));
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflow/skipAnyNode",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad();
+						}
+						var belongId = $('#belongId').val(), belongType = $('#belongType').val();
+						if(belongId && belongType){
+							parent.layer.closeAll('', true);
+						}else{
+							parent.layer.closeAll();
+						}
+						parent.layer.msg(data.msg);
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>
+	
+</body>
+</html>

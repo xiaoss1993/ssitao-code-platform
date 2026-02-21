@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.table-list-box .table-list{padding-left:0px;padding-right:0px;}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn y-active add" onclick="addRewPoint()">
+							<i class="fa fa-plus mr5"></i>
+							<span class="pt1 h18">新建评审点</span>
+						</button>
+						<button type="button" class="btn t-btn n-active" onclick="setRewElement()">
+							<i class="fa fa-ballot-check mr5"></i> 
+							<span class="pt1 h18">检查要素</span>
+						</button>
+<!-- 							<button type="button" class="btn t-btn n-active" onclick="setImportance()"> -->
+<!-- 								<i class="fa fa-map-marker-check mr5"></i>  -->
+<!-- 								<span class="pt1 h18">重要性</span> -->
+<!-- 							</button> -->
+						<button type="button" class="btn t-btn n-active" onclick="setCheckResult()">
+							<i class="fa fa-receipt mr5"></i> 
+							<span class="pt1 h18">检查结果</span>
+						</button>
+					</div>
+					
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="fixed-table-filter"></div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+			</div>
+		</div>
+	
+	</div>
+	<div>
+		<input type="hidden" name="selectIds" id="selectIds" value="">
+		<input type="hidden" name="model" id="model" value="REWPOINT">
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/workflow/workflow-common.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var headData = getHeadData('REWPOINT', '', '', '', '');
+			if(headData) {
+				createSearchConditions(headData.headData, 'REWPOINT');
+			}
+			$('#grid-table').initTable({
+				model:'REWPOINT',
+				rights: rights,
+				supportPage: true,
+				supportTree: false
+			});
+		});
+		
+		function addRewPoint(){
+			var url = '/rew/addOrEditRewPoint/null?preId='+getCurRowId()+'&parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'新建评审点', 'isParent':true});
+		}
+		
+		function openRewPoint(id) {
+			var url = 'rew/viewRewPoint/'+id+'?parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'查看评审点', 'isParent':true});
+		}
+		
+		function removeEntity(module, ids) {
+			var index = top.layer.confirm('删除评审点会把关联的评审类别和检查要素一起删除，确定要删除选中的评审点吗？', {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/rew/removeRewPoint',
+					type : "post",
+					data : {
+						'ids' : ids
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							reLoad();
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			})
+		}
+		
+		function setImportance() {
+			var url = '/rew/importanceList?parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'维护重要性', 'isParent':true});
+		}
+		
+		function setRewElement() {
+			var url = '/rew/rewElementList?parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'维护检查要素', 'isParent':true});
+		}
+		
+		function setCheckResult(){
+			var url = '/rew/checkResultList?parentname=' + window.name;
+			openWindowLikeIframe({'url':url, 'title':'维护检查结果', 'isParent':true});
+		}
+		
+		function reLoad(){
+			GridManager.refreshGrid('grid-table', true);
+		}
+	</script>	
+	
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${#strings.isEmpty(workflowGroup.id)}?'新建流程组合':'编辑流程组合'"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${workflowGroup.id}"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" id="_name" type="text" placeholder=" " th:value="${workflowGroup.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置组合"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" placeholder="请输入备注" maxlength="1000" th:text="${workflowGroup.remark}"></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li r content-whole sign nextContent" field="workflowModel" htype="SIGN" th:style="${isEdit} eq 'N' ? 'display:none;':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="流程模型"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<button type="button" class="btn t-btn n-active add mb10 mr5" onclick="linkModel();">
+									<i class="fa fa-plus mr5"></i>
+									<span th:text="关联模型" class="pt1 h18"></span>
+								</button>
+								<table grid-manager="demoOne" id="workflowGroupRlt-table" ></table>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" th:value="保存" th:style="${isEdit} eq 'N' ? 'display:none;':'' "/>
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" id="nextStep" th:value="下一步" th:style="${isEdit} eq 'Y' ? 'display:none;':'' "/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="nextSave" th:value="保存"/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="preStep" th:value="上一步"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('workflowGroup');
+			
+			loadGroupRltList();
+			
+			$('#nextSave').click(function() {
+				returnBackAndReLoad(false, false);
+				parent.layer.msg('操作成功');
+			});
+			
+			$('#preStep').click(function() {
+				$('.preContent').show();
+				$('.nextContent').hide();
+			});
+			
+			$('.formBtn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflowGroup/saveWorkflowGroup",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if($('#isEdit').val() == 'Y') {
+							parent.layer.msg(data.msg);
+							returnBackAndReLoad(false, false);
+						}else {
+							$('#id').val(data.id);
+							loadGroupRltList();
+							
+							$('.preContent').hide();
+							$('.nextContent').show();
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function loadGroupRltList() {
+			var id = $('#id').val(), $table = $('#workflowGroupRlt-table'), $tableWrap = $table.closest('.table-wrap');
+			if(id) {
+				if($tableWrap.length) {
+					$tableWrap.show();
+					iFilter.props.table.GM('setQuery', iFilter.props.query);
+				}else {
+					$table.initTable({
+						tableId:'workflowGroupRlt-table',
+						model:'WORKFLOWGROUPRLT',
+						supportPage: true,
+						supportTree: false,
+						openState: false,
+						rights: 'E,D',
+						objectId: id,
+					});
+				}
+			}
+		}
+		
+		function linkModel() {
+			top.layer.open({
+				type : 2,
+				title : '关联模型',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '500px', '400px' ],
+				content : 'workflowGroup/addOrEditWorkflowGroupRlt/null?groupId='+$('#id').val()+'&parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('workflowGroupRlt-table', true);
+				}
+			});
+		}
+	
+	</script>
+	
+</body>
+</html>

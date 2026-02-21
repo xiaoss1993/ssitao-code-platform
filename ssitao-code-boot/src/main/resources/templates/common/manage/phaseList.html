@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::listHeaderContent"></head>
+
+<style>
+	.windowPage{background-color:white!important;}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="维护生命阶段"></div>	
+				</div>
+			</li>
+		</ul>
+		<div class="col-sm-12 pl10 mt10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" onclick="addPhase();">
+								<i class="fa fa-plus mr5"></i>
+								<span th:text="#{common.new}" class="pt1 h18"></span>
+							</button>
+						</div>
+						
+						<div class="columns columns-right btn-group pull-right t-columns">
+						</div>
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" name="showName" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			var rights = ',E,D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var model = [[${model}]]</script>
+	
+
+	<script type="text/javascript">
+		$(function() {
+			$('#grid-table').initTable({
+				model:'PHASE',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				objectType: model
+			});
+		});
+		
+		function addPhase() {
+			top.layer.open({
+				type : 2,
+				title : '新建生命阶段',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['830px', '600px'],
+				content : '/lifecycle/addOrEditPhase/null?objectType=' + model + '&preId='+ getCurRowId() +'&parentname=' + window.name,
+				end: function(){
+					reLoad();
+				}
+			});
+		}
+		
+		function reLoad(){
+			GridManager.refreshGrid('grid-table', true);
+		}
+	</script>	
+	
+</body>
+</html>

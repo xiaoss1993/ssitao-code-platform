@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<head th:include="include::headerContent"></head>
+
+<style>
+	.page-ul .field-li .field-label{min-width:150px;max-width:150px;}
+	.num-title{font-weight:bold;line-height:30px;margin-right:5px;}
+	.content-box{display:flex;}
+	
+	.field-li[field="footer"] .sumtips{padding-right:5px!important;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" name="type" value="SYS">
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="host" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="收件人"></span></div>
+					<div class="field-div field-content user">
+						<div class="user-list">
+							<div class="cp" th:each="user:${userList}" th:attr="userId=${user.id}" th:title="${user.name}" th:onclick="|viewUser('${user.id}')|">
+								<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+								<div class="user-col">
+									<img th:src="${user.picId}"/>
+									<span th:text="${user.name}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="user-add">
+							<input attrsign="_ids" name="tos" type="hidden" th:value="${userIds}">
+							<div class="cp form-control-popup" htype="USER" ismul><img src="/img/user/user-add.png"/></div>
+							<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="subject" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="主题"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="subject" type="text" th:value="${subject}" placeholder="请输入主题" required="required" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole" field="footer" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="邮件内容"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" id="content" maxlength="1000" name="content" placeholder="请输入邮件内容" rows="8" th:text="${content}"></textarea>
+						</div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="发送"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('MAIL');
+			hideLoading();
+			
+			$('.layui-layer-btn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/toMail",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.closeAll();
+						parent.layer.msg(data.msg);
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>
+	
+</body>
+</html>

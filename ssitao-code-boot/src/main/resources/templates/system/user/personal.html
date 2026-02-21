@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.layui-layer-btn{padding-right:0px!important;}
+</style>
+<link rel="stylesheet" href="/css/system/user/personal.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box personInfo">
+		<input type="hidden" name="userId" id="userId" th:value="${user.id}"/>
+		<div class="left-inner">
+			<div class="left-upper">
+				<div class="imageBox">
+					<img th:src="${user.picId}" class="userImg" height="166"/>
+				</div>
+				<div class="info">
+					<div class="designation"><i class="dot"></i><span th:text="${user.positionName}"></span></div>
+				</div>
+			</div>
+			<div class="left-lower">
+				<ul class="navigation scroll-nav">
+					<li class="baseInfo current">
+						<a href="#baseInfo-section"><i class="fa fa-address-card"></i>基本信息</a>
+					</li>
+					<li class="education">
+						<a href="#education-section"><i class="fa fa-diploma"></i>学历信息</a>
+					</li>
+					<li class="work">
+						<a href="#work-section"><i class="fa fa-toolbox"></i>工作经验</a>
+					</li>
+					<li class="resume">
+						<a href="#resume-section"><i class="fa fa-book-reader"></i>个人简介</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="right-inner">
+			<ul class="page-ul">
+				<li class="field-li r content-whole sign" field="baseInfo" id="baseInfo-section" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">基本信息</div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li r" field="username" htype="TEXT">
+					<div class="field-div field-label"><span class="title">用户名</span></div>
+					<div class="field-div field-content" th:text="${user.username}"></div>
+				</li>
+				<li class="field-li r" field="jobNumber" htype="TEXT">
+					<div class="field-div field-label"><span class="title">工号</span></div>
+					<div class="field-div field-content-num" th:text="${user.jobNumber}"></div>
+				</li>
+				<li class="field-li r odd" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="title">姓名</span></div>
+					<div class="field-div field-content" th:text="${user.name}"></div>
+				</li>
+				<li class="field-li r check odd" field="sex" htype="TEXT">
+					<div class="field-div field-label"><span class="title">性别</span></div>
+					<div class="field-div field-content" th:text="${user.sexName}"></div>
+				</li>
+				<li class="field-li r" field="telephone" htype="TEL">
+					<div class="field-div field-label"><span class="title">联系电话</span></div>
+					<div class="field-div field-content-num" th:text="${user.telephone}"></div>
+				</li>
+				<li class="field-li r" field="email" htype="TEXT">
+					<div class="field-div field-label"><span class="title">电子邮箱</span></div>
+					<div class="field-div field-content-num" th:text="${user.email}"></div>
+				</li>
+				<li class="field-li r odd" field="maritalStatus" htype="TEXT">
+					<div class="field-div field-label"><span class="title">婚姻状况</span></div>
+					<div class="field-div field-content" th:text="${user.maritalStatus} eq 'Y' ? '已婚':'未婚'"></div>
+				</li>
+				<li class="field-li r odd" field="isWorkLog" htype="TEXT">
+					<div class="field-div field-label"><span class="title">生成工作报</span></div>
+					<div class="field-div field-content" th:text="${user.worklog}"></div>
+				</li>
+				<li class="field-li r" field="deptId" htype="DEPT">
+					<div class="field-div field-label"><span class="title">归属部门</span></div>
+					<div class="field-div field-content" th:text="${user.deptName}"></div>
+				</li>
+				<li class="field-li r" field="positionid" htype="SELECT">
+					<div class="field-div field-label"><span class="title">职位</span></div>
+					<div class="field-div field-content" th:text="${user.positionName}"></div>
+				</li>
+				<li class="field-li r odd" field="birthDate" htype="DATE">
+					<div class="field-div field-label"><span class="title">出生日期</span></div>
+					<div class="field-div field-content-num" th:text="${user.birthDate == null} ? '' : ${#dates.format(user.birthDate, 'yyyy-MM-dd')}"></div>
+				</li>
+				<li class="field-li r odd" field="joinDate" htype="DATE">
+					<div class="field-div field-label"><span class="title">入职日期</span></div>
+					<div class="field-div field-content-num" th:text="${user.joinDate == null} ? '' : ${#dates.format(user.joinDate, 'yyyy-MM-dd')}"></div>
+				</li>
+				<li class="field-li r content-whole" field="address" htype="TEXT">
+					<div class="field-div field-label"><span class="title">办公地点</span></div>
+					<div class="field-div field-content" th:text="${user.officeAddress}"></div>
+				</li>
+				<li class="field-li r content-whole sign" field="education" id="education-section" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">学历信息</div>
+					</div>
+					<div class="field-div field-sign-content">
+						<table class="customTable mt10" id='customTable-education'></table>
+					</div>
+				</li>
+				<li class="field-li r content-whole sign" field="work" id="work-section" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">工作经验</div>
+					</div>
+					<div class="field-div field-sign-content">
+						<table class="customTable mt10" id='customTable-work'></table>
+					</div>
+				</li>
+				<li class="field-li r content-whole sign" field="resume" id="resume-section" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title">个人简介</div>
+					</div>
+					<div class="field-div field-sign-content">
+						<div class="noneData" th:if="${#strings.isEmpty(user.introduction)}">没有简介</div>
+						<div th:if="${user.introduction}" th:utext="${user.introduction}" style="padding:10px;"></div>
+					</div>
+				</li>
+				<li class="field-li content-whole textarea" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w">
+						<input class="layui-layer-btn0 btns cp mr0" id="submit" onclick="editPersonal();" type="button" value="编辑">
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; userEduList = [[${userEduList}]]; userExpList = [[${userExpList}]];</script>
+	
+	<script src="/js/list/customTable.js"></script>
+	
+	<script>
+		$(function() {
+			
+			$('.navigation li a').click(function(e) {
+		        e.preventDefault();
+		        $('.navigation li').removeClass('current');
+		        $(this).closest('li').addClass('current');
+		        var targetId = $(this).attr('href');
+		        console.log($(targetId).offset().top);
+		        $('.personInfo').animate({
+		            scrollTop: $(targetId).offset().top + 15
+		        }, 500); // 1000 是动画的持续时间（以毫秒为单位）
+		    });
+			
+			var educationTable = Table();
+			var educationData = [];
+			if(userEduList) {
+				for(var i = 0; i < userEduList.length; i++) {
+					educationData.push([i+1, userEduList[i].school, userEduList[i].levelName, userEduList[i].startDateStr, userEduList[i].endDateStr]);
+				}
+			}
+			educationTable.init({
+			    id:'customTable-education',
+			    header:['序号','毕业学校', '学历', '入学日期', '毕业日期'],
+			    data:educationData,
+			    columnWidth:['50px', '350px', '160px', '160px', '160px'],
+			    align:'left',
+			});
+			
+			var workTable = Table();
+			var workData = [];
+			if(userExpList) {
+				for(var i = 0; i < userExpList.length; i++) {
+					workData.push([i+1, userExpList[i].company, userExpList[i].position, userExpList[i].startDateStr, userExpList[i].endDateStr]);
+				}
+			}
+			workTable.init({
+			    id:'customTable-work',
+			    header:['序号','公司名称', '职位', '入职日期', '离职日期'],
+			    data:workData,
+			    columnWidth:['50px', '350px', '160px', '160px', '160px'],
+			    align:'left',
+			});
+		});
+		
+		function editPersonal() {
+			window.location.href= '/sys/user/personalEdit?userId=' + $('#userId').val();
+		}
+		
+	</script>
+	
+</body>
+</html>

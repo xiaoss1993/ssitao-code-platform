@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.bootstrap-select .btn-default{height:31px;}
+	.bootstrap-select{width:250px!important;}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12 pl10 mt10">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar mb10"> 
+						<div class="columns pull-left t-columns">
+							<button type="button" class="btn t-btn y-active add" onclick="addRewElement()">
+								<i class="fa fa-plus mr5"></i>
+								<span class="pt1 h18">新建</span>
+							</button>
+							<select id="pointId" class="selectpicker mr5" name="pointId" data-live-search="true" maxHeight="400" data-live-search-style="begins" title="请选择" onchange="changePoint($(this))">
+								<option th:each="select:${pointList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+							</select>
+							<select id="categoryId" class="selectpicker" name="categoryId" data-live-search="true" maxHeight="400" data-live-search-style="begins" title="请选择" onchange="changeCategory($(this))">
+								<option th:each="select:${categoryList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+							</select>
+						</div>
+						
+						<div class="pull-right search t-columns mr5">
+							<input class="form-control input-outline form-search" type="text" placeholder="搜索">
+						</div>
+						<div class="clear"></div>
+					</div>
+					<div class="fixed-table-filter"></div>
+					<table grid-manager="demoOne" id="grid-table"></table>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+	<script src="/js/workflow/workflow-common.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			loadElementTable();
+		});
+		
+		function loadElementTable() {
+			var $gridTable = $('#grid-table');
+			if($gridTable.closest('.table-wrap').length) {
+				$gridTable.initTable('destroy');
+			}
+			$gridTable.initTable({
+				model:'REWELEMENT',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				objectId: $('#pointId').val(),
+				queryObject: $('#categoryId').val()
+			});
+		}
+		
+		function addRewElement(){
+			top.layer.open({
+				type : 2,
+				title : '新建检查要素',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '700px', '600px' ],
+				content : 'rew/addOrEditRewElement/null?pointId='+$('#pointId').val()+'&categoryId='+$('#categoryId').val()+'&parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('grid-table', true);
+				}
+			});
+		}
+		
+		function openEntity(module, id) {
+			top.layer.open({
+				type : 2,
+				title : '查看检查要素',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '700px', '600px' ],
+				content : 'rew/viewRewElement/'+id+'?parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('grid-table', true);
+				}
+			});
+		}
+		
+		function editEntity(module, id) {
+			top.layer.open({
+				type : 2,
+				title : '编辑检查要素',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '700px', '600px' ],
+				content : 'rew/addOrEditRewElement/'+id+'?parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('grid-table', true);
+				}
+			});
+		}
+		
+		function removeEntity(module, ids) {
+			var index = top.layer.confirm('确定要删除选中数据？', {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/rew/removeRewElement',
+					type : "post",
+					data : {
+						'ids' : ids
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							loadElementTable();
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			})
+		}
+		
+		function changePoint($obj){
+			resetCategoryList(null, $obj.val());
+		}
+		
+		function changeCategory($obj) {
+			loadElementTable();
+		}
+		
+		function resetCategoryList(selectId, pointId) {
+			if(!pointId) {
+				pointId = $('#pointId').val();
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rew/getPreCategoryList",
+				data : {
+					'selectId': selectId,
+					'pointId' : pointId,
+					'selectFirst': 'Y',
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '';
+						for(var i = 0; i < data.length; i++) {
+							if(data[i].checked) {
+								selectId = data[i].id;
+							}
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#categoryId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+						loadElementTable();
+					}
+				}
+			});
+		}
+		
+		function reLoad(){
+			GridManager.refreshGrid('grid-table', true);
+		}
+	</script>	
+	
+</body>
+</html>
