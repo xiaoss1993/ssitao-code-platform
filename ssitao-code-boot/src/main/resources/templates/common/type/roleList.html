@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css">
+<link rel="stylesheet" href="/css/form/form.css">
+<style>
+	.dept-box .table-list{padding-left:0px;padding-right:0px;}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+	<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+	<input type="hidden" id="projectId" name="projectId" th:value="${projectId}"/>
+	<input type="hidden" id="isTemplete" name="isTemplete" th:value="Y"/>
+	<input type="hidden" id="isView" name="isView" th:value="${isView}"/>
+	<input type="hidden" id="model" name="model" th:value="ROLE"/>
+	<input type="hidden" id="parentName" name="parentName"/>
+	<div class="wrapper wrapper-content layer-box">
+		<ul class="title-ul" th:if="${not #strings.isEmpty(pageTitle)}">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${pageTitle}"></div>	
+				</div>
+			</li>
+		</ul>
+		<div class="block-header hide"></div>
+		<div th:classappend="${objectType} eq 'PJT' ? 'pjt-box':(${objectType} eq 'DEPT'?'dept-box':'')">
+			<div class="table-list-box"> 
+				<div class="table-list">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar mb10"> 
+							<div class="columns pull-left t-columns">
+								<button type="button" class="btn t-btn y-active add" th:if="${btn_ADD}" onclick="addRole()">
+									<i class="fa fa-plus mr5"></i>
+									<span class="pt1 h18">新建</span>
+								</button>
+							</div>
+							
+							<div class="pull-right search t-columns mr5">
+								<input class="form-control input-outline form-search" name="name" type="text" placeholder="搜索">
+							</div>
+							<div class="clear"></div>
+						</div>
+						<div class="fixed-table-filter"></div>
+						<table grid-manager="demoOne" id="role-table"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="btn-box hide">
+			<div class="layui-layer-btn layui-submit-btn layui-layer-btn-common">
+				<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${isView} eq 'Y'" onclick="editRole();"/>
+			</div>
+		</div>
+	</div>
+	<div class="refresh-action hide" onclick="reLoad()"></div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div th:if="${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div th:if="${btn_DEL}">
+		<script type="text/javascript" >
+			rights += ',D';
+		</script>
+	</div>
+	
+	<script type="text/javascript">
+		$(function() {
+			$('#parentName').val(parentName);
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val();
+			if(objectType == 'TYPE') {
+				loadPjtTypeTabHtml(3, objectId, objectType, $('#isView').val(), parentName);
+				$('.btn-box').removeClass('hide');
+			}
+			
+			$('#role-table').initTable({
+				model:'ROLE',
+				tableId:'role-table',
+				rights: rights,
+				supportPage: false,
+				supportTree: true,
+				openState: true,
+				objectType: objectType,
+				objectId: objectId,
+			});
+		});
+		
+		function addRole() {
+			var objectType = $('#objectType').val();
+			var url = '/type/addOrEditRole/null?objectType='+objectType+'&objectId='+$('#objectId').val()+'&preId='+ getCurRowId() + '&parentname='+window.name;
+			var isTemplete = $('#isTemplete').val();
+			openWindowLikeIframe({'url':url, 'title':'新建角色', 'isParent':true});
+		}
+		
+		function editRole() {
+			var objectId = $('#objectId').val(), objectType = $('#objectType').val();
+			changeTypeTab(3, objectId, objectType, 'N', parentName);
+		}
+		
+	</script>	
+</body>
+</html>

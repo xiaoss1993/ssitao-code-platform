@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.s_box{
+		border-radius:5px;
+		width: 540px;
+		height: auto;
+		margin-left: 430px;
+		background-color:white;
+	    position:fixed;
+	    top:50px;
+		display: none;
+		box-shadow: 1px 1px 50px rgba(0, 0, 0, .3);
+		z-index:100;
+	}
+	.s_box img{
+		width: 61px;
+		height: 61px;
+		margin: 5px;
+		border-radius:5px;
+	}
+	.s_box img:hover{
+		border-color:var(--theme);
+		transform: scale(1.25);
+		transition: .5s;
+	}
+	.image-select{padding-left:10px;padding-right:10px;height:290px;}
+	.header{
+		width: 100%;
+    	text-align: left;
+    	font-size: 14px;
+    	margin-top: 10px;
+    	margin-left: 15px;	
+	}
+	.close{
+		color:#000;
+	    font-size: 21px;
+	    opacity: .7;
+	    position:absolute;
+	    right:10px;
+	    top:1px;
+	    cursor: pointer;
+	}
+	.bt_box{display:flex;justify-content:flex-end;margin:10px;}
+	.bt_box .pbtn{
+		display:inline-block;
+		height:31px;
+		padding-left:12px;
+		padding-right:12px;
+		border-radius:4px;
+		border: 1px solid var(--theme);
+		background:var(--theme);
+		color:white;
+		line-height:31px;
+		margin-left:5px;
+	}
+	.bt_box .pbtn.cancel{
+		border: 1px solid #dedede;
+    	background-color: #fff;
+    	color:#333;
+	}
+	.bt_box .pbtn:hover{
+		opacity:0.8;
+	}
+	.customTable td{padding:0px!important;}
+	.customTable td input, .customTable td select{width:100%;height:40px;border:0;padding-left:5px;}
+	.customTable td .btn-default{height:40px;border-radius:0px;}
+	.customTable td .btn-default .carets{top:11px!important;bottom:11px!important;}
+	.customTable td .field-content{padding-top:0px!important;padding-bottom:0px!important;}
+	.customTable td .form-control{border-bottom:0px!important;}
+	.customTable td .zmdi-calendar{display:block!important;bottom:10px!important;}
+	.customTable td .link-btn{margin-left:5px;}
+	.layui-layer-btn{padding-right:0px!important;}
+	.field-content{padding-left:0px!important;}
+</style>
+<link rel="stylesheet" href="/css/system/user/personal.css">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box personInfo">
+		<div class="left-inner">
+			<div class="left-upper">
+				<div class="imageBox">
+					<img th:src="${user.picId}" class="userImg" height="166" width="166"/>
+					<div class="social-btn"><i class="icon">+</i></div>
+				</div>
+				<div class="info">
+					<div class="designation"><i class="dot"></i><span th:text="${user.positionName}"></span></div>
+				</div>
+			</div>
+			<div class="left-lower">
+				<ul class="navigation scroll-nav">
+					<li class="baseInfo current">
+						<a href="#baseInfo-section"><i class="fa fa-address-card"></i>基本信息</a>
+					</li>
+					<li class="education">
+						<a href="#education-section"><i class="fa fa-diploma"></i>学历信息</a>
+					</li>
+					<li class="work">
+						<a href="#work-section"><i class="fa fa-toolbox"></i>工作经验</a>
+					</li>
+					<li class="resume">
+						<a href="#resume-section"><i class="fa fa-book-reader"></i>个人简介</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="right-inner">
+			<form action="" id="operate" enctype="multipart/form-data" method="post">
+				<input type="hidden" name="id" th:value="${user.id}"/>
+				<input type="hidden" name="username" th:value="${user.username}"/>
+				<input type="hidden" name="jobNumber" th:value="${user.jobNumber}"/>
+				<input type="hidden" name="deptId" th:value="${user.deptId}"/>
+				<input type="hidden" name="positionId" th:value="${user.positionId}"/>
+				<input type="hidden" id="educationSign_deleteId" name="educationSign_deleteId"/>
+				<input type="hidden" id="educationSign_addInfo" name="educationSign_addInfo"/>
+				<input type="hidden" id="workSign_deleteId" name="workSign_deleteId"/>
+				<input type="hidden" id="workSign_addInfo" name="workSign_addInfo"/>
+				<input type="file" name="userImageFile" id="file0" accept="image/*" class="hide"/>
+				<input type="hidden" name="userHeaderImg" id="userHeaderImg" />
+				<ul class="page-ul">
+					<li class="field-li r content-whole sign" field="baseInfo" id="baseInfo-section" htype="SIGN">
+						<div class="field-div field-sign-title3">
+							<i class="zmdi zmdi-hdr-strong mr10"></i>
+							<div class="title">基本信息</div>
+						</div>
+						<div class="field-div field-sign-content"></div>
+					</li>
+					<li class="field-li r odd" field="username" htype="TEXT">
+						<div class="field-div field-label"><span class="title">用户名</span></div>
+						<div class="field-div field-content" th:text="${user.username}"></div>
+					</li>
+					<li class="field-li r odd" field="jobNumber" htype="TEXT">
+						<div class="field-div field-label"><span class="title">工号</span></div>
+						<div class="field-div field-content-num" th:text="${user.jobNumber}"></div>
+					</li>
+					<li class="field-li" field="name" htype="TEXT">
+						<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{sys.user.name}"></span></div>
+						<div class="field-div field-content textWrap wordSumTotal">
+							<input class="form-control" name="name" type="text" placeholder="" th:value="${user.name}" autocomplete="off"  htype="TEXT" maxlength="30" required>
+						</div>
+					</li>
+					<li class="field-li check" field="sex" htype="RADIO">
+						<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{sys.user.sex}"></span></div>
+						<div class="field-div field-content-check">
+							<div class="radio">
+							    <input type="radio" name="sex" id="_sex1" value="1" data-target="radio" th:checked="${user.sex} eq '1'" required>
+							    <label for="_sex1" th:text="#{sys.user.boy}">
+							    </label>
+						    </div>
+						    <div class="radio">
+							    <input type="radio" name="sex" id="_sex2" value="0" th:checked="${user.sex} eq '0'">
+							    <label for="_sex2" th:text="#{sys.user.girl}">
+							    </label>
+						    </div>
+						</div>
+					</li>
+					<li class="field-li" field="telephone" htype="TEL">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.telephone}"></span></div>
+						<div class="field-div field-content">
+							<input class="form-control" name="telephone" type="tel" placeholder="" th:value="${user.telephone}" autocomplete="off"  htype="TEL">
+							<i class="zmdi zmdi-phone"></i>
+						</div>
+					</li>
+					<li class="field-li" field="email" htype="TEXT">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.email}"></span></div>
+						<div class="field-div field-content">
+							<input class="form-control" name="email" type="email" placeholder="" th:value="${user.email}" autocomplete="off"  htype="TEXT">
+							<i class="zmdi zmdi-email"></i>
+						</div>
+					</li>
+					<li class="field-li check" field="maritalStatus" htype="RADIO">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="婚姻状况"></span></div>
+						<div class="field-div field-content-check">
+							<div class="radio">
+							    <input type="radio" name="maritalStatus" id="_maritalStatus1" value="Y" data-target="radio" th:checked="${user.maritalStatus} eq 'Y'">
+							    <label for="_maritalStatus1" th:text="已婚">
+							    </label>
+						    </div>
+						    <div class="radio">
+							    <input type="radio" name="maritalStatus" id="_maritalStatus2" value="N" th:checked="${user.maritalStatus} ne 'Y'">
+							    <label for="_maritalStatus2" th:text="未婚">
+							    </label>
+						    </div>
+						</div>
+					</li>
+					<li class="field-li r" field="isWorkLog" htype="TEXT">
+						<div class="field-div field-label"><span class="title">生成工作报</span></div>
+						<div class="field-div field-content" th:text="${user.worklog}"></div>
+					</li>
+					<li class="field-li r odd" field="deptId" htype="DEPT">
+						<div class="field-div field-label"><span class="title">归属部门</span></div>
+						<div class="field-div field-content" th:text="${user.deptName}"></div>
+					</li>
+					<li class="field-li r odd" field="positionid" htype="SELECT">
+						<div class="field-div field-label"><span class="title">职位</span></div>
+						<div class="field-div field-content" th:text="${user.positionName}"></div>
+					</li>
+					<li class="field-li" field="birthDate" htype="DATE">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.birthDate}"></span></div>
+						<div class="field-div field-content">
+							<input class="form-control form-control-date" name="birthDate" type="text" placeholder="" th:value="${user.birthDate == null} ? '' : ${#dates.format(user.birthDate, 'yyyy-MM-dd')}" autocomplete="off" readonly="readonly" htype="DATE">
+							<i class="zmdi zmdi-calendar"></i>
+						</div>
+					</li>
+					<li class="field-li" field="joinDate" htype="DATE">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.joinDate}"></span></div>
+						<div class="field-div field-content">
+							<input class="form-control form-control-date" name="joinDate" type="text" placeholder="" th:value="${user.joinDate == null} ? '' : ${#dates.format(user.joinDate, 'yyyy-MM-dd')}" autocomplete="off" readonly="readonly" htype="DATE">
+							<i class="zmdi zmdi-calendar"></i>
+						</div>
+					</li>
+					<li class="field-li content-whole" field="officeAddress" htype="AREA">
+						<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{sys.user.officeAddress}" th:title="#{sys.user.officeAddress}"></span></div>
+						<div class="field-div field-content textWrap wordSumTotal">
+							<div class="textarea-box">
+								<textarea class="input_textarea" maxlength="200" name="officeAddress" rows="8" th:text="${user.officeAddress}" ></textarea>
+							</div>
+						</div>
+					</li>
+					<li class="field-li r content-whole sign" field="education" id="education-section" htype="SIGN">
+						<div class="field-div field-sign-title3">
+							<i class="zmdi zmdi-hdr-strong mr10"></i>
+							<div class="title">学历信息</div>
+						</div>
+						<div class="field-div field-sign-content">
+							<button type="button" class="btn t-btn n-active add mt10" onclick="addEducation();">				
+								<i class="fa fa-plus mr5"></i><span class="pt1 h18">新建</span>			
+							</button>
+							<table class="customTable mt10" id='customTable-education'></table>
+						</div>
+					</li>
+					<li class="field-li r content-whole sign" field="work" id="work-section" htype="SIGN">
+						<div class="field-div field-sign-title3">
+							<i class="zmdi zmdi-hdr-strong mr10"></i>
+							<div class="title">工作经验</div>
+						</div>
+						<div class="field-div field-sign-content">
+							<button type="button" class="btn t-btn n-active add mt10" onclick="addWork();">				
+								<i class="fa fa-plus mr5"></i><span class="pt1 h18">新建</span>			
+							</button>
+							<table class="customTable mt10" id='customTable-work'></table>
+						</div>
+					</li>
+					<li class="field-li content-whole sign" field="introductionInfo" htype="SIGN" id="resume-section">
+						<div class="field-div field-sign-title3">
+							<i class="zmdi zmdi-hdr-strong mr10"></i>
+							<div class="title" th:text="个人简介"></div>
+						</div>
+						<div class="field-div field-sign-content"></div>
+					</li>
+					<li class="field-li content-whole" field="introduction" htype="AREA">
+						<div class="field-div field-content field-content-summernote">
+							<input type="hidden" name="introduction" htype="FORMATAREA" th:value="${user.introduction}"/>
+							<div class="summernote">
+	                        </div>
+						</div>
+					</li>
+					<li class="field-li content-whole textarea" htype="BTN">
+						<div class="layui-layer-btn layui-submit-btn whole_w">
+							<input class="layui-layer-btn0 btns cp mr0" id="submit" type="submit" value="保存">
+							<a class="layui-layer-btn1 close-btn cp" onclick="window.history.back()">取消</a>
+						</div>
+					</li>
+				</ul>
+			</form>
+		</div>
+	</div>
+	
+ 	<div class="s_box" id="sbox">
+		<div class="header">
+			<p>设置头像</p>
+			<span class="close" id="close"><i class="zmdi zmdi-close"></i></span>
+		</div>
+		<div class="image-select" id="t_img">
+			<img th:each="imgSrc:${userImageList}" th:src="${imgSrc}" />
+		</div>
+	    <div class="bt_box">
+	    	<a class="pbtn" href="javascript:" onclick="$('#file0').click();">选择图片</a>
+	    	<a class="pbtn" href="javascript:" id="but">保存</a>
+	    	<a class="pbtn cancel" href="javascript:" id="hide">取消</a>
+	    </div>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; curUser = [[${curUser}]]; userList = [[${userList}]]; userEduList = [[${userEduList}]]; userExpList = [[${userExpList}]];</script>
+	<script src="/js/list/customTable.js"></script>
+	
+	<script>
+		var educationTable, workTable;
+		$(function() {
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			$('.navigation li a').click(function(e) {
+		        e.preventDefault();
+		        $('.navigation li').removeClass('current');
+		        $(this).closest('li').addClass('current');
+		        var targetId = $(this).attr('href');
+		        console.log($(targetId).offset().top);
+		        $('.personInfo').animate({
+		            scrollTop: $(targetId).offset().top + 15
+		        }, 500); // 1000 是动画的持续时间（以毫秒为单位）
+		    });
+			
+			educationTable = Table();
+			var educationData = [];
+			if(userEduList) {
+				var school = '', educationSelect = '', startDate = '', endDate = '', operate = '';
+				for(var i = 0; i < userEduList.length; i++) {
+					school = '<input type="hidden" name="id" value="'+userEduList[i].id+'"/><input type="text" name="schoolName" value="'+userEduList[i].school+'" placeholder="请输入毕业学校"/>';
+					educationSelect = '';
+					educationSelect += '<select class="selectpicker selectEducation'+i+'" name="education" data-live-search-style="begins" title="请选择">';
+					educationSelect += '	<option value="">请选择</option>';
+					educationSelect += '	<option value="JS" '+(userEduList[i].levelId == 'JS'?'selected':'')+'>初中</option>';
+					educationSelect += '	<option value="HS" '+(userEduList[i].levelId == 'HS'?'selected':'')+'>高中 / 中专</option>';
+					educationSelect += '	<option value="AD" '+(userEduList[i].levelId == 'AD'?'selected':'')+'>大专</option>';
+					educationSelect += '	<option value="BD" '+(userEduList[i].levelId == 'BD'?'selected':'')+'>本科</option>';
+					educationSelect += '	<option value="MD" '+(userEduList[i].levelId == 'MD'?'selected':'')+'>硕士</option>';
+					educationSelect += '	<option value="DD" '+(userEduList[i].levelId == 'DD'?'selected':'')+'>博士</option>';
+					educationSelect += '</select>';
+					startDate = '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="startDate" placeholder="请选择入学日期" readonly="readonly" type="text" value="'+userEduList[i].startDateStr+'"><i class="zmdi zmdi-calendar"></i></div>';
+					endDate = '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="endDate" placeholder="请选择毕业日期" readonly="readonly" type="text" value="'+userEduList[i].endDateStr+'"><i class="zmdi zmdi-calendar"></i></div>';
+					operate = '<span class="link-btn" onclick="delEducation(\''+userEduList[i].id+'\', $(this))">删除</span>';
+					educationData.push([i+1, school, educationSelect, startDate, endDate, operate]);
+				}
+			}
+			educationTable.init({
+			    id:'customTable-education',
+			    header:['序号','毕业学校', '学历', '入学日期', '毕业日期', '操作'],
+			    data:educationData,
+			    columnWidth:['50px', '250px', '150px', '190px', '190px', '50px'],
+			    align:'left',
+			});
+			
+			workTable = Table();
+			var workData = [];
+			if(userExpList) {
+				var company = '', position = '', startDate = '', endDate = '', operate = '';
+				for(var i = 0; i < userExpList.length; i++) {
+					company = '<input type="hidden" name="id" value="'+userExpList[i].id+'"/><input type="text" name="companyName" value="'+userExpList[i].company+'" placeholder="请输入公司名称"/>';
+					position = '<input type="text" name="position" value="'+userExpList[i].position+'" placeholder="请输入职位"/>';
+					startDate = '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="startDate" placeholder="请选择入学日期" readonly="readonly" type="text" value="'+userExpList[i].startDateStr+'"><i class="zmdi zmdi-calendar"></i></div>';
+					endDate = '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="endDate" placeholder="请选择毕业日期" readonly="readonly" type="text" value="'+userExpList[i].endDateStr+'"><i class="zmdi zmdi-calendar"></i></div>';
+					operate = '<span class="link-btn" onclick="delWork(\''+userExpList[i].id+'\', $(this))">删除</span>';
+					workData.push([i+1, company, position, startDate, endDate, operate]);
+				}
+			}
+			workTable.init({
+			    id:'customTable-work',
+			    header:['序号','公司名称', '职位', '入职日期', '离职日期', '操作'],
+			    data:workData,
+			    columnWidth:['50px', '250px', '150px', '190px', '190px', '50px'],
+			    align:'left',
+			});
+			
+			initFormControl('USER');
+			initSelectImage();
+		});
+		
+		function initSelectImage() {
+			/* 隐藏，显现效果 */
+			$(".social-btn").click(function(){
+				$("#sbox").show("slow");
+			});
+	        $("#hide").click(function(){
+	            $("#sbox").hide("slow");
+	        });
+			$("#close").click(function(){
+			    $("#sbox").hide("slow");
+			});
+			/*  选定图像获取图像src值 */
+			var $t_img = document.getElementById('t_img');
+			var $img = $t_img.getElementsByTagName('img');
+			var index = 0;
+			for(var i = 0; i<$img.length;i++){
+				$img[i].index=i;
+				$img[i].onclick = function(){
+					$img[index].style.borderRadius="5px";
+					$img[index].style.border="none"
+					this.style.borderRadius="50%";
+					this.style.border="1px solid var(--theme)"
+					index = this.index;
+					var $newsrc = $img[index].src;
+					$(".userImg").attr('src',$newsrc);
+					$('#userHeaderImg').val($newsrc);
+					$('#file0').val('');
+				}
+			}
+			 //点击确认修改按钮更换头像
+			$("#but").click(function(){
+				$("#sbox").hide("slow");
+			})
+			
+		  	//选中的图片替换头像的图片
+			$("#file0").change(function(){
+				var objUrl = getObjectURL(this.files[0]) ;  
+				if (objUrl) {  
+			    	$(".userImg").attr("src", objUrl);  
+			    	$('#userHeaderImg').val('');
+					$("#sbox").hide("slow");
+			  	}  
+			}) ; 
+		}
+		
+		 
+		//创建一个可存取到该file的url  
+		function getObjectURL(file) {  
+			var url = null ;  
+		   	// 下面函数执行的效果是一样的，只是需要针对不同的浏览器执行不同的 js 函数而已  
+		  	if (window.createObjectURL!=undefined) { // basic  
+		    	url = window.createObjectURL(file) ;  
+		  	} else if (window.URL!=undefined) { // mozilla(firefox)  
+		    	url = window.URL.createObjectURL(file) ;  
+		  	} else if (window.webkitURL!=undefined) { // webkit or chrome  
+		    	url = window.webkitURL.createObjectURL(file) ;  
+		  	}  
+		  	return url ;  
+		}  
+		
+		function addEducation() {
+			var number = $('#customTable-education .trData').length + 1;
+			var educationSelect = '';
+			educationSelect += '<select class="selectpicker selectEducation'+number+'" name="education" data-live-search-style="begins" title="请选择">';
+			educationSelect += '	<option value="">请选择</option>';
+			educationSelect += '	<option value="JS">初中</option>';
+			educationSelect += '	<option value="HS">高中 / 中专</option>';
+			educationSelect += '	<option value="AD">大专</option>';
+			educationSelect += '	<option value="BD">本科</option>';
+			educationSelect += '	<option value="MD">硕士</option>';
+			educationSelect += '	<option value="DD">博士</option>';
+			educationSelect += '</select>';
+			var data = [number, '<input type="hidden" name="id" value=""/><input type="text" name="schoolName" value="" placeholder="请输入毕业学校"/>', educationSelect, '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="startDate" placeholder="请选择入学日期" readonly="readonly" type="text" value=""><i class="zmdi zmdi-calendar"></i></div>', '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="endDate" placeholder="请选择毕业日期" readonly="readonly" type="text" value=""><i class="zmdi zmdi-calendar"></i></div>', '<span class="link-btn" onclick="delEducation(\'\', $(this))">删除</span>'];
+			educationTable.addRow('customTable-education', data);
+			$('.selectEducation'+number).selectpicker('refresh');
+			initDate(number);
+		}
+		
+		function delEducation(id, $obj) {
+			var index = top.layer.confirm('确定要删除选中的数据？', {
+				btn : ['确定', '取消']
+			}, function() {
+				if(id){
+					var $deleteEducationId = $('#educationSign_deleteId'), deleteEducationIdVal = $deleteEducationId.val();
+					if(deleteEducationIdVal && deleteEducationIdVal.indexOf(id) < 0){
+						deleteEducationIdVal += ',' + id;
+					}else {
+						deleteEducationIdVal = id;
+					}
+					$deleteEducationId.val(deleteEducationIdVal);
+				}
+				top.layer.close(index);
+				educationTable.deleteRow('customTable-education', $obj);
+			});
+		}
+		
+		function addWork() {
+			var number = $('#customTable-work .trData').length + 1;
+			var data = [number, '<input type="hidden" name="id" value=""/><input type="text" name="companyName" value="" placeholder="请输入公司名称"/>', '<input type="text" name="position" value="" placeholder="请输入职位"/>', '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="startDate" placeholder="请选择入职日期" readonly="readonly" type="text" value=""><i class="zmdi zmdi-calendar"></i></div>', '<div class="field-div field-content"><input autocomplete="off" class="form-control form-control-date" htype="DATE" name="endDate" placeholder="请选择离职日期" readonly="readonly" type="text" value=""><i class="zmdi zmdi-calendar"></i></div>', '<span class="link-btn" onclick="delWork(\'\', $(this))">删除</span>'];
+			workTable.addRow('customTable-work', data);
+			
+			initDate(number);
+		}
+		
+		function delWork(id, $obj) {
+			var index = top.layer.confirm('确定要删除选中的数据？', {
+				btn : ['确定', '取消']
+			}, function() {
+				if(id){
+					var $deleteWorkId = $('#workSign_deleteId'), deleteWorkIdVal = $deleteWorkId.val();
+					if(deleteWorkIdVal && deleteWorkIdVal.indexOf(id) < 0){
+						deleteWorkIdVal += ',' + id;
+					}else {
+						deleteWorkIdVal = id;
+					}
+					$deleteWorkId.val(deleteWorkIdVal);
+				}
+				top.layer.close(index);
+				workTable.deleteRow('customTable-work', $obj);
+			});
+		}
+		
+		function initDate(number) {
+			$('.form-control-date').each(function(i) {
+				var newDateClass = 'datetimepicker_' + i;
+				$(this).addClass(newDateClass);
+				laydate.render({
+					elem: '.' + newDateClass,
+					eventElem: '.layicon',
+					trigger: 'click',
+					type: 'date',//date, datetime, year, month
+					theme: '',
+					range: false, // 选择日期范围或是单个日期
+					done: function(value, date) {
+						if(typeof changeDate == "function") {
+							changeDate($('.' + newDateClass), value);
+						}
+					},
+					change: function (value, date, edate) {
+						$('.' + newDateClass).val(value);
+					}
+				});
+			});
+		}
+		
+		$("#operate").html5Validate(function() {
+			var educationSign_addInfo = "";
+			$('#customTable-education tr.trData').each(function(){
+				var id=$(this).find('input[name="id"]').val(), schoolName = $(this).find('input[name="schoolName"]').val(), level = $(this).find('select[name="education"]').val(), startDate = $(this).find('input[name="startDate"]').val(), endDate = $(this).find('input[name="endDate"]').val();
+				if(schoolName){
+					if(educationSign_addInfo) {
+						educationSign_addInfo += '@@##@@';
+					}
+					educationSign_addInfo += id + '@#@#@' + schoolName + '@#@#@' + level + '@#@#@' + startDate + '@#@#@' + endDate;
+				}
+			});
+			$('#educationSign_addInfo').val(educationSign_addInfo);
+			
+			var workSign_addInfo = "";
+			$('#customTable-work tr.trData').each(function(){
+				var id=$(this).find('input[name="id"]').val(), companyName = $(this).find('input[name="companyName"]').val(), position = $(this).find('input[name="position"]').val(), startDate = $(this).find('input[name="startDate"]').val(), endDate = $(this).find('input[name="endDate"]').val();
+				if(companyName){
+					if(workSign_addInfo) {
+						workSign_addInfo += '@@##@@';
+					}
+					workSign_addInfo += id + '@#@#@' + companyName + '@#@#@' + position + '@#@#@' + startDate + '@#@#@' + endDate;
+				}
+			});
+			$('#workSign_addInfo').val(workSign_addInfo);
+			
+			var formData = new FormData($('#operate')[0]);
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/user/updatePersonalInfo",
+				data : formData,// 你的formid
+				processData:false,//必须是false
+				contentType:false,//必须是false
+				async : false,
+				success : function(data) {
+					top.layer.msg(data.msg);
+					hideLoading();
+					if (data.code == 0) {
+						window.location.href= '/sys/user/personal';
+					}
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('USER');
+			}
+		});
+	</script>
+	
+</body>
+</html>

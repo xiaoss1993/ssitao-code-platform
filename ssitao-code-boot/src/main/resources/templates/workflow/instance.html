@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+			<input type="hidden" id="status" name="status" th:value="${instance.status}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${instance.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置实例"></span></div>
+					<div class="field-div field-content" th:text="${instance.preName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="status" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="状态"></span></div>
+					<div class="field-div field-content" th:text="${instance.statusName}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="isDefault" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title">默认实例</span></div>
+					<div class="field-div field-content" th:text="${instance.isDefault} eq 'Y'? '是':'否'"></div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content" th:text="${instance.remark}"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" onclick="editInstance();" />
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" th:value="设计流程图" onclick="editFlowChart();"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('instance');
+			
+			$('.btn-box').removeClass('hide');
+			
+		});
+		
+		function editInstance() {
+			top.layer.open({
+				type : 2,
+				title : '新建实例',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['860px', '500px'],
+				content : 'instance/addOrEditInstance/'+$('#id').val()+'?objectType=' + $('#objectType').val() + '&preId=&parentname=' + parentName,
+			});
+		}
+		
+		function editFlowChart() {
+			setFlowChart($('#id').val(), parentName);
+		}
+	</script>
+	
+</body>
+</html>

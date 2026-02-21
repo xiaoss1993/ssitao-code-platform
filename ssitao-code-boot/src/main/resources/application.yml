@@ -1,0 +1,186 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/x-javascript,application/xml,application/json
+    min-response-size: 1024
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    session:
+      cookie:
+        http-only: true
+        secure: false
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+spring:
+  aop:
+    auto: true
+    proxy-target-class: true
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  profiles:
+    active: dev
+  mvc:
+    async:
+      request-timeout: 3600000
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  #上传文件大小限制
+  server:
+    multipart:
+      MaxFileSize: 5120MB
+      MaxRequestSize: 51200MB
+  web:
+    resources:
+      chain:
+        cache: true
+        strategy:
+          content:
+            enabled: true
+            paths: /**
+      cache:
+        period: 31536000
+        cachecontrol:
+          max-age: 31536000
+          cache-public: true
+      static-locations: classpath:/static/,classpath:/public/
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+  redis:
+    host: localhost
+    port: 6379
+    password: 123456
+    # 连接超时时间（毫秒）
+    timeout: 1000000
+    pool:
+      # 连接池中的最大空闲连接
+      max-idle: 8
+      # 连接池中的最小空闲连接
+      min-idle: 10
+      # 连接池最大连接数（使用负值表示没有限制）
+      max-active: 100
+      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+      max-wait: -1
+
+# MyBatis-Flex 配置
+mybatis-flex:
+  type-aliases-package: com.ssitao.code.modular.**.entity,com.ssitao.code.modular.**.dataobject
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    # 打印 SQL 语句
+    log-prefix: "MyBatis-Flex SQL >> "
+  # SQL 打印配置
+  sql-print:
+    enabled: true
+    # 是否格式化 SQL
+    pretty: true
+    # 是否打印参数
+    print-params: true
+    # 是否打印执行时间
+    print-execution-time: true
+
+# SpringDoc OpenAPI 配置 (Knife4j 4.x)
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+
+# Knife4j 4.x 配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+  cors: false  # 关闭 Knife4j 自带的 CORS，使用 WebConfig 中的 CORS 配置
+  production: false
+  aggregation:
+    enabled: false
+
+fastjson:
+  features: WriteDateUseDateFormat
+
+# Sa-Token 配置
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: Authorization
+  # token 有效期（单位：秒），-1 代表永久有效
+  timeout: 2592000
+  # token 临时有效期（指定时间内无操作就视为 token 过期）单位：秒
+  activity-timeout: -1
+  # 是否允许同一账号多地同时登录
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token
+  is-share: false
+  # token 风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+  # 是否从 cookie 中读取 token
+  is-read-cookie: false
+  # 是否从 header 中读取 token
+  is-read-header: true
+  # token 前缀
+  token-prefix: Bearer
+  # 是否在初始化配置时打印版本字符画
+  is-print: false
+  # jwt 秘钥
+  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+  # 是否启用 JWT 模式
+  jwt-enabled: true
+  # 存储方式：memory-内存存储, redis-Redis存储
+  dao-type: memory
+
+# SSITAO 平台配置
+ssitao:
+  # 多租户配置
+  tenant:
+    # 是否启用多租户
+    enabled: true
+    # 租户ID 请求头名称
+    header-name: Tenant-Id
+    # 租户ID 请求参数名称
+    param-name: tenantId
+    # 默认租户ID
+    default-tenant-id: default
+    # 忽略租户隔离的表
+    ignore-tables:
+      - iam_tenant
+      - iam_permission
+      - iam_role_permission
+      - system_dict_type
+      - system_dict_data
+    # 忽略租户隔离的 URL
+    ignore-urls:
+      - /api/auth/login
+      - /api/auth/captcha
+      - /api/auth/logout
+  # 数据权限配置
+  data-permission:
+    # 是否启用数据权限
+    enabled: true
+    # 忽略数据权限的表
+    ignore-tables:
+      - iam_user
+      - iam_role

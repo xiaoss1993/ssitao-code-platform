@@ -1,0 +1,90 @@
+package com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity;
+
+import com.ssitao.code.frame.mybatisflex.annotation.Id;
+import com.ssitao.code.frame.mybatisflex.annotation.Table;
+import com.ssitao.code.frame.mybatisflex.codegen.test.BaseEntity;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+
+/**
+ * 员工合同信息 实体类。
+ *
+ * @author ssitao
+ * @since 1.0.0
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Table("tb_hrms_staff_contract")
+public class TbHrmsStaffContract extends BaseEntity implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    private String id;
+
+    /**
+     * 合同编号
+     */
+    private String contractNumber;
+
+    /**
+     * 合同类别
+     */
+    private String typeId;
+
+    /**
+     * 合同类型
+     */
+    private String moldId;
+
+    /**
+     * 开始时间
+     */
+    private String startTime;
+
+    /**
+     * 结束时间
+     */
+    private String endTime;
+
+    /**
+     * 所属第三方业务数据id(员工id)
+     */
+    private String objectId;
+
+    /**
+     * 所属第三方业务数据的key(员工key)
+     */
+    private String objectKey;
+
+    /**
+     * 创建人
+     */
+    private String createId;
+
+    /**
+     * 录入时间
+     */
+    private LocalDateTime createTime;
+
+    /**
+     * 最后更新人
+     */
+    private String lastUpdateId;
+
+    /**
+     * 最后更新时间
+     */
+    private LocalDateTime lastUpdateTime;
+
+}

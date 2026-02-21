@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+ 
+<head>
+    <meta charset="UTF-8">
+
+	<style>
+		.mail{padding:10px;font-size:14px}
+		.name{margin-bottom:20px;}
+		.content{text-indent:2em;margin-bottom:60px;}
+	</style>
+</head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<div class="mail">
+		<div class="name" th:utext="${name}"></div>
+		<div class="content" th:utext="${content}"></div>
+		<div class="footer" th:utext="${footer}"></div>
+	</div>
+</body>
+</html>

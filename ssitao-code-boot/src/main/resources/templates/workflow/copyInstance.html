@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${instance.name}" placeholder="请输入名称" autocomplete="off"  htype="TEXT" maxlength="100" required="required">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置实例"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('instance');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/instance/saveCopy",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index, 'grid-table');
+						parent.layer.msg(data.msg);
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

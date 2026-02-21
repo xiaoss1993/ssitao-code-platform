@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.page-ul{max-width:100%!important;}
+	.customTable{width:100%;}
+	.customTable .note-editor.note-frame{margin:0px;border:0px;}
+	.customTable .trData td{padding:0px!important;}
+	.customTable .link-btn{padding:5px 10px;}
+	.customTable .note-fontname, .customTable .note-para, .customTable .note-table, .customTable .btn-codeview{display:none;}
+	.summerContent{padding:5px 10px;}
+	.customTable .note-editable {
+	    max-width:600px;
+	}
+	.customTable .fullscreen .note-editable{
+		max-width:100%;
+	}
+	.bootstrap-select .btn-default{background-color:transparent!important;}
+	.bootstrap-select .btn-default:not(.disabled):hover {
+	    background-color:transparent!important;
+	    border-color:transparent!important;
+	}
+	.bootstrap-select.btn-group .dropdown-toggle .filter-option{padding-left:5px;}
+	.title-ul{padding-bottom:0px!important;}
+	.return-back{display:none;}
+	.field-name{font-size:14px;font-weight:700;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<ul class="title-ul"></ul>
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="tspId" name="tspId" th:value="${tspId}"/>
+			<input type="hidden" id="speciData" name="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="curTscId" name="curTscId" th:value="${curTscId}"/>
+			<input type="hidden" id="nextTscId" name="nextTscId" th:value="${nextTscId}"/>
+			<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+			<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+			<input type="hidden" id="stepArray" name="stepArray" th:value="${stepArray}"/>
+			<input type="hidden" id="resultArray" name="resultArray" th:value="${resultArray}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole sign" htype="SIGN">	
+					<div class="field-div field-sign-title3">		
+						<i class="zmdi zmdi-hdr-strong mr10"></i>		
+						<div class="title show-name">测试步骤</div>	
+					</div>	
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole">
+					<div class="customTable" id='customTable-step'></div>
+				</li>
+				<li class="field-li content-whole sign mt10" htype="SIGN" th:if="${resultCount}">	
+					<div class="field-div field-sign-title3">		
+						<i class="zmdi zmdi-hdr-strong mr10"></i>		
+						<div class="title show-name">测试结果  <span>（共执行 <span th:text="${resultCount}"></span> 次）</span></div>	
+					</div>	
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" th:if="${resultCount}">
+					<div class="customTable" id='customTable-result'></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn" style="max-width:100%;">
+					<input type="button" class="layui-layer-btn0 btns cp" th:if="${nextTscId}" th:value="保存并下一个" onclick="saveAndNext(true, true)"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:value="保存" onclick="saveAndNext(true, false)"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:if="${nextTscId}" th:value="下一个" onclick="saveAndNext(false, true)"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:value="转缺陷" onclick="addBug()"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]]</script>
+	<script src="/js/list/customTable.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			var titleHtml = getPageTitle();
+	 		if(titleHtml) {
+	 			var $layerTitle = parent.$('.layui-layer-title');
+ 				if($layerTitle.length > 1){
+ 					var index = top.layer.getFrameIndex(window.name); // 获取当前弹出框的索引
+ 					$layerTitle = parent.$('#layui-layer'+ index).find('.layui-layer-title'); 
+ 					$layerTitle.hide();
+ 				}else {
+ 					$layerTitle.hide();
+ 				}
+	 			$('.title-ul').html(titleHtml);
+	 		}
+	 		
+	 		changeLayerBodyHeight();
+			initStepTable();
+			initResultTable();
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function changeLayerBodyHeight() {
+			var index = parent.layer.getFrameIndex(window.name);
+			var $iframe = parent.$('#layui-layer-iframe' + index);
+			$iframe.height(600);
+			$('.layer-body').height(600);
+		}
+		
+		function initStepTable(){
+			var titleData = ['序号', '步骤', '预期', '测试结果', '实际情况'];
+			var widthData = ['40px', '200px', '200px', '60px', '250px'];
+			var data = [], tscStepList = $('#stepArray').val();
+			if(tscStepList) {
+				tscStepList = JSON.parse(tscStepList);
+				var rowData = [], step= '', expect= '', reality = '', result = '';
+				result += '<select class="selectpicker bs-select-hidden" name="resultId" data-live-search-style="begins" title="请选择">';
+				result += '		<option value="">请选择</option>';
+				result += '		<option value="IG">忽略</option>';
+				result += '		<option value="PA" selected>通过</option>';
+				result += '		<option value="FL">失败</option>';
+				result += '		<option value="BK">阻塞</option>';
+				result += '</select>';
+				for(var i = 0; i < tscStepList.length; i++) {
+					step = '<input type="hidden" name="id" value="'+tscStepList[i].id+'"/><div class="summerContent stepValue">'+(tscStepList[i].step ? tscStepList[i].step.replaceAll("&#34;", "\""):'')+'</div>';
+					expect = '<div class="summerContent expectValue">'+(tscStepList[i].expect ? tscStepList[i].expect.replaceAll("&#34;", "\""):'')+'</div>';
+					reality = '<div class="summerContent realityValue"></div><div class="summernote-hide"></div>';
+					rowData = [i+1, step, expect, result, reality];
+					data.push(rowData);
+				}
+			}
+			
+			var stepTable = Table();
+			stepTable.init({
+			    id:'customTable-step',
+			    header: titleData,
+			    data:data,
+			    columnWidth: widthData,
+			    align:'left',
+			});
+			
+			initTdClick();
+		}
+		
+		function initResultTable(){
+			var titleData = ['序号', '执行人', '执行时间', '步骤', '预期', '测试结果', '实际情况'];
+			var widthData = ['45px', '60px', '100px', '200px', '200px', '65px', '200px'];
+			var data = [], resultList = $('#resultArray').val();
+			if(resultList) {
+				resultList = JSON.parse(resultList);
+				var rowData = [], executor= '', executeTime= '', step = '', expect = '', result = '', reality = '';
+				for(var i = 0; i < resultList.length; i++) {
+					if(resultList[i].executor) {
+						executor = '<div class="ml10">' + resultList[i].executor + '</div>';
+					}else{
+						executor = '';
+					}
+					if(resultList[i].executeTime) {
+						executeTime = '<div class="ml10">' + resultList[i].executeTime + '</div>';
+					}else{
+						executeTime = '';
+					}
+					step = '<div class="ml10">' + (resultList[i].step ? resultList[i].step.replaceAll("&#34;", "\""):'') + '</div>';
+					expect = '<div class="ml10">' + (resultList[i].expect ? resultList[i].expect.replaceAll("&#34;", "\""):'') + '</div>';
+					result = '<div class="ml10">' + resultList[i].result + '</div>';
+					reality = '<div class="ml10">' + (resultList[i].reality ? resultList[i].reality.replaceAll("&#34;", "\""):'') + '</div>';
+					if(executor && executeTime) {
+						rowData = [i+1, executor, executeTime, step, expect, result, reality];
+					}else{
+						rowData = [i+1, step, expect, result, reality];
+					}
+					data.push(rowData);
+				}
+			}
+			
+			var stepTable = Table();
+			stepTable.init({
+			    id:'customTable-result',
+			    header: titleData,
+			    data:data,
+			    columnWidth: widthData,
+			    align:'left',
+			});
+		}
+		
+		function initTdClick() {
+			$('#customTable-step .trData td').click(function(event) {
+				$(this).find('.summernote-hide').addClass('summernote').removeClass('summernote-hide');
+				var tdHeight = $(this).height() < 200 ? 200 : ($(this).height() - 68);
+				$('.note-editor:visible').each(function() {
+					var content = $(this).prevAll('.summernote').summernote('code');
+					$(this).prevAll('.summerContent').html(content).show();
+					$(this).hide();
+				});
+				
+				if(!$(this).find('.realityValue').length || $(this).find('.note-editor').is(':visible')){
+					return;
+				}
+				
+				var $noteEditor = $(this).find('.note-editor');
+				$(this).find('.summerContent').hide();
+				if($noteEditor && $noteEditor.length) {
+					$noteEditor.find('.note-editable').height(tdHeight);
+					$noteEditor.show();
+				}else{
+					var $summernote = $(this).find('.summernote');
+					if($summernote && $summernote.length) {
+						initOneSummernote($summernote, tdHeight);
+					}
+					
+					var $summerContent = $(this).find('.summerContent');
+					if($summerContent.html()) {
+						$summernote.summernote('code', $summerContent.html());
+					}
+				}
+			});
+		}
+		
+		function saveAndNext(isSave, isNext) {
+			$('.note-editor:visible').each(function() {
+				var content = $(this).prevAll('.summernote').summernote('code');
+				$(this).prevAll('.summerContent').html(content).show();
+				$(this).hide();
+			});
+			
+			var tspId = $('#tspId').val();
+			if(isSave) {
+				var stepData = '';
+				$('#customTable-step tr.trData').each(function(){
+					if(stepData) {
+						stepData += '@@##@@';
+					}
+					stepData += $(this).find('input[name="id"]').val() + '@#@#@' + $(this).find('select[name="resultId"]').val() + '@#@#@' + $(this).find('.realityValue').html();
+				});
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/tsp/saveExcuteTsc",
+					data : {'tspId': tspId, 'tscId': $('#curTscId').val(), 'stepData': stepData},
+					async : false,
+					success : function(data) {
+						var index = top.layer.getFrameIndex(window.name)
+						top.layer.close(index, tspId);
+						if(isNext) {
+							excuteTsc(tspId, $('#nextTscId').val());
+						}
+					}
+				});
+			}else if(isNext){
+				excuteTsc(tspId, $('#nextTscId').val());
+			}
+		}
+	</script>
+	
+</body>
+</html>

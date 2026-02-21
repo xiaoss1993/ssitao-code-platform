@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	.ibox .open>.dropdown-menu{left:0px!important;right:auto;}
+	.more-btn .dropdown-menu{bottom:auto!important;top:33px!important;}
+	#moreSelect{max-height:500px;overflow-y:auto;}
+</style>
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	<div class="wrapper wrapper-content" th:classappend="${objectType} eq 'PJT' ? 'pjt-box':''">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<div class="more-btn" th:if="${btn_ADD}">	
+							<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">		
+								<i class="fa fa-plus mr5"></i>
+								<span>新建</span>		
+								<i class="fa fa-caret-down ml5"></i>	
+							</span>	
+							<ul class="dropdown-menu dropdown-menu-left" x-placement="bottom-end" id="moreSelect">		
+								<li th:each="select:${selectList}" th:value="${select.id}" th:title="${select.text}" onclick="addWorkflow($(this).attr('value'))"><a href="javascript:void(0);" th:text="${select.text}"></a></li>		
+							</ul>
+						</div>
+					</div>
+					
+					<div class="columns columns-right btn-group pull-right t-columns">
+					</div>
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="breadTabType" name="breadTabType" th:value="${breadTabType}"/>
+		<input type="hidden" id="belongId" name="belongId" th:value="${objectId}"/>
+		<input type="hidden" id="belongType" name="belongType" th:value="${objectType}"/>
+		<input type="hidden" id="model" name="model" th:value="MYWORKFLOW"/>
+		<input type="hidden" id="parentName" name="parentName" />
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div th:if="${btn_DEL}">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]];</script>
+
+	<script type="text/javascript">
+		$(function() {
+			initWorkflowList($('#breadTabType').val());
+			
+			$('#parentName').val(parentName);
+		});
+		
+		//初始化任务列表
+		function initWorkflowList(queryObject) {
+			if($('#grid-table').closest('.table-wrap').length) {
+				iFilter.props.query['queryObject'] = queryObject;
+				iFilter.props.table.GM('setQuery', iFilter.props.query);
+			}else {
+				var model = 'MYWORKFLOW';
+				var $searchCondition = $('.search-condition');
+				if(!$searchCondition.length){
+					var headData = getHeadData(model, queryObject, '', '', '');
+					if(headData) {
+						var headColumn = headData.headData;
+						createSearchConditions(headColumn, model);
+					}
+				}
+				
+				$('#grid-table').initTable({
+					model:'MYWORKFLOW',
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					queryObject: queryObject,
+					objectId: $('#belongId').val(),
+					objectType: $('#belongType').val()
+				});
+			}
+		}
+		
+		function addWorkflow(objectType) {
+			var url = '/workflow/addOrEditWorkflow/null?objectType='+objectType+'&belongId='+$('#belongId').val()+'&belongType='+$('#belongType').val()+'&parentname=' + (window.name ? window.name : parentName);
+			intoIframePage(url, false, objectType);
+		}
+		
+		function reLoad() {
+			initWorkflowList($('#breadTabType').val());
+		}
+	</script>	
+	
+</body>
+</html>

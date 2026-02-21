@@ -1,0 +1,76 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:tweb_lite}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      filters: stat,wall
+      max-active: 100
+      initial-size: 10
+      min-idle: 10
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 1
+      # 生产环境关闭 Web 监控统计
+      web-stat-filter:
+        enabled: false
+      stat-view-servlet:
+        enabled: false
+
+# 生产环境日志配置
+logging:
+  level:
+    root: INFO
+    com.tweb: INFO
+    com.ssitao.code.frame.mybatisflex: WARN
+    # 第三方框架日志级别
+    org.springframework: WARN
+    org.apache: WARN
+    com.alibaba.druid: WARN
+    io.lettuce: WARN
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:%L - %msg%n"
+  file:
+    name: /var/log/tweb/tweb-lite.log
+    # 生产环境使用异步日志
+    async: true
+    # 生产环境关闭 SQL 日志
+  show-sql: false
+
+# 生产环境 TWeb 配置
+tweb:
+  app:
+    name: tweb-lite
+    version: 1.0.0
+    environment: production
+  logging:
+    sql:
+      enabled: false
+      console: false
+      file: true
+      # 生产环境只记录慢SQL
+      slow-sql-millis: 1000
+    business:
+      enabled: true
+      # 生产环境记录到独立文件
+      separate-file: true
+
+# 生产环境不启用 Knife4j
+knife4j:
+  enable: false
+  production: true
+
+# 生产环境不启用 Swagger
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

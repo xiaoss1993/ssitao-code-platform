@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${status.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${status.objectType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${status.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="preName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置状态"></span></div>
+					<div class="field-div field-content" th:text="${status.preName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content" th:text="${status.remark}"></div>
+				</li>
+				<li class="field-li content-whole odd" field="BGColor" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.option.setColor}"></span></div>
+					<div class="field-div field-content set-color">
+						<input id="bgColor" name="bgColor" type="hidden" th:value="${status.bgColor}">
+						<input id="fColor" name="fColor" type="hidden" th:value="${status.fColor}">
+						<div class="palette" th:style="'background-color:' + ${status.bgColor} + ';color:' + ${status.fColor}+';border-color:'+${status.bgColor}"><i class="zmdi zmdi-palette mr5" th:style="@{'color:'+${status.fColor}}"></i><span class="ml15" th:text="#{field.option.palette}"></span></div>
+						<div class="paigusu" type="bg" th:text="#{field.option.bgColor}"></div>
+						<div class="paigusu" type="fd" th:text="#{field.option.fColor}"></div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="编辑" onclick="editStatus();" th:if="${btnEdit}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('status');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function editStatus() {
+			editEntity('STATUS', $('#id').val(), $('#objectType').val(), parentName);
+		}
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean compile:*)",
+      "Bash(mvn:*)",
+      "Bash(javap:*)",
+      "Bash(jar:*)",
+      "mcp__web-search-prime__webSearchPrime",
+      "mcp__web-reader__webReader",
+      "Bash(node:*)",
+      "Bash(pnpm:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(sed:*)",
+      "Bash(mysql:*)",
+      "Bash(xargs:*)",
+      "Bash(find:*)",
+      "mcp__zread__get_repo_structure",
+      "Bash(grep:*)"
+    ]
+  }
+}

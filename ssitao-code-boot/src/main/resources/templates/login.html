@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<meta name="description" content="">
+
+<title th:text="${pageTitle}"></title>
+<!-- Favicon-->
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<!-- Custom Css -->
+<link rel="stylesheet" href="/css/common/bootstrap.min.css">
+<link rel="stylesheet" href="/css/common/style.min.css">
+<link rel="stylesheet" href="/css/common/common.css">
+
+<style>
+	.btn-primary{color:white!important;font-size:1em;}
+	.copyright {
+	    font-size: .9em;
+	}
+	label.error {
+	    color:red;
+	    display:flex;
+	    align-items:center;
+	}
+	.error-box{margin-top:5px;height:20px;display:none;}
+</style>
+
+</head>
+
+<body th:class="${session.theme}">
+
+<div class="authentication">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <form class="card auth_form" id="signupForm">
+                    <div class="header">
+                        <img class="logo1" th:src="${company.logoAddress}" style="max-width:300px;max-height:150" alt="">
+                        <h5 th:text="#{login.submitBtn}"></h5>
+                    </div>
+                    <div class="body">
+                    	<div class="group-box mb-3">
+	                        <div class="input-group">
+	                            <input id="username" name="username" type="text" class="form-control" placeholder="" th:placeholder="#{login.userName}">
+	                            <div class="input-group-append">
+	                                <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
+	                            </div>
+	                        </div>
+	                        <div class="error-box"></div>
+                    	</div>
+                    	<div class="group-box mb-3">
+	                        <div class="input-group">
+	                            <input id="password" name="password" type="password" class="form-control" placeholder="" th:placeholder="#{login.password}">
+	                            <div class="input-group-append">
+	                                <span class="input-group-text"><i class="zmdi zmdi-lock"></i></span>
+	                            </div>
+	                        </div>
+	                        <div class="error-box" id="error-box"></div>
+                        </div>
+                        <div class="checkbox">
+                            <input id="remember_me" type="checkbox">
+                            <label for="remember_me" th:text="#{login.remember}"></label>
+                        </div>
+                        <a id="login" class="btn btn-primary btn-block waves-effect waves-light" th:text="#{login.submitBtn}"></a>
+
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                <div class="card">
+                    <img src="/img/common/signin.svg" alt="Sign In"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hide">
+	<input type="hidden" id="enterUserName" th:value="#{login.enterUserNamePlease}"/>
+	<input type="hidden" id="enterPassword" th:value="#{login.enterUserNamePasword}"/>
+	<input type="hidden" id="skin" th:value="${skin}"/>
+</div>
+
+<!-- Jquery Core Js -->
+<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+<script src="/js/bundles/libscripts.bundle.js"></script>
+<script src="/js/bundles/vendorscripts.bundle.js"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/js/plugins/layer/layer.js"></script>
+<script src="/js/base64.js"></script>
+<script src="/js/common/common.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    	rLogin.initPage();
+
+        $("#login").on('click',function(){$("#signupForm").submit();});
+        validateRule();
+
+        $('#signupForm input').focus(function() {
+        	$('#user-pwd-error').addClass('hide')
+        });
+
+        $("body").keydown(function() {
+             if (event.keyCode == "13") {//keyCode=13是回车键
+                 $('#login').click();
+             }
+		});
+
+		initUmAndPsd();
+    });
+
+    function initUmAndPsd(){
+    	var skin = getCookie('skin');
+    	if(!skin || skin == 'null') {
+    		skin = 'blue';
+    	}
+    	var link = document.createElement("link");
+    	link.rel = "stylesheet";
+    	link.type = "text/css";
+    	link.href = "/css/theme/"+skin+"/theme.css";
+    	document.head.appendChild(link);
+
+    	var nm = utf8to16(base64decode(getCookie('username'))), psd = utf8to16(base64decode(getCookie('password')));
+    	$('#username').val(nm);
+       	$('#password').val(psd);
+        if (nm && psd) {
+       		$('#remember_me').attr('checked', true);
+       	}
+    }
+
+    $.validator.setDefaults({
+        submitHandler: function () {
+            login();
+        }
+    });
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: ctx+"login",
+            data: $('#signupForm').serialize(),
+            success: function (r) {
+                if (r.code == 0) {
+                	saveInfo(r.skin);
+              		parent.location.href = '/index';
+              		sessionStorage.removeItem('logout');
+                } else {
+                	$('#error-box').html("<label class='error'><i class='zmdi zmdi-close-circle mr5'></i>" + r.msg + '</label>').show();
+                }
+            },
+        });
+    }
+
+    function validateRule() {
+        var icon = "<i class='zmdi zmdi-close-circle mr5'></i>";
+        $("#signupForm").validate({
+            rules: {
+                username: {
+                    required: true
+                },
+                password: {
+                    required: true
+                }
+            },
+            messages: {
+                username: {
+                    required: icon + $('#enterUserName').val(),
+                },
+                password: {
+                    required: icon + $('#enterPassword').val(),
+                }
+            },
+			errorPlacement:function(error,element){
+				$(element).closest('.group-box').find('.error-box').html(error).show();
+			},
+            success: function (element) {
+            	$(element).closest('.group-box').find('.error-box').hide();
+            }
+        })
+    }
+
+    function saveInfo(skin) {
+        try {
+            if ($('#remember_me').is(':checked')) {
+                var username = $('#username').val(), password = $('#password').val();
+                if (username && password) {
+                	username = base64encode(utf16to8(username));
+                	password = base64encode(utf16to8(password));
+                	setCookie("username", username);
+                	setCookie("password", password);
+                }
+            } else {
+            	setCookie("username", "");
+            	setCookie("password", "");
+            }
+            setCookie("skin", skin);
+        } catch (e) {
+
+        }
+    }
+
+	var rLogin = {
+ 		//初始化页面跳转，为了防止从iframe跳转到login页面直接在iframe中显示login页面
+		initPage : function() {
+ 			if(window.top != window.self){
+ 				top.location.href = location.href;
+ 			}
+ 		}
+   	}
+</script>
+</body>
+</html>

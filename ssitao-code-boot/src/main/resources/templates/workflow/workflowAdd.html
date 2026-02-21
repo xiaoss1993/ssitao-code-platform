@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<div id="hideParam">
+				<input type="hidden" id="data" th:value="${data}"/>
+				<input type="hidden" id="type" name="type"/>
+				<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+				<input type="hidden" id="isContinue" name="isContinue"/>
+				<input type="hidden" id="speciData" name="speciData" />
+				<input type="hidden" id="pageTitle" name="pageTitle" th:value="${pageTitle}"/>
+				<input type="hidden" id="pageId" name="pageId" th:value="${pageId}"/>
+				<input type="hidden" id="objectId" name="objectId" th:value="${objectId}">
+				<input type="hidden" id="transitionId" name="transitionId" th:value="${transitionId}">
+				<input type="hidden" id="currentNodeId" name="currentNodeId" th:value="${currentNodeId}">
+				<input type="hidden" id="toNodeId" name="toNodeId" th:value="${toNodeId}">
+				<input type="hidden" id="workflowId" name="workflowId" th:value="${workflowId}">
+				<input type="hidden" id="transitionName" name="transitionName" th:value="${transitionName}">
+				<input type="hidden" id="isCopy" name="isCopy" th:value="${isCopy}">
+				<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}">
+				<input type="hidden" id="belongId" name="belongId" th:value="${belongId}">
+				<input type="hidden" id="belongType" name="belongType" th:value="${belongType}">
+					
+				<input type="hidden" id="isDerive" name="isDerive" th:value="${isDerive}">
+				<input type="hidden" id="relateId" name="relateId" th:value="${relateId}">
+				<input type="hidden" id="srcObjectId" name="srcObjectId" th:value="${srcObjectId}">
+				<input type="hidden" id="srcWorkflowType" name="srcWorkflowType" th:value="${srcWorkflowType}">
+				<input type="hidden" id="isDeriveDraft" name="isDeriveDraft" th:value="${isDeriveDraft}">
+				<input type="hidden" id="nonce" name="nonce" th:value="${nonce}">
+				
+				<input type="hidden" id="errorMsg" name="errorMsg" th:value="${errorMsg}">
+				<input type="hidden" id="onlySave" name="onlySave" value="N">
+				<input type="hidden" id="isDraft" name="isDraft" value="N">
+				<input type="hidden" id="notShowDetailTabs" name="notShowDetailTabs" th:value="N">
+			</div>
+			
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul"></ul>
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" th:each="tran:${tranList}" class="layui-layer-btn0 btns cp" th:attr="tranId=${tran.id},toNodeId=${tran.toNodeId},isContinue=${tran.isContinue}" onclick="$('#transitionId').val($(this).attr('tranId'));$('#toNodeId').val($(this).attr('toNodeId'));$('#isContinue').val($(this).attr('isContinue'))" th:value="${tran.name}"/>
+							<input type="button" class="layui-layer-btn0 btns cp onlySave" th:value="保存草稿" onclick="$('#onlySave').val('Y');$('#isDraft').val('Y');onlySaveData();" th:style="${isEdit ne 'Y'}?'':'display:none'"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+				<div class="layout-right"></div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], iframeIndex = [[${iframeIndex}]];</script>
+	
+	<script>
+		var objectType = $('#objectType').val();
+		$(function() {
+			var errorMsg = $('#errorMsg').val();
+			if(errorMsg) {
+				parent.layer.closeAll();
+				var index = parent.layer.confirm(errorMsg, {
+					btn : [$.i18n.prop("common.comfirm")]
+				});
+			}
+			
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl(objectType);
+			controlBtnShowPosition();
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			$("#operate").html5Validate(function() {
+				submitWorkflow();
+			}, {
+				validate: function() {
+					return customValidate(objectType);
+				}
+			});
+			
+			hideLoading();
+		});
+		
+		function submitWorkflow() {
+			var isContinue = $('#isContinue').val();
+			onlySaveData(isContinue);
+		}
+		
+		function onlySaveData(isContinue) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflow/saveMyWorkflow",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					var tipMsg = '';
+					if(data.msg) {
+						var msgData = eval('('+data.msg+')');
+						if(msgData.tipMsg) {
+							tipMsg = msgData.tipMsg;
+						}
+					}
+					
+					if (data.code == 0) {
+						parent.layer.msg(tipMsg);
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+							$('input[name="code"]').val('');
+						}else {
+							if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								if(parentFrame && typeof parentFrame.returnBackAndReLoad== "function") {
+									parentFrame.returnBackAndReLoad(true);
+								}else{
+									returnBackAndReLoad();
+								}
+							}else{
+								hideLoading();
+								var srcWorkflowType = $('#srcWorkflowType').val();
+								if(srcWorkflowType && srcWorkflowType == 'TSC'){//如果是测试计划派生缺陷
+									if(iframeIndex){
+										parent.$('#layui-layer' + iframeIndex).show();
+										parent.$('#layui-layer-shade' + iframeIndex).show();
+									}
+									tabReturnBack2({'isReturnPrev':true});
+								}else{
+									returnBackAndReLoad();
+								}
+							}
+						}
+					} else {
+						parent.layer.msg(tipMsg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

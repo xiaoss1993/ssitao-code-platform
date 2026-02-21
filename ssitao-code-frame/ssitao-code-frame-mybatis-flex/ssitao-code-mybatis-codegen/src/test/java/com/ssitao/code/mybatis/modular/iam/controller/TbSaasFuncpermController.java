@@ -1,0 +1,95 @@
+package com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.controller;
+
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.entity.TbSaasFuncperm;
+import com.ssitao.code.frame.mybatisflex.codegen.test.modular.iam.service.TbSaasFuncpermService;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
+/**
+ * 租户数据权限 控制层。
+ *
+ * @author ssitao
+ * @since 1.0.0
+ */
+@RestController
+@RequestMapping("/tbSaasFuncperm")
+public class TbSaasFuncpermController {
+
+    @Autowired
+    private TbSaasFuncpermService tbSaasFuncpermService;
+
+    /**
+     * 保存租户数据权限。
+     *
+     * @param tbSaasFuncperm 租户数据权限
+     * @return {@code true} 保存成功，{@code false} 保存失败
+     */
+    @PostMapping("save")
+    public boolean save(@RequestBody TbSaasFuncperm tbSaasFuncperm) {
+        return tbSaasFuncpermService.save(tbSaasFuncperm);
+    }
+
+    /**
+     * 根据主键删除租户数据权限。
+     *
+     * @param id 主键
+     * @return {@code true} 删除成功，{@code false} 删除失败
+     */
+    @DeleteMapping("remove/{id}")
+    public boolean remove(@PathVariable String id) {
+        return tbSaasFuncpermService.removeById(id);
+    }
+
+    /**
+     * 根据主键更新租户数据权限。
+     *
+     * @param tbSaasFuncperm 租户数据权限
+     * @return {@code true} 更新成功，{@code false} 更新失败
+     */
+    @PutMapping("update")
+    public boolean update(@RequestBody TbSaasFuncperm tbSaasFuncperm) {
+        return tbSaasFuncpermService.updateById(tbSaasFuncperm);
+    }
+
+    /**
+     * 查询所有租户数据权限。
+     *
+     * @return 所有数据
+     */
+    @GetMapping("list")
+    public List<TbSaasFuncperm> list() {
+        return tbSaasFuncpermService.list();
+    }
+
+    /**
+     * 根据主键获取租户数据权限。
+     *
+     * @param id 租户数据权限主键
+     * @return 租户数据权限详情
+     */
+    @GetMapping("getInfo/{id}")
+    public TbSaasFuncperm getInfo(@PathVariable String id) {
+        return tbSaasFuncpermService.getById(id);
+    }
+
+    /**
+     * 分页查询租户数据权限。
+     *
+     * @param page 分页对象
+     * @return 分页对象
+     */
+    @GetMapping("page")
+    public Page<TbSaasFuncperm> page(Page<TbSaasFuncperm> page) {
+        return tbSaasFuncpermService.page(page);
+    }
+
+}

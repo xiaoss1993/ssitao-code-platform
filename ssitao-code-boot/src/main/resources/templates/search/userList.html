@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/popup-search.css"/>
+<head th:include="include::headerContent"></head>
+<body class="gray-bg" th:classappend="${session.theme}">
+
+	<div class="ibox-content search-box">
+		<input id="selectIds" th:value="${selectIds}" type="hidden">
+		<div class="box-left">
+			<div class="search">
+				<input autocomplete="off" class="form-control" id="search" name="name" type="text" th:placeholder="搜索用户">
+				<i class="zmdi zmdi-search"></i>
+			</div>
+			
+			<div class="mt-tabpage" js-tab="2">
+				<div class="mt-tabpage-title">
+					<a href="javascript:;" class="mt-tabpage-item mt-tabpage-item-cur" type="TREE">用户列表</a>
+					<a href="javascript:;" class="mt-tabpage-item" type="LIST">常用联系人</a>
+				</div>
+				<div class="mt-tabpage-count">
+					<ul class="mt-tabpage-cont__wrap">
+						<li class="mt-tabpage-item">
+							<div class="list-box">
+								<ul class="dataList" id="userList"></ul>
+							</div>
+						</li>
+						<li class="mt-tabpage-item">
+							<div class="list-box">
+								<ul class="dataList" id="contactList"></ul>
+							</div>
+						</li>
+					</ul>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+		<div class="box-right">
+			<div class="selected-list">
+				<span th:text="#{common.select.list}"></span>
+				<i class="zmdi zmdi-tag-close" onclick="deleteAll($(this))" title="清除全部"></i>
+			</div>
+			<ul class="selected-ul"></ul>
+		</div>
+	</div>
+
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript">var isMul = [[${isMul}]];</script>
+	<script src="/js/form/mt-tabpage.js"></script>
+	<script src="/js/form/popup-search.js"></script>
+	
+	<script>
+		var selectIds = $('#selectIds').val();
+		$(document).ready(function() {
+			$('.mt-tabpage').tab({
+		        curDisplay: 1,
+		        changeMethod: 'horizontal'
+		    });
+			
+			$('.list-box').height($('.box-left').height() - 64);
+			
+			getSearchUserList('CUR'); 
+		});
+		
+		//搜索用户列表, name可以是用户名，或者部门, 或者CUR， 或者所有，或者ALL, 或者全部
+		function getSearchUserList(name) {
+			if(!name){
+				name = 'CUR';
+			}
+			showLoading();
+			$.ajax({
+				type : "GET",
+				url : "/sys/user/userList?name=" + name,
+				success : function(data) {
+					loadUserList(data, 'userList');
+					hideLoading();
+				}
+			});
+		}
+		
+		//获取常用联系人列表
+		function getDataList(userName) {
+			showLoading();
+			$.ajax({
+				type : "GET",
+				url : "/sys/user/contactUserList?userName=" + userName,
+				success : function(data) {
+					loadUserList(data, '', 'Y');
+					hideLoading();
+				}
+			});
+		}
+		
+		//加载用户列表
+		function loadUserList(data, divBox, isContact) {
+			var html = '';
+			if(!divBox) {
+				divBox = 'contactList';
+			}
+			var $dataList = $('#' + divBox);
+			if(data && data.length) {
+				var user = '', hasSelected = false, mtype, selectedHtml = '';
+				$dataList.html(''); 
+				var $ul = $('.box-right ul');
+				for(var i = 0; i < data.length; i++) {
+					user = data[i];
+					hasSelected = false;
+					if(selectIds) {
+						if(selectIds.indexOf(user.id) > -1) {
+							hasSelected = true;
+						}
+					}
+					
+					mtype = (user.sex == 1 ? 'boy' : 'girl');
+					if(user.deptName) {
+						html += '<li id="'+user.id+'" name="'+user.name+'" class="dataLi '+(hasSelected ? 'selected':'')+'" mType="' + mtype + '" headImg="'+user.picId+'"><span><span class="jstree-default"><i class="jstree-icon jstree-themeicon"></i></span>'+user.name+'&nbsp;[&nbsp;'+user.deptName+'&nbsp;]</span>'+ ((isContact && isContact == 'Y') ? '<span class="del" onclick="delContactUser($(this), \''+user.id+'\')" title="删除常用联系人">删除</span>' : '') +'</li>';
+					}else {
+						html += '<li id="'+user.id+'" name="'+user.name+'" class="dataLi '+(hasSelected ? 'selected':'')+'" mType="' + mtype + '" headImg="'+user.picId+'"><span><span class="jstree-default"><i class="jstree-icon jstree-themeicon"></i></span>'+user.name+ '</span>' + ((isContact && isContact == 'Y') ? '<span class="del" onclick="delContactUser($(this), \''+user.id+'\')" title="删除常用联系人">删除</span>' : '') +'</li>';
+					}
+					
+					//判断已选列表是否存在值
+					if(!$ul.has("li").length) {
+						if(hasSelected) {
+							selectedHtml += getSelectedHtml(user.id, mtype, user.name, user.picId);
+						}
+					}
+					
+					if(i > 0 && i%10 == 0) {
+						$dataList.append(html);
+						html = '';
+					}
+				}
+				$dataList.append(html);
+				if(selectedHtml) {
+					$ul.html(selectedHtml);
+				}
+				
+				//从用户列表选择用户
+				$('#'+divBox+' .dataLi').click(function() {
+					var $obj = $(this);
+					if(!$obj.hasClass('selected')) {
+						var html = getSelectedHtml($obj.attr('id'), $obj.attr('mtype'), $obj.attr('name'), $obj.attr('headImg'));
+						if(isMul) {
+							$ul.append(html);
+						}else {
+							$('.dataList .dataLi').removeClass('selected');
+							$ul.html(html);
+						}
+						$obj.addClass('selected');
+					}else {
+						deleteOne($ul.find('li[attrid="'+$obj.attr('id')+'"]'));
+					}
+				});
+				
+			}else {
+				$dataList.html('<li class="none">无数据</li>');
+			}
+		}
+		
+		//保存常用联系人
+		function saveContactUser() {
+			showLoading();
+			getSelectedUserId();
+			$.ajax({
+				type : "POST",
+				url : "/sys/user/saveContactUser?ids=" + selectIds,
+				success : function(data) {
+					hideLoading();
+					var type = $('.mt-tabpage-item-cur').attr('type');
+					parent.layer.msg(data.msg);
+				}
+			});
+		}
+		
+		//删除常用联系人
+		function delContactUser($obj, id) {
+			showLoading();
+			$obj.closest('.dataLi').remove();
+			$.ajax({
+				type : "POST",
+				url : "/sys/user/delContactUser?ids=" + id,
+				success : function(data) {
+					hideLoading();
+				}
+			});
+		}
+		
+		//搜索框监听事件
+		$('#search').keyup(function(event){
+			if(event.keyCode ==13) {
+				var searchVal = $(this).attr('searchVal');
+				if((searchVal || $(this).val()) && (!searchVal || searchVal != $(this).val())) {
+					loadDataList($('.mt-tabpage-item-cur').attr('type'));
+				}
+			}
+	    });
+		
+		function loadDataList(type) {
+			getSelectedUserId();
+			var $search = $('#search'), searchVal = $search.val();
+			$search.attr('searchVal', searchVal);
+			if(type == 'TREE') {
+				getSearchUserList(searchVal);
+			}else {
+				getDataList(searchVal);
+			}
+		}
+		
+		function getSelectedUserId() {
+			var $ul = $('.box-right ul');
+			if($ul.has("li").length) {
+				$ul.find('li').each(function() {
+					if(selectIds && selectIds.indexOf($(this).attr('attrId')) < 0) {
+						selectIds += ',' + $(this).attr('attrId');
+					}else if(!selectIds) {
+						selectIds = $(this).attr('attrId');
+					}
+				});
+			}
+		}
+		
+		function loadDefaultCheckedOptions(type) {
+			$('#search').val('');
+			loadDataList(type);
+		}
+		
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/tweb_lite_test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      filters: stat,wall
+      max-active: 50
+      initial-size: 5
+      min-idle: 5
+      max-wait: 10000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: false
+      validation-query: SELECT 1
+      max-open-prepared-statements: 2000
+
+# 测试环境日志配置
+logging:
+  level:
+    root: INFO
+    com.tweb: DEBUG
+    com.ssitao.code.frame.mybatisflex: DEBUG
+    com.tweb.modular.flex.mapper: DEBUG
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(%-5p){cyan} %clr([%15.15t]){faint} %clr(%m){cyan} %clr(:){faint} %clr(%L){green} %n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:%L - %msg%n"
+  file:
+    name: logs/tweb-lite-test.log
+  # 开启 SQL 日志
+  show-sql: true
+
+# 测试环境 TWeb 配置
+tweb:
+  app:
+    name: tweb-lite-test
+    version: 1.0.0-SNAPSHOT
+    environment: test
+  logging:
+    sql:
+      enabled: true
+      console: true
+      file: true
+      # 测试环境记录慢SQL
+      slow-sql-millis: 500
+    business:
+      enabled: true

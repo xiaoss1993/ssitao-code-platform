@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${field.id}"/>
+			<input type="hidden" id="isCommon" name="isCommon" th:value="${field.isCommon}"/>
+			<input type="hidden" id="fieldType" name="fieldType" th:value="G"/>
+			<input type="hidden" id="dataType" name="dataType" th:value="${field.dataType}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${field.objectType}"/>
+			<input type="hidden" id="htmlType" name="htmlType" th:value="GROUP"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="showName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="分组名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="showName" type="text" th:value="${field.showName}" id="showName" placeholder=" " autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preFieldId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置字段"></span></div>
+					<div class="field-div field-content">
+						<select id="preField" class="selectpicker" name="preFieldId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${preFieldList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${field.remark}"></textarea>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="groupFieldIds" th:attr="htype=@{'GROUP_'+${field.objectType}}">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="分组字段"></span></div>
+					<div class="field-div field-content">
+						<input type="hidden" id="_groupFieldIds" name="groupFieldIds" th:value="${field.groupFieldIds}">
+						<input class="form-control form-control-popup" name="groupFieldName" th:tagName="请选择分组字段" th:value="${groupFieldNames}" type="text" placeholder=""  autocomplete="off" readonly="readonly" th:attr="htype=@{'GROUP_'+${field.objectType}}" isMul>
+						<i class="zmdi zmdi-search"></i>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="isShowed" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title">页面显示</span></div>
+					<div class="field-div field-content">
+						<input type="checkbox" name="isShowed" th:value="${field.isShowed}" class="lcs_check lcs_tt1" on_text="是" off_text="否" th:checked="${field.isShowed} eq 'Y'" />
+					</div>
+				</li>
+				<li class="field-li content-whole" id="groupStyle" field="groupStyle" th:style="${field.isShowed} eq 'Y' ? 'display:flex' : 'display:none' ">
+					<ul class="li-ul">
+						<li class="field-li content-whole check" field="signDefaultRule" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="分组风格"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="signDefaultRule" id="_signDefaultRule3" value="JJ" data-target="radio" th:checked="${field.signDefaultRule} eq 'JJ' or ${field.signDefaultRule} eq 'N' ">
+								    <label for="_signDefaultRule3" th:text="简洁"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="signDefaultRule" id="_signDefaultRule1" value="ZT" data-target="radio" th:checked="${field.signDefaultRule} eq 'ZT' ">
+								    <label for="_signDefaultRule1" th:text="商务"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="signDefaultRule" id="_signDefaultRule2" value="CT" data-target="radio" th:checked="${field.signDefaultRule} eq 'CT' ">
+								    <label for="_signDefaultRule2" th:text="传统"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="BGColor" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.option.setColor}"></span></div>
+							<div class="field-div field-content set-color">
+								<input id="bgColor" name="bgColor" type="hidden" th:value="${field.bgColor}">
+								<input id="fColor" name="fColor" type="hidden" th:value="${field.fColor}">
+								<div class="palette" th:style="'background-color:' + ${field.bgColor} + ';color:' + ${field.fColor}"><i class="zmdi zmdi-palette mr5" th:style="@{'color:'+${field.fColor}}"></i><span class="ml15" th:text="#{field.option.palette}"></span></div>
+								<div class="paigusu" type="bg" th:text="#{field.option.bgColor}"></div>
+								<div class="paigusu" type="fd" th:text="#{field.option.fColor}"></div>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="JJName" htype="SIGN" th:style="(${field.signDefaultRule} eq 'JJ' or ${field.signDefaultRule} eq 'N') ? 'display:flex' : 'display:none' ">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+							<div class="field-div field-sign-title3" th:style="'color:' + ${field.bgColor} + ';border-bottom:1px solid ' + ${field.bgColor}">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title show-name" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole sign" field="ZTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'ZT' ? 'display:flex' : 'display:none' ">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+							<div class="field-div field-sign-title2" th:style="'border-bottom:1px solid ' + ${field.bgColor}">
+								<div class="title-box" th:style="'background-color:' + ${field.bgColor}">
+									<div class="title show-name" th:style="'color:' + ${field.fColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">显示名称</div>
+									<div class="square"></div>
+								</div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole sign" field="CTName" htype="SIGN" th:style="${field.signDefaultRule} eq 'CT' ? 'display:flex' : 'display:none' ">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title"></span></div>
+							<div class="field-div field-sign-title1 show-name" th:style="'border-left:10px solid ' + ${field.bgColor}" th:text="${#strings.isEmpty(field.showName) ? '显示名称' : field.showName }">
+								显示名称
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			
+			$('.btn-box').removeClass('hide');
+			
+			//改变显示名称时，同步修改标签显示名称
+			$('#showName').on('change', function() {
+				$('.show-name').text($(this).val());
+			});
+			
+			$('#textLength').on('change', function() {
+				$('#textDefault').attr('maxLength', Number($(this).val())/2);
+				$('#textDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			$('#areaLength').on('change', function() {
+				$('#areaDefault').attr('maxLength', Number($(this).val())/2);
+				$('#areaDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			//设置颜色
+			$('.paigusu').paigusu({
+				recommend : '255,87,34,1|255,153,72,1|249,189,101,1|4,190,91,1|70,182,254,1|0,150,136,1|153,136,255,1|121,85,72,1|158,158,158,1|0,0,0,1',
+				color : '#050505'
+			},function(event,obj){
+				var hex = obj.hex;
+				if($(event).attr('type') == 'bg') {
+					$('.palette').css({'background-color':'#' + hex, 'border':'1px solid '+ '#' + hex});
+					$('#bgColor').val('#' + hex);
+					$('.field-sign-title2, .field-sign-title3').css('border-bottom', '1px solid ' + '#' + hex);
+					$('.field-sign-title2 .title-box, .field-sign-title4').css('background-color', '#' + hex);
+					$('.field-sign-title3').css('color', '#' + hex);
+					$('.field-sign-title1').css('border-left', '10px solid ' + '#' + hex);
+					
+					$('.palette').css('color','#ffffff');
+					$('#fColor').val('#ffffff');
+					$(".zmdi-palette").css('color', '#ffffff');
+					$('.field-sign-title2 .title, .field-sign-title4').css('color', '#ffffff');
+				}else {
+					$('.palette').css('color','#' + hex);
+					$('#fColor').val('#' + hex);
+					$(".zmdi-palette").css('color', '#' + hex);
+					$('.field-sign-title2 .title, .field-sign-title4, .field-sign-title4 .show-name, .field-sign-title4 .zmdi').css('color', '#' + hex);
+				}
+				$(".paigusu").hide();
+			});
+			
+			$(".palette").click(function() {
+				if($('.paigusu').is(':visible')) {
+					$('.paigusu').hide();
+				}else {
+					$('.paigusu').show();
+				}
+			});
+			
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/field/save",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad();
+						}
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="showName"]').val('');
+						}else {
+							parent.layer.closeAll();
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		//标签字段默认值切换
+		$('input[name="signDefaultRule"]').click(function() {
+			var $li = $(this).closest('li');
+			var value = $(this).val();
+			$li.nextAll().hide();
+			if(value == 'ZT' || value == 'CT' || value == 'JJ') {
+				$li.nextAll('li[field="BGColor"]').show();
+				$li.nextAll('li[field="'+value+'Name"]').show();
+				$('input[name="extendClass"]').removeAttr("required");
+			}else if(value == 'BZ') {
+				$li.nextAll('li[field="'+value+'Name"]').show();
+				$('input[name="extendClass"]').removeAttr("required");
+			}else if(value == 'ZDY') {
+				$li.nextAll('li[field="extendClass"]').show();
+				$('input[name="extendClass"]').attr("required", true);
+			}
+		});
+		
+		function switchOnOrOff($obj, type) {
+			if(type == 'ON') {
+				$('#groupStyle').show();
+			}else {
+				$('#groupStyle').hide();
+			}
+		}
+	</script>
+	
+</body>
+</html>

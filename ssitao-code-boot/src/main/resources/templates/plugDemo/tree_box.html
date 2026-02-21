@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include-back :: header"></head>
+
+<style>
+	.tree-frame{width:100%;height:100%;display:flex;position:relative;font-size:14px;line-height:1.4;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Liberation Sans", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, SimSun, "WenQuanYi Zen Hei Sharp", sans-serif;}
+	.tree-frame .frame-left{
+		width:246px;
+    	transition: margin .3s;
+    	flex-shrink: 0;
+    	overflow-y:auto;
+    	overflow-x:hidden;
+    	position:relative;
+    	height:100%;
+    	border-right: 1px solid #e3e9ed;
+    }
+    
+    .filter-panel-group{
+	    border-bottom: 1px solid #e3e9ed;
+	    padding-left: 16px;
+    	padding-bottom: 4px;
+    	padding: 8px 0 8px 16px;
+    }
+    .filter-panel-group .panel-option{
+    	padding: 8px 0;
+    	display: block;
+    }
+    .sidebar-tree{
+	    padding-right:10px;
+    }
+    .sidebar-tree .tree-header{
+    	padding: 8px 0 6px 14px;
+	    display: -webkit-box;
+	    display: -webkit-flex;
+	    display: -moz-box;
+	    display: -ms-flexbox;
+	    display: flex;
+	    -webkit-box-align: center;
+	    -webkit-align-items: center;
+	    -moz-box-align: center;
+	    -ms-flex-align: center;
+	    align-items: center;
+	    cursor: pointer;
+    }
+    .header-item-title{
+    	color: #40485b!important;
+    	padding-left: 4px;
+    }
+    .sidebar-tree .file-icon-small{width:24px;height:22px;border:0;}
+    .sidebar-tree .tree-body{
+    	position: relative;
+	    cursor: default;
+	    background: #fff;
+	    color: #606266;
+    }
+    .tree-body .tree-node{
+    	white-space: nowrap;
+   	 	outline: 0;
+   	 	position: relative;
+    	cursor: default;
+    	background: #fff;
+    	color: #606266;
+    }
+    .tree-body .tree-content{
+	   	display: -webkit-box;
+	    display: -ms-flexbox;
+	    display: -webkit-flex;
+	    display: -moz-box;
+	    display: flex;
+	    -webkit-box-align: center;
+	    -ms-flex-align: center;
+	    -webkit-align-items: center;
+	    -moz-box-align: center;
+	    align-items: center;
+	    height: 26px;
+	    padding: 16px 0;
+	    cursor: pointer;
+    }
+    .tree-body .tree-content:hover, .tree-body .tree-content:hover .item-dropdown{
+    	background-color:#f7f7f7;
+    }
+    .tree-content .expand-icon{
+    	padding: 6px;
+    	cursor: pointer;
+	    color: #c0c4cc;
+	    font-size:25px;
+	    margin-left: 14px;
+    }
+    .tree-content .sidebar-tree-item{
+    	display: -webkit-box;
+	    display: -webkit-flex;
+	    display: -moz-box;
+	    display: -ms-flexbox;
+	    display: flex;
+    	-webkit-box-pack: justify;
+	    -webkit-justify-content: space-between;
+	    -moz-box-pack: justify;
+	    -ms-flex-pack: justify;
+	    justify-content: space-between;
+	    align-items:center;
+	    position:relative;
+	    -ms-flex-align: center;
+	    -webkit-box-flex: 1;
+	    -webkit-flex: 1;
+	    -moz-box-flex: 1;
+	    -ms-flex: 1;
+	    flex: 1;
+	    overflow:hidden;
+    }
+    .sidebar-tree-item .item-icon-title{
+    	display: -webkit-box;
+	    display: -webkit-flex;
+	    display: -moz-box;
+	    display: -ms-flexbox;
+	    display: flex;
+	    -webkit-box-align: center;
+	    -webkit-align-items: center;
+	    -moz-box-align: center;
+	    align-items: center;
+    }
+    .item-icon-title .item-title{
+    	padding-left: 4px;
+    	overflow: hidden;
+    	word-break: keep-all;
+    	white-space: nowrap;
+    	text-overflow: ellipsis;
+    }
+    .sidebar-tree-item .item-dropdown{
+    	position:absolute;
+    	padding-left:10px;
+    	right:-5px;
+    	height:22px;
+    	line-height:22px;
+    	background-color:#fff;
+    }
+    .item-dropdown>div {
+	    margin-right: 6px;
+	}
+    .item-dropdown .el-dropdown{
+	    display: inline-block;
+	    position: relative;
+	    color: #606266;
+	    font-size: 14px;
+    }
+    .frame-right{
+    	width:100%;
+    }
+    .tree-frame .zoom {
+	    position: relative;
+	    z-index: 10;
+	    height: 100%;
+	    border-right: 1px solid #e4eaed;
+	    cursor: ew-resize;
+	}
+	.tree-frame .sidebar-toggle {
+		color: #8c92a4;
+	    position: absolute;
+	    background: #eff4f7;
+	    -webkit-box-align: center;
+	    top: 50%;
+	    right: -20px;
+	    -webkit-transition: .2s;
+	    transition: .2s;
+	    background-color: transparent;
+	    width: 20px;
+	    height: 80px;
+	    z-index: 100;
+	    display: grid;
+	    border-top: 15px solid transparent;
+	    border-bottom: 15px solid transparent;
+	    border-left: 20px solid #e4eaed;
+	    align-items: center;
+	    text-align: center;
+	}
+	.tree-frame .sidebar-toggle>.zmdi {
+	    margin-left: -20px;
+	    font-size: 2em;
+	}
+    
+    
+    #change-line {width:4px;height:100%;overflow:hidden;cursor:e-resize;position:absolute;right:-2px;bottom:0;z-index:100000;background-color:#09C;background-color:#fff;}
+    
+</style>
+
+<!-- 访问地址： http://127.0.0.1:8080/demo?demoType=tree_box -->
+<body class="theme-blue">	
+	<div class="tree-frame">
+		<div class="frame-left" id="frame-left">
+			<div id="change-line"></div>
+			<div class="sidebar-filter">
+				<div class="filter-panel-group">
+					<a class="panel-option">
+						<i class="zmdi zmdi-home"></i>
+				       	<span>最近编辑</span>
+				    </a> 
+				    <a class="panel-option"><i class="zmdi zmdi-home"></i>
+				       	<span>我创建的</span>
+				    </a> 
+				    <a class="panel-option"><i class="zmdi zmdi-home"></i>
+				       	<span>我的收藏</span>
+				    </a> 
+				    <a class="panel-option"><i class="zmdi zmdi-home"></i>
+				       	<span>回收站</span>
+				    </a>
+				 </div>
+			</div>
+			<div class="sidebar-tree">
+				<div class="tree-header">
+					<img src="/img/tree/home.svg" class="file-icon-small">
+					<span class="header-item-title">全部文档</span>
+				</div>
+				<div class="tree-body">
+					<div role="treeitem" tabindex="-1" aria-disabled="" draggable="false" class="tree-node is-expanded is-focusable" aria-expanded="true">
+						<div class="tree-content" style="padding-left: 0px;">
+							<i class="expand-icon zmdi zmdi-caret-down"></i>
+							<div class="sidebar-tree-item">
+								<div class="item-icon-title">
+									<img src="/img/tree/ent.svg" class="file-icon-small"> 
+									<span class="item-title">企业文档撒打发打发打发发呆</span>
+								</div> 
+								<div class="item-dropdown">
+									<div class="el-dropdown">
+										<i class="iconfont zmdi zmdi-more"></i>
+									</div>
+									<div class="el-dropdown">
+										<i class="iconfont zmdi zmdi-plus"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div role="group" class="tree-node-children" style="" aria-expanded="true" data-old-padding-top="" data-old-padding-bottom="" data-old-overflow="">
+							<div class="tree-content" style="padding-left: 18px;">
+								<i class="expand-icon zmdi zmdi-caret-down"></i>
+								<div class="sidebar-tree-item">
+									<div class="item-icon-title">
+										<img src="/img/tree/folder-open.svg" class="file-icon-small"> 
+										<span class="item-title">企业文档</span>
+									</div> 
+									<div class="item-dropdown">
+										<div class="el-dropdown">
+											<i class="iconfont zmdi zmdi-more"></i>
+										</div>
+										<div class="el-dropdown">
+											<i class="iconfont zmdi zmdi-plus"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div role="group" class="tree-node-children" style="" aria-expanded="true" data-old-padding-top="" data-old-padding-bottom="" data-old-overflow="">
+								<div class="tree-content" style="padding-left: 36px;">
+									<i class="expand-icon zmdi zmdi-caret-down"></i>
+									<div class="sidebar-tree-item">
+										<div class="item-icon-title">
+											<img src="/img/tree/folder.svg" class="file-icon-small"> 
+											<span class="item-title">企业文档</span>
+										</div> 
+										<div class="item-dropdown">
+											<div class="el-dropdown">
+												<i class="iconfont zmdi zmdi-more"></i>
+											</div>
+											<div class="el-dropdown">
+												<i class="iconfont zmdi zmdi-plus"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							
+						</div>
+						
+					</div>
+				</div>
+			</div>
+				
+		</div>
+		
+		
+		<div class="zoom"><a title="收起侧栏" class="sidebar-toggle"><i class="zmdi zmdi-chevron-left"></i></a></div>
+		<div class="frame-right">
+			撒大声地多多多多多多多多多多多多多多多多
+		</div>
+		
+	</div>
+	
+<div th:include="include-back :: footer"></div>
+<script src="/js/drag.js"></script>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

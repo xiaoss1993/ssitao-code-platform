@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ssitao-code-frame-log</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ssitao-code-frame-log</name>
+    <description>审计日志模块：包含操作日志、登录日志等</description>
+
+    <modules>
+        <module>ssitao-code-log-core</module>
+        <module>ssitao-code-log-operation</module>
+        <module>ssitao-code-log-login</module>
+    </modules>
+
+</project>

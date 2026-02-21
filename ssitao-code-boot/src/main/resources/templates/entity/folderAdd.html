@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id='objectType' name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id='objectId' name="objectId" th:value="${objectId}"/>
+			<input type="hidden" id='type' name="type" th:value="${type}"/>
+			<input type="hidden" id='isContinue' name="isContinue"/>
+			
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" placeholder="请输入名称" autocomplete="off"  htype="TEXT" required="required" maxlength="128">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="parentId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级文件夹"></span></div>
+					<div class="field-div field-content">
+						<select id="parentId" class="selectpicker" name="parentId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${belongFolderList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置文件夹"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${preFolderList}" th:selected="${select.checked}" th:attr="data-content=${select.text},parentId=${select.parentId}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="保存" />
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="保存并新建"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], objectType = [[${objectType}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl(objectType);
+			
+			$('#parentId').change(function() {
+				resetPreList($('#preId').val());
+			});
+			
+			$('#preId').change(function() {
+				var parentId = $('.field-li[field="preId"] option[value="'+$(this).val()+'"]').attr('parentId');
+				if(parentId) {
+					$('#parentId').selectpicker('val', parentId);
+				}else{
+					$('#parentId').selectpicker('val', '');
+				}
+			});
+		});
+		
+		function resetPreList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/folder/getPreFolderList",
+				data : {
+					'objectType' : $('#objectType').val(),
+					'objectId': $('#objectId').val(),
+					'parentId': $('#parentId').val(),
+					'selectId': selectId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" parentId="'+data[i].parentId+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/folder/save",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var isWindowNull = false;
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoadFolder(false, $('#objectType').val());
+						}else{
+							isWindowNull = true;
+						}
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+							resetPreList(data.id);
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							if(isWindowNull) {
+								parent.layer.close(index, data.id);
+							}else{
+								parent.layer.close(index);
+							}
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate($('#objectType').val());
+			}
+		});
+		
+	</script>
+	
+</body>
+</html>

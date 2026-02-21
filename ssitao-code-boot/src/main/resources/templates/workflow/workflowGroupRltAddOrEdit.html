@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="groupId" name="groupId" th:value="${groupId}"/>
+			<input type="hidden" id="workflowType" name="workflowType" th:value="${workflowType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="workflowId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="归属流程"></span></div>
+					<div class="field-div field-content">
+						<select id="workflowId" class="selectpicker" name="workflowId" data-live-search="true" data-live-search-style="begins" title="请选择" th:disabled="${isEdit} eq 'Y'">
+							<option value="">请选择</option>
+							<option th:each="select:${workflowSelectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="instanceId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="流程模型"></span></div>
+					<div class="field-div field-content">
+						<select id="instanceId" class="selectpicker" name="instanceId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${instanceSelectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存" onclick="$('#isContinue').val('N')"/>
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存并关联" onclick="$('#isContinue').val('Y')" th:style="${isEdit} eq 'Y'?'display:none':''"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('workflowGroup');
+			
+			$('#workflowId').change(function() {
+				$('#workflowType').val($(this).val());
+				resetInstanceList($(this).val());
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflowGroup/saveLinkWorkflowModel",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.loadGroupRltList(data.id);
+						}
+						
+						if($('#isContinue').val() == 'N') {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index);
+							parent.layer.msg(data.msg);
+						}else {
+							resetWorkflowList($('#groupId').val());
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function resetWorkflowList(groupId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflowGroup/getWorkflowList",
+				data : {
+					'groupId': groupId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>', selectId = '';
+						for(var i = 0; i < data.length; i++) {
+							if(data[i].checked) {
+								selectId = data[i].id;
+							}
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#workflowId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+						
+						$('#workflowType').val(selectId);
+						resetInstanceList($('#workflowId').val());
+					}
+				}
+			});
+		}
+		
+		function resetInstanceList(workflowType) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflowGroup/getInstanceList",
+				data : {
+					'workflowType' : workflowType
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>', selectId = '';
+						for(var i = 0; i < data.length; i++) {
+							if(data[i].checked) {
+								selectId = data[i].id;
+							}
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#instanceId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+	
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${position.id}"/>
+			<input type="hidden" id="type" name="type" th:value="type"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" id="_name" type="text" placeholder=" " th:value="${position.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="parentId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级职位"></span></div>
+					<div class="field-div field-content">
+						<select id="parentId" class="selectpicker" name="parentId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${parentPositionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置职位"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+							<option value="" th:text="#{common.select}"></option>
+							<option th:each="select:${prePositionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="avgCost" htype="NUMBER">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="职位费用"></span></div>
+					<div class="field-div field-content-num">
+						<input type="text" name="avgCost" class="num-input" deci="0" placeholder="请输入职位费用" th:value="${position.avgCostStr}" isInt="Y"/>
+						<div class="sumtips">人天</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="2048" th:text="${position.remark}" placeholder="请输入备注"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:if="${#strings.isEmpty(position.id)}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('POSITION');
+			
+			$('#parentId').change(function() {
+				resetPrePositionList($(this).val(), $('#preId').val());
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/position/savePosition",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							parentFrame.reLoad(data.id);
+						}
+						if(isContinue && isContinue == 'Y') {
+							resetPrePositionList($('#parentId').val(), data.id);
+							$('#_name').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.msg(data.msg);
+							parent.layer.close(index);
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('POSITION');
+			}
+		});
+		
+		function resetPrePositionList(parentId, preId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/position/getPreOptionList",
+				data : {
+					'parentId' : parentId,
+					'preId': preId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', preId);
+					}
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/filter-add.css"/>
+<style>
+	.page-ul.page-ul2{margin-top:10px;}
+	.page-ul .field-li .field-div .form-control{border:1px solid #e5e6e7!important;border-radius:4px!important;}
+	.page-ul .field-li .field-content input:focus, .page-ul .field-li .field-content input:hover{border:1px solid var(--theme)!important;}
+	.layer-box{padding:0px!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body addPage" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole sign" field="operateRule" htype="SIGN">
+					<div class="field-div field-sign-title3">
+						<i class="zmdi zmdi-hdr-strong mr10"></i>
+						<div class="title" th:text="监听器设置"></div>
+					</div>
+					<div class="field-div field-sign-content"></div>
+				</li>
+				<li class="field-li content-whole" htype="TEXT" th:each="aop:${aopModuleList}" th:id="${aop.id}">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="${aop.name}"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" th:name="${aop.val}" th:value="${aop.exeCls}" type="text" placeholder="请输入监听器类路径，如：com.dream.extend.Monitor" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole textarea" field="" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" th:value="#{common.save}"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="showBtnBox();window.history.back();"></a>
+					</div>
+				</li>
+			</ul>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; objectType = [[${param.objectType}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+	<script src="/js/form/filter-add.js"></script>
+	
+	<script type="text/javascript">
+		$(function() {
+			hideLoading();
+			$('.layui-submit-btn').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			showLoading();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/saveCommonAop",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						showBtnBox();
+						parent.layer.msg(data.msg);
+						window.location.href = '/commonAop?objectType=' + objectType;
+					}
+					parent.layer.msg(data.msg);
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>	
+	
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/list.filter.css">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+	.filter-box .filter-middle .from-basic .form-control{border:1px solid #e5e6e7!important;padding-left:25px!important;padding-bottom:6px!important;}
+	.radio{margin-top:2px!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${rewPoint.id}"/>
+			<input type="hidden" id="orderNum" name="orderNum" th:value="${rewPoint.orderNum}"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="model" name="model" value="REWPOINT"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" value="Y"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="fieldProperty" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="基本属性"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" id="_name" type="text" placeholder=" " th:value="${rewPoint.name}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="prePointId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置评审点"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" th:title="#{common.select}">
+									<option value="" th:text="#{common.select}"></option>
+									<option th:each="select:${prePointList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole check preContent" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="IN" data-target="radio" th:checked="${rewPoint.status} eq 'IN'" required>
+								    <label for="_status1" th:text="未发布">
+								    </label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="RN" th:checked="${rewPoint.status} eq 'RN'">
+								    <label for="_status2" th:text="使用中">
+								    </label>
+							    </div>
+							</div>
+						</li>
+		<!-- 				<li class="field-li content-whole check" field="isShowCategory" htype="RADIO"> -->
+		<!-- 					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="显示分类"></span></div> -->
+		<!-- 					<div class="field-div field-content"> -->
+		<!-- 						<input type="checkbox" name="isShowCategory" th:value="${rewPoint.isShowCategory}" class="lcs_check lcs_tt1" th:checked="${rewPoint.isShowCategory} eq 'Y'" off_text="否" on_text="是" /> -->
+		<!-- 					</div> -->
+		<!-- 				</li> -->
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="描述"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${rewPoint.remark}" placeholder="请输入描述"></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li r content-whole sign nextContent" field="rewElement" htype="SIGN" th:style="${isEdit} eq 'N' ? 'display:none;':'' ">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="评审类别"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<div class="button-box">
+									<button type="button" class="btn t-btn n-active add mb10 mr5" onclick="addCategory();">
+										<i class="fa fa-plus mr5"></i>
+										<span th:text="新建评审类别" class="pt1 h18"></span>
+									</button>
+								</div>
+								<table grid-manager="demoOne" id="category-table" ></table>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" th:value="保存" th:style="${isEdit} eq 'N' ? 'display:none;':'' "/>
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" id="nextStep" th:value="下一步" th:style="${isEdit} eq 'Y' ? 'display:none;':'' "/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="nextSave" th:value="保存"/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="preStep" th:value="上一步"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+		</form>
+	
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O,E,D';
+		</script>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('point');
+			
+			loadCategoryList();
+			
+			$('#nextSave').click(function() {
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index);
+				parent.layer.msg('操作成功');
+			});
+			
+			$('#preStep').click(function() {
+				$('.preContent').show();
+				$('.nextContent').hide();
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/rew/saveOrUpdatePoint",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if($('#isEdit').val() == 'Y') {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'REFRESH');
+							parent.layer.msg(data.msg);
+						}else {
+							$('#id').val(data.id);
+							loadCategoryList();
+							$('.preContent').hide();
+							$('.nextContent').show();
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function loadCategoryList() {
+			var id = $('#id').val(), $table = $('#category-table'), $tableWrap = $table.closest('.table-wrap');
+			if(id) {
+				if($tableWrap.length) {
+					$tableWrap.show();
+				}else {
+					$table.initTable({
+						tableId:'category-table',
+						model:'REWCATEGORY',
+						supportPage: true,
+						objectId: $('#id').val(),
+						rights: rights,
+					});
+				}
+			}
+		}
+		
+		function addCategory() {
+			var curId = getCurRowId();
+			top.layer.open({
+				type : 2,
+				title : '新建评审类别',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '700px', '600px' ],
+				content : 'rew/addOrEditCategory/null?preId='+curId+'&pointId=' + $('#id').val() + '&parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('category-table', true);
+				}
+			});
+		}
+		
+		function editEntity(module, id, objectType) {
+			top.layer.open({
+				type : 2,
+				title : '编辑评审类别',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '700px', '600px' ],
+				content : 'rew/addOrEditCategory/'+id+'?preId=&pointId=' + $('#id').val() + '&parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('category-table', true);
+				}
+			});
+		}
+
+		function getCurRowId() {
+			return $('.table-wrap tbody tr.selected').attr('id');;
+		}
+		
+		var openTrIds = '';
+		function reLoad() {
+			$('#category-table').GM('onlyRefresh');
+		}
+		
+		function removeEntity(module, ids) {
+			var index = top.layer.confirm('删除评审类别把关联的评审类别和检查要素一起删除，确定要删除选中的评审点吗？', {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/rew/removeCategory',
+					type : "post",
+					data : {
+						'ids' : ids
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							reLoad();
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			})
+		}
+		
+		function openEntity(module, id) {
+			top.layer.open({
+				type : 2,
+				title : '查看评审类别',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '700px', '600px' ],
+				content : 'rew/viewCategory/'+id+'?parentname=' + window.name,
+			});
+		}
+	</script>
+	
+</body>
+</html>

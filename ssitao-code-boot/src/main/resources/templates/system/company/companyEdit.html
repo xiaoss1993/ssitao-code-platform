@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+
+<style>
+	.page-ul.page-ul2 .field-li.textarea .sumtips{
+		bottom:0px!important;
+		right:3px!important;
+	}
+	.file-btn{margin-left:30px;padding:5px 10px;margin-bottom:7px;}
+	.file-img{max-height:100px;max-width:250px;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box isEdit">
+		<form action="/sys/company/saveOrUpdate" id="operate" enctype="multipart/form-data" method="post">
+			<input type="hidden" name="id" th:value="${company.id}"/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole" field="logoAddress" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{company.logoName}">企业Logo</span></div>
+					<div class="field-div field-content mt5">
+						<img src="/css/images/logo.png" th:src="${company.logoAddress}" class="file-img ml5 cp" onclick="$('#upload-file').click();"/>
+						<input type="file" class="hide" id="upload-file" name="logoFile" accept="image/*" onchange="changeLogo(this)"/>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="#{company.fullName}">公司全称</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${company.name}" placeholder="" autocomplete="off"  htype="TEXT" maxlength="100" required="required">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="simpleName" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{company.shortName}">公司简称</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="simpleName" type="text" th:value="${company.simpleName}" placeholder="" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="webAddress" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{company.webAddress}">公司网址</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="webAddress" type="url" th:value="${company.webAddress}" placeholder="" autocomplete="off"  htype="TEXT" maxlength="200">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="address" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{company.address}">公司地址</span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="address" maxlength="1000" th:text="${company.address}" placeholder="请输入提示"></textarea>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole textarea hide" id="btn-box" field="" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt20 center">
+						<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" th:value="#{common.save}"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="window.history.back()"></a>
+					</div>
+				</li>
+			</ul>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	
+	<script>
+		var type = 'COMPANY';
+		$(function() {
+			initFormControl(type);
+			
+			$('#btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			var formData = new FormData($('#operate')[0]);
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url :  getPrefix(type) + "/saveOrUpdate",
+				data : formData,// 你的formid
+				processData:false,//必须是false
+				contentType:false,//必须是false
+				async : true,
+				success : function(data) {
+					top.layer.msg(data.msg);
+					hideLoading();
+					if (data.code == 0) {
+						window.location.href= getPrefix(type);
+					} else {
+						
+					}
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function changeLogo(file) {
+			$('.file-img').attr('src', getObjectURL(file.files[0]));
+		}
+		
+		//上传图片的URL地址
+		function getObjectURL(file) {  
+            var url = null;   
+            if(window.createObjectURL!=undefined) {  
+                url = window.createObjectURL(file);
+            }else if (window.URL!=undefined) { // mozilla(firefox)  
+                url = window.URL.createObjectURL(file);
+            }else if (window.webkitURL!=undefined) { // webkit or chrome  
+                url = window.webkitURL.createObjectURL(file);
+            }  
+            return url ;  
+        }  
+		
+	</script>
+	
+</body>
+</html>

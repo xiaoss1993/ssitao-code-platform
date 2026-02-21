@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<style>
+	.page-ul .field-li.textarea .sumtips{
+		bottom:0px!important;
+		right:3px!important;
+	}
+	.page-ul .field-li .field-sign-title3 .title{
+		margin-top:2px;
+	}
+	.file-btn{margin-left:30px;padding:5px 10px;margin-bottom:7px;}
+	.img-btn-box{position:absolute;right:10px;font-size:18px;}
+	.file-img{height:100px;max-width:250px;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box isView">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="产品名称"></span></div>
+					<div class="field-div field-content" th:text="${productName}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="产品版本"></span></div>
+					<div class="field-div field-content"><span th:text="${productType}"></span><span class="ml5" style="margin-top:2px;" th:text="${version}"></span></div>
+				</li>
+				<li class="field-li content-whole r" field="name" htype="NUMBER">
+					<div class="field-div field-label"><span class="title" th:text="授权用户数"></span></div>
+					<div class="field-div field-content" th:text="${maxUserNum}" style="padding-top:12px;"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="name" htype="NUMBER">
+					<div class="field-div field-label"><span class="title" th:text="已用用户数"></span></div>
+					<div class="field-div field-content" th:text="${existsUserCount}" style="padding-top:12px;"></div>
+				</li>
+				<li class="field-li content-whole r" field="name" htype="NUMBER">
+					<div class="field-div field-label"><span class="title" th:text="许可到期日期"></span></div>
+					<div class="field-div field-content" th:text="${expirationDate}" style="padding-top:12px;"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="机器码"></span></div>
+					<div class="field-div field-content" th:text="${machineCode}"></div>
+				</li>
+				<li class="field-li content-whole textarea" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide" shiro:hasPermission="ADV:EDIT">
+						<input type="button" id="submit" class="layui-layer-btn0 btns cp mr0" onclick="updateLicense();" value="更新许可(*.lic)"/>
+					</div>
+				</li>
+			</ul>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script src="/js/form/form.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('.layui-layer-btn').removeClass('hide');
+		});
+		
+		function updateLicense() {
+			top.layer.open({
+				type : 2,
+				title : '更新许可',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['500px', '350px'],
+				content : '/sys/company/updateLicense?parentname=' + window.name,
+				end: function(id){
+					if(id){
+						reLoad();
+					}
+				}
+			});
+		}
+		
+		function reLoad() {
+			window.location.reload();
+		}
+	</script>
+	
+</body>
+</html>

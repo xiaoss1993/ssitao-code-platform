@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<style>
+	.page-ul .field-li.textarea .sumtips{
+		bottom:0px!important;
+		right:3px!important;
+	}
+	.page-ul .field-li .field-sign-title3 .title{
+		margin-top:2px;
+	}
+	.file-btn{margin-left:30px;padding:5px 10px;margin-bottom:7px;}
+	.img-btn-box{position:absolute;right:10px;font-size:18px;}
+	.file-img{max-height:100px;max-width:250px;}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box isView">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<ul class="page-ul page-ul2">
+				<li class="field-li content-whole" field="logoAddress" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{company.logoName}">企业Logo</span></div>
+					<div class="field-div field-content mt5">
+						<img src="/css/images/logo.png" th:src="${company.logoAddress}" class="file-img ml5" onclick="$('#upload-file').click();"/>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole odd r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{company.fullName}">公司全称</span></div>
+					<div class="field-div field-content" th:text="${company.name}">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole r" field="simpleName" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="#{company.shortName}">公司简称</span></div>
+					<div class="field-div field-content" th:text="${company.simpleName}">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole odd r" field="webAddress" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{company.webAddress}">公司网址：</span></div>
+					<div class="field-div field-content" ><a class="linked" th:href="${company.webAddress}" target="_blank" th:text="${company.webAddress}"></a></div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole textarea r" field="address" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{company.address}">公司地址：</span></div>
+					<div class="field-div field-content" th:text="${company.address}">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole textarea" htype="BTN">
+					<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt50 center hide" shiro:hasPermission="ADV:EDIT">
+						<input type="button" id="submit" class="layui-layer-btn0 btns cp mr0" onclick="editCompany();" th:value="#{common.edit}"/>
+					</div>
+				</li>
+			</ul>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	<script src="/js/form/form.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('.layui-layer-btn').removeClass('hide');
+		});
+		
+		function editCompany() {
+			window.location.href= getPrefix("COMPANY") + '/edit';
+		}
+	</script>
+	
+</body>
+</html>

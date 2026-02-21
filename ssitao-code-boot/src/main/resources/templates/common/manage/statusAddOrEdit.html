@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${status.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${status.objectType}"/>
+			<input type="hidden" id="workflowId" name="workflowId" th:value="${status.workflowId}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT" th:style="${status.objectType} eq 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${status.name}"></div>
+				</li>
+				<li class="field-li content-whole" field="name" htype="TEXT" th:style="${status.objectType} ne 'TSK' ? '':'display:none'">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="name" type="text" th:value="${status.name}" placeholder="请输入状态名称" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+				</li>
+				<li class="field-li content-whole" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置状态"></span></div>
+					<div class="field-div field-content">
+						<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="1000" th:text="${status.remark}"></textarea>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="BGColor" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="#{field.option.setColor}"></span></div>
+					<div class="field-div field-content set-color">
+						<input id="bgColor" name="bgColor" type="hidden" th:value="${status.bgColor}">
+						<input id="fColor" name="fColor" type="hidden" th:value="${status.fColor}">
+						<div class="palette" th:style="'background-color:' + ${status.bgColor} + ';color:' + ${status.fColor}+';border-color:'+${status.bgColor}"><i class="zmdi zmdi-palette mr5" th:style="@{'color:'+${status.fColor}}"></i><span class="ml15" th:text="#{field.option.palette}"></span></div>
+						<div class="paigusu" type="bg" th:text="#{field.option.bgColor}"></div>
+						<div class="paigusu" type="fd" th:text="#{field.option.fColor}"></div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+					<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('field');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('#textLength').on('change', function() {
+				$('#textDefault').attr('maxLength', Number($(this).val())/2);
+				$('#textDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			$('#areaLength').on('change', function() {
+				$('#areaDefault').attr('maxLength', Number($(this).val())/2);
+				$('#areaDefault').closest('.wordSumTotal').textSum();
+			});
+			
+			//设置颜色
+			$('.paigusu').paigusu({
+				recommend : '255,87,34,1|255,153,72,1|249,189,101,1|4,190,91,1|70,182,254,1|0,150,136,1|153,136,255,1|121,85,72,1|158,158,158,1|0,0,0,1',
+				color : '#050505'
+			},function(event,obj){
+				var hex = obj.hex;
+				if($(event).attr('type') == 'bg') {
+					$('.palette').css({'background-color':'#' + hex, 'border':'1px solid '+ '#' + hex});
+					$('#bgColor').val('#' + hex);
+					$('.field-sign-title2, .field-sign-title3').css('border-bottom', '1px solid ' + '#' + hex);
+					$('.field-sign-title2 .title-box, .field-sign-title4').css('background-color', '#' + hex);
+					$('.field-sign-title3').css('color', '#' + hex);
+					$('.field-sign-title1').css('border-left', '10px solid ' + '#' + hex);
+					
+					$('.palette').css('color','#ffffff');
+					$('#fColor').val('#ffffff');
+					$(".zmdi-palette").css('color', '#ffffff');
+					$('.field-sign-title2 .title, .field-sign-title4').css('color', '#ffffff');
+				}else {
+					$('.palette').css('color','#' + hex);
+					$('#fColor').val('#' + hex);
+					$(".zmdi-palette").css('color', '#' + hex);
+					$('.field-sign-title2 .title, .field-sign-title4, .field-sign-title4 .show-name, .field-sign-title4 .zmdi').css('color', '#' + hex);
+				}
+				$(".paigusu").hide();
+			});
+			
+			$(".palette").click(function() {
+				if($('.paigusu').is(':visible')) {
+					$('.paigusu').hide();
+				}else {
+					$('.paigusu').show();
+				}
+			});
+			
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/status/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							if(parentFrame && typeof parentFrame.reLoad == 'function'){
+								parentFrame.reLoad();
+							}
+						}
+						if(isContinue && isContinue == 'Y') {
+							resetStatusList(data.id);
+							$('input[name="name"]').val('');
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'grid-table');
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function resetStatusList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/status/getPreList",
+				data : {
+					'objectType' : $('#objectType').val(),
+					'selectId': selectId,
+					'workflowId': $('#workflowId').val()
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

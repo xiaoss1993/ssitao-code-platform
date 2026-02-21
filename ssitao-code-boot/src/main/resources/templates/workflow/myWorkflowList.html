@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<style>
+	#viewFilter-text{max-width:100px;overflow:hidden;text-overflow:ellipsis;}
+	.addList{text-align:center;padding:6px 0px;background-color:#f5f5f5;cursor:pointer;}
+	.view-btn .dropdown-menu.dropdown-sub-menu{right:138px!important;left:auto;border-radius:5px;border:1px solid #e5e6e7;}
+	.view-btn .dropdown-menu-right{max-height:300px;overflow-y:auto;width:135px;}
+	.dropdown-menu-right .text{max-width:97px;overflow:hidden;text-overflow:ellipsis;}
+	.t-btn{display:none;}
+</style>
+<link rel="stylesheet" href="/css/report/report.css">
+<head th:include="include::listHeaderContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme} + (${objectType} eq 'PJT' ? ' pjt-Body':'')">
+	<div class="wrapper wrapper-content" th:classappend="${belongType} eq 'PJT' ? 'pjt-box':''">
+		<div class="table-list-box"> 
+			<div class="table-list">
+				<div class="fixed-table-toolbar mb10"> 
+					<div class="columns pull-left t-columns">
+						<button type="button" class="btn t-btn y-active add" th:if="${btnAdd} and ${btn_ADD}" signBtn="common" onclick="addWorkflow();">
+							<i class="fa fa-plus mr5"></i>
+							<span th:text="新建" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn n-active" th:if="${btnExp} and ${btn_EXP}" signBtn="common" onclick="importBill()">
+							<i class="fa fa-cloud-upload mr5"></i>
+							<span th:text="导入" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn n-active" th:if="${btnExp} and ${btn_EXP}" signBtn="common" onclick="exportBill()">
+							<i class="fa fa-cloud-download mr5"></i>
+							<span th:text="导出" class="pt1 h18"></span>
+						</button>
+						<button type="button" class="btn t-btn n-active" th:if="${btnExp} and ${btn_EXP}" signBtn="print" onclick="printReport()">
+							<i class="fa fa-print mr5"></i>
+							<span th:text="打印" class="pt1 h18"></span>
+						</button>
+					</div>
+					
+					<div class="columns columns-right btn-group pull-right t-columns">
+						<div th:class="${viewType} eq 'LIST' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="LIST">
+							<span>
+								<i class="fa fa-th-list mr5"></i>列表
+							</span>
+						</div>
+						<div th:class="${viewType} eq 'REPORT' ? 'view-btn view-type-btn cur': 'view-btn view-type-btn'" type="REPORT">
+							<span>
+								<i class="fa fa-bar-chart-o mr5"></i>报表
+							</span>
+						</div>
+						<div class="view-btn dropdown-btn" th:if="${belongType} ne 'PJT'">
+							<span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="display:inline-block;padding: 7px 12px;">
+								<i class="fa fa-sliders mr5"></i>
+								<span class="text" id="viewFilter-text" th:text="${curViewName}"></span>
+								<i class="fa fa-ellipsis-h ml5"></i>
+							</span>
+							<ul id="viewFilter" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+                                    <li th:each="select:${viewList}" th:attr="data-content=${select.text}" th:title="${select.text}" th:attr="isSystem=${select.type}" th:value="${select.id}"><a href="javascript:void(0);" th:class="${select.checked} ? 'cur':''" ><span th:text="${select.text}" class="text"></span><i class="fa fa-ellipsis-h ml5 eidt-list"></i></a></li>
+                                    <li class="addList" title="新建列表"><i class="zmdi zmdi-plus"></i></li>
+                               </ul>
+                               <ul class="dropdown-menu dropdown-sub-menu">
+		                    	<li onclick="editView();" class="isNotShow"><a href="javascript:void(0);"><i class="fa fa-pencil-alt eidt-icon"></i><span class="eidt-text">编辑</span></a></li>
+		                    	<li onclick="copyView();" val=""><a href="javascript:void(0);"><i class="fa fa-copy eidt-icon"></i><span class="eidt-text">复制</span></a></li>
+		                    	<li onclick="delView();" class="isNotShow"><a href="javascript:void(0);"><i class="fa fa-trash-alt eidt-icon"></i><span class="eidt-text">删除</span></a></li>
+		                    </ul>
+						</div>
+					</div>
+					<div class="pull-right search t-columns mr5">
+						<input class="form-control input-outline form-search" name="name" id="name" type="text" placeholder="搜索">
+					</div>
+					<div class="clear"></div>
+				</div>
+				<table grid-manager="demoOne" id="grid-table"></table>
+				
+				<div id="reportChartBox" class="reportChartBox" style="display:none;">
+					<div>
+						<div id="reportChart" class="board-box scroll-bar reportChart"></div>
+					</div>
+					<div class="report-select">
+						<div class="report-type">报表类型：</div>
+						<ul class="report-type-list">
+							<li th:each="select:${reportSelectList}" th:class="${select.checked} ? 'curType':''" th:id="${select.id}">
+								<div class="reportImg"><img th:src="@{'../../img/report/'+${select.type}}+'.png'"></div>
+								<div class="title" th:title="${select.text}" th:text="${select.text}"></div>
+							</li>
+						</ul>
+					</div>
+					<div id="reportDetail">
+						<img id="printImg-reportChart" class="printImg" src=""/>
+						<div class="chart-content"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="hide">
+		<input type="hidden" id="breadTabType" name="breadTabType" th:value="${breadTabType}"/>
+		<input type="hidden" id="viewId" name="viewId" th:value="${viewId}"/>
+		<input type="hidden" id="viewType" name="viewType" th:value="${viewType}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+		<input type="hidden" id="type" name="type" value="1"/>
+		<input type="hidden" id="selectFolderId" name="selectFolderId" th:value="${folderId}"/>
+		<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+		<input type="hidden" id="belongType" name="belongType" th:value="${belongType}"/>
+		<input type="hidden" id="folderId" name="folderId" th:value="${folderId}"/>
+		<input type="hidden" id="parentName" name="parentName" />
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div th:if="${btnEdit} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',COMM';
+		</script>
+	</div>
+	<div th:if="${btnChange} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',CU';
+		</script>
+	</div>
+	<div th:if="${btnChange} and ${btn_EDIT}">
+		<script type="text/javascript">
+			rights += ',RB';
+		</script>
+	</div>
+	<div th:if="${btnDel} and ${btn_DEL}">
+		<script type="text/javascript">
+			rights += ',D';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script src="/js/report/echarts.js" defer></script>
+	<script src="/js/report/echartsUtil.js" defer></script>
+	<script src="/js/report/report.js" defer></script>
+	<script src="/js/common/jquery.jqprint-0.3.js" defer></script>
+	<script src="/js/base64.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], queryObject = [[${queryObject}]], parentName = [[${param.parentname}]];</script>
+
+	<script type="text/javascript">
+		$(function() {
+			loadViewType(true, $('#viewType').val(), '', false);
+			
+			initViewList();
+			
+			$('.view-type-btn').click(function() {
+				if($('#viewType').val() != $(this).attr('type')) {
+					$('.view-type-btn').removeClass('cur');
+					$(this).addClass('cur');
+					loadViewType(false, $(this).attr('type'), $('#viewId').val(), false);
+				}
+			});
+			
+			$('#parentName').val(parentName);
+		});
+		
+		//加载视图类型，判断是加载列表还是看板
+		function loadViewType(isInit, viewType, viewId, isChangeHead) {
+			var objectType = $('#objectType').val();
+			var isChangeView = (viewId != $('#viewId').val())
+			if(isInit || isChangeView) {//如果是初始化看板，并且查询条件为空时，就根据视图创建查询条件
+				if(viewId){
+					$('#viewId').val(viewId);
+				}
+				var $searchCondition = $('.search-condition');
+				var headData = getHeadData(objectType, queryObject, viewId, '', '');
+				if(headData) {
+					createSearchConditions(headData.headData, objectType);
+				}
+			}
+			
+			if(!isInit && (isChangeView || viewType != $('#viewType').val())) {
+				$('#viewId').val(viewId);
+				isChangeHead = true;
+				$.ajax({
+					type : "post",
+					url : "/entity/updateUserMemoryByEntity",
+					data : {'viewIdKey': viewId, 'viewTypeKey': $('.view-btn.cur').attr('type'), 'objectType': objectType},// 你的formid
+					async : false,
+					success : function(data) {}
+				});
+			}
+			
+			$('#viewType').val(viewType)
+			if(viewType && viewType == 'REPORT') {
+				initReport(viewType);
+			}else {
+				$('.wrapper-content').removeClass('tree');
+				$('.list-box').addClass('col-sm-12').removeClass('col-sm-11').css('width', '100%');
+				$('.tree-box').hide();
+				
+				initWorkflowList(isChangeHead, viewType);
+			}
+		}
+		
+		//初始化任务列表
+		function initWorkflowList(isChangeHead, viewType) {
+			$('#reportChartBox').hide();
+			$('.t-btn[signBtn="common"]').show();
+			$('.t-btn[signBtn="print"]').hide();
+			
+			var $gridTable = $('#grid-table');
+			$gridTable.closest('.table-wrap').show();
+			if(isChangeHead) {
+				if($gridTable.closest('.table-wrap').length) {
+					$gridTable.initTable('destroy');
+				}
+				
+				$gridTable.initTable({
+					model:$('#objectType').val(),
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: (viewType == 'FOLDER' ? $('#selectFolderId').val() : ''),
+					objectId:$('#belongId').val(),
+					objectType:$('#belongType').val(),
+				});
+			}else {
+				reLoadWorkflowList();
+			}
+		}
+		
+		function reLoad() {
+			loadViewType(true, $('#viewType').val(), '', false);
+		}
+		
+		function addWorkflow(belongId, belongType) {
+			if(!belongId) {
+				belongId = $('#belongId').val();
+			}
+			if(!belongType) {
+				belongType = $('#belongType').val();
+			}
+			var objectType = $('#objectType').val();
+			var url = '/workflow/addOrEditWorkflow/null?objectType='+$('#objectType').val()+'&belongId='+belongId+'&belongType='+belongType+'&parentname=' + (window.name ? window.name : parentName);
+			intoIframePage(url, false, objectType);
+		}
+		
+		//点击文件夹或删除文件夹时，重新加载列表
+		function reLoadWorkflowList() {
+			var $table = $('#grid-table');
+			var $tableWrap = $table.closest('.table-wrap');
+			if($tableWrap.length) {
+				iFilter.props.query['folderId'] = $('#selectFolderId').val();
+				iFilter.props.table.GM('setQuery', iFilter.props.query);
+			}else {
+				$table.initTable({
+					model:$('#objectType').val(),
+					rights: rights,
+					supportPage: true,
+					supportTree: false,
+					viewId: $('#viewId').val(),
+					folderId: $('#selectFolderId').val(),
+					objectId:$('#belongId').val(),
+					objectType:$('#belongType').val(),
+				});
+			}
+		}
+	</script>	
+	
+</body>
+</html>

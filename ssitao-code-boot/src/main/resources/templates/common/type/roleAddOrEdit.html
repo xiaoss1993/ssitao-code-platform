@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/system/role/role.css">
+<style>
+	.menu-perm-row.content{padding-left:20px;}
+	.menu-perm-row .operate {
+	    padding-left: 16px;
+	}
+	.menu-perm-row.rowPad .operate {
+	    padding-left: 6px;
+	}
+	.menu-perm-row .operate.head {
+	    padding-left: 56px;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${role.id}"/>
+			<input type="hidden" name="objectType" id="objectType" th:value="${role.objectType}"/>
+			<input type="hidden" name="objectId" id="objectId" th:value="${role.objectId}"/>
+			<input type="hidden" name="isValid" value="Y"/>
+			<input type="hidden" name="filterField" id="filterField" value=""/>
+			<input type="hidden" name="tabRight" id="tabRight" value=""/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="角色信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="roleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="角色名称" title="角色名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="roleName" type="text" placeholder=" " th:value="${role.roleName}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="parentId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级角色"></span></div>
+							<div class="field-div field-content">
+								<select id="parentId" class="selectpicker" name="parentId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${parentList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置角色"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text},parentId=${select.parentId}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea class="input_textarea" maxlength="1000" name="remark" rows="8" style="padding-bottom: 30px;" th:text="${role.remark}" ></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="roleMembers" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="角色成员" title="角色成员"></span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:each="user:${userList}" th:attr="userId=${user.id}" th:title="${user.name}" th:onclick="|viewUser('${user.id}')|">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${user.picId}"/>
+											<span th:text="${user.name}"></span>
+										</div>
+									</div>
+								</div>
+								<div class="user-add">
+									<input attrsign="_ids" name="roleMembers" type="hidden" th:value="${role.roleMembers}">
+									<div class="cp form-control-popup" htype="USER" ismul><img src="/img/user/user-add.png"/></div>
+									<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li content-whole sign" field="loginInfo" htype="SIGN" th:if="${role.objectType} ne 'DEPT'">
+							<div class="field-div field-sign-title3">
+								<i class="zmdi zmdi-hdr-strong mr10"></i>
+								<div class="title" th:text="角色权限"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li check content-whole" field="dataScope" htype="CHECKBOX" th:if="${role.objectType} ne 'DEPT'">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="权限范围" title="权限范围"></span></div>
+							<div class="field-div field-content-check">
+								<div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope1" th:value="selfs" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'selfs')}" required>
+								    <label for="_dataScope1" th:text="本人" title="本人"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope2" value="subs" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'subs')}" >
+								    <label for="_dataScope2" th:text="下属" title="下属"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope3" value="selfDept" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'selfDept')}" >
+								    <label for="_dataScope3" th:text="本部门" title="本部门"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope4" value="subDepts" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'subDepts')}">
+								    <label for="_dataScope4" th:text="下级部门" title="下级部门"></label>
+							    </div>
+							    <div class="checkbox">
+								    <input type="checkbox" name="dataScope" id="_dataScope6" value="All" data-target="checkbox" th:checked="${#strings.isEmpty(role.dataScope)} ? 'false' : ${#strings.contains(role.dataScope, 'All')}">
+								    <label for="_dataScope6" th:text="全部" title="全部"></label>
+							    </div>
+							</div>
+						</li>
+					</ul>
+					<div class="menu-perm-box" th:if="${role.objectType} ne 'DEPT'">
+						<input type="hidden" name="menuIds" id="menuIds" />
+						<div class="menu-perm-row">
+							<div class="menu head"><div class="first" title="菜单权限">菜单权限</div><div class="linked" id="selectAll" title="全选" onclick="selectAndDeselect($(this), 'Y')">全选</div><div class="linked" id="deSelectAll" title="全不选" onclick="selectAndDeselect($(this), 'N')">全不选</div></div>
+							<div class="operate head" title="操作权限">操作权限</div>
+						</div>
+						<div class="menu-perm-row content" th:classappend="${menu.pad} > 0 ? 'rowPad':''" th:each="menu:${menuList}" th:style="'margin-left:' + ${menu.pad} + 'px'">
+							<div class="menu">
+								<div class="field-div field-content-check">
+								    <div class="checkbox">
+								    	<input type="checkbox" name="menuId" th:id="${menu.id}" th:value="${menu.id}" th:attr="parentId=${menu.parentId}" th:checked="${menu.checked}" data-target="checkbox">
+									    <label th:for="${menu.id}" th:text="${menu.name}" th:title="${menu.name}"></label>
+									</div>
+									<div class="checkbox linked filterField" th:if="${menu.filterField} eq 'Y'" title="隐藏字段" th:id="${menu.id}" th:attr="objectType=${menu.objectType},fieldIds=${menu.filterFieldId}" onclick="filterField($(this))"><i class="fa fa-eye-slash"></i><span class="filterFieldName ml5" th:title="${menu.filterFieldName}" th:text="${menu.filterFieldName}"></span></div>
+								</div>
+							</div>
+							<div class="operate">
+								<div class="checkbox" th:each="op:${menu.children}" >
+							    	<input type="checkbox" name="operateId" th:id="${menu.id}+'_'+${op.id}" th:value="${op.id}" th:attr="parentId=${op.parentId}" th:checked="${op.checked}" data-target="checkbox">
+								    <label th:for="${menu.id}+'_'+${op.id}" th:text="${op.name}" th:title="${op.name}"></label>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			
+		</form>
+	
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('ROLE');
+			
+			$('input[name="menuId"]').click(function() {
+				selectSelfAndChild($(this), $(this).is(':checked'));
+			});
+			$('input[name="operateId"]').click(function() {
+				selectParent($(this), $(this).is(':checked'));
+			});
+			
+			$('#parentId').change(function() {
+				resetPreList($('#preId').val());
+			});
+			
+			$('#preId').change(function() {
+				var parentId = $('.field-li[field="preId"] option[value="'+$(this).val()+'"]').attr('parentId');
+				if(parentId) {
+					$('#parentId').selectpicker('val', parentId);
+				}else{
+					$('#parentId').selectpicker('val', '');
+				}
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		function resetPreList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/type/getPreRoleList",
+				data : {
+					'objectType' : $('#objectType').val(),
+					'objectId': $('#objectId').val(),
+					'parentId': $('#parentId').val(),
+					'selectId': selectId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+		}
+		
+		//选择父菜单时一起选择子菜单
+		function selectSelfAndChild($obj, isChecked) {
+			$children = $('input[parentid="'+$obj.val()+'"]');
+			if(!$children.length) {
+				return;
+			}
+			if($obj.is(':checked')) {
+				$children.prop('checked', true);
+			}else {
+				$children.prop('checked', false);
+			}
+			
+			$children.each(function() {
+				selectSelfAndChild($(this), isChecked);
+			});
+			
+			var parentId = $obj.attr('parentId');
+			if(parentId && parentId == 'plan'){//如果是计划
+				if($obj.is(':checked')){
+					$('input[id="plan"]').prop('checked', true);
+				}else{
+					var selectedInputs = $('input[name="menuId"][parentId="plan"]:checked');
+					if(!selectedInputs || !selectedInputs.length){
+						$('input[id="plan"]').prop('checked', false);
+						$('input[name="operateId"][parentId="plan"]').prop('checked', false);
+					}
+				}
+			}
+		}
+		
+		//选择子菜单是一起选择父菜单
+		function selectParent($obj, isChecked) {
+			var parentId = $obj.attr('parentId');
+			if(!$obj.is(':checked') || !parentId ) {
+				return;
+			}
+			$parent = $('input[id="'+parentId+'"]');
+			$parent.prop('checked', true);
+			
+			$parent.each(function() {
+				selectParent($(this), isChecked);
+			});
+		}
+		
+		//全选和取消全选
+		function selectAndDeselect($obj, isSel) {
+			if(isSel && isSel == 'Y') {
+				$('input[name="menuId"], input[name="operateId"]').prop('checked', true);
+			}else {
+				$('input[name="menuId"], input[name="operateId"]').prop('checked', false);
+			}
+		}
+		
+		//获取选中的菜单ID
+		function getSelectTabs() {
+			var tabs = '', key = '', rights = '', rowTabRight = {}, tabRight = {};
+			$('input[name="menuId"]').each(function() {
+				if($(this).is(':checked')) {
+					if(tabs) {
+						tabs += ',';
+					}
+					tabs += 'tab_Y_' + $(this).val();
+					rights = getTabRights($(this));
+					
+					//保存选中的Tab页权限
+					key = $(this).val();
+					rowTabRight[key] = rights;
+				}else {
+					if(tabs) {
+						tabs += ',';
+					}
+					tabs += 'tab_N_' + $(this).val();
+					rights = '';
+				}
+			});
+			tabRight.tabs = tabs;
+			tabRight.tabRight = rowTabRight;
+			$('#tabRight').val(JSON.stringify(tabRight));
+		}
+		
+		function getTabRights($obj){
+			var rights = '';
+			$obj.closest('.menu-perm-row').find('input[name="operateId"]').each(function() {
+				if($(this).is(':checked')) {
+					if(rights) {
+						rights += ',';
+					}
+					rights += $(this).val();
+				}
+			});
+			return rights;
+		}
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			getSelectTabs();
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/sys/role/saveOrUpdate",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="roleName"]').val('');
+							resetPreList(data.id);
+						}else {
+							var index = parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index, 'role-table');
+							parent.layer.msg(data.msg);
+						}
+
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+		
+		function filterField($obj) {
+			top.layer.open({
+				type : 2,
+				title : '隐藏字段',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['600px', '500px'],
+				content : '/sys/role/filterField?roleId='+$('#id').val()+'&menuId=' + $obj.attr('id') + '&fieldIds='+$obj.attr('fieldIds')+'&parentname=' + window.name,
+			});
+		}
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/form/comment.css">
+<style>
+	.windowPage .title-ul {
+	    border-bottom: 1px solid #e5e6e7;
+	}
+	.windowPage .page-ul {
+	    padding-top:10px!important;
+	}
+	.isOpenWindow .layui-layer-btn{display:block!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme} + ' ' + ${bodyClass}">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="data" th:value="${data}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="action" name="action" th:value="${action}"/>
+			<input type="hidden" id="_action" name="_action"/>
+			<input type="hidden" id="isContinue" name="isContinue"/>
+			<input type="hidden" id="isChange" name="isChange" value="N"/>
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="parentId" name="parentId" th:value="${parentId}"/>
+			<input type="hidden" id="taskType" name="taskType" th:value="${taskType}"/>
+			<input type="hidden" id="speciData" name="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="pageTitle" name="pageTitle" th:value="${pageTitle}"/>
+			
+			<input type="hidden" id="srcObjectId" name="srcObjectId" th:value="${srcObjectId}"/>
+			<input type="hidden" id="srcObjectType" name="srcObjectType" th:value="${srcObjectType}"/>
+			<input type="hidden" id="srcWorkflowId" name="srcWorkflowId" th:value="${srcWorkflowId}"/>
+			<input type="hidden" id="srcWorkflowType" name="srcWorkflowType" th:value="${srcWorkflowType}"/>
+			<input type="hidden" id="transitionId" name="transitionId" th:value="${transitionId}"/>
+			<input type="hidden" id="toNodeId" name="toNodeId" th:value="${toNodeId}"/>
+			<input type="hidden" id="currentNodeId" name="currentNodeId" th:value="${currentNodeId}"/>
+			<input type="hidden" id="pageTo" name="pageTo" th:value="${pageTo}"/>
+			<input type="hidden" id="isDerive" name="isDerive" th:value="${isDerive}"/>
+			<input type="hidden" id="isGantt" name="isGantt" th:value="${isGantt}"/>
+			<input type="hidden" id="isTemplate" name="isTemplate" th:value="${task.isTemplate}"/>
+			<input type="hidden" id="notShowOtherTabs" name="notShowOtherTabs" th:value="${task.isTemplate}"/>
+			<input type="hidden" id="_milestoneId" name="_milestoneId" th:value="${task.milestoneId}"/>
+			<input type="hidden" id="_projectId" name="_projectId" th:value="${task.projectId}"/>
+			
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul"></ul>
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="发布" th:if="${isNode} ne 'Y'" onclick="$('#isContinue').val('N');$('#_action').val('9');" th:style="${isAllowChange} eq 'Y' or ${isDerive} eq 'Y' or ${task.isTemplate} eq 'Y' ?'display:none':''"/> 
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="发布并新建" onclick="$('#isContinue').val('Y');$('#_action').val('9');" th:style="${isEdit} eq 'Y' or ${isDerive} eq 'Y'?'display:none':''"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存" onclick="$('#isContinue').val('N');" th:style="${isAllowChange} eq 'Y' or ${isAddChild} eq 'Y' or ${isDerive} eq 'Y' ?'display:none':''"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存并新建" onclick="$('#isContinue').val('Y');" th:style="${isEdit} eq 'Y' or ${isAddChild} eq 'Y' or ${isDerive} eq 'Y'?'display:none':''"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定" onclick="$('#isContinue').val('N');$('#isChange').val('Y');" th:style="${isAllowChange} ne 'Y' or ${isDerive} eq 'Y'?'display:none':''"/>
+							<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定" onclick="$('#isContinue').val('N');" th:style="${isDerive} ne 'Y'?'display:none':''"/>
+							<a class="layui-layer-btn1 close-btn cp returnCancel" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/form/comment.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], isAddChild = [[${isAddChild}]]</script>
+	
+	<script>
+		$(function() {
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl('TSK');
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			$("#operate").html5Validate(function() {
+				var isContinue = $('#isContinue').val();
+				submitTask(isContinue);
+			}, {
+				validate: function() {
+					return customValidate();
+				}
+			});
+			
+			var isTemplate = $('#isTemplate').val();
+			if(isTemplate != 'Y' && $('.selectpicker.milestoneId').length) {
+				loadMileSelectList();
+			}
+			
+			controlBtnShowPosition();
+		});
+		
+		function submitTask(isContinue) {
+			var _action = $('#_action').val();
+			if(_action) {
+				$('#action').val(_action);
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/task/saveTask",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						var isDerive = $('#isDerive').val(), isGantt = $('#isGantt').val();
+						var srcObjectId = $('#srcObjectId').val(), srcObjectType = $('#srcObjectType').val();
+						if(srcObjectId && srcObjectType) {//如果是需求分解需求、或者任务、或者测试用例，则进入
+							saveRelateObject(srcObjectId, srcObjectType, data.id, 'TSK');
+						}
+						if(isContinue && isContinue == 'Y'){
+							$('input[name="name"]').val('');
+						}else if((isGantt && isGantt == 'Y') || (isAddChild && isAddChild == 'Y')){//甘特图编辑和变更任务
+							var index = parent.layer.getFrameIndex(window.name);
+							var taskId = "";
+							if(isGantt && isGantt == 'Y'){
+								taskId = $('#id').val();
+							}else{
+								taskId = $('#parentId').val();
+							}
+							parent.layer.close(index, taskId);
+						}else if(parentName && parentName[0]) {
+							var parentFrame = top.frames[parentName[0]];
+							if($('#isChange').val() == 'Y' || (isDerive && isDerive == 'Y')) {
+								if(typeof parentFrame.returnBackAndReLoad == "function"){
+									if(isDerive && isDerive == 'Y'){
+										parentFrame.returnBackAndReLoad(true, true);
+										var pageTo = $('#pageTo').val();
+										if(pageTo && pageTo == '2'){
+											openEntity($('#srcWorkflowType').val(), srcObjectId, parentName);
+										}
+									}else{
+										parentFrame.returnBackAndReLoad();
+									}
+								}
+							}else if(typeof parentFrame.intoMyCreateTskList== "function"){
+								parentFrame.intoMyCreateTskList();
+							}else{
+								parentFrame.returnBackAndReLoad();
+							}
+						}else{
+							tabReturnBack($(this));
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					
+					hideLoading();
+				}
+			});
+		}
+		
+		function changeDate($obj, value) {
+			var startDate, endDate, isReset;
+			if($obj.hasClass('planStartDate')) {
+				startDate = $obj.val();
+				endDate = $('.planEndDate').val();
+				
+				isReset = compareDate(startDate, endDate);
+				if(isReset) {
+					endDate = startDate;
+					$('.planEndDate').val(startDate);
+				}
+			}else if($obj.hasClass('planEndDate')) {
+				endDate = $obj.val();
+				startDate = $('.planStartDate').val();
+				
+				isReset = compareDate(startDate, endDate);
+				if(isReset) {
+					startDate = endDate;
+					$('.planStartDate').val(endDate);
+				}
+			}
+			resetWorkdayByDate(startDate, endDate);
+		}
+		
+		//重置计划工期
+		function resetWorkdayByDate(startDate, endDate) {
+		    var day = 0;
+		    $.ajax({
+				type : "post",
+				url : "/task/getTaskWorkDays",
+				data : {'startDate': startDate, 'endDate': endDate},// 你的formid
+				async : false,
+				success : function(day) {
+					var $li = $('li[field="planDuration"]');
+					if($li.hasClass('r')) {
+						$li.find('.field-content-num .numValue').text(day);
+					}else {
+						$('#planDuration').val(day);
+					}
+					$('#planWorkload').val(day*8);
+				}
+			});
+		    return day;
+		}
+		
+		function switchOnOrOff($obj, type) {
+			var name = $obj.attr('name');
+			if(name == 'milestoneIdCheck') {
+				var $milestone = $obj.closest('.milestone').find('.milestoneId');
+				if(type == 'ON') {
+					$milestone.removeClass('hide');
+				}else {
+					$milestone.addClass('hide');
+				}
+			}
+		}
+		
+		//加载里程碑下拉选项
+		function loadMileSelectList() {
+			$.ajax({
+				type : "post",
+				url : "/type/getTaskMileNodeList",
+				data : {'projectId': $('#_projectId').val(), 'curMileId': $('#_milestoneId').val(), 'taskName': $('.form-control[name="name"]').val()},// 你的formid
+				async : false,
+				success : function(r) {
+					if(r) {
+						var optionHtml = '<option value="">请选择</option>';
+						var curMileId = '';
+						for(var i = 0; i < r.length; i++) {
+							if(r[i].checked){
+								curMileId = r[i].id;
+							}
+							optionHtml += '<option data-content="'+r[i].text+'" value="'+r[i].id+'"></option>';
+						}
+						$('select[name="milestoneId"]').html(optionHtml).selectpicker('refresh').selectpicker('val', curMileId);
+					}
+				}
+			});
+		}
+		
+		function loadNodeList(planId) {
+			$.ajax({
+				url : "/plan/getTaskNodeList",
+				type : "post",
+				data : {'planId': planId, 'curNodeId':''},
+				async : false,
+				success : function(r) {
+					if(r) {
+						var optionHtml = '<option value="">请选择</option>';
+						var curNodeId = '';
+						for(var i = 0; i < r.length; i++) {
+							if(r[i].checked){
+								curNodeId = r[i].id;
+							}
+							optionHtml += '<option data-content="'+r[i].text+'" value="'+r[i].id+'"></option>';
+						}
+						$('#nodeId').html(optionHtml).selectpicker('refresh').selectpicker('val', curNodeId);
+					}
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

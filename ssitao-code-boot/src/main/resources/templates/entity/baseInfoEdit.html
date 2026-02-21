@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/plugins/summernote/summernote.css"/>
+<link rel="stylesheet" href="/css/form/cascader.css"/>
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+
+<style>
+	.windowPage .layui-layer-btn {
+	    max-width: 100% !important;
+	    text-align: center;
+	}
+</style>
+<head th:include="include::headerContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${entity.name}"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input name="id" id="id" type="hidden" th:value="${entity.id}">
+			<input type="hidden" id="objectType" th:value="${entity.objectType}"/>
+			<div class="layout-box module onlyLeft">
+				<div class="layout-left">
+					<ul class="page-ul page-ul2">
+						<li class="field-li content-whole detail-sign" field="detailTabs" htype="SIGN">	
+							<div class="relevant-tabs tabSign">
+								<div class="tab active baseInfo-tab" type="baseInfo" taburl="entity/baseInfo" onclick="intoTab($(this))">基本信息</div>
+								<div class="tab lifecycle-tab" type="lifecycle" taburl="entity/lifecycleList" onclick="intoTab($(this))" th:if="${entity.objectType ne 'TSK'}">生命周期</div>
+								<div class="tab type-tab" type="type" taburl="entity/typeList" onclick="intoTab($(this))" th:if="${entity.objectType ne 'TSK'}">类型配置</div>
+								<div class="tab field-tab" type="field" taburl="entity/fieldList" onclick="intoTab($(this))">字段配置</div>
+								<div class="tab page-tab" type="page" taburl="entity/pageList" onclick="intoTab($(this))">视图配置</div>
+								<div class="tab status-tab" type="status" taburl="entity/statusList" onclick="intoTab($(this))" th:if="${entity.objectType eq 'TSK'}">状态设置</div>
+								<div class="tab scrumBoard-tab" type="scrumBoard" taburl="board/scrumBoardList" onclick="intoTab($(this))" th:if="${entity.objectType eq 'TSK'}">看板配置</div>
+								<div class="tab pjtPhase-tab" type="pjtPhase" taburl="pjt/pjtPhaseList" onclick="intoTab($(this))" th:if="${entity.objectType eq 'PJT'}">阶段配置</div>
+								<div class="tab plan-tab" type="plan" taburl="plan/planList" onclick="intoTab($(this))" th:if="${entity.objectType eq 'PJT'}">计划模板配置</div>
+								<div class="tab pjtOverview-tab" type="pjtOverview" taburl="report/pjtOverviewList" onclick="intoTab($(this))" th:if="${entity.objectType eq 'PJT'}">项目概览配置</div>
+								<div class="tab reportChart-tab" type="reportChart" taburl="report/reportChartList" onclick="intoTab($(this))" th:if="${entity.objectType ne 'TSP'}">报表配置</div>
+								<div class="tab advance-tab" type="advance" taburl="advanceSet/advance" onclick="intoTab($(this))">高级设置</div>
+								<div class="tab commonAop-tab" type="advance" taburl="commonAop" onclick="intoTab($(this))">扩展配置</div>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="模块名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${entity.name}" placeholder="请输入模块名称" autocomplete="off"  htype="TEXT" maxlength="100" required="required">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="simpleName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="模块简称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="simpleName" type="text" th:value="${entity.simpleName}" placeholder="请输入模块简称" autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole" field="preEntityId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置模块"></span></div>
+							<div class="field-div field-content">
+								<select id="preEntityId" class="selectpicker" name="preEntityId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preEntityList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="editionRule" htype="SELECT" th:style="${model} ne 'TSK' ? '':'display:none'">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="版本规则"></span></div>
+							<div class="field-div field-content code-select">
+								<select id="bigEdition" class="selectpicker" name="bigEdition" data-live-search-style="begins" title="请选择大版本" required onchange="changeEdition($(this))">
+									<option value="">请选择大版本</option>
+									<option th:each="select:${bigEditionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+								<select id="editionConnect" class="selectpicker" name="editionConnect" data-live-search-style="begins" title="请选择连接符" required onchange="changeEdition($(this))">
+									<option value="">请选择连接符</option>
+									<option th:each="select:${editionConnectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+								<select id="smallEdition" class="selectpicker" name="smallEdition" data-live-search-style="begins" title="请选择小版本" required onchange="changeEdition($(this))">
+									<option value="">请选择小版本</option>
+									<option th:each="select:${smallEditionList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+							<div class="field-div examples">
+								例如：<span class="bigEdition" th:text="${bigEdition}">A</span><span class="editionConnect" th:text="${editionConnect}">.</span><span class="smallEdition" th:text="${smallEdition}">1</span>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="codeRule" htype="SELECT" th:style="${model} ne 'TSK' ? '':'display:none'">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="编号规则"></span></div>
+							<div class="field-div field-content code-select code-rule">
+								<input class="form-control code-sign" name="codeSign" id="codeSign" type="text" placeholder="请输入编号标识" th:value="${codeSign}" autocomplete="off"  htype="TEXT" maxlength="100" required>
+								<select id="firstConnect" class="selectpicker" name="firstConnect" data-live-search-style="begins" data-width="200px" title="请选择连接符" onchange="changeCodeConnect($(this))">
+									<option th:each="select:${firstConnectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+								<select id="middleRule" class="selectpicker" name="middleRule" data-live-search-style="begins" data-width="400px" title="请选择编号规则" onchange="changeMiddleRule($(this))">
+									<option th:each="select:${middleRuleList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+								<select id="secondConnect" class="selectpicker" name="secondConnect" data-live-search-style="begins" data-width="200px" title="请选择连接符" onchange="changeCodeConnect($(this))">
+									<option th:each="select:${secondConnectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+								<select id="codeSuffix" class="selectpicker" name="codeSuffix" data-live-search-style="begins" data-width="400px" title="请选择编号后缀" onchange="changeCodeSuffix($(this))" required>
+									<option value="">请选择编号后缀</option>
+									<option th:each="select:${codeSuffixList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+							<div class="field-div examples">
+								例如：<span class="codeSign" th:text="${codeSign}"></span><span class="firstConnect" th:text="${firstConnect}"></span><span class="middleRule" th:text="${middleRule}"></span><span class="secondConnect" th:text="${secondConnect}"></span><span class="codeSuffix" th:text="${codeSuffix}">000001</span>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field="preMenuId" htype="CHECKBOX">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="菜单位置" title="菜单位置"></span></div>
+							<div class="field-div field-content">
+								<select id="preMenuId" class="selectpicker" name="preMenuId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${menuSelectList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li content-whole" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" maxlength="2048" th:text="${entity.remark}" placeholder="请输入备注"></textarea>
+								</div>
+							</div>
+						</li>
+						
+						<li class="field-li content-whole textarea" field="" htype="BTN">
+							<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt30 hide">
+								<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" th:value="#{common.save}"/>
+								<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="window.history.back();"></a>
+							</div>
+						</li>
+					</ul>
+					<iframe class="custom-iframe module-iframe hide" id="custom-iframe" width="100%"></iframe>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; objectType = [[${param.objectType}]];</script>
+	
+	<script src="/js/plugins/summernote/summernote.js"></script>
+	<script src="/js/plugins/datapicker/laydate.js"></script>
+	<script src="/js/form/cascader.js"></script>
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/plugins/autosize/textSum.min.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/jquery-html5Validate.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/form/paigusu.min.js"></script>
+	<script src="/js/field/field.js"></script>
+	
+	<script>
+		$(function() {
+			initFormControl('entity');
+			
+			$('.layui-layer-btn').removeClass('hide');
+			hideLoading();
+			
+			$('#codeSign').on('change input', function() {
+				$('.codeSign').text($(this).val());
+			});
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/entity/saveOrUpdate",
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						window.location.href = '/entity/baseInfo?objectType=' + objectType;
+					}else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+ 		
+	</script>
+	
+</body>
+</html>

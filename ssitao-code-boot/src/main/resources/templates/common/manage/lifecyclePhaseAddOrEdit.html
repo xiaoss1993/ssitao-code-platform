@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include::formHeaderContent"></head>
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+	.c-text{color:#555;display:flex;align-items:center;}
+	.select-box{width:100%;margin-top:4px;margin-bottom:5px;}
+	.select-box .linked {
+	    margin-left:10px;
+	    padding-right:10px;
+	}
+	#selectAll{
+		margin-left:7px;
+		border-right:1px solid var(--gray-light);
+	}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box new">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${lifecyclePhase.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${lifecyclePhase.objectType}"/>
+			<input type="hidden" id="lifecycleId" name="lifecycleId" th:value="${lifecycleId}"/>
+			<input type="hidden" id="isHide" name="isHide" th:value="${lifecyclePhase.isHide}"/>
+			<input type="hidden" id="closeRes" name="closeRes" th:value="${lifecyclePhase.closeRes}"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li r content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole" field="phaseId" htype="SELECT" th:style="${isEdit} eq 'N' ? 'display:flex' : 'display:none' ">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="生命阶段"></span></div>
+							<div class="field-div field-content">
+								<select id="phaseId" class="selectpicker" name="phaseId" data-live-search="true" data-live-search-style="begins" title="请选择" required="required">
+									<option value="">请选择</option>
+									<option th:each="select:${phaseList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li r content-whole" field="phaseName" htype="TEXT" th:style="${isEdit} eq 'Y' ? 'display:flex' : 'display:none' ">
+							<div class="field-div field-label"><span class="title" th:text="生命阶段"></span></div>
+							<div class="field-div field-content" th:text="${phaseName}"></div>
+						</li>
+						<li class="field-li content-whole" field="preId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置阶段"></span></div>
+							<div class="field-div field-content">
+								<select id="preId" class="selectpicker" name="preId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">设置权限</span></div>
+							<div class="field-div field-content-check">
+								<input type="hidden" id="fixTran" name="fixTran" th:value="${lifecyclePhase.fixTran}"/>
+								<div class="select-box"><span class="linked cp" id="selectAll" onclick="selectAndDeselect($(this), 'Y')">全选</span><span class="linked cp" id="deSelectAll" onclick="selectAndDeselect($(this), 'N')">全不选</span></div>
+							    <div th:each="tran:${transitionList}" class="checkbox" style="width:30%">
+							    	<input type="checkbox" name="tranId" th:id="${tran.id}" th:value="${tran.id}" th:checked="${tran.selected}" data-target="checkbox">
+								    <label th:for="${tran.id}" th:text="${tran.name}" th:title="${tran.name}"></label>
+								</div>
+							</div>
+						</li>
+						<li class="field-li check content-whole" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">高级设置</span></div>
+							<div class="field-div field-content-check">
+							    <div class="checkbox" style="width:30%">
+							    	<input type="checkbox" name="_isHide" th:id="_isHide" th:checked="${lifecyclePhase.isHide} eq 'Y'" data-target="checkbox">
+								    <label th:for="_isHide" th:title="隐藏对象" >隐藏对象</label>
+								</div>
+							    <div class="checkbox" style="width:30%">
+							    	<input type="checkbox" name="_closeRes" th:id="_closeRes" th:checked="${lifecyclePhase.closeRes} eq 'Y'" data-target="checkbox">
+								    <label th:for="_closeRes" th:title="关闭对象" >关闭对象</label>
+								</div>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" id="submit" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('N')" th:value="#{common.save}"/>
+							<input type="submit" id="submitAndNew" class="layui-layer-btn0 btns cp" onClick="$('#isContinue').val('Y')" th:value="#{common.saveAndNew}" th:style="${isEdit} eq 'Y' ? 'display:none' : '' "/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="layerWinCancel($(this));"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('PHASE');
+			
+			$('.formBtn').removeClass('hide');
+			
+		});
+		
+		$("#operate").html5Validate(function() {
+			var isContinue = $('#isContinue').val();
+			var fixTran = '';
+			$('input:checkbox[name="tranId"]:checked').each(function() {
+				if(fixTran) {
+					fixTran += ',' + $(this).val();
+				}else {
+					fixTran = $(this).val();
+				}
+			})
+			$('#fixTran').val(fixTran);
+			if($('input:checkbox[name="_isHide"]').is(':checked')){
+				$('#isHide').val('Y');
+			}else{
+				$('#isHide').val('N');
+			}
+			if($('input:checkbox[name="_closeRes"]').is(':checked')){
+				$('#closeRes').val('Y');
+			}else{
+				$('#closeRes').val('N');
+			}
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/lifecycle/saveLifecyclePhase",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						refreshList('true');
+						if(isContinue && isContinue == 'Y') {
+							$('input[name="name"]').val('');
+							if(data.id) {
+								resetPreLifecyclePhaseList(data.id);
+							}
+						}else {
+							var index = parent.layer.getFrameIndex(window.name)
+							parent.layer.close(index, 'phase-table');
+							parent.layer.msg(data.msg);
+						}
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('PHASE');
+			}
+		});
+		
+		//重置前置阶段
+		function resetPreLifecyclePhaseList(selectId) {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/lifecycle/getPreLifecyclePhaseList",
+				data : {
+					'lifecycleId' : $('#lifecycleId').val(),
+					'preId': selectId
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#preId').html(optionHtml).selectpicker('refresh').selectpicker('val', selectId);
+					}
+				}
+			});
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/lifecycle/getPhaseExcludeExistsList",
+				data : {
+					'objectType': $('#objectType').val(),
+					'lifecycleId': $('#lifecycleId').val()
+				},
+				async : false,
+				success : function(data) {
+					if(data) {
+						var checkedId = '';
+						var optionHtml = '<option value="">请选择</option>';
+						for(var i = 0; i < data.length; i++) {
+							if(data[i].checked) {
+								checkedId = data[i].id;
+							}
+							optionHtml += '<option selected="'+data[i].checked+'" data-content="'+data[i].text+'" value="'+data[i].id+'"></option>';
+						}
+						$('#phaseId').html(optionHtml).selectpicker('refresh').selectpicker('val', checkedId);
+					}
+				}
+			});
+		}
+		
+		//全选和取消全选
+		function selectAndDeselect($obj, isSel) {
+			if(isSel && isSel == 'Y') {
+				$('input[name="tranId"]').prop('checked', true);
+			}else {
+				$('input[name="tranId"]').prop('checked', false);
+			}
+		}
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/form.css"/>
+<link rel="stylesheet" href="/css/form/switch.css"/>
+<link rel="stylesheet" href="/css/form/bootstrap-select.css"/>
+<link rel="stylesheet" href="/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/system/calendar/companyCalendar.css">
+
+<head th:include="include::headerContent"></head>
+
+
+<body class="layer-body" th:classappend="${session.theme}">
+	<div class="layer-box w">
+		<input type="hidden" name="weekdays" id="weekdays" th:value="${weekdays}"/>
+		<input type="hidden" name="curWorkdays" id="curWorkdays" th:value="${workdays}"/>
+		<input type="hidden" name="workdays" id="workdays" value=""/>
+		<input type="hidden" name="isChange" id="isChange" value="N"/>
+		<input type="hidden" name="isEdit" id="isEdit" value="Y"/>
+	
+		<div class="calendar-box">
+			<div class="month-calendar">
+				<div id='schedule-box' class="boxshaw"></div>
+				<div class="calendar-panel-footer">
+					<div class="workType-box">
+						<div class="workType">
+							<span class="workType-day work-day"></span>工作日
+						</div>
+						<div class="workType">
+							<span class="workType-day rest-day"></span>休息日
+						</div>
+					</div>
+					<div class="tips">
+						<i class="zmdi zmdi-info mr5"></i>点击日期即可切换工作日/休息日
+					</div>
+				</div>
+			</div>
+			<div class="total-calendar">
+				<div class="weekday">
+					<div class="title">工作日</div>
+					<div class="days-wrap">
+						<div class="day-one" val="Mon">星期一</div>
+						<div class="day-one" val="Tue">星期二</div>
+						<div class="day-one" val="Wed">星期三</div>
+						<div class="day-one" val="Thu">星期四</div>
+						<div class="day-one" val="Fri">星期五</div>
+						<div class="day-one" val="Sat">星期六</div>
+						<div class="day-one" val="Sun">星期日</div>
+					</div>
+				</div>
+				<div class="worktime mt80">
+					<div class="title">工作时间</div>
+					<div class="time-wrap">
+						<div class="time-slot-box">
+							<div class="time-slot-title">上午</div>
+							<div class="time-slot-value">
+								<span class="time-box start-time">
+									<input class="time" name="amStartTime" placeholder="开始时间" th:value="${amStartTime}" readonly="readonly">
+									<i class="zmdi zmdi-time"></i>
+								</span>
+								<span class="time-split">~</span>
+								<span class="time-box end-time">
+									<input class="time" name="amEndTime" placeholder="结束时间" th:value="${amEndTime}" readonly="readonly">
+									<i class="zmdi zmdi-time"></i>
+								</span>
+							</div>
+							
+							<div class="select-time amTime common-menu-hide">
+								<div class="title-box">
+									<span class="title-start title">上班时间</span>
+									<span class="time-split">~</span>
+									<span class="title-end title">下班时间</span>
+								</div>
+								<div class="time-select-box">
+									<div class="time-select-menu br">
+										<div class="time-select-menu-title">时</div>
+										<ol id="am-start-hour-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu">
+										<div class="time-select-menu-title">分</div>
+										<ol id="am-start-minute-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu br ml15">
+										<div class="time-select-menu-title">时</div>
+										<ol id="am-end-hour-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu">
+										<div class="time-select-menu-title">分</div>
+										<ol id="am-end-minute-list" class="time-select-list"></ol>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="time-slot-box ml20">
+							<div class="time-slot-title">下午</div>
+							<div class="time-slot-value">
+								<span class="time-box start-time">
+									<input class="time" name="pmStartTime" placeholder="开始时间" th:value="${pmStartTime}" readonly="readonly">
+									<i class="zmdi zmdi-time"></i>
+								</span>
+								<span class="time-split">~</span>
+								<span class="time-box end-time">
+									<input class="time" name="pmEndTime" placeholder="结束时间" th:value="${pmEndTime}" readonly="readonly">
+									<i class="zmdi zmdi-time"></i>
+								</span>
+							</div>
+							
+							<div class="select-time pmTime common-menu-hide">
+								<div class="title-box">
+									<span class="title-start title">上班时间</span>
+									<span class="time-split">~</span>
+									<span class="title-end title">下班时间</span>
+								</div>
+								<div class="time-select-box">
+									<div class="time-select-menu br">
+										<div class="time-select-menu-title">时</div>
+										<ol id="pm-start-hour-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu">
+										<div class="time-select-menu-title">分</div>
+										<ol id="pm-start-minute-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu br ml15">
+										<div class="time-select-menu-title">时</div>
+										<ol id="pm-end-hour-list" class="time-select-list"></ol>
+									</div>
+									<div class="time-select-menu">
+										<div class="time-select-menu-title">分</div>
+										<ol id="pm-end-minute-list" class="time-select-list"></ol>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="layui-layer-btn layui-submit-btn whole_w pr12 mt20 center hide">
+			<input type="submit" id="submit" class="layui-layer-btn0 btns cp mr0" onclick="saveCalendar()" th:value="#{common.save}"/>
+			<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="window.history.back();"></a>
+		</div>
+	</div>
+	
+	
+	<div th:include="include::footerContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+	
+	<script src="/js/form/switch.js"></script>
+	<script src="/js/form/form.js"></script>
+	<script src="/js/form/bootstrap-select.js"></script>
+	<script src="/js/plugins/datapicker/schedule.js"></script>
+	<script src="/js/system/calendar/companyCalendar.js"></script>
+	
+	<script>
+		$(function() {
+			hideLoading();
+			
+			$('.layui-layer-btn').removeClass('hide');
+			
+			initCalendar();
+			initSelectWeek();
+			initSelectTime();
+			initWeek();
+		});
+		
+		function saveCalendar() {
+			showLoading();
+			recordCurMonthWorkdays();
+			
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/advanceSet/saveCalendar",
+				data : {'weekdays':$('#weekdays').val(), 'workdays':$('#workdays').val(), 'amStartTime':$('input[name="amStartTime"]').val(), 'amEndTime':$('input[name="amEndTime"]').val(), 'pmStartTime':$('input[name="pmStartTime"]').val(), 'pmEndTime':$('input[name="pmEndTime"]').val()},// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.msg(data.msg);
+						window.location.href = '/advanceSet/companyCalendar';
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}
+	</script>
+	
+</body>
+</html>

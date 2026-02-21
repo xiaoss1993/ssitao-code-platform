@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<link rel="stylesheet" href="/css/form/comment.css">
+<style>
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme} + ' ' + ${bodyClass}" th:attr="submitTask='Y'">
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="data" th:value="${data}"/>
+			<input type="hidden" id="speciData" th:value="${speciData}"/>
+			<input type="hidden" id="pageTitle" th:value="${pageTitle}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="action" name="action" th:value="${action}"/>
+			<input type="hidden" id="_action" name="_action" th:value="${task.action}"/>
+			<input type="hidden" id="isContinue" name="isContinue"/>
+			<input type="hidden" id="id" name="id" th:value="${task.id}"/>
+			<input type="hidden" id="report_id" name="report_id" th:value="${report_id}"/>
+			<input type="hidden" id="curTotalHour" name="curTotalHour" th:value="${curTotalHour}"/>
+			<input type="hidden" id="curRate" name="curRate" th:value="${curRate}"/>
+			<input type="hidden" id="fillTotalHour" name="fillTotalHour" th:value="${fillTotalHour}"/>
+			<input type="hidden" id="isBatchAudit" name="isBatchAudit" th:value="${isBatchAudit}"/>
+			<input type="hidden" id="taskIds" name="taskIds" th:value="${taskIds}"/>
+			<input type="hidden" id="notShowMenu" name="notShowMenu" value="Y"/>
+			<input type="hidden" id="isKeepTopWindow" name="isKeepTopWindow" th:value="${isKeepTopWindow}"/>
+			<input type="hidden" id="isGantt" name="isGantt" th:value="${isGantt}"/>
+			<input type="hidden" id="isTemplate" name="isTemplate" th:value="${isTemplate}"/>
+			<input type="hidden" id="tabs" name="tabs" th:value="${tabs}"/>
+			<input type="hidden" id="isAllowSubmit" name="isAllowSubmit" th:value="${isAllowSubmit}"/>
+			<input type="hidden" id="isTransmit" name="isTransmit" th:value="${isTransmit}"/>
+			<input type="hidden" id="isBatchAudit" name="isBatchAudit" th:value="${isBatchAudit}"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			
+			<div class="layout-box">
+				<div class="layout-left">
+					<ul class="page-ul"></ul>
+					<div class="detail-content" th:style="${isBatchAudit} ne 'Y'?'':'display:none'">
+						<div class="content childTaskContent">
+							<button type="button" class="btn t-btn n-active add mb10" onclick="addTask();" th:style="${isAllowAddChildTask} eq 'Y'?'':'display:none'">
+								<i class="fa fa-plus mr5"></i>
+								<span th:text="新建子任务" class="pt1 h18"></span>
+							</button>
+							<table grid-manager="demoOne" id="childTask-table" style="display:none;"></table>
+							<div class="none" id="childTask-none">暂无子任务</div>
+						</div>
+						<div class="content relateContent">
+							<button type="button" class="btn t-btn n-active add mb10" onclick="relateObject();">
+								<i class="fa fa-link mr5"></i>
+								<span class="pt1 h18">链接对象</span>
+							</button>
+							<table grid-manager="demoOne" id="relate-table" style="display:none;"></table>
+							<div class="none" id="relate-none">暂无关联项</div>
+						</div>
+						<div class="content hoursContent">
+							<table grid-manager="demoOne" id="hours-table" style="display:none;"></table>
+							<div class="none" id="hours-none">暂无工时记录</div>
+						</div>
+						<div class="content fileContent">
+							<div class="button-box">
+								<button type="button" class="btn t-btn n-active add mb10 mr5" onclick="addAttachment();">
+									<i class="fa fa-plus mr5"></i>
+									<span th:text="新建附件" class="pt1 h18"></span>
+								</button>
+								<button type="button" class="btn t-btn n-active add mb10" onclick="linkDoc();">
+									<i class="fa fa-link mr5"></i>
+									<span th:text="链接文档" class="pt1 h18"></span>
+								</button>
+							</div>
+							<table grid-manager="demoOne" id="file-table" style="display:none;"></table>
+							<div class="none" id="file-none">暂无附件</div>
+						</div>
+						<div class="content customContent"><iframe class="custom-iframe" id="custom-iframe" width="100%" height="500"></iframe></div>
+					</div>
+				</div>
+				<div class="layout-right"></div>
+			</div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="发布" th:if="${isTemplate} ne 'Y' and ${isNode} ne 'Y' and ${btn_EDITTSK} eq 'Y'" onclick="submitTask(9);" th:style="${isAllowPublishAndEdit} eq 'Y'?'':'display:none'"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:value="编辑" th:if="${btn_EDITTSK}" onclick="editTask(10);" th:style="${isAllowPublishAndEdit} eq 'Y'?'':'display:none'"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:value="变更" onclick="changeTask(10);" th:style="${isAllowChange} eq 'Y'?'':'display:none'"/>
+					<input type="button" class="layui-layer-btn0 btns cp" th:value="转发" onclick="transmitTask(2);" th:style="${isAllowTransmit} eq 'Y'?'':'display:none'"/>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script src="/js/list/list.filter.js"></script>
+	<script src="/js/form/comment.js"></script>
+	<script src="/js/base64.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]];</script>
+	
+	<script>
+		$(function() {
+			var data = $('#data').val();
+			initFormList(data);
+			initFormControl('TSK');
+			
+			//当天已投入工作量
+			var curTotalHour = $('#curTotalHour').val(), inWork = $("#report_in_work").val();
+			if(curTotalHour || inWork) {
+				var newTotalHour = parseFloat(curTotalHour ? curTotalHour : 0) + parseFloat(inWork ? inWork : 0);
+				$('.curHour').text(newTotalHour).attr('totalHour', newTotalHour);
+			}
+			
+			$("input[name='audit_result']").on("input propertychange",function(){//审核通过或者不通过
+				var isBatchAudit = $('#isBatchAudit').val();
+				if($(this).val() == 'N') {
+					if(!isBatchAudit || isBatchAudit == 'N') {
+						$('li[field="audit_result"]').removeClass('content-whole');
+					}
+					$('li[field="confirmWorkload"], li[field="lastEvalId"]').hide();
+					$('li[field="confirm_rate"]').show();
+					$('li[field="operate_remark"] .requireSign').text('*');
+					$('#confirm_rate').attr('required', 'required').attr('name', 'copRate');
+					$('textarea[name="operate_remark"]').attr('required', 'required');
+				}else {
+					if(!isBatchAudit || isBatchAudit == 'N') {
+						$('li[field="audit_result"]').addClass('content-whole');
+					}
+					$('li[field="confirmWorkload"], li[field="lastEvalId"]').show();
+					$('li[field="confirm_rate"]').hide();
+					$('li[field="operate_remark"] .requireSign').text('');
+					$('#confirm_rate').removeAttr('required').attr('name', 'confirm_rate');
+					$('textarea[name="operate_remark"]').removeAttr('required');
+				}
+			});
+			
+			$('.btn-box').removeClass('hide');
+			$('.layui-layer-btn').show();
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			$("#operate").html5Validate(function() {
+				submitTask();
+			}, {
+				validate: function() {
+					return customValidate();
+				}
+			});
+			
+			hideLoading();
+		});
+		
+		function changeDate($obj, value) {
+			if($obj.hasClass('report_action_date')) {
+				$.ajax({
+					type : "post",
+					url : "/task/getTaskReport",
+					data : {'taskId': $('#id').val(), 'actionDate': value},// 你的formid
+					async : false,
+					success : function(data) {
+						var reportId = '', copRate = '', fillWorkload = '', forRemWorkload = '', issueRemark = '', curTotalHour = 0, newTotalHour = 0;
+						if(data) {
+							copRate = data.copRate;
+							fillWorkload = data.fillWorkload;
+							forRemWorkload = data.forRemWorkload;
+							issueRemark = data.issueRemark;
+							curTotalHour = data.totalWorkLoad;
+							reportId = data.id;
+						}
+						$('#report_id').val(reportId);
+						$('#report_rate').val(copRate);
+						$('#report_in_work').attr('oldValue', fillWorkload).val(fillWorkload);
+						$('#report_remain_work').val(forRemWorkload);
+						$('.input_textarea[name="report_question"]').val(issueRemark);
+						
+						newTotalHour = parseFloat(curTotalHour ? curTotalHour : 0) + parseFloat(fillWorkload ? fillWorkload : 0);
+						$('.curHour').text(newTotalHour).attr('totalHour', newTotalHour);
+						$('#curTotalHour').val(curTotalHour);
+					}
+				});
+			}
+		}
+		
+		//改变当日已投入工作量
+		function changeCurDayHour($obj) {
+			var fillHour = $obj.val(), totalHour = $('.curHour').attr('totalHour'), oldValue = $obj.attr('oldValue'), newCurTotalHour = parseFloat(totalHour? totalHour: 0) + parseFloat(fillHour ? fillHour : 0) - parseFloat(oldValue ? oldValue : 0);
+			if(!Number.isInteger(newCurTotalHour)) {
+				newCurTotalHour = newCurTotalHour.toFixed(1);
+			}
+			$('.curHour').text(newCurTotalHour);
+		}
+		
+		function submitTask(action) {
+			if(action){
+				$('#action').val(action);
+			}
+			var url = "/task/saveTask";
+			if($('#isBatchAudit').val()) {
+				url = "/task/saveBatchAudit";
+			}
+				
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : url,
+				data : $('#operate').serialize_plus(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						if(parseInt($("#report_rate").val()) == 100 && data.msg == 'Y' && action != 3) {
+							confirm('任务已完成，是否提交审核', submit_ok, submit_cancel);
+						}else {
+							var isGantt = $('#isGantt').val();
+							if(isGantt && isGantt == 'Y'){//甘特图编辑和变更任务
+								var index = parent.layer.getFrameIndex(window.name);
+								parent.layer.close(index, $('#id').val());
+							}else if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								var isTransmit = $('#isTransmit').val(), isBatchAudit = $('#isBatchAudit').val();
+								if((isTransmit && isTransmit == 'Y') || (isBatchAudit && isBatchAudit == 'Y')){//转发或者批量审批成功后，返回任务列表
+									parentFrame.returnBackAndReLoad(true, true);
+								}else{
+									parentFrame.returnBackAndReLoad(true);
+								}
+							}else if(isContinue && isContinue == 'Y') {
+								$('input[name="Name"]').val('');
+							}else {
+								var isGantt = $('#isGantt').val();
+								var newMsg = '';
+								if(data.msg == 'Y' || data.msg == 'N') {
+									newMsg = '操作成功';
+								}else if(data.msg) {
+									newMsg = data.msg;
+								}else {
+									newMsg = '操作成功';							
+								}
+								parent.layer.msg(newMsg);
+								tabReturnBack($(this));
+							}
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}
+		
+		//任务提交审核
+		function submit_ok() {
+			parent.layer.closeAll();
+			submitTask(3);
+		}
+		
+		function submit_cancel() {
+			var isGantt = $('#isGantt').val();
+			if(isGantt && isGantt == 'Y'){
+				var index = parent.layer.getFrameIndex(window.name);
+				parent.layer.close(index, $('#id').val());
+			}else{
+				tabReturnBack($(this));
+			}
+		}
+		
+		//编辑任务
+		function editTask(action) {
+			var isGantt = $('#isGantt').val();
+			var url = '/task/addOrEditTask?id='+$('#id').val()+'&taskType=OT&action='+action+'&isGantt='+$('#isGantt').val();
+			if(isGantt && isGantt == 'Y'){
+				url += '&parentname=' + window.name;
+				openWindow('编辑任务', url);
+			}else{
+				url += '&parentname=' + parentName;
+				intoIframePage(url, false, 'TSK');
+			}
+		}
+		
+		//变更任务
+		function changeTask(action) {
+			var isGantt = $('#isGantt').val();
+			var url = '/task/addOrEditTask?id='+$('#id').val()+'&taskType=OT&action='+action+'&isGantt='+$('#isGantt').val();
+			if(isGantt && isGantt == 'Y'){
+				url += '&parentname=' + window.name;
+				openWindow('变更任务', url);
+			}else{
+				url += '&parentname=' + parentName;
+				intoIframePage(url, false, 'TSK');
+			}
+		}
+		
+		//转发任务
+		function transmitTask(action) {
+			var isGantt = $('#isGantt').val();
+			var url = '/task/transmitTask?id='+$('#id').val()+'&isGantt='+$('#isGantt').val();
+			if(isGantt && isGantt == 'Y'){
+				url += '&parentname=' + window.name;
+				openWindow('转发任务', url);
+			}else{
+				url += '&parentname=' + parentName;
+				intoIframePage(url, false, 'TSK');
+			}
+		}
+		
+		var windowName = null;
+		function openWindow(title, url){
+			windowName = window.name;
+			top.layer.open({
+				type : 2,
+				title : title,
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '960px', '95%' ],
+				content : url,
+				end: function(id, name) {
+					if(id) {
+						var index = parent.layer.getFrameIndex(windowName);
+						parent.layer.close(index, id);
+					}
+				}
+			});
+		}
+		
+		//重置计划工期
+		function resetWorkdayByDate(startDate, endDate) {
+		    var day = 0;
+		    $.ajax({
+				type : "post",
+				url : "/task/getTaskWorkDays",
+				data : {'startDate': startDate, 'endDate': endDate},// 你的formid
+				async : false,
+				success : function(day) {
+					var $li = $('li[field="planDuration"]');
+					if($li.hasClass('r')) {
+						$li.find('.field-content-num .numValue').text(day);
+					}else {
+						$('#planDuration').val(day);
+					}
+					$('#planWorkload').val(day*8);
+				}
+			});
+		    return day;
+		}
+		
+		//新建子任务
+		function addTask() {
+			top.layer.open({
+				type : 2,
+				title : '新建子任务',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : [ '960px', '95%' ],
+				content : '/task/addOrEditTask?id=&taskType=CT&action=&parentId='+$('#id').val()+'&isGantt='+$('#isGantt').val()+'&parentname=' + window.name,
+				end: function(id) {
+					if(id){
+						loadChildTask(true);
+					}
+				}
+			});
+		}
+		
+		//加载子任务
+		function loadChildTask(refresh) {
+			setTimeout(function(){
+				reLoadTableData('childTask', 'TSK', 'CT', refresh);
+			}, 100);
+		}
+		
+		//加载工时
+		function loadHours(refresh) {
+			reLoadTableData('hours', 'REPORT', 'HR', refresh);
+		}
+		
+		//页面加载列表后，进行判断列表是否有值
+		function detailPageDoCustom(data, tableId) {
+			if(data && tableId) {
+				data = eval('('+data+')');
+				if(data.totals > 0){
+					var noneId = tableId.replace('table', 'none');
+					$('#' + noneId).hide();
+					$('#' + tableId).attr('totals', data.totals);
+				}else {
+					$('#' + tableId).closest('.table-wrap').hide();
+					$('#' + noneId).show();
+				}
+			}
+		}
+		
+		function delTask(model, id){
+			top.layer.confirm($.i18n.prop("common.del.comfirm"), {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : "/task/remove",
+					type : "post",
+					data : {
+						'ids' : id
+					},
+					success : function(r) {
+						top.layer.closeAll('dialog');
+						layer.msg(r.msg);
+						loadChildTask(true);
+					}
+				});
+			})
+		}
+		
+	</script>
+	
+</body>
+</html>

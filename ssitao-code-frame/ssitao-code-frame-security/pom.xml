@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ssitao-code-frame-security</artifactId>
+    <packaging>pom</packaging>
+
+    <name>ssitao-code-frame-security</name>
+    <description>安全框架模块：包含多租户、数据权限等功能</description>
+
+    <modules>
+        <module>ssitao-code-security-core</module>
+        <!-- TODO: 暂时注释掉多租户和数据权限模块，等待修复 MyBatis-Flex API 兼容性问题 -->
+        <!--<module>ssitao-code-security-tenant</module>-->
+        <!--<module>ssitao-code-security-datapermission</module>-->
+    </modules>
+
+</project>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+	.table-wrap {
+	    min-height: 100px!important;
+	}
+	.operate-row{display:inline-block;height:25px;line-height:25px;}
+	.operate-row .operate-name{display:inline-block;height:25px;line-height:25px;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="查看生命周期"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="id" name="id" th:value="${lifecycle.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${lifecycle.objectType}"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			<input type="hidden" id="model" name="model" th:value="PHASE"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li r content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li r content-whole" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content" th:text="${lifecycle.name}"></div>
+						</li>
+						<li class="field-li r content-whole odd" field="preLifecycle" htype="TEXT">
+							<div class="field-div field-label"><span class="title" th:text="前置生命周期"></span></div>
+							<div class="field-div field-content" th:text="${lifecycle.preLifecycleName}"></div>
+						</li>
+						<li class="field-li r content-whole" field="preLifecycle" htype="SELECT">
+							<div class="field-div field-label"><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content" th:text="${lifecycle.statusName}"></div>
+						</li>
+						<li class="field-li r content-whole odd" field="preLifecycle" htype="AREA">
+							<div class="field-div field-label"><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content" th:text="${lifecycle.remark}"></div>
+						</li>
+						<li class="field-li r content-whole sign" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="阶段跳转"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<table grid-manager="demoOne" id="phase-table" ></table>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editLifecycle();"/>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('LIFECYCLE');
+			
+			$('.btn-box').removeClass('hide');
+			
+			$('#phase-table').initTable({
+				tableId:'phase-table',
+				model:'LIFECYCLEPHASE',
+				supportPage: false,
+				supportTree: false,
+				objectId: $('#id').val(),
+				rights: rights,
+				queryObject: $('#objectType').val(),
+				isRead: 'Y'
+			});
+		});
+		
+		function editLifecycle() {
+			parent.layer.closeAll();
+			editEntity('LIFECYCLE', $('#id').val(), $('#objectType').val(), parentName);
+		}
+		
+	</script>
+	
+</body>
+</html>

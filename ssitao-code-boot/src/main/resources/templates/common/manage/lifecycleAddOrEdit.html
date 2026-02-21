@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/list/gm.css">
+<style>
+/* 	.table-wrap { */
+/* 	    min-height: 100px!important; */
+/* 	} */
+	.nextContent, .layui-layer-btn .btns.nextContent{display:none;}
+	.operate-row{display:inline-block;height:25px;line-height:25px;}
+	.operate-row .operate-name{display:inline-block;height:25px;line-height:25px;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="${isEdit eq 'Y'}?'编辑生命周期':'新建生命周期'"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="id" name="id" th:value="${lifecycle.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${lifecycle.objectType}"/>
+			<input type="hidden" id="model" name="model" th:value="PHASE"/>
+			<input type="hidden" id="isEdit" name="isEdit" th:value="${isEdit}"/>
+			<input type="hidden" id="tableHeightAuto" name="tableHeightAuto" th:value="Y"/>
+			<div class="layout-box new">
+				<div class="layout-left">
+					<ul class="page-ul">
+						<li class="field-li r content-whole sign preContent" field="loginInfo" htype="SIGN">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="基本信息"></div>
+							</div>
+							<div class="field-div field-sign-content"></div>
+						</li>
+						<li class="field-li content-whole preContent" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="名称"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<input class="form-control" name="name" type="text" th:value="${lifecycle.name}" placeholder="请输入生命周期名称" required autocomplete="off"  htype="TEXT" maxlength="100">
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" field="preLifecycleId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置生命周期"></span></div>
+							<div class="field-div field-content">
+								<select id="preLifecycleId" class="selectpicker" name="preLifecycleId" data-live-search="true" data-live-search-style="begins" title="请选择">
+									<option value="">请选择</option>
+									<option th:each="select:${preLifecycleList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+								</select>
+							</div>
+						</li>
+						<li class="field-li check content-whole preContent" field="status" htype="RADIO">
+							<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="状态"></span></div>
+							<div class="field-div field-content-check">
+								<div class="radio">
+								    <input type="radio" name="status" id="_status1" value="1" data-target="radio" th:checked="${lifecycle.status} eq '1'" required>
+								    <label for="_status1" th:text="使用中"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status2" value="2" th:checked="${lifecycle.status} eq '2'">
+								    <label for="_status2" th:text="暂停"></label>
+							    </div>
+							    <div class="radio">
+								    <input type="radio" name="status" id="_status3" value="3" th:checked="${lifecycle.status} eq '3'">
+								    <label for="_status3" th:text="关闭"></label>
+							    </div>
+							</div>
+						</li>
+						<li class="field-li content-whole preContent" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+							<div class="field-div field-content textWrap wordSumTotal">
+								<div class="textarea-box">
+									<textarea rows="8" class="input_textarea" name="remark" id="remarkContent" placeholder="请输入备注" maxlength="1000" th:text="${lifecycle.remark}"></textarea>
+								</div>
+							</div>
+						</li>
+						<li class="field-li r content-whole sign nextContent" field="loginInfo" htype="SIGN" th:style="${isEdit} eq 'N' ? 'display:none;':'' ">
+							<div class="field-div field-sign-title3">
+								<div class="title" th:text="阶段跳转"></div>
+							</div>
+							<div class="field-div field-sign-content mt10">
+								<div class="button-box">
+									<button type="button" class="btn t-btn n-active add mb10 mr5" onclick="addLifecyclePhase();">
+										<i class="fa fa-plus mr5"></i>
+										<span th:text="新增阶段" class="pt1 h18"></span>
+									</button>
+									<button type="button" class="btn t-btn n-active add mb10" onclick="addLifecycleTransition();">
+										<i class="fa fa-plus mr5"></i>
+										<span th:text="新增操作" class="pt1 h18"></span>
+									</button>
+								</div>
+								<table grid-manager="demoOne" id="phase-table" ></table>
+							</div>
+						</li>
+					</ul>
+					
+					<div class="formBtn hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" th:value="保存" th:style="${isEdit} eq 'N' ? 'display:none;':'' "/>
+							<input type="submit" class="layui-layer-btn0 btns cp preContent" id="nextStep" th:value="下一步" th:style="${isEdit} eq 'Y' ? 'display:none;':'' "/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="nextSave" th:value="保存"/>
+							<input type="button" class="layui-layer-btn0 btns cp nextContent" id="preStep" th:value="上一步"/>
+							<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+		
+	<div>
+		<script type="text/javascript">
+			var rights = 'O,E,D';
+		</script>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script src="/js/list/jquery.ui.widget.min.js"></script>
+	<script src="/js/list/gm.js"></script>
+	<script src="/js/list/list.table.js"></script>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], type = [[${param.type}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('LIFECYCLE');
+			loadPhaseList();
+			
+			$('#nextSave').click(function() {
+				tabReturnBack();
+				parent.layer.msg('操作成功');
+			});
+			
+			$('#preStep').click(function() {
+				$('.preContent').show();
+				$('.nextContent').hide();
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		function loadPhaseList() {
+			var id = $('#id').val(), $table = $('#phase-table'), $tableWrap = $table.closest('.table-wrap');
+			if(id) {
+				if($tableWrap.length) {
+					$tableWrap.show();
+				}else {
+					$table.initTable({
+						tableId:'phase-table',
+						model:'LIFECYCLEPHASE',
+						supportPage: false,
+						supportTree: false,
+						rights: rights,
+						objectId: id,
+						queryObject: $('#objectType').val()
+					});
+				}
+			}
+		}
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/lifecycle/save",
+				data : $('#operate').serialize(),// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						refreshList('true');
+						if($('#isEdit').val() == 'Y') {
+							tabReturnBack2({'isReturnParentList':true, 'isRefresh':true});
+							parent.layer.msg('操作成功');
+						}else {
+							$('#id').val(data.id);
+							loadPhaseList();
+							
+							$('.preContent').hide();
+							$('.nextContent').show();
+						}
+					} else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate('PHASE');
+			}
+		});
+		
+		function addLifecyclePhase() {
+			layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '新增生命阶段',
+				maxmin : true,
+				shadeClose : false, // 点击遮罩关闭层
+				area : ['100%', '100%'],
+				content : '/lifecycle/addOrEditLifecyclePhase/null?lifecycleId=' + $('#id').val() + '&objectType=' + $('#objectType').val() + '&preId='+ getCurRowId() +'&parentname=' + window.name,
+				end: function(){
+					GridManager.refreshGrid('phase-table', true);
+				}
+			});
+		}
+		
+		function addLifecycleTransition() {
+			var lcPhaseId = getCurRowId();
+			if(!lcPhaseId) {
+				alert('请选择阶段');
+				return;
+			}
+			layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '新增操作',
+				maxmin : true,
+				shadeClose : false,
+				area : ['100%', '100%'],
+				content : '/lifecycle/addOrEditLifecycleTransition/null?lifecycleId=' + $('#id').val() + '&objectType=' + $('#objectType').val() + '&lcPhaseId='+ getCurRowId() +'&parentname=' + window.name,
+				end: function(id, name){
+					GridManager.refreshGrid('phase-table', true);
+				}
+			});
+		}
+		
+		function eidtLifecycleTransition(id) {
+			layer.open({
+				skin: 'iframeClass',
+				type : 2,
+				title : '编辑操作',
+				maxmin : true,
+				shadeClose : false,
+				area : ['100%', '100%'],
+				content : '/lifecycle/addOrEditLifecycleTransition/'+id+'?lifecycleId=' + $('#id').val() + '&objectType=' + $('#objectType').val() + '&lcPhaseId='+ getCurRowId() +'&parentname=' + window.name,
+				end: function(id, name){
+					GridManager.refreshGrid('phase-table', true);
+				}
+			});
+		}
+		
+		function removeLifecycleTransition(id) {
+			var index = top.layer.confirm($.i18n.prop("common.del.comfirm"), {
+				btn : [$.i18n.prop("common.comfirm"), $.i18n.prop("common.cancel")]
+			}, function() {
+				$.ajax({
+					url : '/lifecycle/removeLifecycleTransition',
+					type : "post",
+					data : {
+						'id' : id
+					},
+					success : function(r) {
+						if (r.code == 0) {
+							reLoad();
+							top.layer.close(index);
+							parent.layer.msg(r.msg);
+						} else {
+							top.layer.close(index);
+							parent.layer.msg(r.msg, 1);
+						}
+					}
+				});
+			});
+		}
+		
+		function getCurRowId() {
+			return $('.table-wrap tbody tr.selected').attr('id');
+		}
+		
+		function reLoad() {
+			$('#phase-table').GM('onlyRefresh');
+		}
+	</script>
+	
+</body>
+</html>

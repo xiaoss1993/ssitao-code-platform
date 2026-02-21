@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/workflow/operate-guide.css"/>
+<head th:include="include::listHeaderContent"></head>
+
+<style></style>
+
+<body class="layer-box instance" th:classappend="${session.theme}">
+	<div class="wrapper wrapper-content ">
+		<div class="hide">
+			<input type="hidden" id="id" name="id" th:value="${instance.id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${instance.objectType}"/>
+			<input type="hidden" id="instanceName" name="instanceName" th:value="${instance.name}"/>
+			<input type="hidden" id="step" name="step" th:value="${instance.step}"/>
+			<input type="hidden" id="isRunEdit" name="isRunEdit" th:value="${isRunEdit}"/>
+		</div>
+		<div class="col-sm-12 pl10 mt10">
+			<div class="table-list-box">
+				<div class="ibox">
+					<div class="ibox-body">
+						<div class="fixed-table-toolbar mb10"> 
+							<div class="pull-right search t-columns mr5">
+							</div>
+							<div class="clear"></div>
+						</div>
+						<table grid-manager="demoOne" id="grid-table"></table>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<script type="text/javascript">
+			var rights = 'O';
+		</script>
+	</div>
+	<div>
+		<script type="text/javascript">
+			rights += ',E';
+		</script>
+	</div>
+	
+	<div th:include="include::listFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]] ; var parentName = [[${param.parentname}]];</script>
+	<script src="/js/workflow/operate-guide.js"></script>
+	<script src="/js/workflow/workflow-common.js"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var objectId = $('#id').val(), objectType = $('#objectType').val(), isRunEdit = $('#isRunEdit').val();
+			loadStepGuideHtml(5, isRunEdit, objectId, objectType, $('#instanceName').val(), parentName);
+			
+			$('#grid-table').initTable({
+				model:'STATUS',
+				rights: rights,
+				supportPage: true,
+				supportTree: false,
+				objectType: objectType,
+				objectId: objectId
+			});
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function reLoad(){
+			GridManager.refreshGrid('grid-table', true);
+		}
+	</script>	
+	
+</body>
+</html>

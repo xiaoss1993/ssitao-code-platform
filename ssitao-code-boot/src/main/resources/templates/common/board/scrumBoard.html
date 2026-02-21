@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<form action="" id="operate">
+		<div class="layer-box">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" name="id" id="id" th:value="${scrumBoard.id}"/>
+			<input type="hidden" name="objectType" id="objectType" th:value="${scrumBoard.objectType}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="看板名称"></span></div>
+					<div class="field-div field-content" th:text="${scrumBoard.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置看板"></span></div>
+					<div class="field-div field-content" th:text="${scrumBoard.preName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="status" htype="RADIO">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="关联状态"></span></div>
+					<div class="field-div field-content" th:text="${scrumBoard.rltStatusName}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注" title="备注"></span></div>
+					<div class="field-div field-content" th:text="${scrumBoard.remark}"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" onclick="editScrum();" th:if="${btnEdit}"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</div>
+	</form>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('SCRUM_BOARD');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function editScrum() {
+			top.layer.open({
+				type : 2,
+				title : '编辑看板',
+				maxmin : true,
+				shadeClose : false,
+				area : [ '800px', '500px' ],
+				content : 'board/addOrEditScrumBoard/'+$('#id').val()+'?objectType='+$('#objectType').val()+'&preId=&parentname=' + parentName,
+				end: function(id){
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.layer.close(index, 'grid-table');
+				}		
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

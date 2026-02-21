@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<meta charset="utf-8">
+
+<link rel="stylesheet" href="/css/form/popup-search.css"/>
+<head th:include="include::headerContent"></head>
+
+<body class="gray-bg" th:classappend="${session.theme}">
+
+	<div class="ibox-content search-box">
+		<input id="selectIds" th:value="${selectIds}" type="hidden">
+		<div class="box-left">
+			<div class="search">
+				<input autocomplete="off" class="form-control" id="search" name="name" type="text" th:placeholder="搜索角色">
+				<i class="zmdi zmdi-search"></i>
+			</div>
+			<div class="list-box">
+				<ul class="dataList" >
+				</ul>
+			</div>
+		</div>
+		<div class="box-right">
+			<div class="selected-list">
+				<span th:text="#{common.select.list}"></span>
+				<i class="zmdi zmdi-tag-close" onclick="deleteAll($(this))"></i>
+			</div>
+			<ul class="selected-ul">
+			</ul>
+		</div>
+	</div>
+	
+	<div th:include="include::footerContent"></div>
+
+	<script src="/js/form/popup-search.js"></script>
+	<script th:inline="javascript">
+	    var isMul = [[${isMul}]], objectType = [[${objectType}]];
+	</script>
+
+	<script>
+		var selectIds = $('#selectIds').val();
+		$(document).ready(function() {
+			$('.list-box').height($('.box-left').height() - 45);
+			getRoleList();
+		});
+		
+		//获取用户列表
+		function getRoleList(roleName) {
+			$.ajax({
+				type : "GET",
+				url : "/sys/role/roleList?type="+ objectType +"&roleName=" + roleName,
+				success : function(data) {
+					loadRoleList(data);
+					hideLoading();
+				}
+			});
+		}
+		
+		//加载用户列表
+		function loadRoleList(data) {
+			var html = '';
+			if(data && data.length) {
+				var user = '', hasSelected = false, mtype = 'role', selectedHtml = '';
+				$('.dataList').html(''); 
+				var $ul = $('.box-right ul');
+				for(var i = 0; i < data.length; i++) {
+					role = data[i], roleId = role[0], roleName = role[1], userCount = role[2];
+					hasSelected = false;
+					if(selectIds) {
+						if(selectIds.indexOf(roleId) > -1) {
+							hasSelected = true;
+						}
+						
+					}
+					html += '<li id="'+roleId+'" name="'+roleName+'" class="dataLi '+(hasSelected ? 'selected':'')+'" mType="' + mtype + '"><span><span class="jstree-default"><i class="jstree-icon jstree-themeicon"></i></span>'+roleName+'&nbsp;[&nbsp;'+userCount+'人&nbsp;]</span></li>';
+					
+					//判断已选列表是否存在值
+					if(!$ul.has("li").length) {
+						if(hasSelected) {
+							selectedHtml += getSelectedHtml(roleId, mtype, roleName);
+						}
+					}
+					
+					if(i > 0 && i%10 == 0) {
+						$('.dataList').append(html);
+						html = '';
+					}
+				}
+				$('.dataList').append(html);
+				if(selectedHtml) {
+					$ul.html(selectedHtml);
+				}
+				
+				//从用户列表选择用户
+				$('.dataList .dataLi').click(function() {
+					var $obj = $(this);
+					if(!$obj.hasClass('selected')) {
+						var html = getSelectedHtml($obj.attr('id'), $obj.attr('mtype'), $obj.attr('name'));
+						if(isMul) {
+							$ul.append(html);
+						}else {
+							$('.dataList .dataLi').removeClass('selected');
+							$ul.html(html);
+						}
+						$obj.addClass('selected');
+					}else {
+						deleteOne($ul.find('li[attrid="'+$obj.attr('id')+'"]'));
+					}
+				});
+				
+			}else {
+				$('.dataList').html('<li class="none">无数据</li>');
+			}
+		}
+		
+		$('#search').keyup(function(event){
+			if(event.keyCode ==13) {
+				var searchVal = $(this).attr('searchVal');
+				if((searchVal || $(this).val()) && (!searchVal || searchVal != $(this).val())) {
+					$(this).attr('searchVal', $(this).val());
+					getRoleList($(this).val());
+				}
+			}
+	    });
+		
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="id" name="id" th:value="${id}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="belongId" name="belongId" th:value="${belongId}"/>
+			<input type="hidden" id="isRemoveEntity" name="isRemoveEntity" th:value="${isRemoveEntity}"/>
+			<input type="hidden" id="name" name="name" th:value="${name}"/>
+			
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="preBelongId" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="从文件夹"></span></div>
+					<div class="field-div field-content" th:text="${parentName}"></div>
+				</li>
+				<li class="field-li content-whole" field="parentId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="至文件夹"></span></div>
+					<div class="field-div field-content">
+						<select id="parentId" class="selectpicker" name="parentId" data-live-search="true" data-live-search-style="begins" title="请选择">
+							<option value="">请选择</option>
+							<option th:each="select:${belongFolderList}" th:selected="${select.checked}" th:attr="data-content=${select.text}" th:value="${select.id}"></option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="保存" />
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], objectType = [[${objectType}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl(objectType);
+			
+			parent.$('.layui-layer-title').text('移动  ' + $('#name').val());
+			
+			$("#operate").html5Validate(function() {
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : "/folder/saveMoveFolder",
+					data : $('#operate').serialize_plus(),// 你的formid
+					async : false,
+					success : function(data) {
+						if (data.code == 0) {
+							var index = parent.layer.getFrameIndex(window.name);
+							if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								parentFrame.reLoadFolder(false, $('#objectType').val());
+								parent.layer.close(index);
+							}else{
+								parent.layer.close(index, data.id);
+							}
+							parent.layer.msg(data.msg);
+						} else {
+							parent.layer.msg(data.msg);
+						}
+						
+						hideLoading();
+					}
+				});
+			}, {
+				validate: function() {
+					return customValidate($('#objectType').val());
+				}
+			});
+		});
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="description" content="">
+    <title>登录 - EWeb管理平台</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/css/common/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/common/style.min.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+    <link rel="stylesheet" href="/css/theme/blue/theme.css">
+
+    <style>
+        .btn-primary{color:white!important;font-size:1em;}
+        .copyright {
+            font-size: .9em;
+        }
+        label.error {
+            color:red;
+            display:flex;
+            align-items:center;
+        }
+        .error-box{margin-top:5px;height:20px;display:none;}
+    </style>
+</head>
+
+<body class="light">
+
+<div class="authentication">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <form class="card auth_form" id="signupForm">
+                    <div class="header">
+                        <img class="logo1" src="/img/common/logo.png" style="max-width:300px;max-height:150" alt="EWeb">
+                        <h5>用户登录</h5>
+                    </div>
+                    <div class="body">
+                        <div class="group-box mb-3">
+                            <div class="input-group">
+                                <input id="username" name="username" type="text" class="form-control" placeholder="请输入用户名">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
+                                </div>
+                            </div>
+                            <div class="error-box"></div>
+                        </div>
+                        <div class="group-box mb-3">
+                            <div class="input-group">
+                                <input id="password" name="password" type="password" class="form-control" placeholder="请输入密码">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="zmdi zmdi-lock"></i></span>
+                                </div>
+                            </div>
+                            <div class="error-box" id="error-box"></div>
+                        </div>
+                        <div class="checkbox">
+                            <input id="remember_me" type="checkbox">
+                            <label for="remember_me">记住密码</label>
+                        </div>
+                        <a id="login" class="btn btn-primary btn-block waves-effect waves-light">登 录</a>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                <div class="card">
+                    <img src="/img/common/signin.svg" alt="Sign In"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="hide">
+    <input type="hidden" id="enterUserName" value="请输入用户名"/>
+    <input type="hidden" id="enterPassword" value="请输入密码"/>
+    <input type="hidden" id="skin" value="blue"/>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/js/base64.js"></script>
+<script src="/js/common/common.js"></script>
+
+<script type="text/javascript">
+    var ctx = '/';
+
+    $(document).ready(function () {
+        rLogin.initPage();
+        $("#login").on('click',function(){$("#signupForm").submit();});
+        validateRule();
+
+        $('#signupForm input').focus(function() {
+            $('#user-pwd-error').addClass('hide')
+        });
+
+        $("body").keydown(function() {
+            if (event.keyCode == "13") {
+                $('#login').click();
+            }
+        });
+
+        initUmAndPsd();
+    });
+
+    function initUmAndPsd(){
+        var skin = getCookie('skin');
+        if(!skin || skin == 'null') {
+            skin = 'blue';
+        }
+        var link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.type = "text/css";
+        link.href = "/css/theme/"+skin+"/theme.css";
+        document.head.appendChild(link);
+
+        var nm = utf8to16(base64decode(getCookie('username'))), psd = utf8to16(base64decode(getCookie('password')));
+        $('#username').val(nm);
+        $('#password').val(psd);
+        if (nm && psd) {
+            $('#remember_me').attr('checked', true);
+        }
+    }
+
+    $.validator.setDefaults({
+        submitHandler: function () {
+            login();
+        }
+    });
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: ctx+"login",
+            data: $('#signupForm').serialize(),
+            success: function (r) {
+                if (r.code == 0) {
+                    saveInfo(r.skin);
+                    parent.location.href = '/index.html';
+                    sessionStorage.removeItem('logout');
+                } else {
+                    $('#error-box').html("<label class='error'><i class='zmdi zmdi-close-circle mr5'></i>" + r.msg + '</label>').show();
+                }
+            },
+            error: function() {
+                // 静态模式下模拟登录成功
+                saveInfo('blue');
+                parent.location.href = '/index.html';
+                sessionStorage.removeItem('logout');
+            }
+        });
+    }
+
+    function validateRule() {
+        var icon = "<i class='zmdi zmdi-close-circle mr5'></i>";
+        $("#signupForm").validate({
+            rules: {
+                username: {
+                    required: true
+                },
+                password: {
+                    required: true
+                }
+            },
+            messages: {
+                username: {
+                    required: icon + $('#enterUserName').val(),
+                },
+                password: {
+                    required: icon + $('#enterPassword').val(),
+                }
+            },
+            errorPlacement:function(error,element){
+                $(element).closest('.group-box').find('.error-box').html(error).show();
+            },
+            success: function (element) {
+                $(element).closest('.group-box').find('.error-box').hide();
+            }
+        })
+    }
+
+    function saveInfo(skin) {
+        try {
+            if ($('#remember_me').is(':checked')) {
+                var username = $('#username').val(), password = $('#password').val();
+                if (username && password) {
+                    username = base64encode(utf16to8(username));
+                    password = base64encode(utf16to8(password));
+                    setCookie("username", username);
+                    setCookie("password", password);
+                }
+            } else {
+                setCookie("username", "");
+                setCookie("password", "");
+            }
+            setCookie("skin", skin);
+        } catch (e) {}
+    }
+
+    var rLogin = {
+        initPage : function() {
+            if(window.top != window.self){
+                top.location.href = location.href;
+            }
+        }
+    }
+</script>
+</body>
+</html>

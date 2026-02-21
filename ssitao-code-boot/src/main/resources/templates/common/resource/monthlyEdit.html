@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<link rel="stylesheet" href="/css/resource/workReport.css">
+<style>
+	.workReport .reportTable .question, .workReport .reportTable .summary{
+	    padding:0px;
+	}
+	.workReport .reportTable .question .input_textarea{padding:10px!important;margin-bottom:15px;border:0;resize:none;}
+	.workReport .reportTable .question .sumtips{right:5px!important;bottom:0px!important;}
+	.workReport .reportTable .summary .panel{margin-bottom:0px!important;}
+	.workReport .reportTable .summary .note-editor.note-frame{border:0px!important;}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	<ul class="title-ul">
+		<li class="field-li content-whole r title-sign" htype="TEXT">	
+			<div class="field-div field-content spec">		
+				<div class="return-back" onclick="tabReturnBack($(this));">
+					<i class="fa fa-reply mr5"></i><span>返回</span>
+				</div>		
+				<div class="line"></div>		
+				<div class="field-name" th:text="编辑月报"></div>	
+			</div>
+		</li>
+	</ul>
+	<div class="layer-box">
+		<input type="hidden" id="id" name="id" th:value="${id}"/>
+		<input type="hidden" id="objectType" name="objectType" th:value="${WEEKLY}"/>
+		<div class="layout-box new">
+			<div class="layout-left">
+				<div class="workReport">
+					<h3 class="totalTitle">工作月报</h3>
+					<table class="reportTable">
+						<tr>
+							<td class="colTitle">姓名</td>
+							<td colspan="3" th:utext="${userName}"></td>
+							<td class="colTitle">归属部门</td>
+							<td colspan="3" th:utext="${deptName}"></td>
+						</tr>
+						<tr>
+							<td class="colTitle">职位</td>
+							<td colspan="3" th:utext="${positionName}"></td>
+							<td class="colTitle">报告周期</td>
+							<td colspan="3" th:text="${reportCycle}"></td>
+						</tr>
+						<tr>
+							<td class="colTitle" colspan="8">本月工作完成情况</td>
+						</tr>
+						<tr>
+							<td class="colTitle">序号</td>
+							<td class="colTitle" colspan="4">任务名称</td>
+							<td class="colTitle">状态</td>
+							<td class="colTitle">投入工时</td>
+							<td class="colTitle">偏差率</td>
+						</tr>
+						<tr th:each="task, userStat:${thisWeekOrMonthTaskList}">
+							<td class="center" th:text="${userStat.count}"></td>
+							<td class="" colspan="4" th:utext="${task[1]}"></td>
+							<td class="center" th:text="${task[2]}"></td>
+							<td class="center" th:text="${task[3]}"></td>
+							<td class="center" th:text="${task[4]}"></td>
+						</tr>
+						<tr>
+							<td class="colTitle">存在问题</td>
+							<td class="question" colspan="7">
+								<div class="field-div field-content textWrap wordSumTotal">
+									<div class="textarea-box">
+										<textarea rows="8" class="input_textarea" name="question" id="question" maxlength="1000" th:text="${question}" placeholder="请输入存在问题"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="colTitle" colspan="8">下月工作安排计划</td>
+						</tr>
+						<tr>
+							<td class="colTitle">序号</td>
+							<td class="colTitle" colspan="4">任务名称</td>
+							<td class="colTitle">状态</td>
+							<td class="colTitle">预估工时</td>
+							<td class="colTitle">计划完成日期</td>
+						</tr>
+						<tr th:each="task, userStat:${nextWeekOrMonthTaskList}">
+							<td class="center" th:text="${userStat.count}"></td>
+							<td class="" colspan="4" th:utext="${task[1]}"></td>
+							<td class="center" th:text="${task[2]}"></td>
+							<td class="center" th:text="${task[3]}"></td>
+							<td class="center" th:text="${task[4]}"></td>
+						</tr>
+						<tr>
+							<td class="colTitle">月总结</td>
+							<td class="summary" colspan="7">
+								<div class="field-div field-content field-content-summernote">
+									<input type="hidden" name="summary" id="summary" htype="FORMATAREA" th:value="${summary}"/>
+									<div class="summernote"></div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+		        <div class="formBtn hide">
+					<div class="layui-layer-btn layui-submit-btn">
+						<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="保存" onclick="saveWeekly()"/>
+						<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" onclick="tabReturnBack($(this))"></a>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+        
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; curUser = [[${curUser}]]; userList = [[${userList}]];</script>
+	
+	
+	<script>
+		$(function() {
+			initFormControl('MONTHLY');
+			$('.summernote').each(function() {
+				$(this).summernote('code', $(this).prev().val());
+			});
+			
+			controlBtnShowPosition();
+		});
+		
+		function saveWeekly() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/saveWeeklyOrMonthly",
+				data : {'id':$('#id').val(), 'objectType':'MONTHLY', 'question':$('#question').val(), 'summary':$('.summernote').summernote('code')},// 你的formid
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.msg(data.msg);
+						returnBackAndReLoad(true);
+					} else {
+						parent.layer.msg(data.msg);
+					}
+					hideLoading();
+				}
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

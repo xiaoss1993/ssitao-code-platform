@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.tab-ul{margin:0px;padding:0px;}
+	.col-sm-12{padding-left:0px!important;padding-right:0px!important;}
+	.windowPage .field-li.content-whole.detail-sign{width:100%!important;}
+	.windowPage .layout-box .layout-left{width:100%;}
+</style>
+
+<body class="windowPage layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<ul class="title-ul">
+			<li class="field-li content-whole r title-sign" htype="TEXT">	
+				<div class="field-div field-content spec">		
+					<div class="return-back" onclick="tabReturnBack($(this));">
+						<i class="fa fa-reply mr5"></i><span>返回</span>
+					</div>		
+					<div class="line"></div>		
+					<div class="field-name" th:text="查看部门"></div>	
+				</div>
+			</li>
+		</ul>
+		<form action="" id="operate">
+			<input type="hidden" name="id" id="id" th:value="${dept.id}"/>
+			<input type="hidden" name="objectType" id="objectType" value="DEPT"/>
+			<div class="layout-box">
+				<div class="layout-left">
+					<ul class="page-ul page-ul2">
+						<li class="field-li content-whole detail-sign" field="detailTabs" htype="SIGN">	
+							<div class="relevant-tabs">
+								<div class="tab active detail-tab" type="detail" taburl="undefined" tabcls="undefined">基本信息</div>
+								<div class="tab roleAndUser-tab" type="roleAndUser" taburl="undefined" tabcls="undefined">角色成员</div>
+							</div>
+						</li>
+						<li class="field-li r" field="name" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门名称" title="部门名称"></span></div>
+							<div class="field-div field-content" th:text="${dept.name}"></div>
+						</li>
+						<li class="field-li r mt10" field="code" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门编号" title="部门编号"></span></div>
+							<div class="field-div field-content" th:text="${dept.code}"></div>
+						</li>
+						<li class="field-li r odd" field="preDeptId" htype="DEPT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置部门"></span></div>
+							<div class="field-div field-content" th:text="${dept.preDeptName}"></div>
+						</li>
+						<li class="field-li r odd" field="parentId" htype="DEPT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="上级部门"></span></div>
+							<div class="field-div field-content" th:text="${dept.parentDeptName}"></div>
+						</li>
+						<li class="field-li r" field="user" htype="USER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">项目经理</span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:attr="userId=${dept.managerId}" th:title="${dept.managerUser.name}" onclick="viewUser('', $(this))" th:style="${#strings.isEmpty(dept.managerUser.id)} ? 'display:none':''">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${dept.managerUser.picId}"/>
+											<span th:text="${dept.managerUser.name}"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li r" field="user" htype="USER">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title">项目助理</span></div>
+							<div class="field-div field-content user">
+								<div class="user-list">
+									<div class="cp" th:attr="userId=${dept.assistantId}" th:title="${dept.assistantUser?.name}" onclick="viewUser('', $(this))" th:style="${#strings.isEmpty(dept.assistantUser?.id)} ? 'display:none':''">
+										<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+										<div class="user-col">
+											<img th:src="${dept.assistantUser?.picId}"/>
+											<span th:text="${dept.assistantUser?.name}"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</li>
+						<li class="field-li r odd" field="telPhone" htype="TEL">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门电话" title="部门电话"></span></div>
+							<div class="field-div field-content" th:text="${dept.telPhone}"></div>
+						</li>
+						<li class="field-li r odd" field="fax" htype="TEL">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="部门传真" title="部门传真"></span></div>
+							<div class="field-div field-content" th:text="${dept.fax}"></div>
+						</li>
+						<li class="field-li content-whole r" field="officeAddress" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="办公地址" title="办公地址"></span></div>
+							<div class="field-div field-content" th:text="${dept.officeAddress}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="remark" htype="AREA">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="职责描述" title="职责描述"></span></div>
+							<div class="field-div field-content" th:text="${dept.remark}" ></div>
+						</li>
+						<li class="field-li content-whole r" field="lifecycleId" htype="SELECT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="流程组合"></span></div>
+							<div class="field-div field-content" th:utext="${dept.workflowGroupName}"></div>
+						</li>
+						<li class="field-li content-whole r odd" field="domainName" htype="TEXT">
+							<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="域部门名称" title="域部门名称"></span></div>
+							<div class="field-div field-content" th:text="${dept.domainName}"></div>
+						</li>
+					</ul>
+					<div class="content customContent" style="display:none"><iframe class="custom-iframe" id="custom-iframe" width="100%" height="500"></iframe></div>
+					 
+					<div class="btn-box hide">
+						<div class="layui-layer-btn layui-submit-btn">
+							<input type="button" id="submit" class="layui-layer-btn0 btns cp" th:value="#{common.eidt}" shiro:hasPermission="DEPT:EDIT" onclick="editDept();"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+	
+		$(function() {
+			initFormControl('DEPT');
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		function editDept() {
+			parent.layer.closeAll();
+			editEntity('DEPT', $('#id').val(), '', parentName);
+		}
+		
+	</script>
+	
+</body>
+</html>

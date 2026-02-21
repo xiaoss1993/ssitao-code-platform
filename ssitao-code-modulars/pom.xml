@@ -3,25 +3,60 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.ssitao.code</groupId>
-        <artifactId>ssitao-code-platform</artifactId>
+        <artifactId>ssitao-code-parents</artifactId>
         <version>${revision}</version>
+        <relativePath>../ssitao-code-parents/pom.xml</relativePath>
     </parent>
 
     <artifactId>ssitao-code-modulars</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>ssitao-code-modulars</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <description>模块化组件：包含可插拔的业务模块、功能组件</description>
+    <modules>
+        <module>ssitao-code-modular-iam</module>
+        <module>ssitao-code-modular-common</module>
+        <module>ssitao-code-modular-meta</module>
+        <module>ssitao-code-modular-devtools</module>
+    </modules>
 
     <dependencies>
+        <!-- 依赖公共模块 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-commons</artifactId>
+        </dependency>
+
+        <!-- 依赖 MyBatis-Easy 模块 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-easy</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Security (可选) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Authorization Server (可选) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+            <version>${spring-authorization-server.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<style>
+	.field-li[field="content"] .sumtips {
+	    padding-right: 5px!important;
+	}
+</style>
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id="objectId" name="objectId" th:value="${objectId}"/>
+			<input type="hidden" id="objectType" name="objectType" th:value="${objectType}"/>
+			<input type="hidden" id="type" name="type" th:value="${type}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole" field="tos" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="转发人"></span></div>
+					<div class="field-div field-content user">
+						<div class="user-list">
+							<div class="cp" th:each="user:${ownerUserList}" th:attr="userId=${user.id}" th:title="${user.name}" th:onclick="|viewUser('${user.id}')|">
+								<i class="fa fa-minus-circle del" onclick="removeUser($(this))"></i>
+								<div class="user-col">
+									<img th:src="${user.picId}"/>
+									<span th:text="${user.name}"></span>
+								</div>
+							</div>
+						</div>
+						<div class="user-add">
+							<input attrsign="_ids" name="tos" type="hidden" th:value="${ownerId}" required>
+							<div class="cp form-control-popup" htype="USER" ismul><img src="/img/user/user-add.png"/></div>
+							<div class="cp" onclick="preRemoveUser($(this))"><img src="/img/user/user-del.png"/></div>
+						</div>
+					</div>
+				</li>
+				<li class="field-li content-whole" field="subject" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign">*</span><span class="title" th:text="主题"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<input class="form-control" name="subject" type="text" th:value="${subject}" placeholder="请输入主题" required="required" autocomplete="off"  htype="TEXT" maxlength="100">
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+				<li class="field-li content-whole" field="content" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" id="content" maxlength="1000" name="content" placeholder="请输入备注" rows="8" th:text="${content}"></textarea>
+						</div>
+					</div>
+					<div class="field-div field-help"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" id="submit" class="layui-layer-btn0 btns cp" th:value="确定"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}" ></a>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+	
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl('TRANSMIT');
+			hideLoading();
+			
+			$('.btn-box').removeClass('hide');
+		});
+		
+		$("#operate").html5Validate(function() {
+			$.ajax({
+				cache : true,
+				type : "POST",
+				url : "/workflow/saveTransmitWorkflow",
+				data : $('#operate').serialize_plus(),
+				async : false,
+				success : function(data) {
+					if (data.code == 0) {
+						parent.layer.closeAll();
+						parent.layer.msg(data.msg);
+					}else {
+						parent.layer.msg(data.msg, 1);
+					}
+					hideLoading();
+				}
+			});
+		}, {
+			validate: function() {
+				return customValidate();
+			}
+		});
+	</script>
+	
+</body>
+</html>

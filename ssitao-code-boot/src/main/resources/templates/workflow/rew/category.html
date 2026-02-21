@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<style>
+	.li-ul{margin:0px;padding:0px;width:100%;}
+</style>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate">
+			<input type="hidden" id="isContinue" value=""/>
+			<input type="hidden" id="id" name="id" th:value="${category.id}"/>
+			<input type="hidden" id="pointId" name="pointId" th:value="${category.pointId}"/>
+			<input type="hidden" id="orderNum" name="orderNum" th:value="${category.orderNum}"/>
+			<ul class="page-ul">
+				<li class="field-li content-whole r" field="name" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="分类名称"></span></div>
+					<div class="field-div field-content" th:text="${category.name}"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="preId" htype="SELECT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="前置分类"></span></div>
+					<div class="field-div field-content" th:text="${category.preName}"></div>
+				</li>
+				<li class="field-li content-whole r" field="status" htype="TEXT">
+					<div class="field-div field-label"><span class="title" th:text="状态"></span></div>
+					<div class="field-div field-content" th:text="${category.status} eq 'IN'?'未发布':'使用中'"></div>
+				</li>
+				<li class="field-li content-whole r odd" field="pjtRole" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="项目角色"></span></div>
+					<div class="field-div field-content" th:text="${category.pjtRole}"></div>
+				</li>
+				<li class="field-li content-whole r" field="remark" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="描述"></span></div>
+					<div class="field-div field-content" th:text="${category.remark}"></div>
+				</li>
+			</ul>
+			
+			<div class="btn-box">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="button" class="layui-layer-btn0 btns" th:value="编辑" onclick="editCategory()"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]]; parentName = [[${param.parentname}]]; type = [[${param.type}]];</script>
+	
+	<script>
+		$(function() {
+			initFormControl('category');
+		});
+		
+		function editCategory() {
+			var index = parent.layer.getFrameIndex(window.name)
+			parent.layer.close(index);
+			top.layer.open({
+				type : 2,
+				title : '编辑评审分类',
+				maxmin : false,
+				shadeClose : false,
+				area : [ '700px', '600px' ],
+				content : 'rew/addOrEditCategory/'+$('#id').val()+'?preId=&pointId=' + $('#pointId').val() + '&parentname=' + parentName,
+			});
+		}
+		
+	</script>
+	
+</body>
+</html>

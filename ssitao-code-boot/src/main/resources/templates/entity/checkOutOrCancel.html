@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org"
+	xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include::formHeaderContent"></head>
+
+<body class="layer-body" th:classappend="${session.theme}">
+	
+	<div class="layer-box">
+		<form action="" id="operate" class="pb100">
+			<input type="hidden" id='id' name="id" th:value="${objectId}"/>
+			<input type="hidden" id='_objectId' name="objectId" th:value="${objectId}"/>
+		    <input type="hidden" id='_objectType' name='objectType' th:value="${objectType}"/>
+		    <input type="hidden" id="tempVersion" name="tempVersion" th:value="${tempVersion}"/>
+		    <input type="hidden" id='_tran_id_' name='_tran_id_'/>	    
+		    <input type="hidden" id='isContinue' name='isContinue' value="N"/>	    
+		    <input type="hidden" id='isKeepTopWindow' name='isKeepTopWindow' th:value="${isKeepTopWindow}"/>	    
+		    <input type="hidden" id='belongId' name='belongId' th:value="${belongId}"/>	    
+		    <input type="hidden" id='belongType' name='belongType' th:value="${belongType}"/>	    
+		    
+		    <input type="hidden" id='lifecycleId' name='lifecycleId' th:value="${lifecycleId}"/>
+		    <input type="hidden" id='opId' name='opId' th:value="${opId}"/>
+			
+			<ul class="page-ul">
+				<li class="field-li r content-whole" field="name" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="名称"></span></div>
+					<div class="field-div field-content" th:text="${name}"></div>
+				</li>
+				<li class="field-li r odd content-whole" field="version" htype="TEXT">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="版本"></span></div>
+					<div class="field-div field-content" th:text="${version}"></div>
+				</li>
+				<li class="field-li content-whole" field="_tran_remark_" htype="AREA">
+					<div class="field-div field-label"><span class="requireSign"></span><span class="title" th:text="备注"></span></div>
+					<div class="field-div field-content textWrap wordSumTotal">
+						<div class="textarea-box">
+							<textarea class="input_textarea" maxlength="1000" name="_tran_remark_" placeholder="请输入备注" rows="8"></textarea>
+						</div>
+					</div>
+				</li>
+			</ul>
+			
+			<div class="btn-box hide">
+				<div class="layui-layer-btn layui-submit-btn">
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定"/>
+					<input type="submit" class="layui-layer-btn0 btns cp" th:value="确定并检入" onclick="$('#isContinue').val('Y');" th:style="${opId} eq '6' ? '':'display:none'"/>
+					<a class="layui-layer-btn1 close-btn cp" th:text="#{common.cancel}"></a>
+				</div>
+			</div>
+		</form>
+	</div>
+	
+	<div th:include="include::formFooterContent"></div>
+	<script th:inline="javascript"> var ctx = [[@{/}]], parentName = [[${param.parentname}]], objectType = [[${objectType}]]</script>
+	
+	<script>
+		$(function() {
+			initFormControl(objectType);
+			
+			$("#operate").html5Validate(function() {
+				var opId = $('#opId').val(), id = $('#id').val();
+				var url = '/entity/saveCheckOut';
+				if(opId == '102') {
+					url = '/entity/cancelCheckout';
+				}
+				$.ajax({
+					cache : true,
+					type : "POST",
+					url : url,
+					data : $('#operate').serialize_plus(),// 你的formid
+					async : false,
+					success : function(data) {
+						if (data.code == 0) {
+							if(parentName && parentName[0]) {
+								var parentFrame = top.frames[parentName[0]];
+								parentFrame.returnBackAndReLoad();
+							}
+							
+							if(opId == '6' && objectType && objectType == 'DOC') {
+								downLoad(objectType, id, objectType);
+							}
+							
+							var isKeepTopWindow = $('#isKeepTopWindow').val();
+							if(isKeepTopWindow && isKeepTopWindow == 'Y') {
+								parent.layer.closeAll(null, true);
+							}else{
+								parent.layer.closeAll();
+							}
+							if(data.tempId) {
+								openEntity(objectType, data.tempId, parentName);
+							}
+							
+							if($('#isContinue').val() == 'Y') {//检出并检入的时候执行
+								top.layer.open({
+									type : 2,
+									title : '检入',
+									maxmin : true,
+									shadeClose : false, // 点击遮罩关闭层
+									area : ['830px', '500px'],
+									content : '/entity/uploadOne?objectId='+data.tempId + '&objectType='+objectType + '&opId=101&type=1&isKeepTopWindow='+$('#isKeepTopWindow').val()+'&parentname='+ parentName,
+								});
+							}
+							parent.layer.msg(data.msg);
+						} else {
+							parent.layer.msg(data.msg);
+						}
+						
+						hideLoading();
+					}
+				});
+			}, {
+				validate: function() {
+					return customValidate($('#objectType').val());
+				}
+			});
+		});
+	</script>
+	
+</body>
+</html>
