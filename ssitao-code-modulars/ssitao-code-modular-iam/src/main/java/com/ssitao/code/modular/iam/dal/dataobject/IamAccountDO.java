@@ -227,4 +227,10 @@ public class IamAccountDO {
     @Column(value = "sy_secret_name")
     private String sySecretName;
 
+    /**
+     * 更新时间
+     */
+    @Column(value = "sy_updatetime")
+    private String syUpdatetime;
+
 }

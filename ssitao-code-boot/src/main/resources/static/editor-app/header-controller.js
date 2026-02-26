@@ -1,1 +1,0 @@
-"use strict";angular.module("activitiModeler").controller("HeaderController",["$rootScope","$scope","$http","$timeout",function(e,o,t,r){o.headerConfig=KISBPM.HEADER_CONFIG}]);

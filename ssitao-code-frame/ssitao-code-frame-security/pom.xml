@@ -18,8 +18,8 @@
     <modules>
         <module>ssitao-code-security-core</module>
         <!-- TODO: 暂时注释掉多租户和数据权限模块，等待修复 MyBatis-Flex API 兼容性问题 -->
-        <!--<module>ssitao-code-security-tenant</module>-->
-        <!--<module>ssitao-code-security-datapermission</module>-->
+        <module>ssitao-code-security-tenant</module>
+        <module>ssitao-code-security-datapermission</module>
     </modules>
 
 </project>

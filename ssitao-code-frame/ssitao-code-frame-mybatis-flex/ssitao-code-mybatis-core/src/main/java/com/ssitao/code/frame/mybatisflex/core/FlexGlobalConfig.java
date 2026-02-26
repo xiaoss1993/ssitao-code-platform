@@ -11,6 +11,7 @@ import com.ssitao.code.frame.mybatisflex.core.datasource.FlexDataSource;
 import com.ssitao.code.frame.mybatisflex.core.dialect.DbType;
 import com.ssitao.code.frame.mybatisflex.core.exception.FlexAssert;
 import com.ssitao.code.frame.mybatisflex.core.mybatis.UnMappedColumnHandler;
+import com.ssitao.code.frame.mybatisflex.core.tenant.TenantLine;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -111,6 +112,11 @@ public class FlexGlobalConfig {
      * 数据源缺失处理器
      */
     private DataSourceMissingHandler dataSourceMissingHandler;
+
+    /**
+     * 租户行级权限拦截器
+     */
+    private TenantLine tenantLine;
 
     public boolean isPrintBanner() {
         return printBanner;
@@ -368,6 +374,22 @@ public class FlexGlobalConfig {
      */
     public void setDataSourceMissingHandler(final DataSourceMissingHandler dataSourceMissingHandler) {
         this.dataSourceMissingHandler = dataSourceMissingHandler;
+    }
+
+    /**
+     * 获取租户行级权限拦截器
+     * @return TenantLine 租户行级权限拦截器实例
+     */
+    public TenantLine getTenantLine() {
+        return tenantLine;
+    }
+
+    /**
+     * 设置租户行级权限拦截器
+     * @param tenantLine 租户行级权限拦截器实例
+     */
+    public void setTenantLine(TenantLine tenantLine) {
+        this.tenantLine = tenantLine;
     }
 
     /**

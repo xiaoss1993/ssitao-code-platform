@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * MyBatis-Flex 配置类
  * 用于配置 SQL 审计和打印功能
+ * 多租户功能由 TenantLineAutoConfiguration 自动配置
  *
  * @author ssitao-code
  */

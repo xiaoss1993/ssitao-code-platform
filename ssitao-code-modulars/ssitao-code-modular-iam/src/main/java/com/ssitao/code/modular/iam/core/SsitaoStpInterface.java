@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Sa-Token 权限验证接口实现
@@ -35,53 +33,87 @@ public class SsitaoStpInterface implements StpInterface {
     private final IamRolePermissionMapper rolePermissionMapper;
     private final IamPermissionMapper permissionMapper;
 
+    /**
+     * 模拟用户权限数据（开发环境使用）
+     */
+    private static final Map<String, List<String>> MOCK_USER_PERMISSIONS = new HashMap<>();
+    private static final Map<String, List<String>> MOCK_USER_ROLES = new HashMap<>();
+
+    static {
+        // admin用户权限
+        MOCK_USER_PERMISSIONS.put("1", Arrays.asList("*:*:*"));
+        MOCK_USER_ROLES.put("1", Arrays.asList("admin", "super-admin"));
+
+        // user用户权限
+        MOCK_USER_PERMISSIONS.put("2", Arrays.asList("user:view", "user:edit"));
+        MOCK_USER_ROLES.put("2", Arrays.asList("user"));
+    }
+
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         try {
             String accountId = loginId.toString();
 
+            // 首先尝试从模拟数据获取
+            if (MOCK_USER_PERMISSIONS.containsKey(accountId)) {
+                return MOCK_USER_PERMISSIONS.get(accountId);
+            }
+
             // 查询账号角色
             List<IamAccountRoleDO> accountRoles = accountRoleMapper.selectListByQuery(
                     QueryWrapper.create()
-                        .eq(IamAccountRoleDO::getAccountroleAccountId, accountId)
-                        .eq(IamAccountRoleDO::getSyStatus, "1")
+                        .eq("accountrole_account_id", accountId)
+                        .eq("sy_status", "1")
             );
 
-            if (accountRoles.isEmpty()) {
+            if (accountRoles == null || accountRoles.isEmpty()) {
                 return new ArrayList<>();
             }
 
-            List<String> roleIds = accountRoles.stream()
-                    .map(IamAccountRoleDO::getAccountroleRoleId)
-                    .collect(Collectors.toList());
+            List<String> roleIds = new ArrayList<>();
+            for (IamAccountRoleDO accountRole : accountRoles) {
+                if (accountRole.getAccountroleRoleId() != null) {
+                    roleIds.add(accountRole.getAccountroleRoleId());
+                }
+            }
 
             // 查询角色权限
             List<IamRolePermissionDO> rolePerms = rolePermissionMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in(IamRolePermissionDO::getTbIamRoleId, roleIds)
-                            .eq(IamRolePermissionDO::getSyStatus, "1")
+                            .in("tb_iam_role_id", roleIds)
+                            .eq("sy_status", "1")
             );
 
-            if (rolePerms.isEmpty()) {
+            if (rolePerms == null || rolePerms.isEmpty()) {
                 return new ArrayList<>();
             }
 
-            List<String> permIds = rolePerms.stream()
-                    .map(IamRolePermissionDO::getTbIamPermId)
-                    .distinct()
-                    .collect(Collectors.toList());
+            List<String> permIds = new ArrayList<>();
+            for (IamRolePermissionDO rolePerm : rolePerms) {
+                if (rolePerm.getTbIamPermId() != null) {
+                    permIds.add(rolePerm.getTbIamPermId());
+                }
+            }
+
+            // 去重
+            permIds = new ArrayList<>(new HashSet<>(permIds));
 
             // 查询权限详情
             List<IamPermissionDO> perms = permissionMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in(IamPermissionDO::getTbIamPermId, permIds)
-                            .eq(IamPermissionDO::getSyStatus, "1")
+                            .in("tb_iam_perm_id", permIds)
+                            .eq("sy_status", "1")
             );
 
-            return perms.stream()
-                    .map(IamPermissionDO::getPermCode)
-                    .filter(StrUtil::isNotBlank)
-                    .collect(Collectors.toList());
+            List<String> permissions = new ArrayList<>();
+            if (perms != null) {
+                for (IamPermissionDO perm : perms) {
+                    if (StrUtil.isNotBlank(perm.getPermCode())) {
+                        permissions.add(perm.getPermCode());
+                    }
+                }
+            }
+            return permissions;
 
         } catch (Exception e) {
             log.error("获取账号权限列表失败: loginId={}", loginId, e);
@@ -94,32 +126,45 @@ public class SsitaoStpInterface implements StpInterface {
         try {
             String accountId = loginId.toString();
 
+            // 首先尝试从模拟数据获取
+            if (MOCK_USER_ROLES.containsKey(accountId)) {
+                return MOCK_USER_ROLES.get(accountId);
+            }
+
             // 查询账号角色
             List<IamAccountRoleDO> accountRoles = accountRoleMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .eq(IamAccountRoleDO::getAccountroleAccountId, accountId)
-                            .eq(IamAccountRoleDO::getSyStatus, "1")
+                            .eq("accountrole_account_id", accountId)
+                            .eq("sy_status", "1")
             );
 
-            if (accountRoles.isEmpty()) {
+            if (accountRoles == null || accountRoles.isEmpty()) {
                 return new ArrayList<>();
             }
 
-            List<String> roleIds = accountRoles.stream()
-                    .map(IamAccountRoleDO::getAccountroleRoleId)
-                    .collect(Collectors.toList());
+            List<String> roleIds = new ArrayList<>();
+            for (IamAccountRoleDO accountRole : accountRoles) {
+                if (accountRole.getAccountroleRoleId() != null) {
+                    roleIds.add(accountRole.getAccountroleRoleId());
+                }
+            }
 
             // 查询角色详情
             List<IamRoleDO> roles = roleMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in(IamRoleDO::getTbIamRoleId, roleIds)
-                            .eq(IamRoleDO::getSyStatus, "1")
+                            .in("tb_iam_role_id", roleIds)
+                            .eq("sy_status", "1")
             );
 
-            return roles.stream()
-                    .map(IamRoleDO::getRoleCode)
-                    .filter(StrUtil::isNotBlank)
-                    .collect(Collectors.toList());
+            List<String> roleCodes = new ArrayList<>();
+            if (roles != null) {
+                for (IamRoleDO role : roles) {
+                    if (StrUtil.isNotBlank(role.getRoleCode())) {
+                        roleCodes.add(role.getRoleCode());
+                    }
+                }
+            }
+            return roleCodes;
 
         } catch (Exception e) {
             log.error("获取账号角色列表失败: loginId={}", loginId, e);

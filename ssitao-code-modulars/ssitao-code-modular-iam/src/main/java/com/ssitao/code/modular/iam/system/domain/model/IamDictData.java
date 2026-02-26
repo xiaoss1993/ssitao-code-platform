@@ -111,6 +111,16 @@ public class IamDictData {
     private Boolean deleted;
 
     /**
+     * 父节点ID
+     */
+    private String parentId;
+
+    /**
+     * 层级
+     */
+    private Integer layer;
+
+    /**
      * 创建字典数据
      *
      * @param dictTypeId    字典类型ID

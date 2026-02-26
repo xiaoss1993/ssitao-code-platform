@@ -2,7 +2,9 @@ package com.ssitao.code.modular.iam.system.infrastructure.repository;
 
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import com.ssitao.code.modular.iam.dal.dataobject.IamDictDataDO;
+import com.ssitao.code.modular.iam.dal.dataobject.IamDictTypeDO;
 import com.ssitao.code.modular.iam.dal.mapper.IamDictDataMapper;
+import com.ssitao.code.modular.iam.dal.mapper.IamDictTypeMapper;
 import com.ssitao.code.modular.iam.system.domain.model.IamDictData;
 import com.ssitao.code.modular.iam.system.domain.repository.IamDictDataRepository;
 import com.ssitao.code.modular.iam.system.infrastructure.converter.IamDictDataConverter;
@@ -30,6 +32,9 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
     private IamDictDataMapper dictDataMapper;
 
     @Resource
+    private IamDictTypeMapper dictTypeMapper;
+
+    @Resource
     private IamDictDataConverter dictDataConverter;
 
     @Override
@@ -37,7 +42,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
         IamDictDataDO dictDataDO = dictDataConverter.toDO(dictData);
         dictDataDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
         dictDataMapper.insert(dictDataDO);
-        return dictDataDO.getTbIamDictdataId();
+        return dictDataDO.getTbCoreDictionaryitemId();
     }
 
     @Override
@@ -51,7 +56,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
             IamDictDataDO dictDataDO = dictDataConverter.toDO(dictData);
             dictDataDO.setSyCreatetime(now);
             dictDataMapper.insert(dictDataDO);
-            ids.add(dictDataDO.getTbIamDictdataId());
+            ids.add(dictDataDO.getTbCoreDictionaryitemId());
         }
         return ids;
     }
@@ -66,7 +71,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
     @Override
     public void deleteById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dictdata_id", id);
+                .eq("tb_core_dictionaryitem_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -76,7 +81,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
     @Override
     public void deleteByDictTypeId(String dictTypeId, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dicttype_id", dictTypeId);
+                .eq("dictionaryitem_dictionary_id", dictTypeId);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -86,7 +91,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
     @Override
     public Optional<IamDictData> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dictdata_id", id);
+                .eq("tb_core_dictionaryitem_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -97,35 +102,59 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
     @Override
     public List<IamDictData> findByDictTypeId(String dictTypeId, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dicttype_id", dictTypeId);
+                .eq("dictionaryitem_dictionary_id", dictTypeId);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
-        query.orderBy("sy_orderindex", true);
+        query.orderBy("sy_treeorderindex", true);
         List<IamDictDataDO> list = dictDataMapper.selectListByQuery(query);
         return dictDataConverter.toDomainList(list);
     }
 
     @Override
     public List<IamDictData> findByDictTypeCode(String dictTypeCode, String tenantId) {
-        // 需要关联字典类型表查询，这里先简单实现
-        QueryWrapper query = QueryWrapper.create();
+        // 首先根据字典类型编码查询字典类型ID
+        QueryWrapper typeQuery = QueryWrapper.create()
+                .eq("dictionary_ddcode", dictTypeCode);
+        if (tenantId != null && !tenantId.isEmpty()) {
+            typeQuery.eq("sy_tenant_id", tenantId);
+        }
+        IamDictTypeDO dictTypeDO = dictTypeMapper.selectOneByQuery(typeQuery);
+        if (dictTypeDO == null) {
+            return new ArrayList<>();
+        }
+
+        // 然后根据字典类型ID查询字典项
+        QueryWrapper query = QueryWrapper.create()
+                .eq("dictionaryitem_dictionary_id", dictTypeDO.getTbCoreDictionaryId());
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
-        query.orderBy("sy_orderindex", true);
+        query.orderBy("sy_treeorderindex", true);
         List<IamDictDataDO> list = dictDataMapper.selectListByQuery(query);
         return dictDataConverter.toDomainList(list);
     }
 
     @Override
     public Optional<IamDictData> findDefaultByDictTypeCode(String dictTypeCode, String tenantId) {
+        // 首先根据字典类型编码查询字典类型ID
+        QueryWrapper typeQuery = QueryWrapper.create()
+                .eq("dictionary_ddcode", dictTypeCode);
+        if (tenantId != null && !tenantId.isEmpty()) {
+            typeQuery.eq("sy_tenant_id", tenantId);
+        }
+        IamDictTypeDO dictTypeDO = dictTypeMapper.selectOneByQuery(typeQuery);
+        if (dictTypeDO == null) {
+            return Optional.empty();
+        }
+
         // 查找默认的字典数据
-        QueryWrapper query = QueryWrapper.create();
+        QueryWrapper query = QueryWrapper.create()
+                .eq("dictionaryitem_dictionary_id", dictTypeDO.getTbCoreDictionaryId());
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
-        query.orderBy("sy_orderindex", true)
+        query.orderBy("sy_treeorderindex", true)
                 .limit(1);
         IamDictDataDO dictDataDO = dictDataMapper.selectOneByQuery(query);
         return Optional.ofNullable(dictDataConverter.toDomain(dictDataDO));
@@ -137,7 +166,7 @@ public class IamDictDataRepositoryImpl implements IamDictDataRepository {
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
-        query.orderBy("sy_orderindex", true);
+        query.orderBy("sy_treeorderindex", true);
         List<IamDictDataDO> list = dictDataMapper.selectListByQuery(query);
         return dictDataConverter.toDomainList(list);
     }

@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.audit.controller;
 
 import com.ssitao.code.common.pojo.CommonResult;
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.modular.iam.audit.api.dto.IamOperateLogDTO;
 import com.ssitao.code.modular.iam.audit.application.query.IamOperateLogQuery;
 import com.ssitao.code.modular.iam.audit.application.service.IamOperateLogAppService;
@@ -57,6 +58,28 @@ public class IamAuditController {
                                                                     @RequestParam(defaultValue = "10") int size) {
         List<IamOperateLogDTO> logs = operateLogAppService.getLogsByOperatorId(operatorId, page, size);
         return success(logs);
+    }
+
+    @GetMapping("/operate-log/page")
+    @Operation(summary = "分页查询操作日志", description = "分页查询操作日志列表")
+    public CommonResult<Page<IamOperateLogDTO>> pageOperateLogs(
+            @RequestParam(required = false) String operatorId,
+            @RequestParam(required = false) String operateType,
+            @RequestParam(required = false) String operateModule,
+            @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endTime,
+            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+            @RequestParam(defaultValue = "1") int current,
+            @RequestParam(defaultValue = "10") int size) {
+
+        IamOperateLogQuery query = new IamOperateLogQuery();
+        query.setOperatorId(operatorId != null ? Long.valueOf(operatorId) : null);
+        query.setOperateType(operateType);
+        query.setOperateModule(operateModule);
+        query.setTenantId(tenantId);
+
+        Page<IamOperateLogDTO> page = operateLogAppService.pageOperateLogs(query, current, size);
+        return success(page);
     }
 
     @GetMapping("/operate-log/type/{operateType}")

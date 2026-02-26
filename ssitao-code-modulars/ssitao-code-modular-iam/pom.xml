@@ -22,6 +22,12 @@
             <artifactId>ssitao-code-commons</artifactId>
         </dependency>
 
+        <!-- 安全框架：多租户 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-security-tenant</artifactId>
+        </dependency>
+
         <!-- Sa-Token API -->
         <dependency>
             <groupId>com.ssitao.code</groupId>
@@ -99,12 +105,6 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-        </dependency>
-
-        <!-- Lombok 与 MapStruct 绑定 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-mapstruct-binding</artifactId>
         </dependency>
 
         <!-- SLF4J -->

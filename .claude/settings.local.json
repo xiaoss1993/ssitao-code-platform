@@ -16,7 +16,10 @@
       "Bash(xargs:*)",
       "Bash(find:*)",
       "mcp__zread__get_repo_structure",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(head:*)",
+      "Bash(unzip:*)"
     ]
   }
 }

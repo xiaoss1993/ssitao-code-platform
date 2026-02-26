@@ -1,8 +1,10 @@
 package com.ssitao.code.modular.iam.system.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * IAM字典数据DTO
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
  * @since 2.0.0
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class IamDictDataDTO {
 
     /**
@@ -97,5 +100,59 @@ public class IamDictDataDTO {
      * 更新人
      */
     private String updater;
+
+    // ==================== 前端兼容字段 ====================
+
+    /**
+     * 编码（前端兼容）
+     */
+    private String code;
+
+    /**
+     * 名称（前端兼容）
+     */
+    private String name;
+
+    /**
+     * 键（前端兼容）
+     */
+    private String key;
+
+    /**
+     * 值（前端兼容）
+     */
+    private String value;
+
+    /**
+     * 标签（前端兼容）
+     */
+    private String label;
+
+    /**
+     * 有效标识（前端兼容）
+     */
+    private String yx;
+
+    /**
+     * 字典类型（前端兼容）
+     */
+    private String dic;
+
+    // ==================== 树形结构字段 ====================
+
+    /**
+     * 父节点ID
+     */
+    private String parentId;
+
+    /**
+     * 层级
+     */
+    private Integer layer;
+
+    /**
+     * 子节点列表
+     */
+    private List<IamDictDataDTO> children;
 
 }

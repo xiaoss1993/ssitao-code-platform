@@ -3,8 +3,10 @@ package com.ssitao.code.modular.iam.organization.infrastructure.converter;
 import com.ssitao.code.modular.iam.organization.api.dto.IamDepartmentDTO;
 import com.ssitao.code.modular.iam.organization.domain.model.IamDepartment;
 import com.ssitao.code.modular.iam.dal.dataobject.IamDepartmentDO;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -66,5 +68,15 @@ public interface IamDepartmentConverter {
      * 领域模型列表转DTO列表
      */
     List<IamDepartmentDTO> toDTOList(List<IamDepartment> domainList);
+
+    /**
+     * 设置DTO的label字段（前端树形控件需要）
+     */
+    @AfterMapping
+    default void setLabel(IamDepartment domain, @MappingTarget IamDepartmentDTO dto) {
+        if (dto != null && domain != null && domain.getDeptName() != null) {
+            dto.setLabel(domain.getDeptName());
+        }
+    }
 
 }

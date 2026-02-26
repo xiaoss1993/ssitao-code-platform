@@ -24,16 +24,16 @@ public interface IamDictTypeConverter {
      * @return 领域模型
      */
     @Mappings({
-            @Mapping(target = "id", source = "tbIamDicttypeId"),
-            @Mapping(target = "dictTypeCode", source = "dicttypeCode"),
-            @Mapping(target = "dictTypeName", source = "dicttypeName"),
-            @Mapping(target = "sortOrder", source = "syOrderindex"),
+            @Mapping(target = "id", source = "tbCoreDictionaryId"),
+            @Mapping(target = "dictTypeCode", source = "dictionaryDdcode"),
+            @Mapping(target = "dictTypeName", source = "dictionaryDdname"),
+            @Mapping(target = "description", source = "dictionaryDdtype"),
             @Mapping(target = "tenantId", source = "syTenantId"),
             @Mapping(target = "createTime", expression = "java(parseLocalDateTime(dictTypeDO.getSyCreatetime()))"),
             @Mapping(target = "updateTime", expression = "java(parseLocalDateTime(dictTypeDO.getSyModifytime()))"),
             @Mapping(target = "creator", source = "syCreateuserid"),
             @Mapping(target = "updater", source = "syModifyuserid"),
-            @Mapping(target = "status", source = "status")
+            @Mapping(target = "status", expression = "java(parseStatus(dictTypeDO.getSyStatus()))")
     })
     IamDictType toDomain(IamDictTypeDO dictTypeDO);
 
@@ -44,16 +44,16 @@ public interface IamDictTypeConverter {
      * @return DO对象
      */
     @Mappings({
-            @Mapping(target = "tbIamDicttypeId", source = "id"),
-            @Mapping(target = "dicttypeCode", source = "dictTypeCode"),
-            @Mapping(target = "dicttypeName", source = "dictTypeName"),
-            @Mapping(target = "syOrderindex", source = "sortOrder"),
+            @Mapping(target = "tbCoreDictionaryId", source = "id"),
+            @Mapping(target = "dictionaryDdcode", source = "dictTypeCode"),
+            @Mapping(target = "dictionaryDdname", source = "dictTypeName"),
+            @Mapping(target = "dictionaryDdtype", source = "description"),
             @Mapping(target = "syTenantId", source = "tenantId"),
             @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(dictType.getCreateTime()))"),
             @Mapping(target = "syModifytime", expression = "java(formatLocalDateTime(dictType.getUpdateTime()))"),
             @Mapping(target = "syCreateuserid", source = "creator"),
             @Mapping(target = "syModifyuserid", source = "updater"),
-            @Mapping(target = "status", source = "status")
+            @Mapping(target = "syStatus", expression = "java(formatStatus(dictType.getStatus()))")
     })
     IamDictTypeDO toDO(IamDictType dictType);
 
@@ -87,5 +87,25 @@ public interface IamDictTypeConverter {
             return null;
         }
         return dateTime.toString().replace("T", " ");
+    }
+
+    /**
+     * 解析状态
+     */
+    default Boolean parseStatus(String status) {
+        if (status == null || status.isEmpty()) {
+            return true;
+        }
+        return "1".equals(status) || "true".equalsIgnoreCase(status);
+    }
+
+    /**
+     * 格式化状态
+     */
+    default String formatStatus(Boolean status) {
+        if (status == null) {
+            return "1";
+        }
+        return status ? "1" : "0";
     }
 }

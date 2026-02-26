@@ -157,7 +157,7 @@ ssitao:
   # 多租户配置
   tenant:
     # 是否启用多租户
-    enabled: true
+    enabled: false
     # 租户ID 请求头名称
     header-name: Tenant-Id
     # 租户ID 请求参数名称

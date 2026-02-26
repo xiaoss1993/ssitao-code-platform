@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.organization.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class IamDepartmentDTO {
 
     /**
@@ -28,6 +30,11 @@ public class IamDepartmentDTO {
      * 部门名称
      */
     private String deptName;
+
+    /**
+     * 部门名称（前端兼容，用于树形控件）
+     */
+    private String label;
 
     /**
      * 父部门ID
@@ -75,9 +82,19 @@ public class IamDepartmentDTO {
     private Integer sortOrder;
 
     /**
+     * 排序（前端兼容）
+     */
+    private Integer sort;
+
+    /**
      * 状态：1-启用 0-禁用
      */
     private Boolean status;
+
+    /**
+     * 状态（前端兼容，0/1整数）
+     */
+    private Integer statusInt;
 
     /**
      * 租户ID
@@ -93,6 +110,11 @@ public class IamDepartmentDTO {
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 创建时间（前端兼容，字符串格式）
+     */
+    private String date;
 
     /**
      * 更新时间

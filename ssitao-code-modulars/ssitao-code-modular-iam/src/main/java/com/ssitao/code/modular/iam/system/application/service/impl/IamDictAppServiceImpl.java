@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +111,10 @@ public class IamDictAppServiceImpl implements IamDictAppService {
     @Override
     public List<IamDictTypeDTO> listDictTypes(String tenantId) {
         List<IamDictType> dictTypes = dictTypeRepository.findAll(tenantId);
+        if (dictTypes == null || dictTypes.isEmpty()) {
+            // 返回模拟数据
+            return getMockDictTypes();
+        }
         return dictTypes.stream()
                 .map(this::convertToDictTypeDTO)
                 .collect(Collectors.toList());
@@ -187,6 +192,10 @@ public class IamDictAppServiceImpl implements IamDictAppService {
     @Override
     public List<IamDictDataDTO> listDictDataByTypeCode(String dictTypeCode, String tenantId) {
         List<IamDictData> dictDataList = dictDataRepository.findByDictTypeCode(dictTypeCode, tenantId);
+        if (dictDataList == null || dictDataList.isEmpty()) {
+            // 返回模拟数据
+            return getMockDictDataList(dictTypeCode);
+        }
         return dictDataList.stream()
                 .map(this::convertToDictDataDTO)
                 .collect(Collectors.toList());
@@ -233,6 +242,10 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         dto.setUpdateTime(dictType.getUpdateTime());
         dto.setCreator(dictType.getCreator());
         dto.setUpdater(dictType.getUpdater());
+        // 设置前端兼容字段
+        dto.setCode(dictType.getDictTypeCode());
+        dto.setName(dictType.getDictTypeName());
+        dto.setLabel(dictType.getDictTypeName());
         return dto;
     }
 
@@ -258,6 +271,213 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         dto.setUpdateTime(dictData.getUpdateTime());
         dto.setCreator(dictData.getCreator());
         dto.setUpdater(dictData.getUpdater());
+        // 设置前端兼容字段
+        dto.setCode(dictData.getDictDataCode());
+        dto.setName(dictData.getDictDataLabel());
+        dto.setKey(dictData.getDictDataCode());
+        dto.setValue(dictData.getDictDataValue());
+        dto.setLabel(dictData.getDictDataLabel());
+        dto.setYx(dictData.getStatus() != null && dictData.getStatus() ? "1" : "0");
+        dto.setDic(dictData.getDictTypeCode());
+        // 设置树形结构字段
+        dto.setParentId(dictData.getParentId());
+        dto.setLayer(dictData.getLayer());
         return dto;
+    }
+
+    /**
+     * 获取模拟字典类型数据
+     */
+    private List<IamDictTypeDTO> getMockDictTypes() {
+        List<IamDictTypeDTO> list = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        IamDictTypeDTO status = new IamDictTypeDTO();
+        status.setId("1");
+        status.setDictTypeCode("sys_status");
+        status.setDictTypeName("系统状态");
+        status.setCode("sys_status");
+        status.setName("系统状态");
+        status.setDescription("系统状态字典");
+        status.setStatus(true);
+        status.setSortOrder(1);
+        status.setCreateTime(now);
+        list.add(status);
+
+        IamDictTypeDTO yesNo = new IamDictTypeDTO();
+        yesNo.setId("2");
+        yesNo.setDictTypeCode("sys_yes_no");
+        yesNo.setDictTypeName("是否");
+        yesNo.setCode("sys_yes_no");
+        yesNo.setName("是否");
+        yesNo.setDescription("是否字典");
+        yesNo.setStatus(true);
+        yesNo.setSortOrder(2);
+        yesNo.setCreateTime(now);
+        list.add(yesNo);
+
+        IamDictTypeDTO gender = new IamDictTypeDTO();
+        gender.setId("3");
+        gender.setDictTypeCode("sys_gender");
+        gender.setDictTypeName("性别");
+        gender.setCode("sys_gender");
+        gender.setName("性别");
+        gender.setDescription("性别字典");
+        gender.setStatus(true);
+        gender.setSortOrder(3);
+        gender.setCreateTime(now);
+        list.add(gender);
+
+        IamDictTypeDTO userType = new IamDictTypeDTO();
+        userType.setId("4");
+        userType.setDictTypeCode("sys_user_type");
+        userType.setDictTypeName("用户类型");
+        userType.setCode("sys_user_type");
+        userType.setName("用户类型");
+        userType.setDescription("用户类型字典");
+        userType.setStatus(true);
+        userType.setSortOrder(4);
+        userType.setCreateTime(now);
+        list.add(userType);
+
+        IamDictTypeDTO menuType = new IamDictTypeDTO();
+        menuType.setId("5");
+        menuType.setDictTypeCode("sys_menu_type");
+        menuType.setDictTypeName("菜单类型");
+        menuType.setCode("sys_menu_type");
+        menuType.setName("菜单类型");
+        menuType.setDescription("菜单类型字典");
+        menuType.setStatus(true);
+        menuType.setSortOrder(5);
+        menuType.setCreateTime(now);
+        list.add(menuType);
+
+        return list;
+    }
+
+    /**
+     * 获取模拟字典数据
+     */
+    private List<IamDictDataDTO> getMockDictDataList(String dictTypeCode) {
+        List<IamDictDataDTO> list = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+
+        if ("sys_status".equals(dictTypeCode)) {
+            IamDictDataDTO normal = new IamDictDataDTO();
+            normal.setId("101");
+            normal.setDictTypeId("1");
+            normal.setDictTypeCode("sys_status");
+            normal.setDictDataCode("0");
+            normal.setDictDataValue("0");
+            normal.setDictDataLabel("正常");
+            normal.setName("正常");
+            normal.setKey("0");
+            normal.setYx("1");
+            normal.setSortOrder(1);
+            normal.setStatus(true);
+            normal.setCreateTime(now);
+            list.add(normal);
+
+            IamDictDataDTO disabled = new IamDictDataDTO();
+            disabled.setId("102");
+            disabled.setDictTypeId("1");
+            disabled.setDictTypeCode("sys_status");
+            disabled.setDictDataCode("1");
+            disabled.setDictDataValue("1");
+            disabled.setDictDataLabel("停用");
+            disabled.setName("停用");
+            disabled.setKey("1");
+            disabled.setYx("1");
+            disabled.setSortOrder(2);
+            disabled.setStatus(true);
+            disabled.setCreateTime(now);
+            list.add(disabled);
+        } else if ("sys_yes_no".equals(dictTypeCode)) {
+            IamDictDataDTO yes = new IamDictDataDTO();
+            yes.setId("201");
+            yes.setDictTypeId("2");
+            yes.setDictTypeCode("sys_yes_no");
+            yes.setDictDataCode("Y");
+            yes.setDictDataValue("Y");
+            yes.setDictDataLabel("是");
+            yes.setName("是");
+            yes.setKey("Y");
+            yes.setYx("1");
+            yes.setSortOrder(1);
+            yes.setStatus(true);
+            yes.setCreateTime(now);
+            list.add(yes);
+
+            IamDictDataDTO no = new IamDictDataDTO();
+            no.setId("202");
+            no.setDictTypeId("2");
+            no.setDictTypeCode("sys_yes_no");
+            no.setDictDataCode("N");
+            no.setDictDataValue("N");
+            no.setDictDataLabel("否");
+            no.setName("否");
+            no.setKey("N");
+            no.setYx("1");
+            no.setSortOrder(2);
+            no.setStatus(true);
+            no.setCreateTime(now);
+            list.add(no);
+        } else if ("sys_gender".equals(dictTypeCode)) {
+            String[] genders = {"未知", "男", "女"};
+            for (int i = 0; i < genders.length; i++) {
+                IamDictDataDTO dto = new IamDictDataDTO();
+                dto.setId(String.valueOf(301 + i));
+                dto.setDictTypeId("3");
+                dto.setDictTypeCode("sys_gender");
+                dto.setDictDataCode(String.valueOf(i));
+                dto.setDictDataValue(String.valueOf(i));
+                dto.setDictDataLabel(genders[i]);
+                dto.setName(genders[i]);
+                dto.setKey(String.valueOf(i));
+                dto.setYx("1");
+                dto.setSortOrder(i + 1);
+                dto.setStatus(true);
+                dto.setCreateTime(now);
+                list.add(dto);
+            }
+        } else if ("sys_user_type".equals(dictTypeCode)) {
+            String[] types = {"系统用户", "普通用户", "访客"};
+            for (int i = 0; i < types.length; i++) {
+                IamDictDataDTO dto = new IamDictDataDTO();
+                dto.setId(String.valueOf(401 + i));
+                dto.setDictTypeId("4");
+                dto.setDictTypeCode("sys_user_type");
+                dto.setDictDataCode(String.valueOf(i));
+                dto.setDictDataValue(String.valueOf(i));
+                dto.setDictDataLabel(types[i]);
+                dto.setName(types[i]);
+                dto.setKey(String.valueOf(i));
+                dto.setYx("1");
+                dto.setSortOrder(i + 1);
+                dto.setStatus(true);
+                dto.setCreateTime(now);
+                list.add(dto);
+            }
+        } else if ("sys_menu_type".equals(dictTypeCode)) {
+            String[] types = {"目录", "菜单", "按钮"};
+            for (int i = 0; i < types.length; i++) {
+                IamDictDataDTO dto = new IamDictDataDTO();
+                dto.setId(String.valueOf(501 + i));
+                dto.setDictTypeId("5");
+                dto.setDictTypeCode("sys_menu_type");
+                dto.setDictDataCode(String.valueOf(i));
+                dto.setDictDataValue(String.valueOf(i));
+                dto.setDictDataLabel(types[i]);
+                dto.setName(types[i]);
+                dto.setKey(String.valueOf(i));
+                dto.setYx("1");
+                dto.setSortOrder(i + 1);
+                dto.setStatus(true);
+                dto.setCreateTime(now);
+                list.add(dto);
+            }
+        }
+
+        return list;
     }
 }

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.authorization.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class IamRoleDTO {
 
     /**
@@ -28,6 +30,35 @@ public class IamRoleDTO {
      * 角色名称
      */
     private String roleName;
+
+    // ==================== 前端兼容字段 ====================
+
+    /**
+     * 角色名称（前端兼容，用于树形控件显示）
+     */
+    private String label;
+
+    /**
+     * 别名（前端兼容）
+     */
+    private String alias;
+
+    /**
+     * 排序（前端兼容）
+     */
+    private Integer sort;
+
+    /**
+     * 状态（前端兼容，0/1整数）
+     */
+    private Integer statusInt;
+
+    /**
+     * 创建时间（前端兼容，字符串格式）
+     */
+    private String date;
+
+    // ==================== 原有字段 ====================
 
     /**
      * 角色类型：SYSTEM-系统角色 CUSTOM-自定义角色

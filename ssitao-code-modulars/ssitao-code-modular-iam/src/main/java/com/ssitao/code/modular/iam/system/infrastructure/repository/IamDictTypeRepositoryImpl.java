@@ -36,7 +36,7 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
         IamDictTypeDO dictTypeDO = dictTypeConverter.toDO(dictType);
         dictTypeDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
         dictTypeMapper.insert(dictTypeDO);
-        return dictTypeDO.getTbIamDicttypeId();
+        return dictTypeDO.getTbCoreDictionaryId();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
     @Override
     public void deleteById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dicttype_id", id);
+                .eq("tb_core_dictionary_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -59,7 +59,7 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
     @Override
     public Optional<IamDictType> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_dicttype_id", id);
+                .eq("tb_core_dictionary_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -70,7 +70,7 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
     @Override
     public Optional<IamDictType> findByDictTypeCode(String dictTypeCode, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("dicttype_code", dictTypeCode);
+                .eq("dictionary_ddcode", dictTypeCode);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
@@ -84,7 +84,7 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
-        query.orderBy("sy_orderindex", true);
+        query.orderBy("sy_createtime", true);
         List<IamDictTypeDO> list = dictTypeMapper.selectListByQuery(query);
         return dictTypeConverter.toDomainList(list);
     }
@@ -92,12 +92,12 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
     @Override
     public boolean existsByDictTypeCode(String dictTypeCode, String tenantId, String excludeId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("dicttype_code", dictTypeCode);
+                .eq("dictionary_ddcode", dictTypeCode);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("sy_tenant_id", tenantId);
         }
         if (excludeId != null) {
-            query.ne("tb_iam_dicttype_id", excludeId);
+            query.ne("tb_core_dictionary_id", excludeId);
         }
         return dictTypeMapper.selectCountByQuery(query) > 0;
     }

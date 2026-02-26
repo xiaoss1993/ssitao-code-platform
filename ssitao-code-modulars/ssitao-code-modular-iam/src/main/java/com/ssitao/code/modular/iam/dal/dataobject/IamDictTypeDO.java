@@ -8,56 +8,63 @@ import lombok.Data;
 
 /**
  * IAM字典类型数据对象
- * 对应数据库表：tb_iam_dicttype
+ * 对应数据库表：tb_core_dictionary
  *
  * @author ssitao-code
  * @since 2.0.0
  */
 @Data
-@Table(value = "tb_iam_dicttype")
+@Table(value = "tb_core_dictionary")
 public class IamDictTypeDO {
 
     /**
      * 主键id
      */
     @Id(keyType = KeyType.None)
-    private String tbIamDicttypeId;
+    @Column(value = "tb_core_dictionary_id")
+    private String tbCoreDictionaryId;
 
     /**
      * 字典编码
      */
-    @Column(value = "dicttype_code")
-    private String dicttypeCode;
+    @Column(value = "dictionary_ddcode")
+    private String dictionaryDdcode;
 
     /**
      * 字典名称
      */
-    @Column(value = "dicttype_name")
-    private String dicttypeName;
+    @Column(value = "dictionary_ddname")
+    private String dictionaryDdname;
 
     /**
-     * 字典类型：SYSTEM-系统 BUSINESS-业务
+     * 字典类型
      */
-    @Column(value = "dicttype_type")
-    private String dicttypeType;
+    @Column(value = "dictionary_ddtype")
+    private String dictionaryDdtype;
 
     /**
-     * 状态：1-启用 0-禁用
+     * 所属子系统
      */
-    @Column(value = "status")
-    private Boolean status;
+    @Column(value = "dictionary_belongsto")
+    private String dictionaryBelongsto;
 
     /**
-     * 排序
+     * 所属子系统名称
      */
-    @Column(value = "sy_orderindex")
-    private Integer syOrderindex;
+    @Column(value = "dictionary_belongstoname")
+    private String dictionaryBelongstoname;
 
     /**
-     * 备注
+     * 类型
      */
-    @Column(value = "remark")
-    private String remark;
+    @Column(value = "dictionary_dictype")
+    private String dictionaryDictype;
+
+    /**
+     * 外部自定实体名称
+     */
+    @Column(value = "dictionary_classname")
+    private String dictionaryClassname;
 
     /**
      * 创建时间
@@ -66,27 +73,45 @@ public class IamDictTypeDO {
     private String syCreatetime;
 
     /**
+     * 创建人ID
+     */
+    @Column(value = "sy_createuserid")
+    private String syCreateuserid;
+
+    /**
+     * 创建人名称
+     */
+    @Column(value = "sy_createusername")
+    private String syCreateusername;
+
+    /**
      * 修改时间
      */
     @Column(value = "sy_modifytime")
     private String syModifytime;
 
     /**
-     * 创建人
-     */
-    @Column(value = "sy_createuserid")
-    private String syCreateuserid;
-
-    /**
-     * 更新人
+     * 修改人ID
      */
     @Column(value = "sy_modifyuserid")
     private String syModifyuserid;
+
+    /**
+     * 数据状态
+     */
+    @Column(value = "sy_status")
+    private String syStatus;
 
     /**
      * 租户ID
      */
     @Column(value = "sy_tenant_id")
     private String syTenantId;
+
+    /**
+     * 租户名称
+     */
+    @Column(value = "sy_tenant_name")
+    private String syTenantName;
 
 }

@@ -1,1 +1,0 @@
-!function(e){e(document).ajaxStart((function(){layer.load(1,{shade:[.1,"#fff"]})})),e(document).ajaxStop((function(){layer.closeAll("loading")})),e.ajaxSetup({complete:function(e,t,o){"text/html;charset=UTF-8"==e.getResponseHeader("Content-Type")&&(top.location.href="/login")}})}(jQuery);

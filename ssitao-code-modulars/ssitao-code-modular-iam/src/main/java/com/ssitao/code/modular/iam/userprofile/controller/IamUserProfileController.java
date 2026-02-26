@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.userprofile.controller;
 
 import com.ssitao.code.common.pojo.CommonResult;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.userprofile.api.dto.IamUserProfileDTO;
 import com.ssitao.code.modular.iam.userprofile.application.command.IamUserProfileCreateCommand;
 import com.ssitao.code.modular.iam.userprofile.application.command.IamUserProfileQueryCommand;
@@ -80,11 +81,23 @@ public class IamUserProfileController {
         return success(userProfile);
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     @Operation(summary = "获取用户档案列表", description = "根据条件查询用户档案列表")
-    public CommonResult<List<IamUserProfileDTO>> listUserProfiles(@RequestBody IamUserProfileQueryCommand command) {
+    public CommonResult<PageResult<IamUserProfileDTO>> listUserProfiles(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
+            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        IamUserProfileQueryCommand command = new IamUserProfileQueryCommand();
+        command.setKeyword(keyword);
+        command.setSyTenantId(tenantId);
+
         List<IamUserProfileDTO> userProfiles = userProfileAppService.listUserProfiles(command);
-        return success(userProfiles);
+
+        PageResult<IamUserProfileDTO> result = new PageResult<>();
+        result.setRows(userProfiles);
+        result.setTotal(userProfiles.size());
+        return success(result);
     }
 
     @PostMapping("/page")

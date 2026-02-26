@@ -1,6 +1,6 @@
 package com.ssitao.code.frame.security.tenant.core;
 
-import com.mybatis.flex.core.handler.TenantLine;
+import com.ssitao.code.frame.mybatisflex.core.tenant.TenantLine;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;

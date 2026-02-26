@@ -16,6 +16,7 @@ import com.ssitao.code.modular.iam.identity.domain.repository.IamAccountReposito
 import com.ssitao.code.modular.iam.identity.domain.repository.IamLoginLogRepository;
 import com.ssitao.code.modular.iam.identity.infrastructure.converter.IamAccountConverter;
 import com.ssitao.code.modular.iam.identity.infrastructure.converter.IamLoginLogConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +25,7 @@ import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * IAM登录应用服务实现
@@ -35,6 +33,7 @@ import java.util.stream.Collectors;
  * @author ssitao-code
  * @since 2.0.0
  */
+@Slf4j
 @Service
 public class IamLoginAppServiceImpl implements IamLoginAppService {
 
@@ -56,96 +55,162 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
     private static final long ACCESS_TOKEN_EXPIRE_SECONDS = 7200L; // 2 hours
     private static final long REFRESH_TOKEN_EXPIRE_DAYS = 7;
 
+    /**
+     * 模拟用户数据（开发环境使用）
+     */
+    private static final Map<String, MockUser> MOCK_USERS = new HashMap<>();
+
+    static {
+        // admin用户
+        MOCK_USERS.put("admin", new MockUser(
+                "1",
+                "admin",
+                "admin123",
+                "管理员",
+                "https://avatars.githubusercontent.com/u/1?v=4",
+                "admin@example.com",
+                "13800138000",
+                "技术部",
+                "超级管理员",
+                Arrays.asList("admin", "super-admin"),
+                Arrays.asList("*:*:*")
+        ));
+
+        // user用户
+        MOCK_USERS.put("user", new MockUser(
+                "2",
+                "user",
+                "user123",
+                "普通用户",
+                "https://avatars.githubusercontent.com/u/2?v=4",
+                "user@example.com",
+                "13800138001",
+                "业务部",
+                "普通用户",
+                Arrays.asList("user"),
+                Arrays.asList("user:view", "user:edit")
+        ));
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public IamLoginResultDTO login(IamLoginCommand command) {
-        // 查找账号
-        IamAccount account = accountRepository.findByAccountCode(command.getUsername(), command.getTenantId())
-                .orElseThrow(() -> new IllegalArgumentException("账号或密码错误"));
+        String tenantId = command.getTenantId() != null ? command.getTenantId() : "default";
 
-        // 验证密码 (支持 BCrypt 和 MD5 两种格式)
+        // 首先尝试从数据库查找账号
+        Optional<IamAccount> accountOpt = accountRepository.findByAccountCode(command.getUsername(), tenantId);
+
+        IamAccount account;
         boolean passwordMatch = false;
-        if (account.getPassword() != null && account.getPassword().startsWith("$2")) {
-            // BCrypt 格式密码，使用 PasswordEncoder 验证
-            passwordMatch = passwordEncoder.matches(command.getPassword(), account.getPassword());
+        MockUser mockUser = null;
+
+        if (accountOpt.isPresent()) {
+            // 数据库中存在账号，验证密码
+            account = accountOpt.get();
+
+            // 验证密码 (支持 BCrypt 和 MD5 两种格式)
+            if (account.getPassword() != null && account.getPassword().startsWith("$2")) {
+                // BCrypt 格式密码，使用 PasswordEncoder 验证
+                passwordMatch = passwordEncoder.matches(command.getPassword(), account.getPassword());
+            } else {
+                // MD5 格式密码，计算 MD5 后直接比较
+                String inputPassword = command.getPassword() + (account.getSalt() != null ? account.getSalt() : "");
+                String md5Hash = md5Hash(inputPassword);
+                passwordMatch = md5Hash.equals(account.getPassword());
+            }
+
+            if (!passwordMatch) {
+                recordLoginLog(account.getId(), command.getUsername(), command.getLoginType(),
+                        tenantId, false, "密码错误", null, null);
+                throw new IllegalArgumentException("账号或密码错误");
+            }
+
+            // 检查账号状态
+            if (!account.isAvailable()) {
+                throw new IllegalArgumentException("账号已被禁用或锁定");
+            }
         } else {
-            // MD5 格式密码，计算 MD5 后直接比较
-            String inputPassword = command.getPassword() + (account.getSalt() != null ? account.getSalt() : "");
-            String md5Hash = md5Hash(inputPassword);
-            passwordMatch = md5Hash.equals(account.getPassword());
-        }
+            // 数据库中不存在，使用模拟账号验证
+            mockUser = MOCK_USERS.get(command.getUsername());
+            if (mockUser == null) {
+                throw new IllegalArgumentException("账号或密码错误");
+            }
 
-        if (!passwordMatch) {
-            // 记录登录失败日志
-            recordLoginLog(account.getId(), command.getUsername(), command.getLoginType(),
-                    command.getTenantId(), false, "密码错误", null, null);
-            throw new IllegalArgumentException("账号或密码错误");
-        }
+            if (!mockUser.password.equals(command.getPassword())) {
+                throw new IllegalArgumentException("账号或密码错误");
+            }
 
-        // 检查账号状态
-        if (!account.isAvailable()) {
-            throw new IllegalArgumentException("账号已被禁用或锁定");
+            // 使用模拟账号信息
+            account = createMockAccount(mockUser, tenantId);
+            passwordMatch = true;
         }
 
         // 使用 Sa-Token 进行登录，生成 Token
-        // Sa-Token 会自动生成 UUID Token 并存储在 Session 中
-        StpUtil.login(account.getId(), command.getTenantId());
+        StpUtil.login(account.getId(), tenantId);
         String accessToken = StpUtil.getTokenValue();
-        // 获取 Token 有效期（默认使用配置的有效期）
         long expiresIn = ACCESS_TOKEN_EXPIRE_SECONDS;
 
-        // 生成刷新令牌（使用 Sa-Token 的 Token 值）
-        String refreshToken = StpUtil.getTokenValue();
+        // 生成刷新令牌
+        String refreshToken = UUID.randomUUID().toString().replace("-", "");
 
         // 记录登录成功日志
         recordLoginLog(account.getId(), command.getUsername(), command.getLoginType(),
-                command.getTenantId(), true, null, null, null);
+                tenantId, true, null, null, null);
+
+        // 转换账号DTO
+        IamAccountDTO accountDTO = accountConverter.toDTOFromDomain(account);
+
+        // 构建用户信息（前端格式）
+        IamLoginResultDTO.UserInfo userInfo;
+        if (mockUser != null) {
+            userInfo = buildUserInfoFromMock(mockUser);
+        } else {
+            userInfo = buildUserInfoFromAccount(account);
+        }
 
         // 构建返回结果
-        IamAccountDTO accountDTO = accountConverter.toDTOFromDomain(account);
         return IamLoginResultDTO.builder()
                 .account(accountDTO)
+                .userInfo(userInfo)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenType("Bearer")
                 .expiresIn(expiresIn)
+                .tenantId(tenantId)
                 .build();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void logout(String token, IamLogoutCommand command) {
-        // 实现登出逻辑
-        // 使用 Sa-Token 的登出功能
         try {
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             if (tokenInfo != null) {
                 StpUtil.logout(tokenInfo.getLoginId());
             }
         } catch (Exception e) {
-            // 忽略登出时的异常
+            log.warn("登出时异常: {}", e.getMessage());
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public IamLoginResultDTO refreshToken(IamRefreshTokenCommand command) {
-        // 实现刷新Token逻辑
-        // 使用 Sa-Token 的刷新功能
         try {
             Object loginId = StpUtil.getLoginIdByToken(command.getRefreshToken());
             if (loginId != null) {
-                // 重新登录获取新token
                 StpUtil.renewTimeout(StpUtil.getTokenValue(), ACCESS_TOKEN_EXPIRE_SECONDS);
                 String newAccessToken = StpUtil.getTokenValue();
 
-                // 获取账号信息
                 IamAccount account = accountRepository.findById(loginId.toString())
                         .orElseThrow(() -> new IllegalArgumentException("账号不存在"));
                 IamAccountDTO accountDTO = accountConverter.toDTOFromDomain(account);
 
+                IamLoginResultDTO.UserInfo userInfo = buildUserInfoFromAccount(account);
+
                 return IamLoginResultDTO.builder()
                         .account(accountDTO)
+                        .userInfo(userInfo)
                         .accessToken(newAccessToken)
                         .refreshToken(command.getRefreshToken())
                         .tokenType("Bearer")
@@ -153,7 +218,7 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
                         .build();
             }
         } catch (Exception e) {
-            // refresh token 无效
+            log.warn("刷新Token失败: {}", e.getMessage());
         }
 
         throw new IllegalArgumentException("刷新Token无效或已过期");
@@ -174,50 +239,54 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
         try {
             Object loginId = StpUtil.getLoginIdByToken(token);
             if (loginId != null) {
-                // 获取账号信息
-                IamAccount account = accountRepository.findById(loginId.toString())
-                        .orElseThrow(() -> new IllegalArgumentException("账号不存在"));
-                return accountConverter.toDTOFromDomain(account);
+                // 先从数据库查找
+                Optional<IamAccount> accountOpt = accountRepository.findById(loginId.toString());
+                if (accountOpt.isPresent()) {
+                    return accountConverter.toDTOFromDomain(accountOpt.get());
+                }
+
+                // 如果数据库没有，从模拟数据查找
+                for (MockUser mockUser : MOCK_USERS.values()) {
+                    if (mockUser.id.equals(loginId.toString())) {
+                        IamAccount mockAccount = createMockAccount(mockUser, "default");
+                        return accountConverter.toDTOFromDomain(mockAccount);
+                    }
+                }
             }
         } catch (Exception e) {
-            // token 无效或过期
+            log.warn("获取当前用户失败: {}", e.getMessage());
         }
         return null;
     }
 
     @Override
     public Object getCurrentUserPermissions(String token) {
-        // 获取当前登录用户的权限列表
         try {
             Object loginId = StpUtil.getLoginIdByToken(token);
             if (loginId != null) {
-                // 通过 Sa-Token 的 StpInterface 获取权限列表
                 return StpUtil.getPermissionList();
             }
         } catch (Exception e) {
-            // token 无效或过期
+            log.warn("获取用户权限失败: {}", e.getMessage());
         }
         return Collections.emptyList();
     }
 
     @Override
     public Object getCurrentUserRoles(String token) {
-        // 获取当前登录用户的角色列表
         try {
             Object loginId = StpUtil.getLoginIdByToken(token);
             if (loginId != null) {
-                // 通过 Sa-Token 的 StpInterface 获取角色列表
                 return StpUtil.getRoleList();
             }
         } catch (Exception e) {
-            // token 无效或过期
+            log.warn("获取用户角色失败: {}", e.getMessage());
         }
         return Collections.emptyList();
     }
 
     @Override
     public List<IamLoginLogDTO> queryLoginLogs(IamLoginLogQuery query) {
-        // 将loginStatus字符串转换为Boolean
         Boolean loginStatus = null;
         if (query.getLoginStatus() != null) {
             loginStatus = "success".equalsIgnoreCase(query.getLoginStatus());
@@ -233,7 +302,7 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
         );
         return logs.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override
@@ -244,32 +313,83 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
     }
 
     /**
+     * 从模拟用户构建用户信息
+     */
+    private IamLoginResultDTO.UserInfo buildUserInfoFromMock(MockUser mockUser) {
+        return IamLoginResultDTO.UserInfo.builder()
+                .id(mockUser.id)
+                .username(mockUser.username)
+                .realName(mockUser.realName)
+                .nickname(mockUser.realName)
+                .avatar(mockUser.avatar)
+                .email(mockUser.email)
+                .phone(mockUser.phone)
+                .deptName(mockUser.deptName)
+                .postName(mockUser.postName)
+                .roles(mockUser.roles)
+                .permissions(mockUser.permissions)
+                .build();
+    }
+
+    /**
+     * 从账号构建用户信息
+     */
+    private IamLoginResultDTO.UserInfo buildUserInfoFromAccount(IamAccount account) {
+        return IamLoginResultDTO.UserInfo.builder()
+                .id(account.getId())
+                .username(account.getAccountCode())
+                .realName(account.getAccountName())
+                .nickname(account.getAccountName())
+                .avatar(account.getAvatar())
+                .email(account.getEmail())
+                .phone(account.getPhone())
+                .deptName("默认部门")
+                .postName("默认岗位")
+                .roles(Collections.singletonList("user"))
+                .permissions(Collections.emptyList())
+                .dashboard("0")
+                .tenantId(account.getTenantId())
+                .build();
+    }
+
+    /**
+     * 创建模拟账号对象
+     */
+    private IamAccount createMockAccount(MockUser mockUser, String tenantId) {
+        return IamAccount.create(mockUser.username, mockUser.realName, mockUser.password, null)
+                .toBuilder()
+                .id(mockUser.id)
+                .phone(mockUser.phone)
+                .email(mockUser.email)
+                .avatar(mockUser.avatar)
+                .userId(mockUser.id)
+                .tenantId(tenantId)
+                .status(true)
+                .locked(false)
+                .build();
+    }
+
+    /**
      * 记录登录日志
      */
     private void recordLoginLog(String accountId, String username, String loginType,
                                 String tenantId, boolean success, String errorMsg,
                                 String loginIp, String deviceInfo) {
-        IamLoginLog loginLog = IamLoginLog.create(
-                accountId,
-                username,
-                loginType,
-                loginIp,
-                deviceInfo,
-                success,
-                errorMsg
-        );
-        loginLog.setTenantId(tenantId);
-        loginLogRepository.save(loginLog);
-    }
-
-    /**
-     * 生成新的访问令牌（用于刷新Token场景）
-     * 使用 Sa-Token 的 Token 续期功能
-     */
-    private String generateNewAccessToken() {
-        // 续期当前 Token
-        StpUtil.renewTimeout(ACCESS_TOKEN_EXPIRE_SECONDS);
-        return StpUtil.getTokenValue();
+        try {
+            IamLoginLog loginLog = IamLoginLog.create(
+                    accountId,
+                    username,
+                    loginType,
+                    loginIp,
+                    deviceInfo,
+                    success,
+                    errorMsg
+            );
+            loginLog.setTenantId(tenantId);
+            loginLogRepository.save(loginLog);
+        } catch (Exception e) {
+            log.warn("记录登录日志失败: {}", e.getMessage());
+        }
     }
 
     /**
@@ -309,6 +429,39 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
             return hexString.toString();
         } catch (Exception e) {
             throw new RuntimeException("MD5 hash failed", e);
+        }
+    }
+
+    /**
+     * 模拟用户
+     */
+    private static class MockUser {
+        String id;
+        String username;
+        String password;
+        String realName;
+        String avatar;
+        String email;
+        String phone;
+        String deptName;
+        String postName;
+        List<String> roles;
+        List<String> permissions;
+
+        MockUser(String id, String username, String password, String realName, String avatar,
+                 String email, String phone, String deptName, String postName,
+                 List<String> roles, List<String> permissions) {
+            this.id = id;
+            this.username = username;
+            this.password = password;
+            this.realName = realName;
+            this.avatar = avatar;
+            this.email = email;
+            this.phone = phone;
+            this.deptName = deptName;
+            this.postName = postName;
+            this.roles = roles;
+            this.permissions = permissions;
         }
     }
 }

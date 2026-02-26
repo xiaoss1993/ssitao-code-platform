@@ -80,20 +80,18 @@ public class DataPermissionAnnotationInterceptor implements MethodInterceptor {
      * @param dataPermission 数据权限注解
      */
     private void setDataPermissionContext(DataPermission dataPermission) {
-        DataPermissionContextHolder holder = new DataPermissionContextHolder();
-
         // 设置包含规则
         if (dataPermission.includeRules().length > 0) {
-            holder.setIncludeRules(new HashSet<>(Arrays.asList(dataPermission.includeRules())));
+            DataPermissionContextHolder.setIncludeRules(new HashSet<>(Arrays.asList(dataPermission.includeRules())));
         }
 
         // 设置排除规则
         if (dataPermission.excludeRules().length > 0) {
-            holder.setExcludeRules(new HashSet<>(Arrays.asList(dataPermission.excludeRules())));
+            DataPermissionContextHolder.setExcludeRules(new HashSet<>(Arrays.asList(dataPermission.excludeRules())));
         }
 
         // 设置是否忽略租户权限
-        holder.setIgnoreTenant(dataPermission.ignoreTenant());
+        DataPermissionContextHolder.setIgnoreTenant(dataPermission.ignoreTenant());
     }
 
 }

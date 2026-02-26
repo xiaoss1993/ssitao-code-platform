@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.authorization.application.service;
 
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.modular.iam.authorization.application.command.IamRoleCreateCommand;
 import com.ssitao.code.modular.iam.authorization.application.command.IamRoleUpdateCommand;
 import com.ssitao.code.modular.iam.authorization.application.command.IamRoleAssignPermissionCommand;
@@ -36,7 +37,7 @@ public interface IamRoleAppService {
      * @param id       角色ID
      * @param tenantId 租户ID
      */
-    void deleteRole(Long id, String tenantId);
+    void deleteRole(String id, String tenantId);
 
     /**
      * 根据ID获取角色
@@ -45,7 +46,7 @@ public interface IamRoleAppService {
      * @param tenantId 租户ID
      * @return 角色DTO
      */
-    IamRoleDTO getRoleById(Long id, String tenantId);
+    IamRoleDTO getRoleById(String id, String tenantId);
 
     /**
      * 获取角色列表
@@ -54,6 +55,16 @@ public interface IamRoleAppService {
      * @return 角色列表
      */
     List<IamRoleDTO> listRoles(String tenantId);
+
+    /**
+     * 分页查询角色
+     *
+     * @param tenantId 租户ID
+     * @param current  当前页
+     * @param size     每页大小
+     * @return 角色分页结果
+     */
+    Page<IamRoleDTO> pageRoles(String tenantId, int current, int size);
 
     /**
      * 获取角色树
@@ -76,7 +87,7 @@ public interface IamRoleAppService {
      * @param id       角色ID
      * @param tenantId 租户ID
      */
-    void enableRole(Long id, String tenantId);
+    void enableRole(String id, String tenantId);
 
     /**
      * 禁用角色
@@ -84,6 +95,6 @@ public interface IamRoleAppService {
      * @param id       角色ID
      * @param tenantId
      */
-    void disableRole(Long id, String tenantId);
+    void disableRole(String id, String tenantId);
 
 }

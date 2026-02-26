@@ -1,6 +1,9 @@
 package com.ssitao.code.modular.iam.authorization.controller;
 
 import com.ssitao.code.common.pojo.CommonResult;
+import com.ssitao.code.common.pojo.PageResult;
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
+import com.ssitao.code.frame.security.tenant.utils.TenantUtils;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamPermissionDTO;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamPermGroupDTO;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamRoleDTO;
@@ -65,7 +68,7 @@ public class IamAuthorizationController {
 
     @DeleteMapping("/role/{id}")
     @Operation(summary = "删除角色", description = "删除指定角色")
-    public CommonResult<Void> deleteRole(@PathVariable Long id,
+    public CommonResult<Void> deleteRole(@PathVariable String id,
                                           @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         roleAppService.deleteRole(id, tenantId);
         return success();
@@ -73,7 +76,7 @@ public class IamAuthorizationController {
 
     @GetMapping("/role/{id}")
     @Operation(summary = "获取角色详情", description = "根据ID获取角色详情")
-    public CommonResult<IamRoleDTO> getRole(@PathVariable Long id,
+    public CommonResult<IamRoleDTO> getRole(@PathVariable String id,
                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         IamRoleDTO role = roleAppService.getRoleById(id, tenantId);
         return success(role);
@@ -81,9 +84,22 @@ public class IamAuthorizationController {
 
     @GetMapping("/roles")
     @Operation(summary = "获取角色列表", description = "获取所有角色列表")
-    public CommonResult<List<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<PageResult<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         List<IamRoleDTO> roles = roleAppService.listRoles(tenantId);
-        return success(roles);
+        PageResult<IamRoleDTO> result = new PageResult<>();
+        result.setRows(roles);
+        result.setTotal(roles.size());
+        return success(result);
+    }
+
+    @GetMapping("/role/page")
+    @Operation(summary = "分页查询角色", description = "分页查询角色列表")
+    public CommonResult<Page<IamRoleDTO>> pageRoles(
+            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+            @RequestParam(defaultValue = "1") int current,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<IamRoleDTO> page = roleAppService.pageRoles(tenantId, current, size);
+        return success(page);
     }
 
     @GetMapping("/role/tree")
@@ -102,16 +118,16 @@ public class IamAuthorizationController {
 
     @PutMapping("/role/{id}/enable")
     @Operation(summary = "启用角色", description = "启用指定角色")
-    public CommonResult<Void> enableRole(@PathVariable Long id,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<Void> enableRole(@PathVariable String id) {
+        String tenantId = TenantUtils.getTenantId();
         roleAppService.enableRole(id, tenantId);
         return success();
     }
 
     @PutMapping("/role/{id}/disable")
     @Operation(summary = "禁用角色", description = "禁用指定角色")
-    public CommonResult<Void> disableRole(@PathVariable Long id,
-                                           @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<Void> disableRole(@PathVariable String id) {
+        String tenantId = TenantUtils.getTenantId();
         roleAppService.disableRole(id, tenantId);
         return success();
     }

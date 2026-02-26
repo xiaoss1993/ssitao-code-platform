@@ -1,6 +1,7 @@
 package com.ssitao.code.frame.security.datapermission.rule;
 
-import com.mybatis.flex.core.table.TableDef;
+
+import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 
 /**
  * 数据权限规则接口

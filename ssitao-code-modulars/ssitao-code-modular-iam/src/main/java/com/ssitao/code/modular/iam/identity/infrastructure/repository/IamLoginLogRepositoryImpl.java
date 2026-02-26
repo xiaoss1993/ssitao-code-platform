@@ -42,9 +42,9 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public Optional<IamLoginLog> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .where("tb_iam_loginlog_id", id);
+                .eq("tb_iam_loginlog_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.and("sy_tenant_id", tenantId);
+            query.eq("sy_tenant_id", tenantId);
         }
         IamLoginLogDO loginLogDO = loginLogMapper.selectOneByQuery(query);
         if (loginLogDO == null) {
@@ -69,7 +69,7 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public List<IamLoginLog> findByAccountId(String accountId, Integer limit) {
         QueryWrapper query = QueryWrapper.create()
-                .where("sy_account_id", accountId)
+                .eq("sy_account_id", accountId)
                 .orderBy("sy_createtime", false);
         if (limit != null && limit > 0) {
             query.limit(limit);
@@ -96,22 +96,22 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
                                               LocalDateTime startTime, LocalDateTime endTime,
                                               String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .where("sy_status", "1");
+                .eq("sy_status", "1");
 
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.and("sy_tenant_id", tenantId);
+            query.eq("sy_tenant_id", tenantId);
         }
         if (username != null && !username.isEmpty()) {
-            query.and("loginlog_account_name", "like", "%" + username + "%");
+            query.like("loginlog_account_name", "%" + username + "%");
         }
         if (loginType != null && !loginType.isEmpty()) {
-            query.and("loginlog_type_code", loginType);
+            query.eq("loginlog_type_code", loginType);
         }
         if (startTime != null) {
-            query.and("sy_createtime", ">=", startTime.format(DATE_FORMATTER));
+            query.ge("sy_createtime", startTime.format(DATE_FORMATTER));
         }
         if (endTime != null) {
-            query.and("sy_createtime", "<=", endTime.format(DATE_FORMATTER));
+            query.le("sy_createtime", endTime.format(DATE_FORMATTER));
         }
 
         query.orderBy("sy_createtime", false);
@@ -122,18 +122,18 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public Long countFailedLogin(String accountId, LocalDateTime afterTime) {
         QueryWrapper query = QueryWrapper.create()
-                .where("sy_account_id", accountId)
-                .and("sy_createtime", ">=", afterTime.format(DATE_FORMATTER));
+                .eq("sy_account_id", accountId)
+                .ge("sy_createtime", afterTime.format(DATE_FORMATTER));
         // 登录失败的记录可能需要通过特定字段判断，这里假设通过sy_status=0或特定字段
         // 根据实际业务逻辑调整
-        query.and("sy_status", "0");
+        query.eq("sy_status", "0");
         return loginLogMapper.selectCountByQuery(query);
     }
 
     @Override
     public void deleteExpired(LocalDateTime beforeTime) {
         QueryWrapper query = QueryWrapper.create()
-                .where("sy_createtime", "<", beforeTime.format(DATE_FORMATTER));
+                .lt("sy_createtime", beforeTime.format(DATE_FORMATTER));
         loginLogMapper.deleteByQuery(query);
     }
 }

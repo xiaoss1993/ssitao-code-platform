@@ -17,7 +17,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class IamAccount {

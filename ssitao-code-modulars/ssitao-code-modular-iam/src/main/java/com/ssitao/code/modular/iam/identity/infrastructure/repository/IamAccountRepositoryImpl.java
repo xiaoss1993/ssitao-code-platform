@@ -1,6 +1,5 @@
 package com.ssitao.code.modular.iam.identity.infrastructure.repository;
 
-import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import com.ssitao.code.modular.iam.dal.dataobject.IamAccountDO;
 import com.ssitao.code.modular.iam.dal.mapper.IamAccountMapper;
@@ -43,12 +42,15 @@ public class IamAccountRepositoryImpl implements IamAccountRepository {
     @Override
     public void update(IamAccount account) {
         IamAccountDO accountDO = accountConverter.toDO(account);
-        accountDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
+        accountDO.setSyUpdatetime(LocalDateTime.now().format(DATE_FORMATTER));
         accountMapper.update(accountDO);
     }
 
     @Override
     public Optional<IamAccount> findById(String id) {
+        if (id == null || id.isEmpty()) {
+            return Optional.empty();
+        }
         IamAccountDO accountDO = accountMapper.selectOneById(id);
         return Optional.ofNullable(accountConverter.toDomain(accountDO));
     }
@@ -118,7 +120,7 @@ public class IamAccountRepositoryImpl implements IamAccountRepository {
             query.eq("sy_tenant_id", tenantId);
         }
         query.eq("sy_status", "1");
-        if (excludeId != null) {
+        if (excludeId != null && !excludeId.isEmpty()) {
             query.ne("tb_iam_account_id", excludeId);
         }
         return accountMapper.selectCountByQuery(query) > 0;
@@ -132,7 +134,7 @@ public class IamAccountRepositoryImpl implements IamAccountRepository {
             query.eq("sy_tenant_id", tenantId);
         }
         query.eq("sy_status", "1");
-        if (excludeId != null) {
+        if (excludeId != null && !excludeId.isEmpty()) {
             query.ne("tb_iam_account_id", excludeId);
         }
         return accountMapper.selectCountByQuery(query) > 0;

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.system.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since 2.0.0
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class IamDictTypeDTO {
 
     /**
@@ -78,5 +80,22 @@ public class IamDictTypeDTO {
      * 字典数据列表
      */
     private List<IamDictDataDTO> dictDataList;
+
+    // ==================== 前端兼容字段 ====================
+
+    /**
+     * 编码（前端兼容）
+     */
+    private String code;
+
+    /**
+     * 名称（前端兼容）
+     */
+    private String name;
+
+    /**
+     * 标签（前端兼容，用于树形控件）
+     */
+    private String label;
 
 }

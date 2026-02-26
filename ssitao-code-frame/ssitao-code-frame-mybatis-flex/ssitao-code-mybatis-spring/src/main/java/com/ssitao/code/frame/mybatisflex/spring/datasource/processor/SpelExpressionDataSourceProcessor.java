@@ -8,6 +8,8 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.expression.BeanResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.EvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
@@ -89,6 +91,7 @@ public class SpelExpressionDataSourceProcessor implements DataSourceProcessor {
      * @param method 执行的方法
      * @param arguments 方法参数
      * @return 解析后的数据源key，如果不需要解析则返回null
+     * @throws IllegalArgumentException 当SpEL表达式解析失败时抛出
      */
     @Override
     public String process(String dataSourceKey, Object mapper, Method method, Object[] arguments) {
@@ -99,8 +102,17 @@ public class SpelExpressionDataSourceProcessor implements DataSourceProcessor {
         RootObject rootObject = new RootObject(method, arguments, mapper);
         StandardEvaluationContext context = new MethodBasedEvaluationContext(rootObject, method, arguments, NAME_DISCOVERER);
         context.setBeanResolver(beanResolver);
-        final Object value = PARSER.parseExpression(dataSourceKey, parserContext).getValue(context);
-        return value == null ? null : value.toString();
+
+        try {
+            final Object value = PARSER.parseExpression(dataSourceKey, parserContext).getValue(context);
+            return value == null ? null : value.toString();
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("SpEL表达式解析失败: " + dataSourceKey + ", 错误信息: " + e.getMessage(), e);
+        } catch (EvaluationException e) {
+            throw new IllegalArgumentException("SpEL表达式求值失败: " + dataSourceKey + ", 错误信息: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("SpEL表达式处理异常: " + dataSourceKey + ", 错误信息: " + e.getMessage(), e);
+        }
     }
     /**
      * 设置Bean解析器

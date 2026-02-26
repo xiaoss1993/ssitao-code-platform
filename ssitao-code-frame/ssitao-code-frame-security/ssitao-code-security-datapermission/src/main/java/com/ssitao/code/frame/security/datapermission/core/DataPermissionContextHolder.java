@@ -1,7 +1,5 @@
 package com.ssitao.code.frame.security.datapermission.core;
 
-import lombok.experimental.UtilityClass;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +9,6 @@ import java.util.Set;
  * @author ssitao-code
  * @since 1.1.1
  */
-@UtilityClass
 public class DataPermissionContextHolder {
 
     /**
@@ -30,11 +27,17 @@ public class DataPermissionContextHolder {
     private static final ThreadLocal<Boolean> IGNORE_TENANT = new ThreadLocal<>();
 
     /**
+     * 私有构造函数，防止实例化
+     */
+    private DataPermissionContextHolder() {
+    }
+
+    /**
      * 获取包含的权限规则
      *
      * @return 包含的权限规则
      */
-    public Set<String> getIncludeRules() {
+    public static Set<String> getIncludeRules() {
         return INCLUDE_RULES.get();
     }
 
@@ -43,7 +46,7 @@ public class DataPermissionContextHolder {
      *
      * @param rules 规则集合
      */
-    public void setIncludeRules(Set<String> rules) {
+    public static void setIncludeRules(Set<String> rules) {
         if (rules == null || rules.isEmpty()) {
             INCLUDE_RULES.remove();
         } else {
@@ -56,7 +59,7 @@ public class DataPermissionContextHolder {
      *
      * @return 排除的权限规则
      */
-    public Set<String> getExcludeRules() {
+    public static Set<String> getExcludeRules() {
         return EXCLUDE_RULES.get();
     }
 
@@ -65,7 +68,7 @@ public class DataPermissionContextHolder {
      *
      * @param rules 规则集合
      */
-    public void setExcludeRules(Set<String> rules) {
+    public static void setExcludeRules(Set<String> rules) {
         if (rules == null || rules.isEmpty()) {
             EXCLUDE_RULES.remove();
         } else {
@@ -78,7 +81,7 @@ public class DataPermissionContextHolder {
      *
      * @return 是否忽略租户权限
      */
-    public Boolean getIgnoreTenant() {
+    public static Boolean getIgnoreTenant() {
         return IGNORE_TENANT.get();
     }
 
@@ -87,7 +90,7 @@ public class DataPermissionContextHolder {
      *
      * @param ignoreTenant 是否忽略租户权限
      */
-    public void setIgnoreTenant(Boolean ignoreTenant) {
+    public static void setIgnoreTenant(Boolean ignoreTenant) {
         if (ignoreTenant == null || !ignoreTenant) {
             IGNORE_TENANT.remove();
         } else {
@@ -98,7 +101,7 @@ public class DataPermissionContextHolder {
     /**
      * 清除所有上下文
      */
-    public void clear() {
+    public static void clear() {
         INCLUDE_RULES.remove();
         EXCLUDE_RULES.remove();
         IGNORE_TENANT.remove();
@@ -110,7 +113,7 @@ public class DataPermissionContextHolder {
      * @param rule 规则名称
      * @return 是否被排除
      */
-    public boolean isExcluded(String rule) {
+    public static boolean isExcluded(String rule) {
         Set<String> excludeRules = getExcludeRules();
         return excludeRules != null && excludeRules.contains(rule);
     }
@@ -121,7 +124,7 @@ public class DataPermissionContextHolder {
      * @param rule 规则名称
      * @return 是否被包含
      */
-    public boolean isIncluded(String rule) {
+    public static boolean isIncluded(String rule) {
         Set<String> includeRules = getIncludeRules();
         // 如果没有指定包含规则，默认包含所有规则
         if (includeRules == null || includeRules.isEmpty()) {

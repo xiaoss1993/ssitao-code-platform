@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.userprofile.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,14 +14,37 @@ import java.time.LocalDateTime;
  * @since 2.0.0
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "IAM用户档案DTO")
 public class IamUserProfileDTO {
 
     @Schema(description = "用户ID")
     private String userId;
 
-    @Schema(description = "用户名称")
+    // ==================== 前端兼容字段 ====================
+
+    @Schema(description = "ID（前端兼容）")
+    private String id;
+
+    @Schema(description = "头像（前端兼容）")
+    private String avatar;
+
+    @Schema(description = "登录账号（前端兼容）")
     private String userName;
+
+    @Schema(description = "姓名（前端兼容）")
+    private String name;
+
+    @Schema(description = "所属角色（前端兼容）")
+    private String groupName;
+
+    @Schema(description = "加入时间（前端兼容）")
+    private String date;
+
+    @Schema(description = "状态（前端兼容）")
+    private Integer status;
+
+    // ==================== 原有字段 ====================
 
     @Schema(description = "用户编码")
     private String userCode;

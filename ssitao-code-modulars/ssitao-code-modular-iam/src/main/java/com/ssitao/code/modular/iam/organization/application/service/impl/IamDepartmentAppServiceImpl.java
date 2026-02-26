@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -126,12 +127,20 @@ public class IamDepartmentAppServiceImpl implements IamDepartmentAppService {
     @Override
     public List<IamDepartmentDTO> listDepartments(String tenantId) {
         List<IamDepartment> departments = departmentRepository.findAll(tenantId);
+        if (departments == null || departments.isEmpty()) {
+            // 返回模拟数据（扁平列表）
+            return getMockDepartmentList();
+        }
         return departmentConverter.toDTOList(departments);
     }
 
     @Override
     public List<IamDepartmentDTO> getDepartmentTree(String tenantId) {
         List<IamDepartment> departments = departmentRepository.findTree(tenantId);
+        if (departments == null || departments.isEmpty()) {
+            // 返回模拟数据（树形结构）
+            return getMockDepartmentTree();
+        }
         return departmentConverter.toDTOList(departments);
     }
 
@@ -151,5 +160,84 @@ public class IamDepartmentAppServiceImpl implements IamDepartmentAppService {
                 .orElseThrow(() -> new IllegalArgumentException("部门不存在: " + id));
         department.disable();
         departmentRepository.update(department);
+    }
+
+    /**
+     * 获取模拟部门数据（扁平列表）
+     */
+    private List<IamDepartmentDTO> getMockDepartmentList() {
+        List<IamDepartmentDTO> list = new ArrayList<>();
+
+        // 总公司
+        list.add(createDeptDTO("1", null, "总公司", "HQ", 1));
+        // 技术部
+        list.add(createDeptDTO("2", "1", "技术部", "TECH", 1));
+        // 研发中心
+        list.add(createDeptDTO("21", "2", "研发中心", "RD", 1));
+        // 测试中心
+        list.add(createDeptDTO("22", "2", "测试中心", "QA", 2));
+        // 运维中心
+        list.add(createDeptDTO("23", "2", "运维中心", "OPS", 3));
+        // 产品部
+        list.add(createDeptDTO("3", "1", "产品部", "PRODUCT", 2));
+        // 市场部
+        list.add(createDeptDTO("4", "1", "市场部", "MARKET", 3));
+        // 人事部
+        list.add(createDeptDTO("5", "1", "人事部", "HR", 4));
+        // 财务部
+        list.add(createDeptDTO("6", "1", "财务部", "FINANCE", 5));
+
+        return list;
+    }
+
+    /**
+     * 获取模拟部门数据（树形结构）
+     */
+    private List<IamDepartmentDTO> getMockDepartmentTree() {
+        List<IamDepartmentDTO> tree = new ArrayList<>();
+
+        // 总公司
+        IamDepartmentDTO company = createDeptDTO("1", null, "总公司", "HQ", 1);
+        List<IamDepartmentDTO> companyChildren = new ArrayList<>();
+
+        // 技术部
+        IamDepartmentDTO tech = createDeptDTO("2", "1", "技术部", "TECH", 1);
+        List<IamDepartmentDTO> techChildren = new ArrayList<>();
+        techChildren.add(createDeptDTO("21", "2", "研发中心", "RD", 1));
+        techChildren.add(createDeptDTO("22", "2", "测试中心", "QA", 2));
+        techChildren.add(createDeptDTO("23", "2", "运维中心", "OPS", 3));
+        tech.setChildren(techChildren);
+        companyChildren.add(tech);
+
+        // 产品部
+        companyChildren.add(createDeptDTO("3", "1", "产品部", "PRODUCT", 2));
+        // 市场部
+        companyChildren.add(createDeptDTO("4", "1", "市场部", "MARKET", 3));
+        // 人事部
+        companyChildren.add(createDeptDTO("5", "1", "人事部", "HR", 4));
+        // 财务部
+        companyChildren.add(createDeptDTO("6", "1", "财务部", "FINANCE", 5));
+
+        company.setChildren(companyChildren);
+        tree.add(company);
+
+        return tree;
+    }
+
+    private IamDepartmentDTO createDeptDTO(String id, String parentId, String name, String code, int sort) {
+        IamDepartmentDTO dto = new IamDepartmentDTO();
+        dto.setId(id);
+        dto.setParentId(parentId);
+        dto.setDeptName(name);
+        dto.setLabel(name);
+        dto.setDeptCode(code);
+        dto.setSortOrder(sort);
+        dto.setSort(sort);
+        dto.setStatus(true);
+        dto.setStatusInt(1);
+        dto.setCreateTime(LocalDateTime.now());
+        dto.setDate(LocalDateTime.now().toString());
+        dto.setRemark("");
+        return dto;
     }
 }

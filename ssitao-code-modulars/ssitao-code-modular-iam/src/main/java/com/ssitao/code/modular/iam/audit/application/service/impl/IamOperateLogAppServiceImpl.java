@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.audit.application.service.impl;
 
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.modular.iam.audit.api.dto.IamOperateLogDTO;
 import com.ssitao.code.modular.iam.audit.application.query.IamOperateLogQuery;
 import com.ssitao.code.modular.iam.audit.application.service.IamOperateLogAppService;
@@ -163,6 +164,21 @@ public class IamOperateLogAppServiceImpl implements IamOperateLogAppService {
                 operatorId, operateType, operateModule,
                 startTime, endTime, tenantId
         );
+    }
+
+    @Override
+    public Page<IamOperateLogDTO> pageOperateLogs(IamOperateLogQuery query, int current, int size) {
+        Page<IamOperateLogDTO> page = new Page<>(current, size);
+
+        // 查询数据
+        List<IamOperateLogDTO> logs = queryLogs(query, current, size);
+
+        // 统计总数
+        long total = countLogs(query);
+
+        page.setRecords(logs);
+        page.setTotalRow(total);
+        return page;
     }
 
     @Override

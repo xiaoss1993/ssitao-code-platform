@@ -18,8 +18,14 @@
     <dependencies>
         <!-- MyBatis-Flex -->
         <dependency>
-            <groupId>com.mybatis-flex</groupId>
-            <artifactId>mybatis-flex-core</artifactId>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-core</artifactId>
+        </dependency>
+
+        <!-- TransmittableThreadLocal -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>transmittable-thread-local</artifactId>
         </dependency>
 
         <!-- Spring Boot Web -->

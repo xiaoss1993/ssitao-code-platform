@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.audit.application.service;
 
+import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.modular.iam.audit.application.query.IamOperateLogQuery;
 import com.ssitao.code.modular.iam.audit.api.dto.IamOperateLogDTO;
 
@@ -86,6 +87,16 @@ public interface IamOperateLogAppService {
      * @return 数量
      */
     long countLogs(IamOperateLogQuery query);
+
+    /**
+     * 分页查询操作日志
+     *
+     * @param query 查询条件
+     * @param current 当前页
+     * @param size   每页大小
+     * @return 分页结果
+     */
+    Page<IamOperateLogDTO> pageOperateLogs(IamOperateLogQuery query, int current, int size);
 
     /**
      * 删除指定天数之前的日志

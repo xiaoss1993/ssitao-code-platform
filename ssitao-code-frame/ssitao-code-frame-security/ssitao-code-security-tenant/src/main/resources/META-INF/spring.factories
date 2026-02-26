@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ssitao.code.frame.security.tenant.config.TenantBaseConfiguration,\
+com.ssitao.code.frame.security.tenant.config.TenantLineAutoConfiguration

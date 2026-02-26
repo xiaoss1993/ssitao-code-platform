@@ -8,68 +8,117 @@ import lombok.Data;
 
 /**
  * IAM字典数据数据对象
- * 对应数据库表：tb_iam_dictdata
+ * 对应数据库表：tb_core_dictionaryitem
  *
  * @author ssitao-code
  * @since 2.0.0
  */
 @Data
-@Table(value = "tb_iam_dictdata")
+@Table(value = "tb_core_dictionaryitem")
 public class IamDictDataDO {
 
     /**
      * 主键id
      */
     @Id(keyType = KeyType.None)
-    private String tbIamDictdataId;
+    @Column(value = "tb_core_dictionaryitem_id")
+    private String tbCoreDictionaryitemId;
 
     /**
-     * 字典类型ID
+     * 字典外键
      */
-    @Column(value = "tb_iam_dicttype_id")
-    private String tbIamDicttypeId;
+    @Column(value = "dictionaryitem_dictionary_id")
+    private String dictionaryitemDictionaryId;
 
     /**
-     * 字典标签
+     * 节点名称
      */
-    @Column(value = "dictdata_label")
-    private String dictdataLabel;
+    @Column(value = "dictionaryitem_itemname")
+    private String dictionaryitemItemname;
 
     /**
-     * 字典值
+     * 节点编码
      */
-    @Column(value = "dictdata_value")
-    private String dictdataValue;
+    @Column(value = "dictionaryitem_itemcode")
+    private String dictionaryitemItemcode;
 
     /**
-     * 排序
+     * 节点信息
      */
-    @Column(value = "sy_orderindex")
-    private Integer syOrderindex;
+    @Column(value = "dictionaryitem_nodeinfo")
+    private String dictionaryitemNodeinfo;
 
     /**
-     * 颜色类型
+     * 节点信息类型
      */
-    @Column(value = "color_type")
-    private String colorType;
+    @Column(value = "dictionaryitem_nodeinfotype")
+    private String dictionaryitemNodeinfotype;
 
     /**
-     * CSS样式
+     * 单元格颜色
      */
-    @Column(value = "css_class")
-    private String cssClass;
+    @Column(value = "dictionaryitem_backgroundcolor")
+    private String dictionaryitemBackgroundcolor;
 
     /**
-     * 状态：1-启用 0-禁用
+     * 字体颜色
      */
-    @Column(value = "status")
-    private Boolean status;
+    @Column(value = "dictionaryitem_fontcolor")
+    private String dictionaryitemFontcolor;
 
     /**
-     * 备注
+     * 分类
      */
-    @Column(value = "remark")
-    private String remark;
+    @Column(value = "dictionaryitem_classify")
+    private String dictionaryitemClassify;
+
+    /**
+     * 图标
+     */
+    @Column(value = "dictionaryitem_icon")
+    private String dictionaryitemIcon;
+
+    /**
+     * 图标颜色
+     */
+    @Column(value = "dictionaryitem_iconcolor")
+    private String dictionaryitemIconcolor;
+
+    /**
+     * 树形路径
+     */
+    @Column(value = "sy_path")
+    private String syPath;
+
+    /**
+     * 层次
+     */
+    @Column(value = "sy_layer")
+    private Integer syLayer;
+
+    /**
+     * 父节点id
+     */
+    @Column(value = "sy_parent")
+    private String syParent;
+
+    /**
+     * 节点类型
+     */
+    @Column(value = "sy_nodetype")
+    private String syNodetype;
+
+    /**
+     * 父节点路径
+     */
+    @Column(value = "sy_parentpath")
+    private String syParentpath;
+
+    /**
+     * 树形排序字段
+     */
+    @Column(value = "sy_treeorderindex")
+    private String syTreeorderindex;
 
     /**
      * 创建时间
@@ -78,27 +127,51 @@ public class IamDictDataDO {
     private String syCreatetime;
 
     /**
+     * 创建人ID
+     */
+    @Column(value = "sy_createuserid")
+    private String syCreateuserid;
+
+    /**
+     * 创建人名称
+     */
+    @Column(value = "sy_createusername")
+    private String syCreateusername;
+
+    /**
      * 修改时间
      */
     @Column(value = "sy_modifytime")
     private String syModifytime;
 
     /**
-     * 创建人
-     */
-    @Column(value = "sy_createuserid")
-    private String syCreateuserid;
-
-    /**
-     * 更新人
+     * 修改人ID
      */
     @Column(value = "sy_modifyuserid")
     private String syModifyuserid;
+
+    /**
+     * 数据状态
+     */
+    @Column(value = "sy_status")
+    private String syStatus;
+
+    /**
+     * 是否启用本条数据
+     */
+    @Column(value = "sy_flag")
+    private String syFlag;
 
     /**
      * 租户ID
      */
     @Column(value = "sy_tenant_id")
     private String syTenantId;
+
+    /**
+     * 租户名称
+     */
+    @Column(value = "sy_tenant_name")
+    private String syTenantName;
 
 }
