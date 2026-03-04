@@ -1,10 +1,12 @@
 package com.ssitao.code.modular.iam.authorization.infrastructure.converter;
 
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamPermGroupDO;
 import com.ssitao.code.modular.iam.authorization.domain.model.IamPermGroup;
-import com.ssitao.code.modular.iam.dal.dataobject.IamPermGroupDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
@@ -14,7 +16,11 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface IamPermGroupConverter {
 
     /**
@@ -23,15 +29,16 @@ public interface IamPermGroupConverter {
      * @param permGroupDO DO对象
      * @return 领域模型
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamPermgroupId"),
-            @Mapping(target = "groupCode", source = "permgroupCode"),
-            @Mapping(target = "groupName", source = "permgroupName"),
-            @Mapping(target = "status", expression = "java(parseStatus(permGroupDO.getSyStatus()))"),
-            @Mapping(target = "sortOrder", source = "syOrderindex"),
-            @Mapping(target = "createTime", expression = "java(parseLocalDateTime(permGroupDO.getSyCreatetime()))"),
-            @Mapping(target = "creator", source = "syCreateusername")
-    })
+    @Mapping(source = "groupId", target = "id")
+    @Mapping(source = "groupCode", target = "groupCode")
+    @Mapping(source = "groupName", target = "groupName")
+    @Mapping(source = "groupDesc", target = "remark")
+    @Mapping(source = "groupStatus", target = "status", qualifiedByName = "integerToBoolean")
+    @Mapping(source = "groupSort", target = "sortOrder")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "createUserId", target = "creator")
+    @Mapping(target = "permissionIds", ignore = true)
     IamPermGroup toDomain(IamPermGroupDO permGroupDO);
 
     /**
@@ -40,15 +47,17 @@ public interface IamPermGroupConverter {
      * @param permGroup 领域模型
      * @return DO对象
      */
-    @Mappings({
-            @Mapping(target = "tbIamPermgroupId", source = "id"),
-            @Mapping(target = "permgroupCode", source = "groupCode"),
-            @Mapping(target = "permgroupName", source = "groupName"),
-            @Mapping(target = "syStatus", expression = "java(formatStatus(permGroup.getStatus()))"),
-            @Mapping(target = "syOrderindex", source = "sortOrder"),
-            @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(permGroup.getCreateTime()))"),
-            @Mapping(target = "syCreateusername", source = "creator")
-    })
+    @Mapping(source = "id", target = "groupId")
+    @Mapping(source = "groupCode", target = "groupCode")
+    @Mapping(source = "groupName", target = "groupName")
+    @Mapping(source = "remark", target = "groupDesc")
+    @Mapping(source = "status", target = "groupStatus", qualifiedByName = "booleanToInteger")
+    @Mapping(source = "sortOrder", target = "groupSort")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "creator", target = "createUserId")
+    @Mapping(target = "modifyTime", ignore = true)
+    @Mapping(target = "isDeleted", constant = "0")
     IamPermGroupDO toDO(IamPermGroup permGroup);
 
     /**
@@ -60,40 +69,24 @@ public interface IamPermGroupConverter {
     List<IamPermGroup> toDomainList(List<IamPermGroupDO> permGroupDOList);
 
     /**
-     * 解析状态
+     * Boolean转Integer
      */
-    default Boolean parseStatus(String status) {
-        return "1".equals(status);
+    @Named("booleanToInteger")
+    default Integer booleanToInteger(Boolean value) {
+        if (value == null) {
+            return 1;
+        }
+        return value ? 1 : 0;
     }
 
     /**
-     * 格式化状态
+     * Integer转Boolean
      */
-    default String formatStatus(Boolean status) {
-        return Boolean.TRUE.equals(status) ? "1" : "0";
-    }
-
-    /**
-     * 解析LocalDateTime
-     */
-    default java.time.LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
+    @Named("integerToBoolean")
+    default Boolean integerToBoolean(Integer value) {
+        if (value == null) {
+            return true;
         }
-        try {
-            return java.time.LocalDateTime.parse(dateTimeStr.replace(" ", "T"));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 格式化LocalDateTime
-     */
-    default String formatLocalDateTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.toString().replace("T", " ");
+        return value == 1;
     }
 }

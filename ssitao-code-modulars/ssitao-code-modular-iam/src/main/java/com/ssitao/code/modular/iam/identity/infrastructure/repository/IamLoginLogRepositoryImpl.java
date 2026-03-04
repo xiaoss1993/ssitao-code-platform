@@ -1,8 +1,8 @@
 package com.ssitao.code.modular.iam.identity.infrastructure.repository;
 
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
-import com.ssitao.code.modular.iam.dal.dataobject.IamLoginLogDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamLoginLogMapper;
+import com.ssitao.code.modular.iam.identity.dal.dataobject.IamLoginLogDO;
+import com.ssitao.code.modular.iam.identity.dal.mapper.IamLoginLogMapper;
 import com.ssitao.code.modular.iam.identity.domain.model.IamLoginLog;
 import com.ssitao.code.modular.iam.identity.domain.repository.IamLoginLogRepository;
 import com.ssitao.code.modular.iam.identity.infrastructure.converter.IamLoginLogConverter;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +22,6 @@ import java.util.Optional;
 @Repository
 public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     @Resource
     private IamLoginLogMapper loginLogMapper;
 
@@ -34,17 +31,17 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public String save(IamLoginLog loginLog) {
         IamLoginLogDO loginLogDO = loginLogConverter.toDO(loginLog);
-        loginLogDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
+        loginLogDO.setLoginTime(LocalDateTime.now());
         loginLogMapper.insert(loginLogDO);
-        return loginLogDO.getTbIamLoginlogId();
+        return loginLogDO.getLogId();
     }
 
     @Override
     public Optional<IamLoginLog> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_loginlog_id", id);
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+                .eq("log_id", id);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
         IamLoginLogDO loginLogDO = loginLogMapper.selectOneByQuery(query);
         if (loginLogDO == null) {
@@ -59,9 +56,9 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
             return;
         }
         List<IamLoginLogDO> loginLogDOList = loginLogConverter.toDOList(loginLogs);
-        String now = LocalDateTime.now().format(DATE_FORMATTER);
+        LocalDateTime now = LocalDateTime.now();
         for (IamLoginLogDO loginLogDO : loginLogDOList) {
-            loginLogDO.setSyCreatetime(now);
+            loginLogDO.setLoginTime(now);
         }
         loginLogMapper.insertBatch(loginLogDOList);
     }
@@ -69,8 +66,8 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public List<IamLoginLog> findByAccountId(String accountId, Integer limit) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("sy_account_id", accountId)
-                .orderBy("sy_createtime", false);
+                .eq("account_id", accountId)
+                .orderBy("login_time", false);
         if (limit != null && limit > 0) {
             query.limit(limit);
         }
@@ -81,9 +78,8 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public List<IamLoginLog> findByUserId(String userId, Integer limit) {
         // 登录日志表中存储的是accountId，这里需要通过账号关联查询
-        // 如果需要支持userId查询，需要关联账号表
         QueryWrapper query = QueryWrapper.create()
-                .orderBy("sy_createtime", false);
+                .orderBy("login_time", false);
         if (limit != null && limit > 0) {
             query.limit(limit);
         }
@@ -95,26 +91,28 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     public List<IamLoginLog> findByConditions(String username, String loginType, Boolean loginStatus,
                                               LocalDateTime startTime, LocalDateTime endTime,
                                               String tenantId) {
-        QueryWrapper query = QueryWrapper.create()
-                .eq("sy_status", "1");
+        QueryWrapper query = QueryWrapper.create();
 
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
         if (username != null && !username.isEmpty()) {
-            query.like("loginlog_account_name", "%" + username + "%");
+            query.like("account_name", "%" + username + "%");
         }
         if (loginType != null && !loginType.isEmpty()) {
-            query.eq("loginlog_type_code", loginType);
+            query.eq("login_type", loginType);
+        }
+        if (loginStatus != null) {
+            query.eq("login_status", loginStatus ? "SUCCESS" : "FAIL");
         }
         if (startTime != null) {
-            query.ge("sy_createtime", startTime.format(DATE_FORMATTER));
+            query.ge("login_time", startTime);
         }
         if (endTime != null) {
-            query.le("sy_createtime", endTime.format(DATE_FORMATTER));
+            query.le("login_time", endTime);
         }
 
-        query.orderBy("sy_createtime", false);
+        query.orderBy("login_time", false);
         List<IamLoginLogDO> list = loginLogMapper.selectListByQuery(query);
         return loginLogConverter.toDomainList(list);
     }
@@ -122,18 +120,16 @@ public class IamLoginLogRepositoryImpl implements IamLoginLogRepository {
     @Override
     public Long countFailedLogin(String accountId, LocalDateTime afterTime) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("sy_account_id", accountId)
-                .ge("sy_createtime", afterTime.format(DATE_FORMATTER));
-        // 登录失败的记录可能需要通过特定字段判断，这里假设通过sy_status=0或特定字段
-        // 根据实际业务逻辑调整
-        query.eq("sy_status", "0");
+                .eq("account_id", accountId)
+                .ge("login_time", afterTime)
+                .eq("login_status", "FAIL");
         return loginLogMapper.selectCountByQuery(query);
     }
 
     @Override
     public void deleteExpired(LocalDateTime beforeTime) {
         QueryWrapper query = QueryWrapper.create()
-                .lt("sy_createtime", beforeTime.format(DATE_FORMATTER));
+                .lt("login_time", beforeTime);
         loginLogMapper.deleteByQuery(query);
     }
 }

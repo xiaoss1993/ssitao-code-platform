@@ -22,6 +22,16 @@ public class IamUserQueryCommand {
     private String keyword;
 
     /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
      * 部门ID
      */
     private Long deptId;

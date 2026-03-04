@@ -35,7 +35,7 @@ public class CommonResult<T> implements Serializable {
      */
     public static <T> CommonResult<T> success(T data) {
         CommonResult<T> result = new CommonResult<>();
-        result.setCode(0);
+        result.setCode(200);
         result.setData(data);
         result.setMsg("success");
         return result;

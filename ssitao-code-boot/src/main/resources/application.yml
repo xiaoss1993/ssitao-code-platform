@@ -172,6 +172,7 @@ ssitao:
       - system_dict_type
       - system_dict_data
     # 忽略租户隔离的 URL
+
     ignore-urls:
       - /api/auth/login
       - /api/auth/captcha
@@ -184,3 +185,37 @@ ssitao:
     ignore-tables:
       - iam_user
       - iam_role
+
+# Aggregate Framework DDD 框架配置
+aggregate:
+  framework:
+    # 事件存储配置
+    event:
+      # 事件存储类型：MEMORY-内存, DATABASE-数据库, REDIS-Redis
+      type: DATABASE
+      # 事件表名
+      table-name: aggregate_event
+      # 是否启用快照
+      snapshot-enabled: true
+      # 快照间隔（每隔N个事件创建一次快照）
+      snapshot-interval: 10
+    # 分布式事务配置
+    transaction:
+      # 是否启用分布式事务
+      enabled: true
+      # 事务日志表名
+      transaction-log-table: aggregate_transaction_log
+    # 序列化配置
+    serialization:
+      # 序列化类型：JACKSON, FASTJSON
+      type: FASTJSON
+    # 事件处理配置
+    event-handler:
+      # 事件处理器线程数
+      thread-pool-size: 4
+      # 事件处理超时时间（秒）
+      timeout: 30
+      # 失败重试次数
+      retry-count: 3
+      # 重试间隔（毫秒）
+      retry-interval: 1000

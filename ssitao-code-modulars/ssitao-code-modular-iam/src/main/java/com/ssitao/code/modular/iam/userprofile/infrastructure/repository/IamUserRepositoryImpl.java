@@ -2,8 +2,8 @@ package com.ssitao.code.modular.iam.userprofile.infrastructure.repository;
 
 import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
-import com.ssitao.code.modular.iam.dal.dataobject.IamUserDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamUserMapper;
+import com.ssitao.code.modular.iam.userprofile.dal.dataobject.IamUserDO;
+import com.ssitao.code.modular.iam.userprofile.dal.mapper.IamUserMapper;
 import com.ssitao.code.modular.iam.userprofile.domain.model.IamUser;
 import com.ssitao.code.modular.iam.userprofile.domain.repository.IamUserRepository;
 import com.ssitao.code.modular.iam.userprofile.infrastructure.converter.IamUserConverter;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,8 @@ import java.util.Optional;
 @Repository
 public class IamUserRepositoryImpl implements IamUserRepository {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String STATUS_ACTIVE = "ON_JOB";
+    private static final Integer NOT_DELETED = 0;
 
     @Resource
     private IamUserMapper userMapper;
@@ -36,10 +36,11 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     @Override
     public String save(IamUser user) {
         IamUserDO userDO = userConverter.toDO(user);
-        userDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
-        userDO.setSyStatus("1");
+        userDO.setCreateTime(LocalDateTime.now());
+        userDO.setUserStatus(STATUS_ACTIVE);
+        userDO.setIsDeleted(NOT_DELETED);
         userMapper.insert(userDO);
-        return userDO.getTbIamUserId();
+        return userDO.getUserId();
     }
 
     @Override
@@ -48,13 +49,14 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         if (users == null || users.isEmpty()) {
             return ids;
         }
-        String now = LocalDateTime.now().format(DATE_FORMATTER);
+        LocalDateTime now = LocalDateTime.now();
         for (IamUser user : users) {
             IamUserDO userDO = userConverter.toDO(user);
-            userDO.setSyCreatetime(now);
-            userDO.setSyStatus("1");
+            userDO.setCreateTime(now);
+            userDO.setUserStatus(STATUS_ACTIVE);
+            userDO.setIsDeleted(NOT_DELETED);
             userMapper.insert(userDO);
-            ids.add(userDO.getTbIamUserId());
+            ids.add(userDO.getUserId());
         }
         return ids;
     }
@@ -62,16 +64,16 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     @Override
     public void update(IamUser user) {
         IamUserDO userDO = userConverter.toDO(user);
-        userDO.setSyModifytime(LocalDateTime.now().format(DATE_FORMATTER));
+        userDO.setModifyTime(LocalDateTime.now());
         userMapper.update(userDO);
     }
 
     @Override
     public void deleteById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_user_id", id);
+                .eq("user_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
         userMapper.deleteByQuery(query);
     }
@@ -79,11 +81,11 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     @Override
     public Optional<IamUser> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("tb_iam_user_id", id);
+                .eq("user_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         IamUserDO userDO = userMapper.selectOneByQuery(query);
         return Optional.ofNullable(userConverter.toDomain(userDO));
     }
@@ -93,9 +95,9 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_code", username);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         IamUserDO userDO = userMapper.selectOneByQuery(query);
         return Optional.ofNullable(userConverter.toDomain(userDO));
     }
@@ -105,9 +107,9 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_mail", email);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         IamUserDO userDO = userMapper.selectOneByQuery(query);
         return Optional.ofNullable(userConverter.toDomain(userDO));
     }
@@ -117,9 +119,9 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_phone", phone);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         IamUserDO userDO = userMapper.selectOneByQuery(query);
         return Optional.ofNullable(userConverter.toDomain(userDO));
     }
@@ -128,10 +130,10 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     public List<IamUser> findAll(String tenantId) {
         QueryWrapper query = QueryWrapper.create();
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1")
-                .orderBy("sy_createtime", false);
+        query.eq("is_deleted", NOT_DELETED)
+             .orderBy("create_time", false);
         List<IamUserDO> list = userMapper.selectListByQuery(query);
         return userConverter.toDomainList(list);
     }
@@ -141,23 +143,22 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         // 可能需要关联部门用户关联表查询
         QueryWrapper query = QueryWrapper.create();
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1")
-                .orderBy("sy_createtime", false);
+        query.eq("is_deleted", NOT_DELETED)
+             .orderBy("create_time", false);
         List<IamUserDO> list = userMapper.selectListByQuery(query);
         return userConverter.toDomainList(list);
     }
 
     @Override
     public List<IamUser> findByPostId(String postId, String tenantId) {
-        QueryWrapper query = QueryWrapper.create()
-                .eq("user_post_code", postId);
+        QueryWrapper query = QueryWrapper.create();
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1")
-                .orderBy("sy_createtime", false);
+        query.eq("is_deleted", NOT_DELETED)
+             .orderBy("create_time", false);
         List<IamUserDO> list = userMapper.selectListByQuery(query);
         return userConverter.toDomainList(list);
     }
@@ -167,11 +168,11 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_code", username);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         if (excludeId != null) {
-            query.ne("tb_iam_user_id", excludeId);
+            query.ne("user_id", excludeId);
         }
         return userMapper.selectCountByQuery(query) > 0;
     }
@@ -181,11 +182,11 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_mail", email);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         if (excludeId != null) {
-            query.ne("tb_iam_user_id", excludeId);
+            query.ne("user_id", excludeId);
         }
         return userMapper.selectCountByQuery(query) > 0;
     }
@@ -195,11 +196,11 @@ public class IamUserRepositoryImpl implements IamUserRepository {
         QueryWrapper query = QueryWrapper.create()
                 .eq("user_phone", phone);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+            query.eq("tenant_id", tenantId);
         }
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         if (excludeId != null) {
-            query.ne("tb_iam_user_id", excludeId);
+            query.ne("user_id", excludeId);
         }
         return userMapper.selectCountByQuery(query) > 0;
     }
@@ -207,17 +208,16 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     @Override
     public List<IamUser> findPage(String tenantId, String keyword, String deptId, int page, int size) {
         QueryWrapper query = QueryWrapper.create();
-        // 始终使用 where 作为第一个条件
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.and("sy_tenant_id = ?", tenantId);
+            query.and("tenant_id = ?", tenantId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             query.like("user_name", keyword);
         }
-        query.orderBy("sy_createtime", false)
-                .offset((page - 1) * size)
-                .limit(size);
+        query.orderBy("create_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
         List<IamUserDO> list = userMapper.selectListByQuery(query);
         return userConverter.toDomainList(list);
     }
@@ -225,10 +225,9 @@ public class IamUserRepositoryImpl implements IamUserRepository {
     @Override
     public long count(String tenantId, String keyword, String deptId) {
         QueryWrapper query = QueryWrapper.create();
-        // 始终使用 where 作为第一个条件
-        query.eq("sy_status", "1");
+        query.eq("is_deleted", NOT_DELETED);
         if (tenantId != null && !tenantId.isEmpty()) {
-            query.and("sy_tenant_id = ?", tenantId);
+            query.and("tenant_id = ?", tenantId);
         }
         if (keyword != null && !keyword.isEmpty()) {
             query.like("user_name", keyword);

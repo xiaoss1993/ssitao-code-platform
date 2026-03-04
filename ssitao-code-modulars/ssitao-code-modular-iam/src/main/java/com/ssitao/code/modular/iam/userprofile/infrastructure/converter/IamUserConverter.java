@@ -1,11 +1,11 @@
 package com.ssitao.code.modular.iam.userprofile.infrastructure.converter;
 
 import com.ssitao.code.modular.iam.userprofile.api.dto.IamUserDTO;
+import com.ssitao.code.modular.iam.userprofile.dal.dataobject.IamUserDO;
 import com.ssitao.code.modular.iam.userprofile.domain.model.IamUser;
-import com.ssitao.code.modular.iam.dal.dataobject.IamUserDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -27,83 +27,86 @@ public interface IamUserConverter {
     /**
      * DO转领域模型
      */
-    @Mappings({
-        @Mapping(source = "tbIamUserId", target = "id"),
-        @Mapping(source = "userName", target = "username"),
-        @Mapping(source = "userCode", target = "nickname"),
-        @Mapping(source = "userMail", target = "email"),
-        @Mapping(source = "userPhone", target = "phone"),
-        @Mapping(source = "userAvatar", target = "avatar"),
-        @Mapping(source = "userSexCode", target = "gender"),
-        @Mapping(source = "userBirth", target = "birthday"),
-        @Mapping(source = "userCardnum", target = "idCard"),
-        @Mapping(source = "userPostCode", target = "postId"),
-        @Mapping(source = "userPostName", target = "postName"),
-        @Mapping(source = "userInitedCode", target = "userInitedCode"),
-        @Mapping(source = "userRemark", target = "remark"),
-        @Mapping(source = "syTenantId", target = "tenantId"),
-        @Mapping(source = "syOrgId", target = "deptId"),
-        @Mapping(source = "syCreatetime", target = "createTime"),
-        @Mapping(source = "syModifytime", target = "updateTime"),
-        @Mapping(source = "syCreateuserid", target = "createUser"),
-        @Mapping(source = "syModifyuserid", target = "modifyUser"),
-        @Mapping(source = "syStatus", target = "status"),
-        @Mapping(source = "syOrderindex", target = "orderIndex"),
-        @Mapping(target = "deptName", ignore = true),
-        @Mapping(target = "realName", ignore = true),
-        @Mapping(target = "isAdmin", ignore = true),
-        @Mapping(target = "accountStatus", ignore = true),
-        @Mapping(target = "lastLoginIp", ignore = true),
-        @Mapping(target = "lastLoginTime", ignore = true),
-        @Mapping(target = "passwordModifyTime", ignore = true),
-        @Mapping(target = "passwordNeedModify", ignore = true),
-        @Mapping(target = "audFlag", ignore = true),
-        @Mapping(target = "createOrg", ignore = true),
-        @Mapping(target = "createOrgName", ignore = true),
-        @Mapping(target = "flag", ignore = true),
-        @Mapping(target = "modifyOrg", ignore = true),
-        @Mapping(target = "modifyOrgName", ignore = true),
-        @Mapping(target = "piid", ignore = true),
-        @Mapping(target = "pdid", ignore = true),
-        @Mapping(target = "createUserName", ignore = true),
-        @Mapping(target = "modifyUserName", ignore = true),
-        @Mapping(target = "deleted", ignore = true)
-    })
-    IamUser toDomain(IamUserDO DO);
+    @Mapping(source = "userId", target = "id")
+    @Mapping(source = "userName", target = "username")
+    @Mapping(source = "userCode", target = "nickname")
+    @Mapping(source = "userMail", target = "email")
+    @Mapping(source = "userPhone", target = "phone")
+    @Mapping(source = "userPhoto", target = "avatar")
+    @Mapping(source = "userSex", target = "gender")
+    @Mapping(source = "userBirthday", target = "birthday")
+    @Mapping(source = "userIdCard", target = "idCard")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createOrgId", target = "deptId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "modifyTime", target = "updateTime")
+    @Mapping(source = "createUserId", target = "createUser")
+    @Mapping(source = "modifyUserId", target = "modifyUser")
+    @Mapping(source = "userStatus", target = "status")
+    @Mapping(target = "deptName", ignore = true)
+    @Mapping(target = "realName", ignore = true)
+    @Mapping(target = "postId", ignore = true)
+    @Mapping(target = "postName", ignore = true)
+    @Mapping(target = "userInitedCode", ignore = true)
+    @Mapping(target = "remark", ignore = true)
+    @Mapping(target = "orderIndex", ignore = true)
+    @Mapping(target = "isAdmin", ignore = true)
+    @Mapping(target = "accountStatus", ignore = true)
+    @Mapping(target = "lastLoginIp", ignore = true)
+    @Mapping(target = "lastLoginTime", ignore = true)
+    @Mapping(target = "passwordModifyTime", ignore = true)
+    @Mapping(target = "passwordNeedModify", ignore = true)
+    @Mapping(target = "audFlag", ignore = true)
+    @Mapping(target = "createOrg", ignore = true)
+    @Mapping(target = "createOrgName", ignore = true)
+    @Mapping(target = "flag", ignore = true)
+    @Mapping(target = "modifyOrg", ignore = true)
+    @Mapping(target = "modifyOrgName", ignore = true)
+    @Mapping(target = "piid", ignore = true)
+    @Mapping(target = "pdid", ignore = true)
+    @Mapping(target = "createUserName", ignore = true)
+    @Mapping(target = "modifyUserName", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    IamUser toDomain(IamUserDO userDO);
 
     /**
      * 领域模型转DO
      */
-    @Mappings({
-        @Mapping(source = "id", target = "tbIamUserId"),
-        @Mapping(source = "username", target = "userName"),
-        @Mapping(source = "nickname", target = "userCode"),
-        @Mapping(source = "email", target = "userMail"),
-        @Mapping(source = "phone", target = "userPhone"),
-        @Mapping(source = "avatar", target = "userAvatar"),
-        @Mapping(source = "gender", target = "userSexCode"),
-        @Mapping(source = "birthday", target = "userBirth"),
-        @Mapping(source = "idCard", target = "userCardnum"),
-        @Mapping(source = "postId", target = "userPostCode"),
-        @Mapping(source = "postName", target = "userPostName"),
-        @Mapping(source = "userInitedCode", target = "userInitedCode"),
-        @Mapping(source = "remark", target = "userRemark"),
-        @Mapping(source = "tenantId", target = "syTenantId"),
-        @Mapping(source = "deptId", target = "syOrgId"),
-        @Mapping(source = "createTime", target = "syCreatetime"),
-        @Mapping(source = "updateTime", target = "syModifytime"),
-        @Mapping(source = "createUser", target = "syCreateuserid"),
-        @Mapping(source = "modifyUser", target = "syModifyuserid"),
-        @Mapping(source = "status", target = "syStatus"),
-        @Mapping(source = "orderIndex", target = "syOrderindex")
-    })
+    @Mapping(source = "id", target = "userId")
+    @Mapping(source = "username", target = "userName")
+    @Mapping(source = "nickname", target = "userCode")
+    @Mapping(source = "email", target = "userMail")
+    @Mapping(source = "phone", target = "userPhone")
+    @Mapping(source = "avatar", target = "userPhoto")
+    @Mapping(source = "gender", target = "userSex")
+    @Mapping(source = "birthday", target = "userBirthday")
+    @Mapping(source = "idCard", target = "userIdCard")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "deptId", target = "createOrgId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "updateTime", target = "modifyTime")
+    @Mapping(source = "createUser", target = "createUserId")
+    @Mapping(source = "modifyUser", target = "modifyUserId")
+    @Mapping(source = "status", target = "userStatus")
+    @Mapping(target = "userNativePlace", ignore = true)
+    @Mapping(target = "userNation", ignore = true)
+    @Mapping(target = "userMaritalStatus", ignore = true)
+    @Mapping(target = "userPoliticalStatus", ignore = true)
+    @Mapping(target = "userWorkNumber", ignore = true)
+    @Mapping(target = "userEntryDate", ignore = true)
+    @Mapping(target = "userProbationEndDate", ignore = true)
+    @Mapping(target = "userEmploymentType", ignore = true)
+    @Mapping(target = "userEducation", ignore = true)
+    @Mapping(target = "userAddress", ignore = true)
+    @Mapping(target = "isDeleted", constant = "0")
+    @Mapping(target = "version", constant = "0")
     IamUserDO toDO(IamUser domain);
 
     /**
      * DO转DTO
      */
-    @Mapping(source = "tbIamUserId", target = "id")
-    IamUserDTO toDTO(IamUserDO DO);
+    @Mapping(source = "userId", target = "id")
+    IamUserDTO toDTO(IamUserDO userDO);
 
     /**
      * 领域模型转DTO
@@ -120,7 +123,7 @@ public interface IamUserConverter {
     /**
      * DO列表转领域模型列表
      */
-    List<IamUser> toDomainList(List<IamUserDO> DOList);
+    List<IamUser> toDomainList(List<IamUserDO> userDOList);
 
     /**
      * 领域模型列表转DTO列表

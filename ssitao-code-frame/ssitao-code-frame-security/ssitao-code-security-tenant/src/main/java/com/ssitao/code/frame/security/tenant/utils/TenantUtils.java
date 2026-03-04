@@ -62,6 +62,29 @@ public class TenantUtils {
     }
 
     /**
+     * 清理租户ID
+     * <p>
+     * 过滤掉无效的租户ID值（如 null、"default"等），返回有效的租户ID或null。
+     * 此方法用于处理从 Controller 层传入的租户ID参数。
+     *
+     * @param tenantId 租户ID
+     * @return 如果租户功能启用且tenantId有效则返回tenantId，否则返回null
+     */
+    public static String cleanTenantId(String tenantId) {
+        // 如果租户功能未启用，直接返回 null
+        if (tenantProperties == null || !tenantProperties.getEnabled()) {
+            return null;
+        }
+
+        // 过滤无效值
+        if (tenantId == null || tenantId.isEmpty() || "default".equals(tenantId)) {
+            return null;
+        }
+
+        return tenantId;
+    }
+
+    /**
      * 判断租户功能是否启用
      *
      * @return 如果启用返回 true，否则返回 false

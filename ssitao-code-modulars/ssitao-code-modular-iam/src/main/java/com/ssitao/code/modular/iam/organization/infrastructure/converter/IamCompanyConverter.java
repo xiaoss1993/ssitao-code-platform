@@ -1,11 +1,13 @@
 package com.ssitao.code.modular.iam.organization.infrastructure.converter;
 
-import com.ssitao.code.modular.iam.dal.dataobject.IamCompanyDO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamCompanyDTO;
+import com.ssitao.code.modular.iam.organization.dal.dataobject.IamCompanyDO;
 import com.ssitao.code.modular.iam.organization.domain.model.IamCompany;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
@@ -15,129 +17,87 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface IamCompanyConverter {
 
     /**
      * DO转领域模型
-     *
-     * @param companyDO DO对象
-     * @return 领域模型
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamCompanyId"),
-            @Mapping(target = "companyCode", source = "companyCode"),
-            @Mapping(target = "companyName", source = "companyName"),
-            @Mapping(target = "companyShortName", source = "companySimplename"),
-            @Mapping(target = "companyAddress", source = "companyAddress"),
-            @Mapping(target = "companyRemark", source = "companyRemark"),
-            @Mapping(target = "companyLogo", source = "companyIcon"),
-            @Mapping(target = "companyPhone", source = "companyTelephone"),
-            @Mapping(target = "companyEstablishDate", source = "companyClrq"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "createTime", expression = "java(parseLocalDateTime(companyDO.getSyCreatetime()))"),
-            @Mapping(target = "updateTime", expression = "java(parseLocalDateTime(companyDO.getSyModifytime()))"),
-            @Mapping(target = "creator", source = "syCreateusername"),
-            @Mapping(target = "updater", source = "syModifyusername"),
-            @Mapping(target = "status", source = "syStatus")
-    })
+    @Mapping(source = "companyId", target = "id")
+    @Mapping(source = "companyType", target = "companyTypeCode")
+    @Mapping(source = "companyMail", target = "companyEmail")
+    @Mapping(source = "companyLegalRep", target = "companyLegalPerson")
+    @Mapping(source = "companyRegistrationNo", target = "companyCreditCode")
+    @Mapping(source = "companyStatus", target = "status", qualifiedByName = "intToString")
+    @Mapping(source = "companyDesc", target = "companyRemark")
+    @Mapping(source = "createUserId", target = "creator")
+    @Mapping(source = "modifyUserId", target = "updater")
+    @Mapping(source = "modifyTime", target = "updateTime")
+    @Mapping(target = "companyTypeName", ignore = true)
+    @Mapping(target = "companyEstablishDate", ignore = true)
+    @Mapping(target = "companyRegisteredCapital", ignore = true)
+    @Mapping(target = "companyIndustryCode", ignore = true)
+    @Mapping(target = "companyIndustryName", ignore = true)
+    @Mapping(target = "companyScaleCode", ignore = true)
+    @Mapping(target = "companyScaleName", ignore = true)
+    @Mapping(target = "departments", ignore = true)
     IamCompany toDomain(IamCompanyDO companyDO);
 
     /**
      * 领域模型转DO
-     *
-     * @param company 领域模型
-     * @return DO对象
      */
-    @Mappings({
-            @Mapping(target = "tbIamCompanyId", source = "id"),
-            @Mapping(target = "companyCode", source = "companyCode"),
-            @Mapping(target = "companyName", source = "companyName"),
-            @Mapping(target = "companySimplename", source = "companyShortName"),
-            @Mapping(target = "companyAddress", source = "companyAddress"),
-            @Mapping(target = "companyRemark", source = "companyRemark"),
-            @Mapping(target = "companyIcon", source = "companyLogo"),
-            @Mapping(target = "companyTelephone", source = "companyPhone"),
-            @Mapping(target = "companyClrq", source = "companyEstablishDate"),
-            @Mapping(target = "syTenantId", source = "tenantId"),
-            @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(company.getCreateTime()))"),
-            @Mapping(target = "syModifytime", expression = "java(formatLocalDateTime(company.getUpdateTime()))"),
-            @Mapping(target = "syCreateusername", source = "creator"),
-            @Mapping(target = "syModifyusername", source = "updater"),
-            @Mapping(target = "syStatus", source = "status")
-    })
+    @Mapping(source = "id", target = "companyId")
+    @Mapping(source = "companyTypeCode", target = "companyType")
+    @Mapping(source = "companyEmail", target = "companyMail")
+    @Mapping(source = "companyLegalPerson", target = "companyLegalRep")
+    @Mapping(source = "companyCreditCode", target = "companyRegistrationNo")
+    @Mapping(source = "status", target = "companyStatus", qualifiedByName = "stringToInt")
+    @Mapping(source = "companyRemark", target = "companyDesc")
+    @Mapping(source = "creator", target = "createUserId")
+    @Mapping(source = "updater", target = "modifyUserId")
+    @Mapping(source = "updateTime", target = "modifyTime")
+    @Mapping(target = "companyLevel", ignore = true)
+    @Mapping(target = "companyParentId", ignore = true)
+    @Mapping(target = "companyTaxNo", ignore = true)
+    @Mapping(target = "companySort", ignore = true)
+    @Mapping(target = "companyTreePath", ignore = true)
+    @Mapping(target = "companyTreeLevel", ignore = true)
+    @Mapping(target = "isDeleted", constant = "0")
+    @Mapping(target = "version", constant = "0")
     IamCompanyDO toDO(IamCompany company);
 
     /**
      * 领域模型转DTO
-     *
-     * @param company 领域模型
-     * @return DTO对象
      */
     IamCompanyDTO toDTO(IamCompany company);
 
     /**
      * DO转DTO
-     *
-     * @param companyDO DO对象
-     * @return DTO对象
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamCompanyId"),
-            @Mapping(target = "companyCode", source = "companyCode"),
-            @Mapping(target = "companyName", source = "companyName"),
-            @Mapping(target = "companyShortName", source = "companySimplename"),
-            @Mapping(target = "companyAddress", source = "companyAddress"),
-            @Mapping(target = "companyRemark", source = "companyRemark"),
-            @Mapping(target = "companyLogo", source = "companyIcon"),
-            @Mapping(target = "companyPhone", source = "companyTelephone"),
-            @Mapping(target = "companyEstablishDate", source = "companyClrq"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "createTime", expression = "java(parseLocalDateTime(companyDO.getSyCreatetime()))"),
-            @Mapping(target = "updateTime", expression = "java(parseLocalDateTime(companyDO.getSyModifytime()))"),
-            @Mapping(target = "creator", source = "syCreateusername"),
-            @Mapping(target = "updater", source = "syModifyusername"),
-            @Mapping(target = "status", source = "syStatus")
-    })
+    @Mapping(source = "companyId", target = "id")
     IamCompanyDTO toDTO(IamCompanyDO companyDO);
 
     /**
      * DO列表转领域模型列表
-     *
-     * @param companyDOList DO列表
-     * @return 领域模型列表
      */
     List<IamCompany> toDomainList(List<IamCompanyDO> companyDOList);
 
     /**
      * 领域模型列表转DTO列表
-     *
-     * @param companyList 领域模型列表
-     * @return DTO列表
      */
     List<IamCompanyDTO> toDTOList(List<IamCompany> companyList);
 
-    /**
-     * 解析LocalDateTime
-     */
-    default java.time.LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
-        }
-        try {
-            return java.time.LocalDateTime.parse(dateTimeStr.replace(" ", "T"));
-        } catch (Exception e) {
-            return null;
-        }
+    @Named("intToString")
+    default String intToString(Integer value) {
+        return value != null && value == 1 ? "1" : "0";
     }
 
-    /**
-     * 格式化LocalDateTime
-     */
-    default String formatLocalDateTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.toString();
+    @Named("stringToInt")
+    default Integer stringToInt(String value) {
+        return "1".equals(value) ? 1 : 0;
     }
 }

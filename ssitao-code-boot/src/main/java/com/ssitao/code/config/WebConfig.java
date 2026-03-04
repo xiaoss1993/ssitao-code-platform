@@ -63,7 +63,12 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/")
                 .setCachePeriod(0);  // 禁用缓存
 
-        log.info("静态资源映射配置完成: /webjars/**, /doc.html, /swagger-ui/**");
+        // 映射后台管理静态资源 (FastAdmin/Thymeleaf)
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/assets/")
+                .setCachePeriod(31536000);  // 缓存1年
+
+        log.info("静态资源映射配置完成: /webjars/**, /doc.html, /swagger-ui/**, /assets/**");
     }
 
 }

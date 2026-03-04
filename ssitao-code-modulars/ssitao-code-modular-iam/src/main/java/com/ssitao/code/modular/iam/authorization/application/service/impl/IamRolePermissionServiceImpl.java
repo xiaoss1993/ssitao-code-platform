@@ -4,28 +4,28 @@ import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamPermissionDTO;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamRoleDTO;
 import com.ssitao.code.modular.iam.authorization.application.service.IamRolePermissionService;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamPermissionDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRolePermissionDO;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamPermissionMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRolePermissionMapper;
 import com.ssitao.code.modular.iam.authorization.infrastructure.converter.IamPermissionConverter;
 import com.ssitao.code.modular.iam.authorization.infrastructure.converter.IamRoleConverter;
-import com.ssitao.code.modular.iam.dal.dataobject.IamPermissionDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRoleDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRolePermissionDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamPermissionMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRoleMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRolePermissionMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * IAM角色权限关联服务实现
- * 管理 tb_iam_roleperm 表
+ * 管理 iam_role_permission 表
  *
  * @author ssitao-code
  * @since 2.0.0
@@ -48,11 +48,9 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
     @Resource
     private IamRoleConverter roleConverter;
 
-    private static final String STATUS_ACTIVE = "1";
-    private static final String YES_CODE = "1";
-    private static final String NO_CODE = "0";
-    private static final String GRANT_TYPE_NORMAL = "NORMAL";
-    private static final String GRANT_TYPE_EXCLUDE = "EXCLUDE";
+    private static final Integer STATUS_ACTIVE = 1;
+    private static final Integer IS_VALID = 1;
+    private static final Integer NOT_DELETED = 0;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -75,11 +73,12 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 查询权限信息并验证
         QueryWrapper permissionQueryWrapper = QueryWrapper.create()
-                .where(IamPermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamPermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("tenant_id", tenantId)
+                .eq("permission_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
         List<IamPermissionDO> permissionDOList = permissionMapper.selectListByQuery(permissionQueryWrapper);
         List<String> validPermissionIds = permissionDOList.stream()
-                .map(IamPermissionDO::getTbIamPermId)
+                .map(IamPermissionDO::getPermissionId)
                 .collect(Collectors.toList());
 
         // 过滤掉无效的权限ID
@@ -93,33 +92,28 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 获取现有权限关联
         QueryWrapper existQueryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).eq(roleId)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamRolePermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("role_id", roleId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
         List<IamRolePermissionDO> existRelations = rolePermissionMapper.selectListByQuery(existQueryWrapper);
         List<String> existPermissionIds = existRelations.stream()
-                .map(IamRolePermissionDO::getTbIamPermId)
+                .map(IamRolePermissionDO::getPermissionId)
                 .collect(Collectors.toList());
 
         // 只插入新的关联关系
         List<IamRolePermissionDO> newRelations = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (String permissionId : validAssignPermissionIds) {
             if (!existPermissionIds.contains(permissionId)) {
                 IamRolePermissionDO relation = new IamRolePermissionDO();
-                relation.setTbIamRolepermId(UUID.randomUUID().toString().replace("-", ""));
-                relation.setTbIamRoleId(roleId);
-                relation.setTbIamPermId(permissionId);
-                relation.setRolepermExcludeCode(NO_CODE);
-                relation.setRolepermExcludeName("否");
-                relation.setRolepermTypeCode("DIRECT");
-                relation.setRolepermTypeName("直接授权");
-                relation.setRolepermGranttypeCode(GRANT_TYPE_NORMAL);
-                relation.setRolepermGranttypeName("正常授权");
-                relation.setRolepermNotChecked(NO_CODE);
-                relation.setSyTenantId(tenantId);
-                relation.setSyStatus(STATUS_ACTIVE);
-                relation.setSyCreatetime(String.valueOf(new Date().getTime()));
-                relation.setSyOrderindex(0);
+                relation.setId(UUID.randomUUID().toString().replace("-", ""));
+                relation.setRoleId(roleId);
+                relation.setPermissionId(permissionId);
+                relation.setIsValid(IS_VALID);
+                relation.setTenantId(tenantId);
+                relation.setCreateTime(now);
+                relation.setIsDeleted(NOT_DELETED);
                 newRelations.add(relation);
             }
         }
@@ -144,9 +138,9 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 构建删除条件
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).eq(roleId)
-                .and(IamRolePermissionDO::getTbIamPermId).in(permissionIds)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId);
+                .eq("role_id", roleId)
+                .in("permission_id", permissionIds)
+                .eq("tenant_id", tenantId);
 
         rolePermissionMapper.deleteByQuery(queryWrapper);
     }
@@ -162,8 +156,8 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).eq(roleId)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId);
+                .eq("role_id", roleId)
+                .eq("tenant_id", tenantId);
 
         rolePermissionMapper.deleteByQuery(queryWrapper);
     }
@@ -178,9 +172,10 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).eq(roleId)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamRolePermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("role_id", roleId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamRolePermissionDO> rolePermissionList = rolePermissionMapper.selectListByQuery(queryWrapper);
 
@@ -189,13 +184,14 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         List<String> permissionIds = rolePermissionList.stream()
-                .map(IamRolePermissionDO::getTbIamPermId)
+                .map(IamRolePermissionDO::getPermissionId)
                 .collect(Collectors.toList());
 
         QueryWrapper permissionQueryWrapper = QueryWrapper.create()
-                .where(IamPermissionDO::getTbIamPermId).in(permissionIds)
-                .and(IamPermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamPermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("permission_id", permissionIds)
+                .eq("tenant_id", tenantId)
+                .eq("permission_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamPermissionDO> permissionDOList = permissionMapper.selectListByQuery(permissionQueryWrapper);
 
@@ -212,9 +208,10 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamPermId).eq(permissionId)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamRolePermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("permission_id", permissionId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamRolePermissionDO> rolePermissionList = rolePermissionMapper.selectListByQuery(queryWrapper);
 
@@ -223,13 +220,14 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         List<String> roleIds = rolePermissionList.stream()
-                .map(IamRolePermissionDO::getTbIamRoleId)
+                .map(IamRolePermissionDO::getRoleId)
                 .collect(Collectors.toList());
 
         QueryWrapper roleQueryWrapper = QueryWrapper.create()
-                .where(IamRoleDO::getTbIamRoleId).in(roleIds)
-                .and(IamRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("role_id", roleIds)
+                .eq("tenant_id", tenantId)
+                .eq("role_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamRoleDO> roleDOList = roleMapper.selectListByQuery(roleQueryWrapper);
 
@@ -249,17 +247,13 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).eq(roleId)
-                .and(IamRolePermissionDO::getTbIamPermId).eq(permissionId)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamRolePermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("role_id", roleId)
+                .eq("permission_id", permissionId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         IamRolePermissionDO relation = rolePermissionMapper.selectOneByQuery(queryWrapper);
-
-        // 检查是否为排他权限
-        if (relation != null && YES_CODE.equals(relation.getRolepermExcludeCode())) {
-            return false;
-        }
 
         return relation != null;
     }
@@ -279,9 +273,10 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 验证所有角色是否存在
         QueryWrapper roleQueryWrapper = QueryWrapper.create()
-                .where(IamRoleDO::getTbIamRoleId).in(roleIds)
-                .and(IamRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("role_id", roleIds)
+                .eq("tenant_id", tenantId)
+                .eq("role_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
         List<IamRoleDO> roleDOList = roleMapper.selectListByQuery(roleQueryWrapper);
         if (roleDOList.size() != roleIds.size()) {
             throw new IllegalArgumentException("部分角色不存在或已被禁用");
@@ -289,12 +284,13 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 验证权限是否存在
         QueryWrapper permissionQueryWrapper = QueryWrapper.create()
-                .where(IamPermissionDO::getTbIamPermId).in(permissionIds)
-                .and(IamPermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamPermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("permission_id", permissionIds)
+                .eq("tenant_id", tenantId)
+                .eq("permission_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
         List<IamPermissionDO> permissionDOList = permissionMapper.selectListByQuery(permissionQueryWrapper);
         List<String> validPermissionIds = permissionDOList.stream()
-                .map(IamPermissionDO::getTbIamPermId)
+                .map(IamPermissionDO::getPermissionId)
                 .collect(Collectors.toList());
 
         if (validPermissionIds.isEmpty()) {
@@ -303,37 +299,32 @@ public class IamRolePermissionServiceImpl implements IamRolePermissionService {
 
         // 获取所有现有的关联关系
         QueryWrapper existQueryWrapper = QueryWrapper.create()
-                .where(IamRolePermissionDO::getTbIamRoleId).in(roleIds)
-                .and(IamRolePermissionDO::getSyTenantId).eq(tenantId)
-                .and(IamRolePermissionDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("role_id", roleIds)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
         List<IamRolePermissionDO> existRelations = rolePermissionMapper.selectListByQuery(existQueryWrapper);
 
         // 构建已存在的关联关系key集合
         List<String> existKeys = existRelations.stream()
-                .map(r -> r.getTbIamRoleId() + "_" + r.getTbIamPermId())
+                .map(r -> r.getRoleId() + "_" + r.getPermissionId())
                 .collect(Collectors.toList());
 
         // 批量创建新的关联关系
         List<IamRolePermissionDO> newRelations = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (String roleId : roleIds) {
             for (String permissionId : validPermissionIds) {
                 String key = roleId + "_" + permissionId;
                 if (!existKeys.contains(key)) {
                     IamRolePermissionDO relation = new IamRolePermissionDO();
-                    relation.setTbIamRolepermId(UUID.randomUUID().toString().replace("-", ""));
-                    relation.setTbIamRoleId(roleId);
-                    relation.setTbIamPermId(permissionId);
-                    relation.setRolepermExcludeCode(NO_CODE);
-                    relation.setRolepermExcludeName("否");
-                    relation.setRolepermTypeCode("DIRECT");
-                    relation.setRolepermTypeName("直接授权");
-                    relation.setRolepermGranttypeCode(GRANT_TYPE_NORMAL);
-                    relation.setRolepermGranttypeName("正常授权");
-                    relation.setRolepermNotChecked(NO_CODE);
-                    relation.setSyTenantId(tenantId);
-                    relation.setSyStatus(STATUS_ACTIVE);
-                    relation.setSyCreatetime(String.valueOf(new Date().getTime()));
-                    relation.setSyOrderindex(0);
+                    relation.setId(UUID.randomUUID().toString().replace("-", ""));
+                    relation.setRoleId(roleId);
+                    relation.setPermissionId(permissionId);
+                    relation.setIsValid(IS_VALID);
+                    relation.setTenantId(tenantId);
+                    relation.setCreateTime(now);
+                    relation.setIsDeleted(NOT_DELETED);
                     newRelations.add(relation);
                 }
             }

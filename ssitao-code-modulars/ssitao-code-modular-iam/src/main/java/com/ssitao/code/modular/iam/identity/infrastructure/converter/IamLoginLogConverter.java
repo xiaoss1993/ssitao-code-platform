@@ -1,10 +1,11 @@
 package com.ssitao.code.modular.iam.identity.infrastructure.converter;
 
-import com.ssitao.code.modular.iam.dal.dataobject.IamLoginLogDO;
+import com.ssitao.code.modular.iam.identity.dal.dataobject.IamLoginLogDO;
 import com.ssitao.code.modular.iam.identity.domain.model.IamLoginLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
@@ -14,7 +15,11 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface IamLoginLogConverter {
 
     /**
@@ -23,22 +28,20 @@ public interface IamLoginLogConverter {
      * @param loginLogDO DO对象
      * @return 领域模型
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamLoginlogId"),
-            @Mapping(target = "username", source = "loginlogAccountName"),
-            @Mapping(target = "accountCode", source = "loginlogAccountCode"),
-            @Mapping(target = "loginType", source = "loginlogTypeCode"),
-            @Mapping(target = "deviceInfo", source = "loginlogDevice"),
-            @Mapping(target = "accountId", source = "syAccountId"),
-            @Mapping(target = "loginTime", expression = "java(parseLocalDateTime(loginLogDO.getSyCreatetime()))"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "userId", ignore = true),
-            @Mapping(target = "loginIp", ignore = true),
-            @Mapping(target = "loginLocation", ignore = true),
-            @Mapping(target = "userAgent", ignore = true),
-            @Mapping(target = "loginStatus", ignore = true),
-            @Mapping(target = "errorMessage", ignore = true)
-    })
+    @Mapping(target = "id", source = "logId")
+    @Mapping(target = "username", source = "accountName")
+    @Mapping(target = "accountCode", source = "accountCode")
+    @Mapping(target = "loginType", source = "loginType")
+    @Mapping(target = "loginIp", source = "loginIp")
+    @Mapping(target = "loginLocation", source = "loginLocation")
+    @Mapping(target = "userAgent", source = "loginDevice")
+    @Mapping(target = "accountId", source = "accountId")
+    @Mapping(target = "loginTime", source = "loginTime")
+    @Mapping(target = "tenantId", source = "tenantId")
+    @Mapping(target = "loginStatus", source = "loginStatus")
+    @Mapping(target = "errorMessage", source = "loginFailReason")
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "deviceInfo", ignore = true)
     IamLoginLog toDomain(IamLoginLogDO loginLogDO);
 
     /**
@@ -47,17 +50,22 @@ public interface IamLoginLogConverter {
      * @param loginLog 领域模型
      * @return DO对象
      */
-    @Mappings({
-            @Mapping(target = "tbIamLoginlogId", source = "id"),
-            @Mapping(target = "loginlogAccountName", source = "username"),
-            @Mapping(target = "loginlogAccountCode", source = "accountCode"),
-            @Mapping(target = "loginlogTypeCode", source = "loginType"),
-            @Mapping(target = "loginlogDevice", source = "deviceInfo"),
-            @Mapping(target = "syAccountId", source = "accountId"),
-            @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(loginLog.getLoginTime()))"),
-            @Mapping(target = "syTenantId", source = "tenantId"),
-            @Mapping(target = "loginlogBzxx", source = "errorMessage")
-    })
+    @Mapping(target = "logId", source = "id")
+    @Mapping(target = "accountName", source = "username")
+    @Mapping(target = "accountCode", source = "accountCode")
+    @Mapping(target = "loginType", source = "loginType")
+    @Mapping(target = "loginIp", source = "loginIp")
+    @Mapping(target = "loginLocation", source = "loginLocation")
+    @Mapping(target = "loginDevice", source = "userAgent")
+    @Mapping(target = "accountId", source = "accountId")
+    @Mapping(target = "loginTime", source = "loginTime")
+    @Mapping(target = "tenantId", source = "tenantId")
+    @Mapping(target = "loginStatus", source = "loginStatus")
+    @Mapping(target = "loginFailReason", source = "errorMessage")
+    @Mapping(target = "loginBrowser", ignore = true)
+    @Mapping(target = "loginOs", ignore = true)
+    @Mapping(target = "logoutTime", ignore = true)
+    @Mapping(target = "onlineDuration", ignore = true)
     IamLoginLogDO toDO(IamLoginLog loginLog);
 
     /**
@@ -75,28 +83,4 @@ public interface IamLoginLogConverter {
      * @return DO列表
      */
     List<IamLoginLogDO> toDOList(List<IamLoginLog> loginLogList);
-
-    /**
-     * 解析LocalDateTime
-     */
-    default java.time.LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
-        }
-        try {
-            return java.time.LocalDateTime.parse(dateTimeStr.replace(" ", "T"));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 格式化LocalDateTime
-     */
-    default String formatLocalDateTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.toString().replace("T", " ");
-    }
 }

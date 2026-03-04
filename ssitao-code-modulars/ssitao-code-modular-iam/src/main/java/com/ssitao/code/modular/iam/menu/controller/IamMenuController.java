@@ -65,8 +65,48 @@ public class IamMenuController {
      */
     @GetMapping("/{id}")
     @Operation(summary = "获取菜单详情", description = "根据ID获取菜单详情")
-    public CommonResult<IamMenuDTO> getMenu(@PathVariable Long id) {
+    public CommonResult<IamMenuDTO> getMenu(@PathVariable String id) {
         IamMenuDTO menu = menuAppService.getMenuById(id);
         return success(menu);
+    }
+
+    /**
+     * 创建菜单
+     */
+    @PostMapping
+    @Operation(summary = "创建菜单", description = "创建新菜单")
+    public CommonResult<String> createMenu(@RequestBody IamMenuDTO menuDTO) {
+        String menuId = menuAppService.createMenu(menuDTO);
+        return success(menuId);
+    }
+
+    /**
+     * 更新菜单
+     */
+    @PutMapping
+    @Operation(summary = "更新菜单", description = "更新菜单信息")
+    public CommonResult<Boolean> updateMenu(@RequestBody IamMenuDTO menuDTO) {
+        menuAppService.updateMenu(menuDTO);
+        return success(true);
+    }
+
+    /**
+     * 删除菜单
+     */
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除菜单", description = "根据ID删除菜单")
+    public CommonResult<Boolean> deleteMenu(@PathVariable String id) {
+        menuAppService.deleteMenu(id);
+        return success(true);
+    }
+
+    /**
+     * 批量删除菜单
+     */
+    @PostMapping("/batch")
+    @Operation(summary = "批量删除菜单", description = "批量删除菜单")
+    public CommonResult<Boolean> batchDeleteMenus(@RequestBody List<String> ids) {
+        menuAppService.batchDeleteMenus(ids);
+        return success(true);
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
 @AutoConfiguration
 @EnableConfigurationProperties(TenantProperties.class)
 @ConditionalOnProperty(prefix = "ssitao.tenant", name = "enabled", havingValue = "true", matchIfMissing = false)
-public class TenantLineAutoConfiguration implements WebMvcConfigurer {
+public class TenantLineAutoConfiguration {
 
     @Resource
     private SqlSessionFactory sqlSessionFactory;
@@ -65,9 +65,24 @@ public class TenantLineAutoConfiguration implements WebMvcConfigurer {
     /**
      * 注册租户ID方法参数解析器
      */
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new TenantIdMethodArgumentResolver());
+    @Bean
+    @ConditionalOnWebApplication
+    public TenantIdMethodArgumentResolver tenantIdMethodArgumentResolver() {
+        return new TenantIdMethodArgumentResolver();
+    }
+
+    /**
+     * 注册WebMvc配置，支持租户ID参数解析
+     */
+    @Bean
+    @ConditionalOnWebApplication
+    public WebMvcConfigurer tenantWebMvcConfigurer(TenantIdMethodArgumentResolver argumentResolver) {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+                resolvers.add(argumentResolver);
+            }
+        };
     }
 
 }

@@ -1,16 +1,14 @@
 package com.ssitao.code.modular.iam.identity.infrastructure.converter;
 
-import com.ssitao.code.modular.iam.dal.dataobject.IamAccountDO;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
+import com.ssitao.code.modular.iam.identity.dal.dataobject.IamAccountDO;
 import com.ssitao.code.modular.iam.identity.domain.model.IamAccount;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -26,70 +24,77 @@ import java.util.List;
 )
 public interface IamAccountConverter {
 
-    DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     /**
      * DO转领域模型
      */
-    @Mappings({
-        @Mapping(source = "tbIamAccountId", target = "id"),
-        @Mapping(source = "userAssociationId", target = "userId"),
-        @Mapping(source = "accountCode", target = "accountCode"),
-        @Mapping(source = "accountName", target = "accountName"),
-        @Mapping(source = "accountPassword", target = "password"),
-        @Mapping(source = "accountSalt", target = "salt"),
-        @Mapping(source = "accountOpenid", target = "openId"),
-        @Mapping(source = "accountPhone", target = "phone"),
-        @Mapping(source = "accountMail", target = "email"),
-        @Mapping(source = "accountAvatar", target = "avatar"),
-        @Mapping(source = "accountExpireTime", target = "expireTime"),
-        @Mapping(source = "accountLockExpire", target = "lockExpireTime"),
-        @Mapping(source = "accountInited", target = "passwordInited"),
-        @Mapping(source = "accountPermanentCode", target = "permanent"),
-        @Mapping(source = "accountLockedStatus", target = "locked"),
-        @Mapping(source = "userStatus", target = "status"),
-        @Mapping(source = "accountRemark", target = "remark"),
-        @Mapping(source = "syTenantId", target = "tenantId"),
-        @Mapping(source = "syOrgId", target = "orgId"),
-        @Mapping(target = "createTime", expression = "java(parseLocalDateTime(accountDO.getSyCreatetime()))"),
-        @Mapping(target = "updateTime", ignore = true),
-        @Mapping(source = "syCreateuserid", target = "creator"),
-        @Mapping(target = "updater", ignore = true)
-    })
+    @Mapping(source = "accountId", target = "id")
+    @Mapping(source = "accountCode", target = "accountCode")
+    @Mapping(source = "accountName", target = "accountName")
+    @Mapping(source = "accountPassword", target = "password")
+    @Mapping(source = "accountPhone", target = "phone")
+    @Mapping(source = "accountMail", target = "email")
+    @Mapping(source = "accountAvatar", target = "avatar")
+    @Mapping(source = "accountStatus", target = "status", qualifiedByName = "integerToBoolean")
+    @Mapping(source = "accountLastLoginTime", target = "lastLoginTime")
+    @Mapping(source = "accountLastLoginIp", target = "lastLoginIp")
+    @Mapping(source = "accountInitPassword", target = "passwordInited", qualifiedByName = "integerToBoolean")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createOrgId", target = "orgId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "createUserId", target = "creator")
+    @Mapping(source = "modifyTime", target = "updateTime")
+    @Mapping(source = "modifyUserId", target = "updater")
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "salt", ignore = true)
+    @Mapping(target = "openId", ignore = true)
+    @Mapping(target = "openType", ignore = true)
+    @Mapping(target = "expireTime", ignore = true)
+    @Mapping(target = "lockExpireTime", ignore = true)
+    @Mapping(target = "permanent", ignore = true)
+    @Mapping(target = "locked", ignore = true)
+    @Mapping(target = "lastPasswordChangeTime", ignore = true)
+    @Mapping(target = "remark", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "loginLogs", ignore = true)
     IamAccount toDomain(IamAccountDO accountDO);
 
     /**
      * 领域模型转DO
      */
-    @Mappings({
-        @Mapping(source = "id", target = "tbIamAccountId"),
-        @Mapping(source = "userId", target = "userAssociationId"),
-        @Mapping(source = "accountCode", target = "accountCode"),
-        @Mapping(source = "accountName", target = "accountName"),
-        @Mapping(source = "password", target = "accountPassword"),
-        @Mapping(source = "salt", target = "accountSalt"),
-        @Mapping(source = "openId", target = "accountOpenid"),
-        @Mapping(source = "phone", target = "accountPhone"),
-        @Mapping(source = "email", target = "accountMail"),
-        @Mapping(source = "avatar", target = "accountAvatar"),
-        @Mapping(target = "accountExpireTime", expression = "java(formatLocalDateTime(domain.getExpireTime()))"),
-        @Mapping(target = "accountLockExpire", expression = "java(formatLocalDateTime(domain.getLockExpireTime()))"),
-        @Mapping(target = "accountInited", expression = "java(booleanToString(domain.getPasswordInited()))"),
-        @Mapping(target = "accountPermanentCode", expression = "java(booleanToString(domain.getPermanent()))"),
-        @Mapping(target = "accountLockedStatus", expression = "java(booleanToString(domain.getLocked()))"),
-        @Mapping(target = "userStatus", expression = "java(booleanToString(domain.getStatus()))"),
-        @Mapping(source = "remark", target = "accountRemark"),
-        @Mapping(source = "tenantId", target = "syTenantId"),
-        @Mapping(source = "orgId", target = "syOrgId"),
-        @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(domain.getCreateTime()))"),
-        @Mapping(source = "creator", target = "syCreateuserid")
-    })
+    @Mapping(source = "id", target = "accountId")
+    @Mapping(source = "accountCode", target = "accountCode")
+    @Mapping(source = "accountName", target = "accountName")
+    @Mapping(source = "password", target = "accountPassword")
+    @Mapping(source = "phone", target = "accountPhone")
+    @Mapping(source = "email", target = "accountMail")
+    @Mapping(source = "avatar", target = "accountAvatar")
+    @Mapping(source = "status", target = "accountStatus", qualifiedByName = "booleanToInteger")
+    @Mapping(source = "lastLoginTime", target = "accountLastLoginTime")
+    @Mapping(source = "lastLoginIp", target = "accountLastLoginIp")
+    @Mapping(source = "passwordInited", target = "accountInitPassword", qualifiedByName = "booleanToInteger")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "orgId", target = "createOrgId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "creator", target = "createUserId")
+    @Mapping(source = "updateTime", target = "modifyTime")
+    @Mapping(source = "updater", target = "modifyUserId")
+    @Mapping(target = "accountType", constant = "SYSTEM")
+    @Mapping(target = "accountSource", constant = "LOCAL")
+    @Mapping(target = "accountIsAdmin", constant = "0")
+    @Mapping(target = "accountInitPasswordResetTime", ignore = true)
+    @Mapping(target = "createOrgName", ignore = true)
+    @Mapping(target = "createUserName", ignore = true)
+    @Mapping(target = "modifyOrgId", ignore = true)
+    @Mapping(target = "modifyOrgName", ignore = true)
+    @Mapping(target = "modifyUserName", ignore = true)
+    @Mapping(target = "isDeleted", constant = "0")
+    @Mapping(target = "version", constant = "0")
     IamAccountDO toDO(IamAccount domain);
 
     /**
      * DO转DTO
      */
-    @Mapping(source = "tbIamAccountId", target = "id")
+    @Mapping(source = "accountId", target = "id")
     IamAccountDTO toDTO(IamAccountDO accountDO);
 
     /**
@@ -115,40 +120,24 @@ public interface IamAccountConverter {
     List<IamAccountDTO> toDTOList(List<IamAccount> domainList);
 
     /**
-     * 解析LocalDateTime
+     * Boolean转Integer
      */
-    default LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
+    @Named("booleanToInteger")
+    default Integer booleanToInteger(Boolean value) {
+        if (value == null) {
+            return 1;
         }
-        try {
-            return LocalDateTime.parse(dateTimeStr, DATE_FORMATTER);
-        } catch (Exception e) {
-            return null;
-        }
+        return value ? 1 : 0;
     }
 
     /**
-     * 格式化LocalDateTime
+     * Integer转Boolean
      */
-    default String formatLocalDateTime(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
+    @Named("integerToBoolean")
+    default Boolean integerToBoolean(Integer value) {
+        if (value == null) {
+            return true;
         }
-        return dateTime.format(DATE_FORMATTER);
-    }
-
-    /**
-     * Boolean转String("1"/"0")
-     */
-    default String booleanToString(Boolean value) {
-        return Boolean.TRUE.equals(value) ? "1" : "0";
-    }
-
-    /**
-     * String转Boolean("1"/"0")
-     */
-    default Boolean stringToBoolean(String value) {
-        return "1".equals(value);
+        return value == 1;
     }
 }

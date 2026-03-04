@@ -1,12 +1,13 @@
 package com.ssitao.code.modular.iam.audit.infrastructure.converter;
 
 import com.ssitao.code.modular.iam.audit.api.dto.IamOperateLogDTO;
+import com.ssitao.code.modular.iam.audit.dal.dataobject.IamOperateLogDO;
 import com.ssitao.code.modular.iam.audit.domain.model.IamOperateLog;
-import com.ssitao.code.modular.iam.dal.dataobject.IamOperateLogDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
@@ -16,143 +17,73 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface IamOperateLogConverter {
 
     /**
      * DO转领域模型
-     *
-     * @param operateLogDO DO对象
-     * @return 领域模型
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamOperatelogId"),
-            @Mapping(target = "operateModule", source = "operatelogModule"),
-            @Mapping(target = "operateDesc", source = "operatelogDesc"),
-            @Mapping(target = "operateType", source = "operatelogType"),
-            @Mapping(target = "operateStatus", source = "operatelogStatus", qualifiedByName = "parseStatusForDomain"),
-            @Mapping(target = "createTime", source = "syCreatetime", qualifiedByName = "parseLocalDateTime"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "operatorId", source = "operatorId"),
-            @Mapping(target = "operatorAccount", source = "operatorAccount"),
-            @Mapping(target = "operateIp", source = "operateIp"),
-            @Mapping(target = "operateLocation", source = "operateLocation")
-    })
+    @Mapping(source = "logId", target = "id")
+    @Mapping(source = "moduleName", target = "operateModule")
+    @Mapping(source = "businessType", target = "operateDesc")
+    @Mapping(source = "executeDuration", target = "executeTime", qualifiedByName = "intToLong")
+    @Mapping(source = "operatorName", target = "operatorAccount")
+    @Mapping(source = "operateTime", target = "createTime")
+    @Mapping(target = "operatorName", ignore = true)
+    @Mapping(target = "browserType", ignore = true)
+    @Mapping(target = "osType", ignore = true)
     IamOperateLog toDomain(IamOperateLogDO operateLogDO);
 
     /**
      * 领域模型转DO
-     *
-     * @param operateLog 领域模型
-     * @return DO对象
      */
-    @Mappings({
-            @Mapping(target = "tbIamOperatelogId", source = "id"),
-            @Mapping(target = "operatelogModule", source = "operateModule"),
-            @Mapping(target = "operatelogDesc", source = "operateDesc"),
-            @Mapping(target = "operatelogType", source = "operateType"),
-            @Mapping(target = "operatelogStatus", source = "operateStatus", qualifiedByName = "formatStatusForDO"),
-            @Mapping(target = "syCreatetime", source = "createTime", qualifiedByName = "formatLocalDateTime"),
-            @Mapping(target = "syTenantId", source = "tenantId"),
-            @Mapping(target = "operatorId", source = "operatorId"),
-            @Mapping(target = "operatorAccount", source = "operatorAccount"),
-            @Mapping(target = "operateIp", source = "operateIp"),
-            @Mapping(target = "operateLocation", source = "operateLocation")
-    })
+    @Mapping(source = "id", target = "logId")
+    @Mapping(source = "operateModule", target = "moduleName")
+    @Mapping(source = "operateDesc", target = "businessType")
+    @Mapping(source = "executeTime", target = "executeDuration", qualifiedByName = "longToInt")
+    @Mapping(source = "operatorAccount", target = "operatorName")
+    @Mapping(source = "createTime", target = "operateTime")
+    @Mapping(target = "businessId", ignore = true)
+    @Mapping(target = "methodName", ignore = true)
+    @Mapping(target = "operatorDept", ignore = true)
     IamOperateLogDO toDO(IamOperateLog operateLog);
 
     /**
      * 领域模型转DTO
-     *
-     * @param operateLog 领域模型
-     * @return DTO对象
      */
     IamOperateLogDTO toDTO(IamOperateLog operateLog);
 
     /**
      * DO转DTO
-     *
-     * @param operateLogDO DO对象
-     * @return DTO对象
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbIamOperatelogId"),
-            @Mapping(target = "operateModule", source = "operatelogModule"),
-            @Mapping(target = "operateDesc", source = "operatelogDesc"),
-            @Mapping(target = "operateType", source = "operatelogType"),
-            @Mapping(target = "operateStatus", source = "operatelogStatus", qualifiedByName = "parseStatusToText"),
-            @Mapping(target = "createTime", source = "syCreatetime", qualifiedByName = "parseLocalDateTime"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "operatorId", source = "operatorId"),
-            @Mapping(target = "operatorAccount", source = "operatorAccount"),
-            @Mapping(target = "operateIp", source = "operateIp"),
-            @Mapping(target = "operateLocation", source = "operateLocation")
-    })
+    @Mapping(source = "logId", target = "id")
+    @Mapping(source = "moduleName", target = "operateModule")
+    @Mapping(source = "businessType", target = "operateDesc")
+    @Mapping(source = "operatorName", target = "operatorAccount")
+    @Mapping(source = "operateTime", target = "createTime")
     IamOperateLogDTO toDTO(IamOperateLogDO operateLogDO);
 
     /**
      * DO列表转领域模型列表
-     *
-     * @param operateLogDOList DO列表
-     * @return 领域模型列表
      */
     List<IamOperateLog> toDomainList(List<IamOperateLogDO> operateLogDOList);
 
     /**
      * 领域模型列表转DTO列表
-     *
-     * @param operateLogList 领域模型列表
-     * @return DTO列表
      */
     List<IamOperateLogDTO> toDTOList(List<IamOperateLog> operateLogList);
 
-    /**
-     * 解析状态为领域模型状态
-     */
-    @Named("parseStatusForDomain")
-    default String parseStatusForDomain(String status) {
-        return "1".equals(status) ? "SUCCESS" : "FAIL";
+    @Named("intToLong")
+    default Long intToLong(Integer value) {
+        return value != null ? value.longValue() : null;
     }
 
-    /**
-     * 格式化状态为DO状态
-     */
-    @Named("formatStatusForDO")
-    default String formatStatusForDO(String status) {
-        return "SUCCESS".equals(status) ? "1" : "0";
-    }
-
-    /**
-     * 解析状态为文本
-     */
-    @Named("parseStatusToText")
-    default String parseStatusToText(String status) {
-        return "1".equals(status) ? "SUCCESS" : "FAIL";
-    }
-
-    /**
-     * 解析LocalDateTime
-     */
-    @Named("parseLocalDateTime")
-    default java.time.LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
-        }
-        try {
-            return java.time.LocalDateTime.parse(dateTimeStr.replace(" ", "T"));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * 格式化LocalDateTime
-     */
-    @Named("formatLocalDateTime")
-    default String formatLocalDateTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.toString().replace("T", " ");
+    @Named("longToInt")
+    default Integer longToInt(Long value) {
+        return value != null ? value.intValue() : null;
     }
 }

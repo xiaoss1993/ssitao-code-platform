@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>SSITAO Code Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="assets/img/favicon.ico" />
+    <link th:href="@{/assets/css/backend.css}" href="assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <script th:inline="javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": /*[[@{/}]]*/ "./",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {
+                        "backend": "zh-cn",
+                        "frontend": "zh-cn"
+                    }
+                },
+                "upload": {
+                    "cdnurl": /*[[@{/}]]*/ "./",
+                    "uploadurl": /*[[@{/api/upload}]]*/ "api/upload",
+                    "bucket": "yourbucketname",
+                    "maxsize": "10mb",
+                    "mimetype": "*",
+                    "multiple": false
+                },
+                "modulename": "admin",
+                "controllername": "index",
+                "actionname": "index",
+                "jsname": "backend/index",
+                "moduleurl": /*[[@{/}]]*/ "./",
+                "language": "zh-cn",
+                "referer": null
+            }
+        };
+    </script>
+</head>
+<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
+
+    <div class="wrapper">
+
+        <header id="header" class="main-header">
+            <!-- Logo -->
+            <a th:href="@{/}" href="./" class="logo">
+                <span class="logo-mini">SSITAO</span>
+                <span class="logo-lg"><b>SSITAO</b> Platform</span>
+            </a>
+            <!-- 顶部通栏样式 -->
+            <nav class="navbar navbar-static-top">
+                <!-- 边栏切换按钮-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <div id="nav" class="pull-left">
+                    <ul class="nav nav-tabs nav-addtabs disable-top-badge" role="tablist">
+                    </ul>
+                </div>
+
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+
+                        <li>
+                            <a th:href="@{/}" target="_blank">
+                                <i class="fa fa-home" style="font-size:14px;"></i>
+                            </a>
+                        </li>
+
+                        <li class="dropdown notifications-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="label label-warning">0</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">暂无新消息</li>
+                                <li class="footer"><a href="#" target="_blank">查看全部</a></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:;" data-toggle="wipecache" title="清空缓存">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </li>
+
+                        <li class="hidden-xs">
+                            <a href="#" data-toggle="fullscreen"><i class="fa fa-arrows-alt"></i></a>
+                        </li>
+
+                        <!-- 账号信息下拉框 -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="user-image" alt="Admin">
+                                <span class="hidden-xs" th:text="${userName}">Admin</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header">
+                                    <img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="img-circle" alt="">
+                                    <p>
+                                        <span th:text="${userName}">Admin</span>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <li class="user-body">
+                                    <div class="row">
+                                        <div class="col-xs-4 text-center">
+                                            <a th:href="@{/admin/profile}">个人资料</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a th:href="@{/admin/config}">系统设置</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="javascript:;">帮助</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a th:href="@{/admin/profile}" class="btn btn-default btn-flat">个人资料</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a th:href="@{/logout}" class="btn btn-default btn-flat">注销</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- 控制栏切换按钮 -->
+                        <li>
+                            <a href="javascript:;" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel hidden-xs">
+                    <div class="pull-left image">
+                        <a th:href="@{/admin/profile}"><img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="img-circle" /></a>
+                    </div>
+                    <div class="pull-left info">
+                        <p th:text="${userName}">Admin</p>
+                        <i class="fa fa-circle text-success"></i> 在线
+                    </div>
+                </div>
+
+                <!-- search form -->
+                <form action="" method="get" class="sidebar-form" onsubmit="return false;">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="搜索菜单">
+                        <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                        <div class="menuresult list-group sidebar-form hide">
+                        </div>
+                    </div>
+                </form>
+                <!-- /.search form -->
+
+                <!-- sidebar menu -->
+                <ul class="sidebar-menu">
+                    <li class="header">站内导航</li>
+
+                    <!-- 控制台 -->
+                    <li class="active">
+                        <a th:href="@{/dashboard}" addtabs="dashboard" url="dashboard">
+                            <i class="fa fa-dashboard"></i>
+                            <span>控制台</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-blue">hot</small>
+                            </span>
+                        </a>
+                    </li>
+
+                    <!-- 常规管理 -->
+                    <li class="treeview">
+                        <a href="javascript:;">
+                            <i class="fa fa-cogs"></i>
+                            <span>常规管理</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/config}" addtabs="config"><i class="fa fa-cog"></i> <span>系统配置</span></a></li>
+                            <li><a th:href="@{/admin/attachment}" addtabs="attachment"><i class="fa fa-file-image-o"></i> <span>附件管理</span></a></li>
+                            <li><a th:href="@{/admin/crontab}" addtabs="crontab"><i class="fa fa-tasks"></i> <span>定时任务</span></a></li>
+                            <li><a th:href="@{/admin/database}" addtabs="database"><i class="fa fa-database"></i> <span>数据库管理</span></a></li>
+                            <li><a th:href="@{/admin/profile}" addtabs="profile"><i class="fa fa-user"></i> <span>个人配置</span></a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 权限管理 -->
+                    <li class="treeview">
+                        <a href="javascript:;">
+                            <i class="fa fa-group"></i>
+                            <span>权限管理</span>
+                            <span class="pull-right-container">
+                                <small class="badge pull-right bg-red">new</small>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/admin}" addtabs="admin"><i class="fa fa-user"></i> <span>管理员管理</span></a></li>
+                            <li><a th:href="@{/admin/adminlog}" addtabs="adminlog"><i class="fa fa-list-alt"></i> <span>管理员日志</span></a></li>
+                            <li><a th:href="@{/admin/group}" addtabs="group"><i class="fa fa-group"></i> <span>角色组</span></a></li>
+                            <li><a th:href="@{/admin/rule}" addtabs="rule"><i class="fa fa-bars"></i> <span>规则管理</span></a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 内容管理 -->
+                    <li><a th:href="@{/admin/page}" addtabs="page"><i class="fa fa-tags"></i> <span>单页管理</span></a></li>
+                    <li><a th:href="@{/admin/category}" addtabs="category"><i class="fa fa-list"></i> <span>分类管理</span></a></li>
+                    <li><a th:href="@{/admin/version}" addtabs="version"><i class="fa fa-file-text-o"></i> <span>版本管理</span></a></li>
+
+                    <!-- 示例管理 -->
+                    <li class="treeview">
+                        <a href="javascript:;">
+                            <i class="fa fa-magic"></i>
+                            <span>示例管理</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/bootstraptable}" addtabs="bootstraptable"><i class="fa fa-table"></i> <span>表格完整示例</span></a></li>
+                            <li><a th:href="@{/admin/colorbadge}" addtabs="colorbadge"><i class="fa fa-table"></i> <span>彩色角标</span></a></li>
+                            <li><a th:href="@{/admin/cxselect}" addtabs="cxselect"><i class="fa fa-table"></i> <span>多级联动</span></a></li>
+                            <li><a th:href="@{/admin/multitable}" addtabs="multitable"><i class="fa fa-table"></i> <span>多表格示例</span></a></li>
+                            <li><a th:href="@{/admin/tabletemplate}" addtabs="tabletemplate"><i class="fa fa-table"></i> <span>表格模板示例</span></a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 微信管理 -->
+                    <li class="treeview">
+                        <a href="javascript:;">
+                            <i class="fa fa-wechat"></i>
+                            <span>微信管理</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/autoreply}" addtabs="autoreply"><i class="fa fa-reply-all"></i> <span>自动回复</span></a></li>
+                            <li><a th:href="@{/admin/wechatconfig}" addtabs="wechatconfig"><i class="fa fa-cog"></i> <span>微信配置</span></a></li>
+                            <li><a th:href="@{/admin/menu}" addtabs="menu"><i class="fa fa-bars"></i> <span>菜单管理</span></a></li>
+                            <li><a th:href="@{/admin/response}" addtabs="response"><i class="fa fa-list-alt"></i> <span>资源管理</span></a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 测试管理 -->
+                    <li><a th:href="@{/admin/test}" addtabs="test"><i class="fa fa-circle-o"></i> <span>测试管理</span></a></li>
+
+                    <li class="header">相关链接</li>
+                    <li><a href="javascript:;"><i class="fa fa-list text-red"></i> <span>官方文档</span></a></li>
+                    <li><a href="javascript:;"><i class="fa fa-comment text-yellow"></i> <span>社区交流</span></a></li>
+                </ul>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper tab-content tab-addtabs">
+            <!-- 默认显示控制台 -->
+            <div class="tab-pane active" id="tab-dashboard">
+                <iframe th:src="@{/dashboard}" src="dashboard" width="100%" height="100%" frameborder="0" style="min-height: 800px;"></iframe>
+            </div>
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer hide">
+            <div class="pull-right hidden-xs">
+            </div>
+            <strong>Copyright &copy; 2024-2025 <a href="javascript:;">SSITAO Code Platform</a>.</strong> All rights reserved.
+        </footer>
+
+        <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li class="active"><a href="#control-sidebar-setting-tab" data-toggle="tab"><i class="fa fa-wrench"></i></a></li>
+                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="control-sidebar-setting-tab">
+                    <h4 class="control-sidebar-heading">布局设定</h4>
+                    <div class="form-group">
+                        <label class="control-sidebar-subheading">
+                            <input type="checkbox" data-layout="fixed" class="pull-right"> 固定布局
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-sidebar-subheading">
+                            <input type="checkbox" data-layout="sidebar-collapse" class="pull-right"> 折叠菜单栏
+                        </label>
+                    </div>
+
+                    <h4 class="control-sidebar-heading">皮肤</h4>
+                    <ul class="list-unstyled clearfix skin-list">
+                        <li><a href="javascript:;" data-skin="skin-blue"><p class="text-center no-margin">Blue</p></a></li>
+                        <li><a href="javascript:;" data-skin="skin-green" class="clearfix full-opacity-hover"><p class="text-center no-margin">Green</p></a></li>
+                        <li><a href="javascript:;" data-skin="skin-purple"><p class="text-center no-margin">Purple</p></a></li>
+                        <li><a href="javascript:;" data-skin="skin-red"><p class="text-center no-margin">Red</p></a></li>
+                        <li><a href="javascript:;" data-skin="skin-yellow"><p class="text-center no-margin">Yellow</p></a></li>
+                    </ul>
+                </div>
+                <div class="tab-pane" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">最近活动</h3>
+                    <p class="text-muted">暂无活动记录</p>
+                </div>
+            </div>
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+
+    <script th:src="@{/assets/js/require.js}" src="assets/js/require.js"
+            data-main="@{/assets/js/require-backend.js}"></script>
+</body>
+</html>

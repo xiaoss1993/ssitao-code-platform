@@ -1,10 +1,10 @@
 package com.ssitao.code.modular.iam.userprofile.application.service.impl;
 
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
-import com.ssitao.code.modular.iam.dal.dataobject.IamAccountRoleDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRoleDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamAccountRoleMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamAccountRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamAccountRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRoleMapper;
 import com.ssitao.code.modular.iam.userprofile.application.command.IamUserCreateCommand;
 import com.ssitao.code.modular.iam.userprofile.application.command.IamUserQueryCommand;
 import com.ssitao.code.modular.iam.userprofile.application.command.IamUserUpdateCommand;
@@ -13,13 +13,11 @@ import com.ssitao.code.modular.iam.userprofile.api.dto.IamUserDTO;
 import com.ssitao.code.modular.iam.userprofile.domain.model.IamUser;
 import com.ssitao.code.modular.iam.userprofile.domain.repository.IamUserRepository;
 import com.ssitao.code.modular.iam.userprofile.infrastructure.converter.IamUserConverter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,9 +36,6 @@ public class IamUserAppServiceImpl implements IamUserAppService {
 
     @Resource
     private IamUserConverter userConverter;
-
-    @Resource
-    private PasswordEncoder passwordEncoder;
 
     @Resource
     private IamAccountRoleMapper accountRoleMapper;
@@ -263,16 +258,14 @@ public class IamUserAppServiceImpl implements IamUserAppService {
 
         // 删除用户原有的角色关联
         QueryWrapper deleteQuery = QueryWrapper.create()
-                .eq("accountrole_account_id", id.toString());
+                .eq("account_id", id.toString());
         if (tenantId != null && !tenantId.isEmpty()) {
-            deleteQuery.eq("sy_tenant_id", tenantId);
+            deleteQuery.eq("tenant_id", tenantId);
         }
         accountRoleMapper.deleteByQuery(deleteQuery);
 
         // 分配新的角色
         if (roleIds != null && !roleIds.isEmpty()) {
-            String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
             for (Long roleId : roleIds) {
                 // 查询角色信息
                 IamRoleDO roleDO = roleMapper.selectOneById(roleId.toString());
@@ -280,16 +273,15 @@ public class IamUserAppServiceImpl implements IamUserAppService {
                     continue;
                 }
 
-                IamAccountRoleDO accountRole = new IamAccountRoleDO();
-                accountRole.setTbIamAccountroleId(UUID.randomUUID().toString().replace("-", ""));
-                accountRole.setAccountroleAccountId(id.toString());
-                accountRole.setAccountroleRoleId(roleId.toString());
-                accountRole.setAccountroleRoleName(roleDO.getRoleCode());
-                accountRole.setSyCreatetime(now);
-                accountRole.setSyStatus("1");
-                accountRole.setSyTenantId(tenantId);
-                accountRole.setSyOrderindex("0");
-                accountRole.setAccountroleMainCode("1"); // 默认为主角色
+                IamAccountRoleDO accountRole = IamAccountRoleDO.builder()
+                        .id(UUID.randomUUID().toString().replace("-", ""))
+                        .accountId(id.toString())
+                        .roleId(roleId.toString())
+                        .isValid(1)
+                        .tenantId(tenantId)
+                        .createTime(LocalDateTime.now())
+                        .isDeleted(0)
+                        .build();
 
                 accountRoleMapper.insert(accountRole);
             }

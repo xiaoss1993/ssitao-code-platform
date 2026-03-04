@@ -1,18 +1,18 @@
 package com.ssitao.code.modular.iam.audit.infrastructure.repository;
 
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
+import com.ssitao.code.modular.iam.audit.dal.dataobject.IamOperateLogDO;
+import com.ssitao.code.modular.iam.audit.dal.mapper.IamOperateLogMapper;
 import com.ssitao.code.modular.iam.audit.domain.model.IamOperateLog;
 import com.ssitao.code.modular.iam.audit.domain.repository.IamOperateLogRepository;
 import com.ssitao.code.modular.iam.audit.infrastructure.converter.IamOperateLogConverter;
-import com.ssitao.code.modular.iam.dal.dataobject.IamOperateLogDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamOperateLogMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * IAM操作日志仓储实现
@@ -23,8 +23,6 @@ import java.util.List;
 @Repository
 public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     @Resource
     private IamOperateLogMapper operateLogMapper;
 
@@ -34,9 +32,12 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     @Override
     public String save(IamOperateLog log) {
         IamOperateLogDO operateLogDO = operateLogConverter.toDO(log);
-        operateLogDO.setSyCreatetime(LocalDateTime.now().format(DATE_FORMATTER));
+        if (operateLogDO.getLogId() == null || operateLogDO.getLogId().isEmpty()) {
+            operateLogDO.setLogId(UUID.randomUUID().toString().replace("-", ""));
+        }
+        operateLogDO.setOperateTime(LocalDateTime.now());
         operateLogMapper.insert(operateLogDO);
-        return operateLogDO.getTbIamOperatelogId();
+        return operateLogDO.getLogId();
     }
 
     @Override
@@ -45,12 +46,15 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
         if (logs == null || logs.isEmpty()) {
             return ids;
         }
-        String now = LocalDateTime.now().format(DATE_FORMATTER);
+        LocalDateTime now = LocalDateTime.now();
         for (IamOperateLog log : logs) {
             IamOperateLogDO operateLogDO = operateLogConverter.toDO(log);
-            operateLogDO.setSyCreatetime(now);
+            if (operateLogDO.getLogId() == null || operateLogDO.getLogId().isEmpty()) {
+                operateLogDO.setLogId(UUID.randomUUID().toString().replace("-", ""));
+            }
+            operateLogDO.setOperateTime(now);
             operateLogMapper.insert(operateLogDO);
-            ids.add(operateLogDO.getTbIamOperatelogId());
+            ids.add(operateLogDO.getLogId());
         }
         return ids;
     }
@@ -65,7 +69,7 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     public List<IamOperateLog> findByOperatorId(String operatorId, int page, int size) {
         QueryWrapper query = QueryWrapper.create()
                 .eq("operator_id", operatorId)
-                .orderBy("sy_createtime", false)
+                .orderBy("operate_time", false)
                 .offset((page - 1) * size)
                 .limit(size);
         List<IamOperateLogDO> list = operateLogMapper.selectListByQuery(query);
@@ -75,29 +79,29 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     @Override
     public List<IamOperateLog> findByOperateType(String operateType, String tenantId, int page, int size) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("operatelog_type", operateType);
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+                .eq("operate_type", operateType);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
-        query.orderBy("sy_createtime", false)
-                .offset((page - 1) * size)
-                .limit(size);
+        query.orderBy("operate_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
         List<IamOperateLogDO> list = operateLogMapper.selectListByQuery(query);
         return operateLogConverter.toDomainList(list);
     }
 
     @Override
     public List<IamOperateLog> findByTimeRange(LocalDateTime startTime, LocalDateTime endTime,
-                                                 String tenantId, int page, int size) {
+                                                String tenantId, int page, int size) {
         QueryWrapper query = QueryWrapper.create();
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
-        query.ge("sy_createtime", startTime.format(DATE_FORMATTER))
-                .le("sy_createtime", endTime.format(DATE_FORMATTER))
-                .orderBy("sy_createtime", false)
-                .offset((page - 1) * size)
-                .limit(size);
+        query.ge("operate_time", startTime)
+             .le("operate_time", endTime)
+             .orderBy("operate_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
         List<IamOperateLogDO> list = operateLogMapper.selectListByQuery(query);
         return operateLogConverter.toDomainList(list);
     }
@@ -105,13 +109,13 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     @Override
     public List<IamOperateLog> findByOperateModule(String operateModule, String tenantId, int page, int size) {
         QueryWrapper query = QueryWrapper.create()
-                .eq("operatelog_module", operateModule);
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+                .eq("module_name", operateModule);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
-        query.orderBy("sy_createtime", false)
-                .offset((page - 1) * size)
-                .limit(size);
+        query.orderBy("operate_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
         List<IamOperateLogDO> list = operateLogMapper.selectListByQuery(query);
         return operateLogConverter.toDomainList(list);
     }
@@ -120,23 +124,23 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     public long count(String operatorId, String operateType, String operateModule,
                       LocalDateTime startTime, LocalDateTime endTime, String tenantId) {
         QueryWrapper query = QueryWrapper.create();
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
         if (operatorId != null && !operatorId.isEmpty()) {
             query.eq("operator_id", operatorId);
         }
         if (operateType != null && !operateType.isEmpty()) {
-            query.eq("operatelog_type", operateType);
+            query.eq("operate_type", operateType);
         }
         if (operateModule != null && !operateModule.isEmpty()) {
-            query.eq("operatelog_module", operateModule);
+            query.eq("module_name", operateModule);
         }
         if (startTime != null) {
-            query.ge("sy_createtime", startTime.format(DATE_FORMATTER));
+            query.ge("operate_time", startTime);
         }
         if (endTime != null) {
-            query.le("sy_createtime", endTime.format(DATE_FORMATTER));
+            query.le("operate_time", endTime);
         }
 
         return operateLogMapper.selectCountByQuery(query);
@@ -147,28 +151,28 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
                                      LocalDateTime startTime, LocalDateTime endTime, String tenantId,
                                      int page, int size) {
         QueryWrapper query = QueryWrapper.create();
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
         if (operatorId != null && !operatorId.isEmpty()) {
             query.eq("operator_id", operatorId);
         }
         if (operateType != null && !operateType.isEmpty()) {
-            query.eq("operatelog_type", operateType);
+            query.eq("operate_type", operateType);
         }
         if (operateModule != null && !operateModule.isEmpty()) {
-            query.eq("operatelog_module", operateModule);
+            query.eq("module_name", operateModule);
         }
         if (startTime != null) {
-            query.ge("sy_createtime", startTime.format(DATE_FORMATTER));
+            query.ge("operate_time", startTime);
         }
         if (endTime != null) {
-            query.le("sy_createtime", endTime.format(DATE_FORMATTER));
+            query.le("operate_time", endTime);
         }
 
-        query.orderBy("sy_createtime", false)
-                .offset((page - 1) * size)
-                .limit(size);
+        query.orderBy("operate_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
 
         List<IamOperateLogDO> list = operateLogMapper.selectListByQuery(query);
         return operateLogConverter.toDomainList(list);
@@ -177,10 +181,10 @@ public class IamOperateLogRepositoryImpl implements IamOperateLogRepository {
     @Override
     public void deleteBeforeTime(LocalDateTime beforeTime, String tenantId) {
         QueryWrapper query = QueryWrapper.create();
-        if (tenantId != null && !tenantId.isEmpty()) {
-            query.eq("sy_tenant_id", tenantId);
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
         }
-        query.lt("sy_createtime", beforeTime.format(DATE_FORMATTER));
+        query.lt("operate_time", beforeTime);
         operateLogMapper.deleteByQuery(query);
     }
 }

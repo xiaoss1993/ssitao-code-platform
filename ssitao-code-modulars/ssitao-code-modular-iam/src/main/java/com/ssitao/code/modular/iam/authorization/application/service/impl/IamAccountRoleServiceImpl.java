@@ -3,29 +3,29 @@ package com.ssitao.code.modular.iam.authorization.application.service.impl;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamRoleDTO;
 import com.ssitao.code.modular.iam.authorization.application.service.IamAccountRoleService;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamAccountRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamAccountRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRoleMapper;
 import com.ssitao.code.modular.iam.authorization.infrastructure.converter.IamRoleConverter;
-import com.ssitao.code.modular.iam.dal.dataobject.IamAccountDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamAccountRoleDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRoleDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamAccountMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamAccountRoleMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRoleMapper;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
+import com.ssitao.code.modular.iam.identity.dal.dataobject.IamAccountDO;
+import com.ssitao.code.modular.iam.identity.dal.mapper.IamAccountMapper;
 import com.ssitao.code.modular.iam.identity.infrastructure.converter.IamAccountConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * IAM账号角色关联服务实现
- * 管理 tb_iam_accountrole 表
+ * 管理 iam_account_role 表
  *
  * @author ssitao-code
  * @since 2.0.0
@@ -48,9 +48,9 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
     @Resource
     private IamAccountConverter accountConverter;
 
-    private static final String STATUS_ACTIVE = "1";
-    private static final String YES_CODE = "1";
-    private static final String NO_CODE = "0";
+    private static final Integer STATUS_ACTIVE = 1;
+    private static final Integer IS_VALID = 1;
+    private static final Integer NOT_DELETED = 0;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -71,17 +71,14 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
             throw new IllegalArgumentException("账号不存在: " + accountId);
         }
 
-        // 获取账号信息用于设置部门相关字段
-        String deptId = account.getSyOrgId();
-        String deptName = account.getSyOrgName();
-
         // 查询角色信息并验证
         QueryWrapper roleQueryWrapper = QueryWrapper.create()
-                .where(IamRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("tenant_id", tenantId)
+                .eq("role_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
         List<IamRoleDO> roleDOList = roleMapper.selectListByQuery(roleQueryWrapper);
         List<String> validRoleIds = roleDOList.stream()
-                .map(IamRoleDO::getTbIamRoleId)
+                .map(IamRoleDO::getRoleId)
                 .collect(Collectors.toList());
 
         // 过滤掉无效的角色ID
@@ -95,29 +92,28 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
 
         // 获取现有角色关联
         QueryWrapper existQueryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleAccountId).eq(accountId)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamAccountRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("account_id", accountId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
         List<IamAccountRoleDO> existRelations = accountRoleMapper.selectListByQuery(existQueryWrapper);
         List<String> existRoleIds = existRelations.stream()
-                .map(IamAccountRoleDO::getAccountroleRoleId)
+                .map(IamAccountRoleDO::getRoleId)
                 .collect(Collectors.toList());
 
         // 只插入新的关联关系
         List<IamAccountRoleDO> newRelations = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (String roleId : validAssignRoleIds) {
             if (!existRoleIds.contains(roleId)) {
                 IamAccountRoleDO relation = new IamAccountRoleDO();
-                relation.setTbIamAccountroleId(UUID.randomUUID().toString().replace("-", ""));
-                relation.setAccountroleRoleId(roleId);
-                relation.setAccountroleAccountId(accountId);
-                relation.setAccountroleDeptId(deptId);
-                relation.setAccountroleDeptName(deptName);
-                relation.setAccountroleMainCode(NO_CODE);
-                relation.setSyTenantId(tenantId);
-                relation.setSyStatus(STATUS_ACTIVE);
-                relation.setSyCreatetime(String.valueOf(new Date().getTime()));
-                relation.setSyOrderindex("0");
+                relation.setId(UUID.randomUUID().toString().replace("-", ""));
+                relation.setRoleId(roleId);
+                relation.setAccountId(accountId);
+                relation.setTenantId(tenantId);
+                relation.setIsValid(IS_VALID);
+                relation.setCreateTime(now);
+                relation.setIsDeleted(NOT_DELETED);
                 newRelations.add(relation);
             }
         }
@@ -142,9 +138,9 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
 
         // 构建删除条件
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleAccountId).eq(accountId)
-                .and(IamAccountRoleDO::getAccountroleRoleId).in(roleIds)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId);
+                .eq("account_id", accountId)
+                .in("role_id", roleIds)
+                .eq("tenant_id", tenantId);
 
         accountRoleMapper.deleteByQuery(queryWrapper);
     }
@@ -160,8 +156,8 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleAccountId).eq(accountId)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId);
+                .eq("account_id", accountId)
+                .eq("tenant_id", tenantId);
 
         accountRoleMapper.deleteByQuery(queryWrapper);
     }
@@ -176,9 +172,10 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleAccountId).eq(accountId)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamAccountRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("account_id", accountId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamAccountRoleDO> accountRoleList = accountRoleMapper.selectListByQuery(queryWrapper);
 
@@ -187,13 +184,14 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         List<String> roleIds = accountRoleList.stream()
-                .map(IamAccountRoleDO::getAccountroleRoleId)
+                .map(IamAccountRoleDO::getRoleId)
                 .collect(Collectors.toList());
 
         QueryWrapper roleQueryWrapper = QueryWrapper.create()
-                .where(IamRoleDO::getTbIamRoleId).in(roleIds)
-                .and(IamRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("role_id", roleIds)
+                .eq("tenant_id", tenantId)
+                .eq("role_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamRoleDO> roleDOList = roleMapper.selectListByQuery(roleQueryWrapper);
 
@@ -210,9 +208,10 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleRoleId).eq(roleId)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamAccountRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("role_id", roleId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamAccountRoleDO> accountRoleList = accountRoleMapper.selectListByQuery(queryWrapper);
 
@@ -221,13 +220,14 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         List<String> accountIds = accountRoleList.stream()
-                .map(IamAccountRoleDO::getAccountroleAccountId)
+                .map(IamAccountRoleDO::getAccountId)
                 .collect(Collectors.toList());
 
         QueryWrapper accountQueryWrapper = QueryWrapper.create()
-                .where(IamAccountDO::getTbIamAccountId).in(accountIds)
-                .and(IamAccountDO::getSyTenantId).eq(tenantId)
-                .and(IamAccountDO::getSyStatus).eq(STATUS_ACTIVE);
+                .in("account_id", accountIds)
+                .eq("tenant_id", tenantId)
+                .eq("account_status", STATUS_ACTIVE)
+                .eq("is_deleted", NOT_DELETED);
 
         List<IamAccountDO> accountDOList = accountMapper.selectListByQuery(accountQueryWrapper);
 
@@ -247,10 +247,11 @@ public class IamAccountRoleServiceImpl implements IamAccountRoleService {
         }
 
         QueryWrapper queryWrapper = QueryWrapper.create()
-                .where(IamAccountRoleDO::getAccountroleAccountId).eq(accountId)
-                .and(IamAccountRoleDO::getAccountroleRoleId).eq(roleId)
-                .and(IamAccountRoleDO::getSyTenantId).eq(tenantId)
-                .and(IamAccountRoleDO::getSyStatus).eq(STATUS_ACTIVE);
+                .eq("account_id", accountId)
+                .eq("role_id", roleId)
+                .eq("tenant_id", tenantId)
+                .eq("is_valid", IS_VALID)
+                .eq("is_deleted", NOT_DELETED);
 
         return accountRoleMapper.selectOneByQuery(queryWrapper) != null;
     }

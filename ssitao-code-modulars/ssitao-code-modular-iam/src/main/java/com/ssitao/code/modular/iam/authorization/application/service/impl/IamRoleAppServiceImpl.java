@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -223,14 +224,14 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
         dto.setSortOrder(sort);
         dto.setStatus(true);
         dto.setRemark(remark);
-        dto.setCreateTime(LocalDateTime.now());
+        dto.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         // 设置前端兼容字段
         dto.setLabel(name);
         dto.setAlias(code);
         dto.setSort(sort);
         dto.setStatusInt(1);
-        dto.setDate(LocalDateTime.now().toString());
+        dto.setDate(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         return dto;
     }

@@ -19,7 +19,10 @@
       "Bash(grep:*)",
       "Bash(lsof:*)",
       "Bash(head:*)",
-      "Bash(unzip:*)"
+      "Bash(unzip:*)",
+      "Bash(git checkout:*)",
+      "Bash(mkdir -p ~/.claude/skills && cd /tmp && rm -rf superpowers && git clone --depth 1 https://github.com/obra/superpowers.git 2>&1)",
+      "Bash(cat:*)"
     ]
   }
 }

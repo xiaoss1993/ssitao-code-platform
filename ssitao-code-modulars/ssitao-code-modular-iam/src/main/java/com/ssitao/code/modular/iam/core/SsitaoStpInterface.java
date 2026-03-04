@@ -3,14 +3,14 @@ package com.ssitao.code.modular.iam.core;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.hutool.core.util.StrUtil;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
-import com.ssitao.code.modular.iam.dal.dataobject.IamPermissionDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRoleDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamAccountRoleDO;
-import com.ssitao.code.modular.iam.dal.dataobject.IamRolePermissionDO;
-import com.ssitao.code.modular.iam.dal.mapper.IamPermissionMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRoleMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamAccountRoleMapper;
-import com.ssitao.code.modular.iam.dal.mapper.IamRolePermissionMapper;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamPermissionDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamAccountRoleDO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRolePermissionDO;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamPermissionMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamAccountRoleMapper;
+import com.ssitao.code.modular.iam.authorization.dal.mapper.IamRolePermissionMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -62,8 +62,8 @@ public class SsitaoStpInterface implements StpInterface {
             // 查询账号角色
             List<IamAccountRoleDO> accountRoles = accountRoleMapper.selectListByQuery(
                     QueryWrapper.create()
-                        .eq("accountrole_account_id", accountId)
-                        .eq("sy_status", "1")
+                        .eq("account_id", accountId)
+                        .eq("is_valid", 1)
             );
 
             if (accountRoles == null || accountRoles.isEmpty()) {
@@ -72,16 +72,16 @@ public class SsitaoStpInterface implements StpInterface {
 
             List<String> roleIds = new ArrayList<>();
             for (IamAccountRoleDO accountRole : accountRoles) {
-                if (accountRole.getAccountroleRoleId() != null) {
-                    roleIds.add(accountRole.getAccountroleRoleId());
+                if (accountRole.getRoleId() != null) {
+                    roleIds.add(accountRole.getRoleId());
                 }
             }
 
             // 查询角色权限
             List<IamRolePermissionDO> rolePerms = rolePermissionMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in("tb_iam_role_id", roleIds)
-                            .eq("sy_status", "1")
+                            .in("role_id", roleIds)
+                            .eq("is_valid", 1)
             );
 
             if (rolePerms == null || rolePerms.isEmpty()) {
@@ -90,8 +90,8 @@ public class SsitaoStpInterface implements StpInterface {
 
             List<String> permIds = new ArrayList<>();
             for (IamRolePermissionDO rolePerm : rolePerms) {
-                if (rolePerm.getTbIamPermId() != null) {
-                    permIds.add(rolePerm.getTbIamPermId());
+                if (rolePerm.getPermissionId() != null) {
+                    permIds.add(rolePerm.getPermissionId());
                 }
             }
 
@@ -101,15 +101,15 @@ public class SsitaoStpInterface implements StpInterface {
             // 查询权限详情
             List<IamPermissionDO> perms = permissionMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in("tb_iam_perm_id", permIds)
-                            .eq("sy_status", "1")
+                            .in("permission_id", permIds)
+                            .eq("permission_status", 1)
             );
 
             List<String> permissions = new ArrayList<>();
             if (perms != null) {
                 for (IamPermissionDO perm : perms) {
-                    if (StrUtil.isNotBlank(perm.getPermCode())) {
-                        permissions.add(perm.getPermCode());
+                    if (StrUtil.isNotBlank(perm.getPermissionCode())) {
+                        permissions.add(perm.getPermissionCode());
                     }
                 }
             }
@@ -134,8 +134,8 @@ public class SsitaoStpInterface implements StpInterface {
             // 查询账号角色
             List<IamAccountRoleDO> accountRoles = accountRoleMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .eq("accountrole_account_id", accountId)
-                            .eq("sy_status", "1")
+                            .eq("account_id", accountId)
+                            .eq("is_valid", 1)
             );
 
             if (accountRoles == null || accountRoles.isEmpty()) {
@@ -144,16 +144,16 @@ public class SsitaoStpInterface implements StpInterface {
 
             List<String> roleIds = new ArrayList<>();
             for (IamAccountRoleDO accountRole : accountRoles) {
-                if (accountRole.getAccountroleRoleId() != null) {
-                    roleIds.add(accountRole.getAccountroleRoleId());
+                if (accountRole.getRoleId() != null) {
+                    roleIds.add(accountRole.getRoleId());
                 }
             }
 
             // 查询角色详情
             List<IamRoleDO> roles = roleMapper.selectListByQuery(
                     QueryWrapper.create()
-                            .in("tb_iam_role_id", roleIds)
-                            .eq("sy_status", "1")
+                            .in("role_id", roleIds)
+                            .eq("role_status", 1)
             );
 
             List<String> roleCodes = new ArrayList<>();

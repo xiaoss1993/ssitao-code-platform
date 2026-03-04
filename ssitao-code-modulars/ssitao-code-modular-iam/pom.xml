@@ -36,8 +36,8 @@
 
         <!-- Aggregate-Framework DDD框架 -->
         <dependency>
-            <groupId>org.aggregateframework</groupId>
-            <artifactId>aggregate-framework-spring-boot-starter</artifactId>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-frame-aggregate</artifactId>
         </dependency>
 
         <!-- Spring Boot Web -->

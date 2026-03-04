@@ -1,11 +1,11 @@
 package com.ssitao.code.modular.iam.authorization.infrastructure.converter;
 
 import com.ssitao.code.modular.iam.authorization.api.dto.IamPermissionDTO;
+import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamPermissionDO;
 import com.ssitao.code.modular.iam.authorization.domain.model.IamPermission;
-import com.ssitao.code.modular.iam.dal.dataobject.IamPermissionDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
@@ -27,62 +27,65 @@ public interface IamPermissionConverter {
     /**
      * DO转领域模型
      */
-    @Mappings({
-        @Mapping(source = "tbIamPermId", target = "id"),
-        @Mapping(source = "permCode", target = "permCode"),
-        @Mapping(source = "permName", target = "permName"),
-        @Mapping(source = "permTypeCode", target = "permType"),
-        @Mapping(source = "permTargetId", target = "parentId"),
-        @Mapping(source = "permTargetId", target = "targetId"),
-        @Mapping(source = "permTargetCode", target = "targetType"),
-        @Mapping(source = "permOperateCode", target = "operateCode"),
-        @Mapping(source = "permOutputTemplate", target = "outputTemplate"),
-        @Mapping(source = "permRemark", target = "remark"),
-        @Mapping(source = "syTenantId", target = "tenantId"),
-        @Mapping(source = "syCreatetime", target = "createTime"),
-        @Mapping(source = "syCreateuserid", target = "creator"),
-        @Mapping(source = "syOrderindex", target = "sortOrder"),
-        @Mapping(target = "path", ignore = true),
-        @Mapping(target = "component", ignore = true),
-        @Mapping(target = "perms", ignore = true),
-        @Mapping(target = "icon", ignore = true),
-        @Mapping(target = "isFrame", ignore = true),
-        @Mapping(target = "isCache", ignore = true),
-        @Mapping(target = "visible", ignore = true),
-        @Mapping(target = "redirect", ignore = true),
-        @Mapping(target = "layer", ignore = true),
-        @Mapping(target = "status", ignore = true),
-        @Mapping(target = "updateTime", ignore = true),
-        @Mapping(target = "updater", ignore = true),
-        @Mapping(target = "deleted", ignore = true)
-    })
-    IamPermission toDomain(IamPermissionDO DO);
+    @Mapping(source = "permissionId", target = "id")
+    @Mapping(source = "permissionCode", target = "permCode")
+    @Mapping(source = "permissionName", target = "permName")
+    @Mapping(source = "permissionType", target = "permType")
+    @Mapping(source = "permissionResource", target = "targetId")
+    @Mapping(source = "permissionAction", target = "operateCode")
+    @Mapping(source = "permissionDesc", target = "remark")
+    @Mapping(source = "permissionStatus", target = "status", qualifiedByName = "integerToBoolean")
+    @Mapping(source = "permissionSort", target = "sortOrder")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "modifyTime", target = "updateTime")
+    @Mapping(target = "parentId", ignore = true)
+    @Mapping(target = "path", ignore = true)
+    @Mapping(target = "component", ignore = true)
+    @Mapping(target = "perms", ignore = true)
+    @Mapping(target = "icon", ignore = true)
+    @Mapping(target = "isFrame", ignore = true)
+    @Mapping(target = "isCache", ignore = true)
+    @Mapping(target = "visible", ignore = true)
+    @Mapping(target = "redirect", ignore = true)
+    @Mapping(target = "layer", ignore = true)
+    @Mapping(target = "targetType", ignore = true)
+    @Mapping(target = "outputTemplate", ignore = true)
+    @Mapping(target = "creator", ignore = true)
+    @Mapping(target = "updater", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    IamPermission toDomain(IamPermissionDO permissionDO);
 
     /**
      * 领域模型转DO
      */
-    @Mappings({
-        @Mapping(source = "id", target = "tbIamPermId"),
-        @Mapping(source = "permCode", target = "permCode"),
-        @Mapping(source = "permName", target = "permName"),
-        @Mapping(source = "permType", target = "permTypeCode"),
-        @Mapping(source = "targetId", target = "permTargetId"),
-        @Mapping(source = "targetType", target = "permTargetCode"),
-        @Mapping(source = "operateCode", target = "permOperateCode"),
-        @Mapping(source = "outputTemplate", target = "permOutputTemplate"),
-        @Mapping(source = "remark", target = "permRemark"),
-        @Mapping(source = "tenantId", target = "syTenantId"),
-        @Mapping(source = "createTime", target = "syCreatetime"),
-        @Mapping(source = "creator", target = "syCreateuserid"),
-        @Mapping(source = "sortOrder", target = "syOrderindex")
-    })
+    @Mapping(source = "id", target = "permissionId")
+    @Mapping(source = "permCode", target = "permissionCode")
+    @Mapping(source = "permName", target = "permissionName")
+    @Mapping(source = "permType", target = "permissionType")
+    @Mapping(source = "targetId", target = "permissionResource")
+    @Mapping(source = "operateCode", target = "permissionAction")
+    @Mapping(source = "remark", target = "permissionDesc")
+    @Mapping(source = "status", target = "permissionStatus", qualifiedByName = "booleanToInteger")
+    @Mapping(source = "sortOrder", target = "permissionSort")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "updateTime", target = "modifyTime")
+    @Mapping(target = "permissionIsBuiltin", constant = "0")
+    @Mapping(target = "isDeleted", constant = "0")
     IamPermissionDO toDO(IamPermission domain);
 
     /**
      * DO转DTO
      */
-    @Mapping(source = "tbIamPermId", target = "id")
-    IamPermissionDTO toDTO(IamPermissionDO DO);
+    @Mapping(source = "permissionId", target = "id")
+    @Mapping(source = "permissionCode", target = "permCode")
+    @Mapping(source = "permissionName", target = "permName")
+    @Mapping(source = "permissionType", target = "permType")
+    @Mapping(source = "permissionDesc", target = "remark")
+    @Mapping(source = "permissionStatus", target = "status", qualifiedByName = "integerToBoolean")
+    @Mapping(source = "permissionSort", target = "sortOrder")
+    IamPermissionDTO toDTO(IamPermissionDO permissionDO);
 
     /**
      * 领域模型转DTO
@@ -99,11 +102,33 @@ public interface IamPermissionConverter {
     /**
      * DO列表转领域模型列表
      */
-    List<IamPermission> toDomainList(List<IamPermissionDO> DOList);
+    List<IamPermission> toDomainList(List<IamPermissionDO> permissionDOList);
 
     /**
      * 领域模型列表转DTO列表
      */
     List<IamPermissionDTO> toDTOList(List<IamPermission> domainList);
+
+    /**
+     * Boolean转Integer
+     */
+    @Named("booleanToInteger")
+    default Integer booleanToInteger(Boolean value) {
+        if (value == null) {
+            return 1;
+        }
+        return value ? 1 : 0;
+    }
+
+    /**
+     * Integer转Boolean
+     */
+    @Named("integerToBoolean")
+    default Boolean integerToBoolean(Integer value) {
+        if (value == null) {
+            return true;
+        }
+        return value == 1;
+    }
 
 }

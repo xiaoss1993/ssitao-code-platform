@@ -21,10 +21,10 @@ public class IamMenuDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "菜单ID")
-    private Long id;
+    private String id;
 
     @Schema(description = "父菜单ID")
-    private Long parentId;
+    private String parentId;
 
     @Schema(description = "菜单名称")
     private String menuName;
@@ -61,6 +61,27 @@ public class IamMenuDTO implements Serializable {
     @Schema(description = "路由名称（前端兼容）")
     private String name;
 
+    @Schema(description = "重定向地址")
+    private String redirect;
+
+    @Schema(description = "菜单高亮地址")
+    private String active;
+
+    @Schema(description = "颜色")
+    private String color;
+
+    @Schema(description = "是否全屏")
+    private Boolean fullpage;
+
+    @Schema(description = "标签")
+    private String tag;
+
+    @Schema(description = "隐藏面包屑")
+    private Boolean hiddenBreadcrumb;
+
+    @Schema(description = "API权限列表")
+    private List<ApiPermission> apiList;
+
     @Schema(description = "路由元信息（前端兼容）")
     private MetaInfo meta;
 
@@ -87,5 +108,36 @@ public class IamMenuDTO implements Serializable {
 
         @Schema(description = "权限")
         private List<String> auth;
+
+        @Schema(description = "颜色")
+        private String color;
+
+        @Schema(description = "是否全屏")
+        private Boolean fullpage;
+
+        @Schema(description = "标签")
+        private String tag;
+
+        @Schema(description = "隐藏面包屑")
+        private Boolean hiddenBreadcrumb;
+
+        @Schema(description = "激活菜单")
+        private String active;
+    }
+
+    /**
+     * API权限
+     */
+    @Data
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "API权限")
+    public static class ApiPermission implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Schema(description = "标识")
+        private String code;
+
+        @Schema(description = "API URL")
+        private String url;
     }
 }

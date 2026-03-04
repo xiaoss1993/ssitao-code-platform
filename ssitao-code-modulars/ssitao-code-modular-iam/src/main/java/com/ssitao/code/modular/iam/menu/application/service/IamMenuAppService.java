@@ -41,5 +41,34 @@ public interface IamMenuAppService {
      * @param id 菜单ID
      * @return 菜单DTO
      */
-    IamMenuDTO getMenuById(Long id);
+    IamMenuDTO getMenuById(String id);
+
+    /**
+     * 创建菜单
+     *
+     * @param menuDTO 菜单DTO
+     * @return 创建的菜单ID
+     */
+    String createMenu(IamMenuDTO menuDTO);
+
+    /**
+     * 更新菜单
+     *
+     * @param menuDTO 菜单DTO
+     */
+    void updateMenu(IamMenuDTO menuDTO);
+
+    /**
+     * 删除菜单
+     *
+     * @param id 菜单ID
+     */
+    void deleteMenu(String id);
+
+    /**
+     * 批量删除菜单
+     *
+     * @param ids 菜单ID列表
+     */
+    void batchDeleteMenus(List<String> ids);
 }

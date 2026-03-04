@@ -1,10 +1,12 @@
 package com.ssitao.code.modular.iam.system.infrastructure.converter;
 
-import com.ssitao.code.modular.iam.dal.dataobject.IamDictDataDO;
+import com.ssitao.code.modular.iam.system.dal.dataobject.IamDictDataDO;
 import com.ssitao.code.modular.iam.system.domain.model.IamDictData;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 
@@ -14,105 +16,75 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+)
 public interface IamDictDataConverter {
 
     /**
      * DO转领域模型
-     *
-     * @param dictDataDO DO对象
-     * @return 领域模型
      */
-    @Mappings({
-            @Mapping(target = "id", source = "tbCoreDictionaryitemId"),
-            @Mapping(target = "dictTypeId", source = "dictionaryitemDictionaryId"),
-            @Mapping(target = "dictDataLabel", source = "dictionaryitemItemname"),
-            @Mapping(target = "dictDataCode", source = "dictionaryitemItemcode"),
-            @Mapping(target = "dictDataValue", source = "dictionaryitemItemcode"),
-            @Mapping(target = "cssClass", source = "dictionaryitemBackgroundcolor"),
-            @Mapping(target = "listClass", source = "dictionaryitemFontcolor"),
-            @Mapping(target = "tenantId", source = "syTenantId"),
-            @Mapping(target = "createTime", expression = "java(parseLocalDateTime(dictDataDO.getSyCreatetime()))"),
-            @Mapping(target = "updateTime", expression = "java(parseLocalDateTime(dictDataDO.getSyModifytime()))"),
-            @Mapping(target = "creator", source = "syCreateuserid"),
-            @Mapping(target = "updater", source = "syModifyuserid"),
-            @Mapping(target = "status", expression = "java(parseStatus(dictDataDO.getSyStatus()))"),
-            @Mapping(target = "parentId", source = "syParent"),
-            @Mapping(target = "layer", source = "syLayer")
-    })
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "dictTypeId", target = "dictTypeId")
+    @Mapping(source = "dictTypeCode", target = "dictTypeCode")
+    @Mapping(source = "dictDataCode", target = "dictDataCode")
+    @Mapping(source = "dictDataValue", target = "dictDataValue")
+    @Mapping(source = "dictDataLabel", target = "dictDataLabel")
+    @Mapping(source = "cssClass", target = "cssClass")
+    @Mapping(source = "listClass", target = "listClass")
+    @Mapping(source = "isDefault", target = "isDefault", qualifiedByName = "intToBoolean")
+    @Mapping(source = "sortOrder", target = "sortOrder")
+    @Mapping(source = "status", target = "status", qualifiedByName = "intToBoolean")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "remark", target = "remark")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "updateTime", target = "updateTime")
+    @Mapping(source = "creator", target = "creator")
+    @Mapping(source = "updater", target = "updater")
+    @Mapping(source = "parentId", target = "parentId")
+    @Mapping(source = "layer", target = "layer")
+    @Mapping(target = "deleted", ignore = true)
     IamDictData toDomain(IamDictDataDO dictDataDO);
 
     /**
      * 领域模型转DO
-     *
-     * @param dictData 领域模型
-     * @return DO对象
      */
-    @Mappings({
-            @Mapping(target = "tbCoreDictionaryitemId", source = "id"),
-            @Mapping(target = "dictionaryitemDictionaryId", source = "dictTypeId"),
-            @Mapping(target = "dictionaryitemItemname", source = "dictDataLabel"),
-            @Mapping(target = "dictionaryitemItemcode", source = "dictDataCode"),
-            @Mapping(target = "dictionaryitemBackgroundcolor", source = "cssClass"),
-            @Mapping(target = "dictionaryitemFontcolor", source = "listClass"),
-            @Mapping(target = "syTenantId", source = "tenantId"),
-            @Mapping(target = "syCreatetime", expression = "java(formatLocalDateTime(dictData.getCreateTime()))"),
-            @Mapping(target = "syModifytime", expression = "java(formatLocalDateTime(dictData.getUpdateTime()))"),
-            @Mapping(target = "syCreateuserid", source = "creator"),
-            @Mapping(target = "syModifyuserid", source = "updater"),
-            @Mapping(target = "syStatus", expression = "java(formatStatus(dictData.getStatus()))")
-    })
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "dictTypeId", target = "dictTypeId")
+    @Mapping(source = "dictTypeCode", target = "dictTypeCode")
+    @Mapping(source = "dictDataCode", target = "dictDataCode")
+    @Mapping(source = "dictDataValue", target = "dictDataValue")
+    @Mapping(source = "dictDataLabel", target = "dictDataLabel")
+    @Mapping(source = "cssClass", target = "cssClass")
+    @Mapping(source = "listClass", target = "listClass")
+    @Mapping(source = "isDefault", target = "isDefault", qualifiedByName = "booleanToInt")
+    @Mapping(source = "sortOrder", target = "sortOrder")
+    @Mapping(source = "status", target = "status", qualifiedByName = "booleanToInt")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "remark", target = "remark")
+    @Mapping(source = "createTime", target = "createTime")
+    @Mapping(source = "updateTime", target = "updateTime")
+    @Mapping(source = "creator", target = "creator")
+    @Mapping(source = "updater", target = "updater")
+    @Mapping(source = "parentId", target = "parentId")
+    @Mapping(source = "layer", target = "layer")
+    @Mapping(target = "deleted", constant = "0")
     IamDictDataDO toDO(IamDictData dictData);
 
     /**
      * DO列表转领域模型列表
-     *
-     * @param dictDataDOList DO列表
-     * @return 领域模型列表
      */
     List<IamDictData> toDomainList(List<IamDictDataDO> dictDataDOList);
 
-    /**
-     * 解析LocalDateTime
-     */
-    default java.time.LocalDateTime parseLocalDateTime(String dateTimeStr) {
-        if (dateTimeStr == null || dateTimeStr.isEmpty()) {
-            return null;
-        }
-        try {
-            return java.time.LocalDateTime.parse(dateTimeStr.replace(" ", "T"));
-        } catch (Exception e) {
-            return null;
-        }
+    @Named("intToBoolean")
+    default Boolean intToBoolean(Integer value) {
+        return value != null && value == 1;
     }
 
-    /**
-     * 格式化LocalDateTime
-     */
-    default String formatLocalDateTime(java.time.LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return dateTime.toString().replace("T", " ");
-    }
-
-    /**
-     * 解析状态
-     */
-    default Boolean parseStatus(String status) {
-        if (status == null || status.isEmpty()) {
-            return true;
-        }
-        return "1".equals(status) || "true".equalsIgnoreCase(status);
-    }
-
-    /**
-     * 格式化状态
-     */
-    default String formatStatus(Boolean status) {
-        if (status == null) {
-            return "1";
-        }
-        return status ? "1" : "0";
+    @Named("booleanToInt")
+    default Integer booleanToInt(Boolean value) {
+        return value != null && value ? 1 : 0;
     }
 }

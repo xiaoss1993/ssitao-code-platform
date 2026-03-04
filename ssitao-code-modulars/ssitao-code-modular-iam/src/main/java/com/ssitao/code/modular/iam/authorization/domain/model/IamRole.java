@@ -14,12 +14,13 @@ import java.util.Set;
 /**
  * IAM角色聚合根
  * Authorization领域的核心聚合根
+ * 对应表：iam_role
  *
  * @author ssitao-code
  * @since 2.0.0
  */
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class IamRole {
@@ -27,7 +28,7 @@ public class IamRole {
     /**
      * 角色ID
      */
-    private String id;
+    private String roleId;
 
     /**
      * 角色编码
@@ -40,54 +41,34 @@ public class IamRole {
     private String roleName;
 
     /**
-     * 角色类型：SYSTEM-系统角色 CUSTOM-自定义角色
+     * 角色类型: SYSTEM-系统角色, BUSINESS-业务角色
      */
     private String roleType;
 
     /**
-     * 数据权限范围：ALL-全部 DEPT-本部门 DEPT_AND_CHILD-本部门及子部门 SELF-本人
+     * 角色级别
      */
-    private String dataScope;
+    private Integer roleLevel;
 
     /**
-     * 图标样式
+     * 角色描述
      */
-    private String iconCls;
+    private String roleDesc;
 
     /**
-     * 权限组ID
+     * 角色状态: 0-禁用, 1-启用
      */
-    private String permGroupId;
+    private Integer roleStatus;
 
     /**
-     * 父角色ID
+     * 是否内置: 0-否, 1-是
      */
-    private String parentId;
+    private Integer roleIsBuiltin;
 
     /**
-     * 层级
+     * 排序号
      */
-    private Integer layer;
-
-    /**
-     * 路径
-     */
-    private String path;
-
-    /**
-     * 节点类型：FOLDER-文件夹 ITEM-项目
-     */
-    private String nodeType;
-
-    /**
-     * 状态：1-启用 0-禁用
-     */
-    private Boolean status;
-
-    /**
-     * 排序
-     */
-    private Integer sortOrder;
+    private Integer roleSort;
 
     /**
      * 租户ID
@@ -95,34 +76,34 @@ public class IamRole {
     private String tenantId;
 
     /**
-     * 备注
-     */
-    private String remark;
-
-    /**
      * 创建时间
      */
     private LocalDateTime createTime;
 
     /**
-     * 更新时间
+     * 创建人ID
      */
-    private LocalDateTime updateTime;
+    private String createUserId;
 
     /**
-     * 创建人
+     * 修改时间
      */
-    private String creator;
+    private LocalDateTime modifyTime;
 
     /**
-     * 更新人
+     * 修改人ID
      */
-    private String updater;
+    private String modifyUserId;
 
     /**
-     * 是否删除
+     * 是否删除: 0-否, 1-是
      */
-    private Boolean deleted;
+    private Integer isDeleted;
+
+    /**
+     * 版本号
+     */
+    private Integer version;
 
     /**
      * 权限集合
@@ -139,20 +120,40 @@ public class IamRole {
      *
      * @param roleCode   角色编码
      * @param roleName   角色名称
-     * @param roleType   角色类型
+     * @param tenantId   租户ID
      * @return 角色聚合根
      */
-    public static IamRole create(String roleCode, String roleName, String roleType) {
+    public static IamRole create(String roleCode, String roleName, String tenantId) {
         IamRole role = new IamRole();
         role.setRoleCode(roleCode);
         role.setRoleName(roleName);
-        role.setRoleType(roleType);
-        role.setStatus(true);
-        role.setNodeType("ITEM");
-        role.setLayer(0);
+        role.setTenantId(tenantId);
+        role.setRoleType("BUSINESS");
+        role.setRoleLevel(0);
+        role.setRoleStatus(1);
+        role.setRoleIsBuiltin(0);
+        role.setRoleSort(0);
+        role.setCreateTime(LocalDateTime.now());
+        role.setModifyTime(LocalDateTime.now());
+        role.setIsDeleted(0);
+        role.setVersion(0);
         role.setPermissions(new HashSet<>());
         role.setChildren(new ArrayList<>());
-        role.setCreateTime(LocalDateTime.now());
+        return role;
+    }
+
+    /**
+     * 创建系统角色
+     *
+     * @param roleCode   角色编码
+     * @param roleName   角色名称
+     * @param tenantId   租户ID
+     * @return 角色聚合根
+     */
+    public static IamRole createSystemRole(String roleCode, String roleName, String tenantId) {
+        IamRole role = create(roleCode, roleName, tenantId);
+        role.setRoleType("SYSTEM");
+        role.setRoleIsBuiltin(1);
         return role;
     }
 
@@ -166,7 +167,7 @@ public class IamRole {
             this.permissions = new HashSet<>();
         }
         IamPermission permission = new IamPermission();
-        permission.setId(permissionId);
+        permission.setPermissionId(permissionId);
         this.permissions.add(permission);
     }
 
@@ -184,7 +185,7 @@ public class IamRole {
         }
         for (String permissionId : permissionIds) {
             IamPermission permission = new IamPermission();
-            permission.setId(permissionId);
+            permission.setPermissionId(permissionId);
             this.permissions.add(permission);
         }
     }
@@ -196,7 +197,7 @@ public class IamRole {
      */
     public void removePermission(String permissionId) {
         if (this.permissions != null) {
-            this.permissions.removeIf(p -> p.getId().equals(permissionId));
+            this.permissions.removeIf(p -> p.getPermissionId().equals(permissionId));
         }
     }
 
@@ -219,7 +220,7 @@ public class IamRole {
         if (this.permissions == null) {
             return false;
         }
-        return this.permissions.stream().anyMatch(p -> p.getId().equals(permissionId));
+        return this.permissions.stream().anyMatch(p -> p.getPermissionId().equals(permissionId));
     }
 
     /**
@@ -233,7 +234,7 @@ public class IamRole {
         }
         List<String> ids = new ArrayList<>();
         for (IamPermission permission : this.permissions) {
-            ids.add(permission.getId());
+            ids.add(permission.getPermissionId());
         }
         return ids;
     }
@@ -248,22 +249,23 @@ public class IamRole {
             this.children = new ArrayList<>();
         }
         this.children.add(child);
-        child.setParentId(this.id);
-        child.setLayer(this.layer + 1);
+        child.setRoleLevel(this.roleLevel + 1);
     }
 
     /**
      * 禁用角色
      */
     public void disable() {
-        this.status = false;
+        this.roleStatus = 0;
+        this.modifyTime = LocalDateTime.now();
     }
 
     /**
      * 启用角色
      */
     public void enable() {
-        this.status = true;
+        this.roleStatus = 1;
+        this.modifyTime = LocalDateTime.now();
     }
 
     /**
@@ -272,7 +274,7 @@ public class IamRole {
      * @return true-可用，false-不可用
      */
     public boolean isAvailable() {
-        return this.status;
+        return this.roleStatus != null && this.roleStatus == 1;
     }
 
     /**
@@ -285,23 +287,126 @@ public class IamRole {
     }
 
     /**
-     * 构建树形路径
+     * 判断是否为内置角色
      *
-     * @param parentPath 父路径
+     * @return true-内置角色，false-非内置角色
+     */
+    public boolean isBuiltin() {
+        return this.roleIsBuiltin != null && this.roleIsBuiltin == 1;
+    }
+
+    // ==================== 别名方法（兼容AppService） ====================
+
+    /**
+     * 获取ID（别名）
+     */
+    public String getId() {
+        return this.roleId;
+    }
+
+    /**
+     * 设置ID（别名）
+     */
+    public void setId(String id) {
+        this.roleId = id;
+    }
+
+    /**
+     * 获取描述（别名）
+     */
+    public String getRemark() {
+        return this.roleDesc;
+    }
+
+    /**
+     * 设置描述（别名）
+     */
+    public void setRemark(String remark) {
+        this.roleDesc = remark;
+    }
+
+    /**
+     * 获取排序（别名）
+     */
+    public Integer getSortOrder() {
+        return this.roleSort;
+    }
+
+    /**
+     * 设置排序（别名）
+     */
+    public void setSortOrder(Integer sortOrder) {
+        this.roleSort = sortOrder;
+    }
+
+    /**
+     * 获取更新时间（别名）
+     */
+    public LocalDateTime getUpdateTime() {
+        return this.modifyTime;
+    }
+
+    /**
+     * 设置更新时间（别名）
+     */
+    public void setUpdateTime(LocalDateTime updateTime) {
+        this.modifyTime = updateTime;
+    }
+
+    /**
+     * 设置数据范围
+     */
+    public void setDataScope(String dataScope) {
+        // 暂不实现，保留方法签名
+    }
+
+    /**
+     * 设置权限组ID
+     */
+    public void setPermGroupId(String permGroupId) {
+        // 暂不实现，保留方法签名
+    }
+
+    /**
+     * 构建路径
      */
     public void buildPath(String parentPath) {
-        this.parentId = parentPath;
-        if (parentPath == null || parentPath.isEmpty()) {
-            this.path = String.valueOf(this.id);
-        } else {
-            this.path = parentPath + "/" + this.id;
-        }
+        // 暂不实现，保留方法签名
+    }
 
-        if (this.children != null && !this.children.isEmpty()) {
-            for (IamRole child : this.children) {
-                child.buildPath(this.path);
-            }
-        }
+    /**
+     * 设置父ID（兼容方法）
+     */
+    public void setParentId(String parentId) {
+        // 暂不实现，保留方法签名
+    }
+
+    /**
+     * 设置节点类型（兼容方法）
+     */
+    public void setNodeType(String nodeType) {
+        // 暂不实现，保留方法签名
+    }
+
+    /**
+     * 获取层级（兼容方法）
+     */
+    public Integer getLayer() {
+        return this.roleLevel;
+    }
+
+    /**
+     * 设置层级（兼容方法）
+     */
+    public void setLayer(Integer layer) {
+        this.roleLevel = layer;
+    }
+
+    /**
+     * 获取路径（兼容方法）
+     */
+    public String getPath() {
+        return "";
     }
 
     /**
@@ -311,9 +416,9 @@ public class IamRole {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class IamPermission {
-        private String id;
-        private String permCode;
-        private String permName;
+        private String permissionId;
+        private String permissionCode;
+        private String permissionName;
     }
 
 }
