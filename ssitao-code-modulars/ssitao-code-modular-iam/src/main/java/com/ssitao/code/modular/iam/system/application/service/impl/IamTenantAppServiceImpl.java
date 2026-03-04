@@ -6,7 +6,8 @@ import com.ssitao.code.modular.iam.system.application.service.IamTenantAppServic
 import com.ssitao.code.modular.iam.system.api.dto.IamTenantDTO;
 import com.ssitao.code.modular.iam.system.domain.model.IamTenant;
 import com.ssitao.code.modular.iam.system.domain.repository.IamTenantRepository;
-import com.ssitao.code.modular.iam.system.infrastructure.converter.IamTenantConverter;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,26 +23,25 @@ import java.util.stream.Collectors;
  * @author ssitao-code
  * @since 2.0.0
  */
+@Slf4j
+@Data
 @Service
 public class IamTenantAppServiceImpl implements IamTenantAppService {
 
     @Resource
     private IamTenantRepository tenantRepository;
 
-    @Resource
-    private IamTenantConverter tenantConverter;
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createTenant(IamTenantCreateCommand command) {
+    public String create(IamTenantCreateCommand command) {
         // 检查租户编码是否已存在
         if (tenantRepository.existsByTenantCode(command.getTenantCode(), null)) {
-            throw new IllegalArgumentException("租户编码已存在: " + command.getTenantCode());
+            throw new RuntimeException("租户编码已存在: " + command.getTenantCode());
         }
 
         // 检查域名是否已存在
         if (command.getDomain() != null && tenantRepository.existsByDomain(command.getDomain(), null)) {
-            throw new IllegalArgumentException("域名已被使用: " + command.getDomain());
+            throw new RuntimeException("域名已被使用: " + command.getDomain());
         }
 
         // 创建租户聚合根
@@ -69,19 +69,18 @@ public class IamTenantAppServiceImpl implements IamTenantAppService {
         tenant.setDomain(command.getDomain());
         tenant.setRemark(command.getRemark());
 
-        String id = tenantRepository.save(tenant);
-        return id != null ? Long.valueOf(id) : null;
+        return tenantRepository.save(tenant);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateTenant(IamTenantUpdateCommand command) {
-        IamTenant tenant = tenantRepository.findById(command.getId().toString())
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + command.getId()));
+    public void update(IamTenantUpdateCommand command) {
+        IamTenant tenant = tenantRepository.findById(command.getId())
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + command.getId()));
 
         // 检查域名是否已被其他租户使用
-        if (command.getDomain() != null && tenantRepository.existsByDomain(command.getDomain(), command.getId().toString())) {
-            throw new IllegalArgumentException("域名已被其他租户使用: " + command.getDomain());
+        if (command.getDomain() != null && tenantRepository.existsByDomain(command.getDomain(), command.getId())) {
+            throw new RuntimeException("域名已被其他租户使用: " + command.getDomain());
         }
 
         // 更新属性
@@ -108,61 +107,61 @@ public class IamTenantAppServiceImpl implements IamTenantAppService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTenant(Long id) {
-        tenantRepository.deleteById(id.toString());
+    public void delete(String id) {
+        tenantRepository.deleteById(id);
     }
 
     @Override
-    public IamTenantDTO getTenantById(Long id) {
-        IamTenant tenant = tenantRepository.findById(id.toString())
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + id));
-        return convertToDTO(tenant);
+    public IamTenantDTO getById(String id) {
+        IamTenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + id));
+        return toDTO(tenant);
     }
 
     @Override
-    public IamTenantDTO getTenantByCode(String tenantCode) {
+    public IamTenantDTO getByTenantCode(String tenantCode) {
         IamTenant tenant = tenantRepository.findByTenantCode(tenantCode)
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + tenantCode));
-        return convertToDTO(tenant);
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + tenantCode));
+        return toDTO(tenant);
     }
 
     @Override
-    public IamTenantDTO getTenantByDomain(String domain) {
+    public IamTenantDTO getByDomain(String domain) {
         IamTenant tenant = tenantRepository.findByDomain(domain)
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + domain));
-        return convertToDTO(tenant);
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + domain));
+        return toDTO(tenant);
     }
 
     @Override
-    public List<IamTenantDTO> listTenants() {
+    public List<IamTenantDTO> listAll() {
         List<IamTenant> tenants = tenantRepository.findAll();
         return tenants.stream()
-                .map(this::convertToDTO)
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void enableTenant(Long id) {
-        IamTenant tenant = tenantRepository.findById(id.toString())
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + id));
+    public void enable(String id) {
+        IamTenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + id));
         tenant.enable();
         tenantRepository.update(tenant);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void disableTenant(Long id) {
-        IamTenant tenant = tenantRepository.findById(id.toString())
-                .orElseThrow(() -> new IllegalArgumentException("租户不存在: " + id));
+    public void disable(String id) {
+        IamTenant tenant = tenantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("租户不存在: " + id));
         tenant.disable();
         tenantRepository.update(tenant);
     }
 
     /**
-     * 转换租户为DTO
+     * 将实体转换为DTO
      */
-    private IamTenantDTO convertToDTO(IamTenant tenant) {
+    private IamTenantDTO toDTO(IamTenant tenant) {
         IamTenantDTO dto = new IamTenantDTO();
         dto.setId(tenant.getId());
         dto.setTenantCode(tenant.getTenantCode());
@@ -188,10 +187,10 @@ public class IamTenantAppServiceImpl implements IamTenantAppService {
         dto.setUpdater(tenant.getUpdater());
 
         // 计算使用百分比
-        if (tenant.getUserLimit() != null && tenant.getCurrentUserCount() != null) {
+        if (tenant.getUserLimit() != null && tenant.getCurrentUserCount() != null && tenant.getUserLimit() > 0) {
             dto.setUserUsagePercent((int) (tenant.getCurrentUserCount() * 100 / tenant.getUserLimit()));
         }
-        if (tenant.getStorageLimit() != null && tenant.getUsedStorage() != null) {
+        if (tenant.getStorageLimit() != null && tenant.getUsedStorage() != null && tenant.getStorageLimit() > 0) {
             dto.setStorageUsagePercent((int) (tenant.getUsedStorage() * 100 / tenant.getStorageLimit()));
         }
 

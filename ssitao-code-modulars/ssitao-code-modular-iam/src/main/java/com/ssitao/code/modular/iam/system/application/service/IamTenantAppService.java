@@ -20,21 +20,21 @@ public interface IamTenantAppService {
      * @param command 创建命令
      * @return 租户ID
      */
-    Long createTenant(IamTenantCreateCommand command);
+    String create(IamTenantCreateCommand command);
 
     /**
      * 更新租户
      *
      * @param command 更新命令
      */
-    void updateTenant(IamTenantUpdateCommand command);
+    void update(IamTenantUpdateCommand command);
 
     /**
      * 删除租户
      *
      * @param id 租户ID
      */
-    void deleteTenant(Long id);
+    void delete(String id);
 
     /**
      * 根据ID获取租户
@@ -42,7 +42,7 @@ public interface IamTenantAppService {
      * @param id 租户ID
      * @return 租户DTO
      */
-    IamTenantDTO getTenantById(Long id);
+    IamTenantDTO getById(String id);
 
     /**
      * 根据租户编码获取租户
@@ -50,7 +50,7 @@ public interface IamTenantAppService {
      * @param tenantCode 租户编码
      * @return 租户DTO
      */
-    IamTenantDTO getTenantByCode(String tenantCode);
+    IamTenantDTO getByTenantCode(String tenantCode);
 
     /**
      * 根据域名获取租户
@@ -58,27 +58,27 @@ public interface IamTenantAppService {
      * @param domain 域名
      * @return 租户DTO
      */
-    IamTenantDTO getTenantByDomain(String domain);
+    IamTenantDTO getByDomain(String domain);
 
     /**
      * 获取租户列表
      *
      * @return 租户列表
      */
-    List<IamTenantDTO> listTenants();
+    List<IamTenantDTO> listAll();
 
     /**
      * 启用租户
      *
      * @param id 租户ID
      */
-    void enableTenant(Long id);
+    void enable(String id);
 
     /**
      * 禁用租户
      *
      * @param id 租户ID
      */
-    void disableTenant(Long id);
+    void disable(String id);
 
 }
