@@ -1,5 +1,6 @@
 package com.ssitao.code.config;
 
+import com.ssitao.code.modular.iam.authorization.infrastructure.interceptor.DataPermissionInterceptor;
 import com.ssitao.code.modular.iam.system.infrastructure.tenant.TenantInterceptor;
 import com.ssitao.code.resolver.MyRequestArgumentResolver;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,11 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final TenantInterceptor tenantInterceptor;
+    private final DataPermissionInterceptor dataPermissionInterceptor;
 
-    public WebConfig(TenantInterceptor tenantInterceptor) {
+    public WebConfig(TenantInterceptor tenantInterceptor, DataPermissionInterceptor dataPermissionInterceptor) {
         this.tenantInterceptor = tenantInterceptor;
+        this.dataPermissionInterceptor = dataPermissionInterceptor;
     }
 
     /**
@@ -37,9 +40,11 @@ public class WebConfig implements WebMvcConfigurer {
     /**
      * 配置拦截器
      * 注册租户拦截器，用于设置租户上下文
+     * 注册数据权限拦截器，用于设置数据权限上下文
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 租户拦截器
         registry.addInterceptor(tenantInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns(
@@ -51,6 +56,19 @@ public class WebConfig implements WebMvcConfigurer {
                         "/v3/api-docs/**"
                 );
         log.info("租户拦截器注册完成");
+
+        // 数据权限拦截器
+        registry.addInterceptor(dataPermissionInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/error",
+                        "/doc.html",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**"
+                );
+        log.info("数据权限拦截器注册完成");
     }
 
     /**
