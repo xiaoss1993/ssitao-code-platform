@@ -1,10 +1,12 @@
 package com.ssitao.code.config;
 
+import com.ssitao.code.modular.iam.system.infrastructure.tenant.TenantInterceptor;
 import com.ssitao.code.resolver.MyRequestArgumentResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -18,12 +20,37 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    private final TenantInterceptor tenantInterceptor;
+
+    public WebConfig(TenantInterceptor tenantInterceptor) {
+        this.tenantInterceptor = tenantInterceptor;
+    }
+
     /**
      * 配置参数解析器
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new MyRequestArgumentResolver());
+    }
+
+    /**
+     * 配置拦截器
+     * 注册租户拦截器，用于设置租户上下文
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(tenantInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/error",
+                        "/doc.html",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**"
+                );
+        log.info("租户拦截器注册完成");
     }
 
     /**
