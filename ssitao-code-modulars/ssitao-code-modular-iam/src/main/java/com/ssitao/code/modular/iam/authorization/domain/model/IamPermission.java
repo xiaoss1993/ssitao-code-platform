@@ -36,7 +36,7 @@ public class IamPermission {
     private String permName;
 
     /**
-     * 权限类型：MENU-菜单 BUTTON-按钮 API-接口 DATA-数据
+     * 权限类型：MENU-菜单 BUTTON-按钮 API-接口 DATA-数据 FIELD-字段
      */
     private String permType;
 
@@ -226,6 +226,23 @@ public class IamPermission {
     }
 
     /**
+     * 创建字段权限
+     *
+     * @param permCode 权限编码
+     * @param permName 权限名称
+     * @return 权限聚合根
+     */
+    public static IamPermission createField(String permCode, String permName) {
+        IamPermission permission = new IamPermission();
+        permission.setPermCode(permCode);
+        permission.setPermName(permName);
+        permission.setPermType("FIELD");
+        permission.setStatus(true);
+        permission.setCreateTime(LocalDateTime.now());
+        return permission;
+    }
+
+    /**
      * 判断是否为菜单权限
      *
      * @return true-是，false-否
@@ -259,6 +276,15 @@ public class IamPermission {
      */
     public boolean isData() {
         return "DATA".equals(this.permType);
+    }
+
+    /**
+     * 判断是否为字段权限
+     *
+     * @return true-是，false-否
+     */
+    public boolean isField() {
+        return "FIELD".equals(this.permType);
     }
 
     /**
