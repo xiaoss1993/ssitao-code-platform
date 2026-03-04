@@ -19,7 +19,7 @@ public class IamTenantUpdateCommand {
      * 租户ID
      */
     @NotNull(message = "租户ID不能为空")
-    private Long id;
+    private String id;
 
     /**
      * 租户名称
