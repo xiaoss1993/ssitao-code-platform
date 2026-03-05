@@ -90,7 +90,7 @@ public class MetaColumnRepositoryImpl implements MetaColumnRepository {
                 .eq(MetaColumnDO::getTableId, tableId)
                 .eq(MetaColumnDO::getTenantId, tenantId)
                 .eq(MetaColumnDO::getIsDeleted, 0)
-                .orderByAsc(MetaColumnDO::getColumnSort);
+                .orderBy("column_sort", true);
         return metaColumnMapper.selectListByQuery(wrapper);
     }
 

@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Table("meta_column")
 public class MetaColumnDO {
 
-    @Id(keyType = KeyType.AssignId)
+    @Id(keyType = KeyType.None)
     private String columnId;
 
     private String tableId;
