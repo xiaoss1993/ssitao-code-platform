@@ -25,6 +25,11 @@ import java.util.Optional;
 @Repository
 public class IamRoleRepositoryImpl implements IamRoleRepository {
 
+    /**
+     * 未删除标记
+     */
+    private static final Integer NOT_DELETED = 0;
+
     @Resource
     private IamRoleMapper roleMapper;
 
@@ -62,6 +67,7 @@ public class IamRoleRepositoryImpl implements IamRoleRepository {
     @Override
     public Optional<IamRole> findById(String id, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
+                .eq("is_deleted", NOT_DELETED)
                 .eq("role_id", id);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("tenant_id", tenantId);
@@ -73,6 +79,7 @@ public class IamRoleRepositoryImpl implements IamRoleRepository {
     @Override
     public Optional<IamRole> findByRoleCode(String roleCode, String tenantId) {
         QueryWrapper query = QueryWrapper.create()
+                .eq("is_deleted", NOT_DELETED)
                 .eq("role_code", roleCode);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("tenant_id", tenantId);
@@ -85,6 +92,7 @@ public class IamRoleRepositoryImpl implements IamRoleRepository {
     @Override
     public List<IamRole> findAll(String tenantId) {
         QueryWrapper query = QueryWrapper.create();
+        query.eq("is_deleted", NOT_DELETED);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("tenant_id", tenantId);
         }
@@ -97,6 +105,7 @@ public class IamRoleRepositoryImpl implements IamRoleRepository {
     @Override
     public List<IamRole> findTree(String tenantId) {
         QueryWrapper query = QueryWrapper.create();
+        query.eq("is_deleted", NOT_DELETED);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("tenant_id", tenantId);
         }
@@ -111,6 +120,7 @@ public class IamRoleRepositoryImpl implements IamRoleRepository {
     public List<IamRole> findByUserId(String userId, String tenantId) {
         // 通过关联表查询
         QueryWrapper query = QueryWrapper.create()
+                .eq("is_deleted", NOT_DELETED)
                 .eq("account_id", userId);
         if (tenantId != null && !tenantId.isEmpty()) {
             query.eq("tenant_id", tenantId);

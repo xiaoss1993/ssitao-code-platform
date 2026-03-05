@@ -22,8 +22,11 @@ public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 1. 从请求头获取租户ID
-        String tenantId = request.getHeader("X-Tenant-Id");
+        // 1. 从请求头获取租户ID (支持 Tenant-Id 和 tenantId 两种请求头)
+        String tenantId = request.getHeader("Tenant-Id");
+        if (tenantId == null || tenantId.isEmpty()) {
+            tenantId = request.getHeader("tenantId");
+        }
 
         // 2. 如果没有，从域名获取
         if (tenantId == null || tenantId.isEmpty()) {

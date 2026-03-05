@@ -75,19 +75,30 @@ public class IamAccountController {
         return success(account);
     }
 
-    @PostMapping("/list")
-    @Operation(summary = "查询账号列表", description = "根据条件查询账号列表")
-    public CommonResult<List<IamAccountDTO>> listAccounts(@RequestBody IamAccountQuery query) {
-        List<IamAccountDTO> accounts = accountAppService.listAccounts(query);
-        return success(accounts);
-    }
-
     @PostMapping("/page")
     @Operation(summary = "分页查询账号", description = "分页查询账号列表")
     public CommonResult<List<IamAccountDTO>> pageAccounts(@RequestBody IamAccountQuery query,
                                                            @RequestParam(defaultValue = "1") int page,
                                                            @RequestParam(defaultValue = "10") int size) {
         List<IamAccountDTO> accounts = accountAppService.pageAccounts(query, page, size);
+        return success(accounts);
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页查询账号", description = "分页查询账号列表（GET版本）")
+    public CommonResult<List<IamAccountDTO>> pageAccountsGet(@RequestParam(defaultValue = "1") int current,
+                                                              @RequestParam(defaultValue = "10") int size,
+                                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        IamAccountQuery query = new IamAccountQuery();
+        query.setTenantId(tenantId);
+        List<IamAccountDTO> accounts = accountAppService.pageAccounts(query, current, size);
+        return success(accounts);
+    }
+
+    @PostMapping("/list")
+    @Operation(summary = "查询账号列表", description = "根据条件查询账号列表")
+    public CommonResult<List<IamAccountDTO>> listAccounts(@RequestBody IamAccountQuery query) {
+        List<IamAccountDTO> accounts = accountAppService.listAccounts(query);
         return success(accounts);
     }
 

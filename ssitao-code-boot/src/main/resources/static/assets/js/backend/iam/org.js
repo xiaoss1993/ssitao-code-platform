@@ -37,7 +37,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'createTime',
                 responseHandler: function(res) {
                     if (res.code === 200 && res.data) {
-                        return { rows: res.data, total: res.data.length };
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
                     }
                     return { rows: [], total: 0 };
                 },
@@ -96,7 +104,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'createTime',
                 responseHandler: function(res) {
                     if (res.code === 200 && res.data) {
-                        return { rows: res.data, total: res.data.length };
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
                     }
                     return { rows: [], total: 0 };
                 },
@@ -159,7 +175,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sortName: 'sort',
                 responseHandler: function(res) {
                     if (res.code === 200 && res.data) {
-                        return { rows: res.data, total: res.data.length };
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
                     }
                     return { rows: [], total: 0 };
                 },

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +25,11 @@ public class IamAccountDTO {
     @Schema(description = "账号ID")
     private String id;
 
+    @JsonProperty("account_code")
     @Schema(description = "账号编码")
     private String accountCode;
 
+    @JsonProperty("account_name")
     @Schema(description = "账号名称")
     private String accountName;
 
@@ -51,24 +54,30 @@ public class IamAccountDTO {
     @Schema(description = "账号过期时间")
     private LocalDateTime expireTime;
 
+    @JsonProperty("password_inited")
     @Schema(description = "密码是否已初始化")
     private Boolean passwordInited;
 
     @Schema(description = "是否永久账号")
     private Boolean permanent;
 
+    @JsonProperty("last_login_ip")
     @Schema(description = "最后登录IP")
     private String lastLoginIp;
 
+    @JsonProperty("last_login_time")
     @Schema(description = "最后登录时间")
     private LocalDateTime lastLoginTime;
 
+    @JsonProperty("user_id")
     @Schema(description = "关联用户ID")
     private String userId;
 
+    @JsonProperty("tenant_id")
     @Schema(description = "租户ID")
     private String tenantId;
 
+    @JsonProperty("org_id")
     @Schema(description = "组织ID")
     private String orgId;
 
@@ -78,6 +87,7 @@ public class IamAccountDTO {
     @Schema(description = "是否可用")
     private Boolean available;
 
+    @JsonProperty("create_time")
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 

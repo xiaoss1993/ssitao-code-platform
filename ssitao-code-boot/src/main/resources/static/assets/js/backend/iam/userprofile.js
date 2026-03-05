@@ -16,6 +16,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 // 配置响应数据处理
                 responseHandler: function (res) {
                     if (res.code === 200 && res.data) {
+                        if (res.data.records) {
+                            return { rows: res.data.records, total: res.data.totalRow || res.data.records.length };
+                        }
                         if (res.data.content) {
                             return { rows: res.data.content, total: res.data.totalElements || res.data.total };
                         }

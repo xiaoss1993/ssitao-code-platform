@@ -151,7 +151,7 @@ public class IamAccountAppServiceImpl implements IamAccountAppService {
                 query.getTenantId()
         );
         return accounts.stream()
-                .skip((long) page * size)
+                .skip((long) (page - 1) * size)
                 .limit(size)
                 .map(accountConverter::toDTOFromDomain)
                 .collect(Collectors.toList());

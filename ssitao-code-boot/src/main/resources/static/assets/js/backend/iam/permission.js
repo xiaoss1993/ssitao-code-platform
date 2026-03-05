@@ -26,6 +26,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             return { rows: data, total: data.length };
                         }
                         // 如果返回的是分页对象
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
                         if (data.content) {
                             return { rows: data.content, total: data.totalElements || data.content.length };
                         }

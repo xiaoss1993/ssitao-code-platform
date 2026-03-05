@@ -128,6 +128,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<?> handleException(Exception e, HttpServletRequest request) {
         log.error("Exception: {} - {}", request.getRequestURI(), e.getMessage(), e);
-        return Result.error(500, "系统内部错误");
+        // 返回详细错误信息便于调试
+        String errorMsg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
+        return Result.error(500, "系统内部错误: " + errorMsg);
     }
 }

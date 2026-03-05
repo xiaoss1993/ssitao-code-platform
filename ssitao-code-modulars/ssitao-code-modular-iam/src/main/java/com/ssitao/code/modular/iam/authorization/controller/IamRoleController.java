@@ -77,9 +77,14 @@ public class IamRoleController {
     @Operation(summary = "分页查询角色", description = "分页查询角色列表")
     public CommonResult<Page<IamRoleDTO>> pageRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
                                                       @RequestParam(defaultValue = "1") int current,
-                                                      @RequestParam(defaultValue = "10") int size) {
-        Page<IamRoleDTO> page = roleAppService.pageRoles(tenantId, current, size);
-        return success(page);
+                                                      @RequestParam(defaultValue = "10") int size,
+                                                      @RequestParam(name = "page", defaultValue = "1") int page,
+                                                      @RequestParam(name = "limit", defaultValue = "10") int limit) {
+        // 兼容前端参数
+        int pageNum = current > 0 ? current : (page > 0 ? page : 1);
+        int pageSize = size > 0 ? size : (limit > 0 ? limit : 10);
+        Page<IamRoleDTO> result = roleAppService.pageRoles(tenantId, pageNum, pageSize);
+        return success(result);
     }
 
     @GetMapping("/tree")

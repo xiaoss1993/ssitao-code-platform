@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.authorization.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -18,16 +19,19 @@ public class IamRoleDTO {
     /**
      * 角色ID
      */
+    @JsonProperty("id")
     private String id;
 
     /**
      * 角色编码
      */
+    @JsonProperty("role_code")
     private String roleCode;
 
     /**
      * 角色名称
      */
+    @JsonProperty("role_name")
     private String roleName;
 
     // ==================== 前端兼容字段 ====================
@@ -45,6 +49,7 @@ public class IamRoleDTO {
     /**
      * 排序（前端兼容）
      */
+    @JsonProperty("sort_order")
     private Integer sort;
 
     /**
@@ -62,6 +67,7 @@ public class IamRoleDTO {
     /**
      * 角色类型：SYSTEM-系统角色 CUSTOM-自定义角色
      */
+    @JsonProperty("role_type")
     private String roleType;
 
     /**
@@ -127,11 +133,13 @@ public class IamRoleDTO {
     /**
      * 创建时间
      */
+    @JsonProperty("create_time")
     private String createTime;
 
     /**
      * 更新时间
      */
+    @JsonProperty("update_time")
     private String updateTime;
 
     /**

@@ -95,6 +95,7 @@ public interface IamAccountConverter {
      * DO转DTO
      */
     @Mapping(source = "accountId", target = "id")
+    @Mapping(source = "accountStatus", target = "status", qualifiedByName = "integerToBoolean")
     IamAccountDTO toDTO(IamAccountDO accountDO);
 
     /**

@@ -19,6 +19,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
                         }
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
                         if (data.content) {
                             return { rows: data.content, total: data.totalElements || data.content.length };
                         }

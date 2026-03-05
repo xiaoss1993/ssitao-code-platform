@@ -262,6 +262,11 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
             dto.setStatusInt(dto.getStatus() ? 1 : 0);
         }
 
+        // 设置 status (状态：true-启用 false-禁用) - 前端需要此字段
+        if (dto.getStatus() == null && dto.getStatusInt() != null) {
+            dto.setStatus(dto.getStatusInt() == 1);
+        }
+
         // 设置 date (创建时间字符串)
         if (dto.getDate() == null && dto.getCreateTime() != null) {
             dto.setDate(dto.getCreateTime().toString());
