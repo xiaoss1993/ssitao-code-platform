@@ -314,7 +314,7 @@ public class IamMenu {
         }
         this.children.add(child);
         child.setMenuParentId(this.menuId);
-        child.setMenuTreeLevel(this.menuTreeLevel + 1);
+        child.setMenuTreeLevel((this.menuTreeLevel != null ? this.menuTreeLevel : 0) + 1);
     }
 
     /**

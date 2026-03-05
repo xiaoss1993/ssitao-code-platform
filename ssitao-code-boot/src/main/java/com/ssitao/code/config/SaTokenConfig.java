@@ -1,14 +1,14 @@
 package com.ssitao.code.config;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.frame.satoken.core.SecurityUtil;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Sa-Token 配置类
@@ -22,29 +22,33 @@ public class SaTokenConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 注册 Sa-Token 拦截器，使用 SaRouter 进行灵活的路由权限校验
-        registry.addInterceptor(new SaInterceptor(handle -> {
-            // 1. 首先检查是否登录
-            StpUtil.checkLogin();
+        // 注册 Sa-Token 拦截器
+        registry.addInterceptor(new HandlerInterceptor() {
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                // 1. 首先检查是否登录
+                StpUtil.checkLogin();
 
-            // 2. 获取请求信息
-            HttpServletRequest request = handle.getRequest();
-            String method = request.getMethod();
-            String path = request.getRequestURI();
+                // 2. 获取请求信息
+                String method = request.getMethod();
+                String path = request.getRequestURI();
 
-            // 3. 根据请求路径进行权限校验
-            // GET 请求只做登录校验（查询操作），非 GET 请求需要权限校验（增删改操作）
-            if (!"GET".equalsIgnoreCase(method)) {
-                // 提取权限码：从 /api/user/add -> user:add
-                String permission = extractPermission(path, method);
-                if (permission != null) {
-                    // 检查是否为超级管理员，如果是则跳过权限校验
-                    if (!SecurityUtil.isSuperAdmin()) {
-                        SecurityUtil.checkPermission(permission);
+                // 3. 根据请求路径进行权限校验
+                // GET 请求只做登录校验（查询操作），非 GET 请求需要权限校验（增删改操作）
+                if (!"GET".equalsIgnoreCase(method)) {
+                    // 提取权限码：从 /api/user/add -> user:add
+                    String permission = extractPermission(path, method);
+                    if (permission != null) {
+                        // 检查是否为超级管理员，如果是则跳过权限校验
+                        if (!SecurityUtil.isSuperAdmin()) {
+                            SecurityUtil.checkPermission(permission);
+                        }
                     }
                 }
+
+                return true;
             }
-        }))
+        })
         .addPathPatterns("/**")
         .excludePathPatterns(
                 // 登录相关
@@ -54,6 +58,12 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 "/api/auth/check",
                 "/api/auth/captcha",
                 "/api/auth/logout",
+
+                // 页面路由（需要登录后才能访问，但在登录页不拦截）
+                "/",
+                "/index",
+                "/dashboard",
+                "/console",
 
                 // 静态资源
                 "/assets/**",

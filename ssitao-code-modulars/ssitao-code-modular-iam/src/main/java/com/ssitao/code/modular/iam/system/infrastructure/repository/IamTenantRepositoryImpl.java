@@ -1,5 +1,8 @@
 package com.ssitao.code.modular.iam.system.infrastructure.repository;
 
+import cn.hutool.core.util.StrUtil;
+import com.ssitao.code.common.pojo.PageParam;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
 import com.ssitao.code.modular.iam.system.dal.dataobject.IamTenantDO;
 import com.ssitao.code.modular.iam.system.dal.mapper.IamTenantMapper;
@@ -12,6 +15,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * IAM租户仓储实现
@@ -129,5 +133,48 @@ public class IamTenantRepositoryImpl implements IamTenantRepository {
             query.ne("id", excludeId);
         }
         return tenantMapper.selectCountByQuery(query) > 0;
+    }
+
+    @Override
+    public PageResult<IamTenant> findPage(PageParam pageParam, String tenantCode, String tenantName, String tenantStatus) {
+        // 构建查询条件
+        QueryWrapper query = QueryWrapper.create()
+                .eq("deleted", NOT_DELETED);
+
+        // 租户编码模糊查询
+        if (StrUtil.isNotBlank(tenantCode)) {
+            query.like("tenant_code", tenantCode);
+        }
+        // 租户名称模糊查询
+        if (StrUtil.isNotBlank(tenantName)) {
+            query.like("tenant_name", tenantName);
+        }
+        // 租户状态精确查询
+        if (StrUtil.isNotBlank(tenantStatus)) {
+            query.eq("tenant_status", tenantStatus);
+        }
+
+        // 获取总数
+        long total = tenantMapper.selectCountByQuery(query);
+
+        // 设置分页参数 - 使用limit(offset, rows)
+        int offset = pageParam.getOffset();
+        int pageSize = pageParam.getPageSize();
+        query.limit(offset, pageSize);
+
+        // 设置排序
+        String orderBy = pageParam.getOrderBy();
+        if (StrUtil.isNotBlank(orderBy)) {
+            boolean isAsc = "asc".equalsIgnoreCase(pageParam.getOrderDirection());
+            query.orderBy(orderBy, isAsc);
+        } else {
+            query.orderBy("create_time", false);
+        }
+
+        // 查询数据
+        List<IamTenantDO> list = tenantMapper.selectListByQuery(query);
+        List<IamTenant> result = tenantConverter.toDomainList(list);
+
+        return new PageResult<>(result, (int) total);
     }
 }

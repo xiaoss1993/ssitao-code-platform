@@ -74,17 +74,8 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
             String className = getPackageName(entity) + ".entity." + toPascalCase(entityCode);
             CtClass ctClass = pool.makeClass(className);
 
-            // 添加 Lombok 注解
-            ctClass.addAnnotation(pool.get("lombok.Data"));
-            ctClass.addAnnotation(pool.get("lombok.Builder"));
-            ctClass.addAnnotation(pool.get("lombok.NoArgsConstructor"));
-            ctClass.addAnnotation(pool.get("lombok.AllArgsConstructor"));
-
-            // 添加 TableName 注解（若使用 MyBatis-Plus）
-            if (StrUtil.isNotBlank(entity.getTableName())) {
-                String tableAnnotation = "@org.springframework.annotations.TableName(\"" + entity.getTableName() + "\")";
-                ctClass.addAnnotation(pool.get(tableAnnotation));
-            }
+            // 注意：Lombok注解在运行时动态生成的类上不起作用，因为Lombok是编译时注解处理器
+            // 动态生成的类需要手动实现getter/setter等方法
 
             // 添加字段
             if (CollUtil.isNotEmpty(fields)) {
@@ -222,23 +213,56 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
         // 设置访问修饰符
         ctField.setModifiers(Modifier.PRIVATE);
 
-        // 添加 Lombok 注解
-        ctField.addAnnotation(pool.get("lombok.ColumnName(\"" + fieldName + "\")"));
+        ctClass.addField(ctField);
 
-        // 添加 JPA/MyBatis 注解
-        if (Boolean.TRUE.equals(field.getRequired())) {
-            ctField.addAnnotation(pool.get("jakarta.persistence.Column(nullable=false)"));
-        } else {
-            ctField.addAnnotation(pool.get("jakarta.persistence.Column"));
+        // 添加 getter 方法
+        addGetterMethod(ctClass, fieldName, fieldType);
+
+        // 添加 setter 方法
+        addSetterMethod(ctClass, fieldName, fieldType);
+    }
+
+    /**
+     * 添加 getter 方法
+     */
+    private void addGetterMethod(CtClass ctClass, String fieldName, CtClass fieldType) throws CannotCompileException {
+        String capitalizedName = capitalize(fieldName);
+        String getterName = "get" + capitalizedName;
+
+        // 布尔类型的 getter 可能是 isXxx
+        if (fieldType.getName().equals("boolean") || fieldType.getName().equals("java.lang.Boolean")) {
+            getterName = "is" + capitalizedName;
         }
 
-        ctClass.addField(ctField);
+        String getterCode = "public " + fieldType.getName() + " " + getterName + "() { return " + fieldName + "; }";
+        ctClass.addMethod(CtMethod.make(getterCode, ctClass));
+    }
+
+    /**
+     * 添加 setter 方法
+     */
+    private void addSetterMethod(CtClass ctClass, String fieldName, CtClass fieldType) throws CannotCompileException {
+        String capitalizedName = capitalize(fieldName);
+        String setterName = "set" + capitalizedName;
+
+        String setterCode = "public void " + setterName + "(" + fieldType.getName() + " " + fieldName + ") { this." + fieldName + " = " + fieldName + "; }";
+        ctClass.addMethod(CtMethod.make(setterCode, ctClass));
+    }
+
+    /**
+     * 首字母大写
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     /**
      * 添加 Mapper 方法
      */
-    private void addMapperMethods(ClassPool pool, CtClass ctMapper, CtClass entityClass) throws NotFoundException, CannotCompileException {
+    private void addMapperMethods(ClassPool pool, CtClass ctMapper, Class<?> entityClass) throws NotFoundException, CannotCompileException {
         String entityName = entityClass.getSimpleName();
 
         // 添加 insert 方法

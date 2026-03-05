@@ -23,6 +23,242 @@ public class PageController {
     // ==================== 常规管理 ====================
 
     /**
+     * 账号管理页面
+     */
+    @GetMapping("/account")
+    @Operation(summary = "账号管理页面")
+    public String accountPage(Model model) {
+        addCommonModel(model, "账号管理", "account");
+        return "account";
+    }
+
+    /**
+     * 账号添加页面
+     */
+    @GetMapping("/account/add")
+    @Operation(summary = "账号添加页面")
+    public String accountAddPage(Model model) {
+        addCommonModel(model, "添加账号", "account");
+        return "account-edit";
+    }
+
+    /**
+     * 账号编辑页面
+     */
+    @GetMapping("/account/edit")
+    @Operation(summary = "账号编辑页面")
+    public String accountEditPage(Model model) {
+        addCommonModel(model, "编辑账号", "account");
+        return "account-edit";
+    }
+
+    // ==================== 角色管理 ====================
+
+    /**
+     * 角色管理页面
+     */
+    @GetMapping("/role")
+    @Operation(summary = "角色管理页面")
+    public String rolePage(Model model) {
+        addCommonModel(model, "角色管理", "role");
+        return "role";
+    }
+
+    /**
+     * 角色添加页面
+     */
+    @GetMapping("/role/add")
+    @Operation(summary = "角色添加页面")
+    public String roleAddPage(Model model) {
+        addCommonModel(model, "添加角色", "role");
+        return "role-edit";
+    }
+
+    /**
+     * 角色编辑页面
+     */
+    @GetMapping("/role/edit")
+    @Operation(summary = "角色编辑页面")
+    public String roleEditPage(Model model) {
+        addCommonModel(model, "编辑角色", "role");
+        return "role-edit";
+    }
+
+    // ==================== 权限管理 ====================
+
+    /**
+     * 权限管理页面
+     */
+    @GetMapping("/permission")
+    @Operation(summary = "权限管理页面")
+    public String permissionPage(Model model) {
+        addCommonModel(model, "权限管理", "permission");
+        return "permission";
+    }
+
+    /**
+     * 权限添加页面
+     */
+    @GetMapping("/permission/add")
+    @Operation(summary = "权限添加页面")
+    public String permissionAddPage(Model model) {
+        addCommonModel(model, "添加权限", "permission");
+        return "permission-edit";
+    }
+
+    /**
+     * 权限编辑页面
+     */
+    @GetMapping("/permission/edit")
+    @Operation(summary = "权限编辑页面")
+    public String permissionEditPage(Model model) {
+        addCommonModel(model, "编辑权限", "permission");
+        return "permission-edit";
+    }
+
+    // ==================== 菜单管理 ====================
+
+    /**
+     * 菜单管理页面
+     */
+    @GetMapping("/menu")
+    @Operation(summary = "菜单管理页面")
+    public String menuPage(Model model) {
+        addCommonModel(model, "菜单管理", "menu");
+        return "menu";
+    }
+
+    /**
+     * 菜单添加页面
+     */
+    @GetMapping("/menu/add")
+    @Operation(summary = "菜单添加页面")
+    public String menuAddPage(Model model) {
+        addCommonModel(model, "添加菜单", "menu");
+        return "menu-edit";
+    }
+
+    /**
+     * 菜单编辑页面
+     */
+    @GetMapping("/menu/edit")
+    @Operation(summary = "菜单编辑页面")
+    public String menuEditPage(Model model) {
+        addCommonModel(model, "编辑菜单", "menu");
+        return "menu-edit";
+    }
+
+    // ==================== 组织管理 ====================
+
+    /**
+     * 组织管理页面
+     */
+    @GetMapping("/org")
+    @Operation(summary = "组织管理页面")
+    public String orgPage(Model model) {
+        addCommonModel(model, "组织管理", "org");
+        return "org";
+    }
+
+    /**
+     * 组织添加页面
+     */
+    @GetMapping("/org/add")
+    @Operation(summary = "组织添加页面")
+    public String orgAddPage(Model model) {
+        addCommonModel(model, "添加组织", "org");
+        return "org-edit";
+    }
+
+    /**
+     * 组织编辑页面
+     */
+    @GetMapping("/org/edit")
+    @Operation(summary = "组织编辑页面")
+    public String orgEditPage(Model model) {
+        addCommonModel(model, "编辑组织", "org");
+        return "org-edit";
+    }
+
+    // ==================== 租户管理 ====================
+
+    /**
+     * 租户管理页面
+     */
+    @GetMapping("/tenant")
+    @Operation(summary = "租户管理页面")
+    public String tenantPage(Model model) {
+        addCommonModel(model, "租户管理", "tenant");
+        return "tenant";
+    }
+
+    /**
+     * 租户添加页面
+     */
+    @GetMapping("/tenant/add")
+    @Operation(summary = "租户添加页面")
+    public String tenantAddPage(Model model) {
+        addCommonModel(model, "添加租户", "tenant");
+        return "tenant-edit";
+    }
+
+    /**
+     * 租户编辑页面
+     */
+    @GetMapping("/tenant/edit")
+    @Operation(summary = "租户编辑页面")
+    public String tenantEditPage(Model model) {
+        addCommonModel(model, "编辑租户", "tenant");
+        return "tenant-edit";
+    }
+
+    // ==================== 用户档案管理 ====================
+
+    /**
+     * 用户档案管理页面
+     */
+    @GetMapping("/userprofile")
+    @Operation(summary = "用户档案管理页面")
+    public String userprofilePage(Model model) {
+        addCommonModel(model, "用户档案管理", "userprofile");
+        return "userprofile";
+    }
+
+    /**
+     * 用户档案添加页面
+     */
+    @GetMapping("/userprofile/add")
+    @Operation(summary = "用户档案添加页面")
+    public String userprofileAddPage(Model model) {
+        addCommonModel(model, "添加用户档案", "userprofile");
+        return "userprofile-edit";
+    }
+
+    /**
+     * 用户档案编辑页面
+     */
+    @GetMapping("/userprofile/edit")
+    @Operation(summary = "用户档案编辑页面")
+    public String userprofileEditPage(Model model) {
+        addCommonModel(model, "编辑用户档案", "userprofile");
+        return "userprofile-edit";
+    }
+
+    // ==================== 审计日志 ====================
+
+    /**
+     * 审计日志页面
+     */
+    @GetMapping("/audit")
+    @Operation(summary = "审计日志页面")
+    public String auditPage(Model model) {
+        addCommonModel(model, "审计日志", "audit");
+        return "audit";
+    }
+
+    // ==================== 常规管理 ====================
+
+    /**
      * 系统配置页面
      */
     @GetMapping("/config")
@@ -344,9 +580,9 @@ public class PageController {
     /**
      * 微信菜单页面
      */
-    @GetMapping("/menu")
+    @GetMapping("/wechatmenu")
     @Operation(summary = "微信菜单页面")
-    public String menuPage(Model model) {
+    public String wechatMenuPage(Model model) {
         addCommonModel(model, "微信菜单", "menu");
         return "menu";
     }

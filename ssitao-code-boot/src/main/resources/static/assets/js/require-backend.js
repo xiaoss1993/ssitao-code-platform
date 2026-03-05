@@ -8,7 +8,8 @@ require.config({
     //在打包压缩时将会把include中的模块合并到主文件中
     include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage'],
     paths: {
-        'lang': "empty:",
+        // lang 模块路径
+        'lang': 'lang',
         'form': 'require-form',
         'table': 'require-table',
         'upload': 'require-upload',
@@ -89,7 +90,7 @@ require.config({
         },
         'slimscroll': {
             deps: ['jquery'],
-            exports: '$.fn.extend'
+            exports: '$.fn.slimscroll'
         },
         'adminlte': {
             deps: ['bootstrap', 'slimscroll'],
@@ -113,7 +114,7 @@ require.config({
         'validator-lang': ['validator-core'],
 //        'selectpage': ['css!../libs/selectpage/selectpage.css'],
     },
-    baseUrl: requirejs.s.contexts._.config.config.site.cdnurl + '/assets/js/', //资源基础路径
+    baseUrl: '/assets/js/', //资源基础路径
     map: {
         '*': {
             'css': '../libs/require-css/css.min'
@@ -128,9 +129,8 @@ require(['jquery', 'bootstrap'], function ($, undefined) {
     var Config = requirejs.s.contexts._.config.config;
     //将Config渲染到全局
     window.Config = Config;
-    // 配置语言包的路径
+    // 配置语言包的路径（lang 模块已在页面中预先定义）
     var paths = {};
-    paths['lang'] = 'lang';
     //如果语言包想要动态加载，则使用下面一行
     //paths['lang'] = Config.moduleurl + 'lang?callback=define&controllername=' + Config.controllername;
     // 避免目录冲突

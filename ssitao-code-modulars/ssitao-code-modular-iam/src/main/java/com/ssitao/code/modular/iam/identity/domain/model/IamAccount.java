@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.domain.model;
 
+import cn.hutool.core.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -251,7 +252,8 @@ public class IamAccount {
      * @return true-已锁定，false-未锁定
      */
     public boolean isLocked() {
-        if (!this.locked) {
+        // locked 为 null 或 false 时，返回 false
+        if (Boolean.FALSE.equals(this.locked)|| ObjectUtil.isNull(this.locked)) {
             return false;
         }
         // 检查是否超过锁定过期时间

@@ -6,6 +6,7 @@ import com.ssitao.code.modular.iam.identity.api.dto.IamLoginResultDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamLoginCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamLogoutCommand;
 import com.ssitao.code.modular.iam.identity.application.service.IamLoginAppService;
+import com.ssitao.code.modular.iam.identity.application.service.impl.IamLoginAppServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,7 @@ public class IndexController {
             command.setUsername(username);
             command.setPassword(password);
             command.setLoginType("PASSWORD");
+            command.setKeepLogin(keeplogin);
 
             IamLoginResultDTO result = loginAppService.login(command);
 
@@ -109,7 +111,8 @@ public class IndexController {
         // 获取当前用户信息
         Object user = loginAppService.getCurrentUser(StpUtil.getTokenValue());
         model.addAttribute("user", user);
-        model.addAttribute("userId", StpUtil.getLoginId());
+        // 从 loginId 中提取真正的 accountId（格式：accountId_tenantId）
+        model.addAttribute("userId", IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId()));
         model.addAttribute("userName", StpUtil.getLoginIdAsString());
 
         return "index";

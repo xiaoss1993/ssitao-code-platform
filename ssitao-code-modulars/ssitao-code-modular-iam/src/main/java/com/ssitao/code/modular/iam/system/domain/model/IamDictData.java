@@ -181,7 +181,7 @@ public class IamDictData {
      * @return true-可用，false-不可用
      */
     public boolean isAvailable() {
-        return this.status && !this.deleted;
+        return Boolean.TRUE.equals(this.status) && !Boolean.TRUE.equals(this.deleted);
     }
 
     /**

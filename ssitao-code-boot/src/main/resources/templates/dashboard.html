@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="assets/img/favicon.ico" />
-    <link th:href="@{/assets/css/backend.min.css}" href="assets/css/backend.min.css" rel="stylesheet">
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="/assets/img/favicon.ico" />
+    <link th:href="@{/assets/css/backend.min.css}" href="/assets/css/backend.min.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
     <![endif]-->
 
     <script th:inline="javascript">
@@ -19,7 +19,7 @@
             "config": {
                 "site": {
                     "name": "SSITAO Code Platform",
-                    "cdnurl": /*[[@{/}]]*/ "./",
+                    "cdnurl": [[@{/}]],
                     "version": "2.0.0",
                     "timezone": "Asia/Shanghai"
                 },
@@ -301,8 +301,8 @@
         </div>
     </div>
 
-    <script th:src="@{/assets/js/require.min.js}" src="assets/js/require.min.js"
-            data-main="@{/assets/js/require-backend.min.js}"></script>
+    <script th:src="@{/assets/js/require.js}" src="/assets/js/require.js"
+            th:attr="data-main=@{/assets/js/require-backend.js}"></script>
     <script th:inline="javascript">
         // ECharts 图表数据
         var Orderdata = {

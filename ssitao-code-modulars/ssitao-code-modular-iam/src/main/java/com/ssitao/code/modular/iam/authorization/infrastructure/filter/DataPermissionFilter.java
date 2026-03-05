@@ -247,7 +247,33 @@ public class DataPermissionFilter implements Interceptor {
      * @return 条件SQL
      */
     private String buildDeptCondition(String deptField, String deptId) {
-        return deptField + " = '" + deptId + "'";
+        // 防止SQL注入：对输入进行严格校验
+        if (!isValidSqlIdentifier(deptId)) {
+            log.warn("无效的部门ID: {}", deptId);
+            return "1=0";
+        }
+        return deptField + " = '" + escapeSql(deptId) + "'";
+    }
+
+    /**
+     * 校验SQL标识符是否有效（防止注入）
+     */
+    private boolean isValidSqlIdentifier(String value) {
+        if (value == null || value.isEmpty()) {
+            return false;
+        }
+        // 只允许字母、数字、下划线
+        return value.matches("^[a-zA-Z0-9_]+$");
+    }
+
+    /**
+     * 转义SQL字符串
+     */
+    private String escapeSql(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replace("'", "''");
     }
 
     /**
@@ -267,7 +293,14 @@ public class DataPermissionFilter implements Interceptor {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append("'").append(allowedDeptIds.get(i)).append("'");
+            String deptId = allowedDeptIds.get(i);
+            // 防止SQL注入：校验每个部门ID
+            if (isValidSqlIdentifier(deptId)) {
+                sb.append("'").append(escapeSql(deptId)).append("'");
+            } else {
+                log.warn("无效的部门ID，已跳过: {}", deptId);
+                sb.append("null");
+            }
         }
         sb.append(")");
         return sb.toString();
@@ -280,13 +313,16 @@ public class DataPermissionFilter implements Interceptor {
      * @return 条件SQL
      */
     private String buildSelfCondition(String createByField) {
-        // 从上下文获取当前用户ID，这里假设在DataPermissionContext中已设置
-        // 实际实现需要从登录信息中获取
         String userId = getCurrentUserId();
         if (userId == null || userId.isEmpty()) {
             return "1=0"; // 无法获取用户ID，拒绝访问
         }
-        return createByField + " = '" + userId + "'";
+        // 防止SQL注入：校验用户ID
+        if (!isValidSqlIdentifier(userId)) {
+            log.warn("无效的用户ID: {}", userId);
+            return "1=0";
+        }
+        return createByField + " = '" + escapeSql(userId) + "'";
     }
 
     /**
@@ -295,11 +331,16 @@ public class DataPermissionFilter implements Interceptor {
      * @return 当前用户ID
      */
     private String getCurrentUserId() {
-        // 从 Sa-Token 或其他方式获取当前用户ID
-        // 这里暂时返回 null，实际使用需要从登录上下文获取
         try {
-            com.ssitao.code.frame.satoken.core.SecurityUtil.getLoginUser();
-            // 实际实现需要从 LoginUser 获取用户ID
+            com.ssitao.code.frame.satoken.api.LoginUser loginUser = com.ssitao.code.frame.satoken.core.SecurityUtil.getLoginUser();
+            if (loginUser != null && loginUser.getId() != null) {
+                return loginUser.getId();
+            }
+            // 如果没有登录用户，尝试从StpUtil获取
+            Object loginId = cn.dev33.satoken.stp.StpUtil.getLoginIdDefaultNull();
+            if (loginId != null) {
+                return loginId.toString();
+            }
             return null;
         } catch (Exception e) {
             log.warn("获取当前用户ID失败: {}", e.getMessage());

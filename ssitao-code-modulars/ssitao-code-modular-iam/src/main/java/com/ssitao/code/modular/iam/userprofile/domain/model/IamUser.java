@@ -251,7 +251,7 @@ public class IamUser {
      * @return true-可用，false-不可用
      */
     public boolean isAvailable() {
-        return "NORMAL".equals(this.accountStatus) && "1".equals(this.status) && !this.deleted;
+        return "NORMAL".equals(this.accountStatus) && "1".equals(this.status) && !Boolean.TRUE.equals(this.deleted);
     }
 
     /**

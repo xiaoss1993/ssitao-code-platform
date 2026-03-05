@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.domain.model;
 
+import cn.hutool.core.util.IdUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -106,6 +107,7 @@ public class IamLoginLog {
                                       String loginIp, String deviceInfo,
                                       boolean success, String errorMsg) {
         IamLoginLog log = new IamLoginLog();
+        log.setId(IdUtil.fastSimpleUUID());
         log.setAccountId(accountId);
         log.setAccountCode(accountCode);
         log.setLoginType(loginType);

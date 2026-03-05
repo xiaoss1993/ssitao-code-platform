@@ -29,6 +29,12 @@ public class IamLoginCommand {
     @Schema(description = "验证码(短信/邮箱登录时使用)")
     private String verifyCode;
 
+    @Schema(description = "图形验证码ID")
+    private String captchaId;
+
+    @Schema(description = "图形验证码")
+    private String captchaCode;
+
     @Schema(description = "第三方OpenID")
     private String openId;
 
@@ -37,5 +43,8 @@ public class IamLoginCommand {
 
     @Schema(description = "租户ID")
     private String tenantId;
+
+    @Schema(description = "记住登录：true-30天有效，false-24小时有效（默认）")
+    private Boolean keepLogin = false;
 
 }

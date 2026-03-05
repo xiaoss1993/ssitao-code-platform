@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="assets/img/favicon.ico" />
-    <link th:href="@{/assets/css/backend.css}" href="assets/css/backend.css" rel="stylesheet">
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="/assets/img/favicon.ico" />
+    <link th:href="@{/assets/css/backend.css}" href="/assets/css/backend.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
     <![endif]-->
 
     <script th:inline="javascript">
@@ -19,7 +19,7 @@
             "config": {
                 "site": {
                     "name": "SSITAO Code Platform",
-                    "cdnurl": /*[[@{/}]]*/ "./",
+                    "cdnurl": [[@{/}]],
                     "version": "2.0.0",
                     "timezone": "Asia/Shanghai",
                     "languages": {
@@ -28,8 +28,8 @@
                     }
                 },
                 "upload": {
-                    "cdnurl": /*[[@{/}]]*/ "./",
-                    "uploadurl": /*[[@{/api/upload}]]*/ "api/upload",
+                    "cdnurl": [[@{/}]],
+                    "uploadurl": [[@{/api/upload}]],
                     "bucket": "yourbucketname",
                     "maxsize": "10mb",
                     "mimetype": "*",
@@ -39,7 +39,7 @@
                 "controllername": "index",
                 "actionname": "index",
                 "jsname": "backend/index",
-                "moduleurl": /*[[@{/}]]*/ "./",
+                "moduleurl": [[@{/}]],
                 "language": "zh-cn",
                 "referer": null
             }
@@ -101,13 +101,13 @@
                         <!-- 账号信息下拉框 -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="user-image" alt="Admin">
+                                <img th:src="@{/assets/img/avatar.png}" src="/assets/img/avatar.png" class="user-image" alt="Admin">
                                 <span class="hidden-xs" th:text="${userName}">Admin</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="img-circle" alt="">
+                                    <img th:src="@{/assets/img/avatar.png}" src="/assets/img/avatar.png" class="img-circle" alt="">
                                     <p>
                                         <span th:text="${userName}">Admin</span>
                                     </p>
@@ -152,7 +152,7 @@
                 <!-- Sidebar user panel -->
                 <div class="user-panel hidden-xs">
                     <div class="pull-left image">
-                        <a th:href="@{/admin/profile}"><img th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" class="img-circle" /></a>
+                        <a th:href="@{/admin/profile}"><img th:src="@{/assets/img/avatar.png}" src="/assets/img/avatar.png" class="img-circle" /></a>
                     </div>
                     <div class="pull-left info">
                         <p th:text="${userName}">Admin</p>
@@ -180,8 +180,8 @@
                     <li class="header">站内导航</li>
 
                     <!-- 控制台 -->
-                    <li class="active">
-                        <a th:href="@{/dashboard}" addtabs="dashboard" url="dashboard">
+                    <li>
+                        <a th:href="@{/console}" addtabs="dashboard" url="console">
                             <i class="fa fa-dashboard"></i>
                             <span>控制台</span>
                             <span class="pull-right-container">
@@ -211,17 +211,36 @@
                     <!-- 权限管理 -->
                     <li class="treeview">
                         <a href="javascript:;">
-                            <i class="fa fa-group"></i>
+                            <i class="fa fa-shield"></i>
                             <span>权限管理</span>
                             <span class="pull-right-container">
                                 <small class="badge pull-right bg-red">new</small>
                             </span>
                         </a>
                         <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/account}" addtabs="account"><i class="fa fa-user-circle"></i> <span>账号管理</span></a></li>
+                            <li><a th:href="@{/admin/role}" addtabs="role"><i class="fa fa-user-plus"></i> <span>角色管理</span></a></li>
+                            <li><a th:href="@{/admin/permission}" addtabs="permission"><i class="fa fa-lock"></i> <span>权限管理</span></a></li>
+                            <li><a th:href="@{/admin/menu}" addtabs="menu"><i class="fa fa-bars"></i> <span>菜单管理</span></a></li>
+                            <li><a th:href="@{/admin/org}" addtabs="org"><i class="fa fa-sitemap"></i> <span>组织管理</span></a></li>
+                        </ul>
+                    </li>
+
+                    <!-- 系统管理 -->
+                    <li class="treeview">
+                        <a href="javascript:;">
+                            <i class="fa fa-cog"></i>
+                            <span>系统管理</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a th:href="@{/admin/tenant}" addtabs="tenant"><i class="fa fa-building"></i> <span>租户管理</span></a></li>
+                            <li><a th:href="@{/admin/userprofile}" addtabs="userprofile"><i class="fa fa-id-card"></i> <span>用户档案</span></a></li>
+                            <li><a th:href="@{/admin/audit}" addtabs="audit"><i class="fa fa-file-text"></i> <span>审计日志</span></a></li>
                             <li><a th:href="@{/admin/admin}" addtabs="admin"><i class="fa fa-user"></i> <span>管理员管理</span></a></li>
                             <li><a th:href="@{/admin/adminlog}" addtabs="adminlog"><i class="fa fa-list-alt"></i> <span>管理员日志</span></a></li>
-                            <li><a th:href="@{/admin/group}" addtabs="group"><i class="fa fa-group"></i> <span>角色组</span></a></li>
-                            <li><a th:href="@{/admin/rule}" addtabs="rule"><i class="fa fa-bars"></i> <span>规则管理</span></a></li>
                         </ul>
                     </li>
 
@@ -278,10 +297,7 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper tab-content tab-addtabs">
-            <!-- 默认显示控制台 -->
-            <div class="tab-pane active" id="tab-dashboard">
-                <iframe th:src="@{/dashboard}" src="dashboard" width="100%" height="100%" frameborder="0" style="min-height: 800px;"></iframe>
-            </div>
+            <!-- 默认显示控制台 - 由JavaScript动态创建 -->
         </div>
         <!-- /.content-wrapper -->
 
@@ -332,7 +348,8 @@
         <!-- /.control-sidebar -->
     </div>
 
-    <script th:src="@{/assets/js/require.js}" src="assets/js/require.js"
-            data-main="@{/assets/js/require-backend.js}"></script>
+    <!-- 预先定义 lang 模块，避免加载不存在的 lang.js -->
+    <script th:src="@{/assets/js/require.js}" src="/assets/js/require.js"
+            th:attr="data-main=@{/assets/js/require-backend.js}"></script>
 </body>
 </html>

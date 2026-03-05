@@ -1,9 +1,14 @@
 package com.ssitao.code.modular.iam.authorization.infrastructure.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -14,10 +19,12 @@ import java.util.List;
  * @author ssitao-code
  * @since 2.0.0
  */
+@Slf4j
 @Configuration
-public class DataPermissionFilterConfig {
+public class DataPermissionFilterConfig implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
+    @Lazy
+    @Resource
     private List<SqlSessionFactory> sqlSessionFactories;
 
     /**
@@ -31,10 +38,11 @@ public class DataPermissionFilterConfig {
     }
 
     /**
-     * 初始化时将数据权限过滤器添加到 SqlSessionFactory
+     * 应用启动完成后将数据权限过滤器添加到 SqlSessionFactory
+     * 使用 ApplicationListener 避免循环依赖问题
      */
-    @javax.annotation.PostConstruct
-    public void addDataPermissionInterceptor() {
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
         if (sqlSessionFactories == null || sqlSessionFactories.isEmpty()) {
             log.warn("未找到 SqlSessionFactory，跳过数据权限过滤器注册");
             return;
@@ -60,6 +68,4 @@ public class DataPermissionFilterConfig {
             }
         }
     }
-
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DataPermissionFilterConfig.class);
 }

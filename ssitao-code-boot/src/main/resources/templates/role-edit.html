@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>角色编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {"backend": "zh-cn", "frontend": "zh-cn"}
+                },
+                "upload": {
+                    "cdnurl": "/",
+                    "uploadurl": "/api/upload",
+                    "bucket": "yourbucketname",
+                    "maxsize": "10mb",
+                    "mimetype": "*",
+                    "multiple": false
+                },
+                "modulename": "iam",
+                "controllername": "role",
+                "actionname": "edit",
+                "jsname": "backend/iam/role",
+                "moduleurl": "/",
+                "language": "zh-cn",
+                "referer": null
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside is-dialog">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>角色编辑</h1>
+                        </section>
+                        <div class="content">
+                            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
+                                <input type="hidden" name="id" id="id" value="" />
+
+                                <div class="form-group">
+                                    <label for="roleCode" class="control-label col-xs-12 col-sm-2">角色编码 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="roleCode" name="roleCode" value="" placeholder="请输入角色编码" data-rule="required" />
+                                        <span class="help-block">角色唯一标识，只能包含字母、数字和下划线</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="roleName" class="control-label col-xs-12 col-sm-2">角色名称 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="roleName" name="roleName" value="" placeholder="请输入角色名称" data-rule="required" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="roleType" class="control-label col-xs-12 col-sm-2">角色类型</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="roleType" name="roleType">
+                                            <option value="CUSTOM">自定义角色</option>
+                                            <option value="SYSTEM">系统角色</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dataScope" class="control-label col-xs-12 col-sm-2">数据权限范围</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="dataScope" name="dataScope">
+                                            <option value="ALL">全部</option>
+                                            <option value="DEPT">本部门</option>
+                                            <option value="DEPT_AND_CHILD">本部门及子部门</option>
+                                            <option value="SELF">本人</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sortOrder" class="control-label col-xs-12 col-sm-2">排序</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="number" class="form-control" id="sortOrder" name="sortOrder" value="0" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="status" class="control-label col-xs-12 col-sm-2">状态</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="status" value="true" checked /> 正常
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="status" value="false" /> 禁用
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="请输入备注"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden layer-footer">
+                                    <label class="control-label col-xs-12 col-sm-2"></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                        <button type="reset" class="btn btn-default btn-embossed">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+    <script>
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]);
+            return null;
+        }
+
+        $(function() {
+            var id = getQueryString('id');
+            if (id) {
+                // 编辑模式
+                $.ajax({
+                    url: '/iam/role/get',
+                    type: 'GET',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#id').val(data.id);
+                            $('#roleCode').val(data.roleCode);
+                            $('#roleCode').attr('readonly', true);
+                            $('#roleName').val(data.roleName);
+                            $('#roleType').val(data.roleType || 'CUSTOM');
+                            $('#dataScope').val(data.dataScope || 'ALL');
+                            $('#sortOrder').val(data.sortOrder || 0);
+                            $('input[name="status"][value="' + (data.status === true || data.status === 1 ? 'true' : 'false') + '"]').prop('checked', true);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+                $('#edit-form').attr('action', '/iam/role/update');
+                $('#edit-form').attr('method', 'PUT');
+            } else {
+                // 添加模式
+                $('#edit-form').attr('action', '/iam/role/create');
+                $('#edit-form').attr('method', 'POST');
+            }
+
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

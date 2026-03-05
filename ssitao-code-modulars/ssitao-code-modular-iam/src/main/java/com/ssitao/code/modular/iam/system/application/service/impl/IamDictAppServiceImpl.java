@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.system.application.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.ssitao.code.modular.iam.system.application.command.IamDictDataCreateCommand;
 import com.ssitao.code.modular.iam.system.application.command.IamDictTypeCreateCommand;
 import com.ssitao.code.modular.iam.system.application.command.IamDictTypeUpdateCommand;
@@ -12,6 +13,8 @@ import com.ssitao.code.modular.iam.system.domain.repository.IamDictDataRepositor
 import com.ssitao.code.modular.iam.system.domain.repository.IamDictTypeRepository;
 import com.ssitao.code.modular.iam.system.infrastructure.converter.IamDictDataConverter;
 import com.ssitao.code.modular.iam.system.infrastructure.converter.IamDictTypeConverter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -30,8 +34,21 @@ import java.util.stream.Collectors;
  * @author ssitao-code
  * @since 2.0.0
  */
+@Slf4j
 @Service
 public class IamDictAppServiceImpl implements IamDictAppService {
+
+    /**
+     * 字典缓存Key前缀
+     */
+    private static final String DICT_TYPE_LIST_KEY = "dict:type:list:";
+    private static final String DICT_DATA_BY_CODE_KEY = "dict:data:code:";
+    private static final String DICT_DATA_ALL_KEY = "dict:data:all:";
+
+    /**
+     * 缓存过期时间（秒）：24小时
+     */
+    private static final long CACHE_EXPIRE_SECONDS = 86400;
 
     @Resource
     private IamDictTypeRepository dictTypeRepository;
@@ -44,6 +61,9 @@ public class IamDictAppServiceImpl implements IamDictAppService {
 
     @Resource
     private IamDictDataConverter dictDataConverter;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     // ==================== 字典类型管理 ====================
 
@@ -90,6 +110,11 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         dictType.setUpdateTime(LocalDateTime.now());
 
         dictTypeRepository.update(dictType);
+
+        // 清除字典类型列表缓存
+        clearDictTypeCache(command.getTenantId());
+        // 清除所有字典数据缓存
+        clearAllDictDataCache(command.getTenantId());
     }
 
     @Override
@@ -99,6 +124,11 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         dictDataRepository.deleteByDictTypeId(id.toString(), tenantId);
         // 再删除字典类型
         dictTypeRepository.deleteById(id.toString(), tenantId);
+
+        // 清除字典类型列表缓存
+        clearDictTypeCache(tenantId);
+        // 清除所有字典数据缓存
+        clearAllDictDataCache(tenantId);
     }
 
     @Override
@@ -110,14 +140,40 @@ public class IamDictAppServiceImpl implements IamDictAppService {
 
     @Override
     public List<IamDictTypeDTO> listDictTypes(String tenantId) {
+        // 尝试从缓存获取
+        String cacheKey = DICT_TYPE_LIST_KEY + tenantId;
+        try {
+            @SuppressWarnings("unchecked")
+            List<IamDictTypeDTO> cachedList = (List<IamDictTypeDTO>) redisTemplate.opsForValue().get(cacheKey);
+            if (cachedList != null) {
+                log.debug("从缓存获取字典类型列表，tenantId={}", tenantId);
+                return cachedList;
+            }
+        } catch (Exception e) {
+            log.warn("获取字典类型缓存失败: {}", e.getMessage());
+        }
+
+        // 从数据库查询
         List<IamDictType> dictTypes = dictTypeRepository.findAll(tenantId);
+        List<IamDictTypeDTO> result;
         if (dictTypes == null || dictTypes.isEmpty()) {
             // 返回模拟数据
-            return getMockDictTypes();
+            result = getMockDictTypes();
+        } else {
+            result = dictTypes.stream()
+                    .map(this::convertToDictTypeDTO)
+                    .collect(Collectors.toList());
         }
-        return dictTypes.stream()
-                .map(this::convertToDictTypeDTO)
-                .collect(Collectors.toList());
+
+        // 放入缓存
+        try {
+            redisTemplate.opsForValue().set(cacheKey, result, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+            log.debug("字典类型列表已缓存，tenantId={}", tenantId);
+        } catch (Exception e) {
+            log.warn("缓存字典类型列表失败: {}", e.getMessage());
+        }
+
+        return result;
     }
 
     // ==================== 字典数据管理 ====================
@@ -148,6 +204,11 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         dictData.setRemark(command.getRemark());
 
         String id = dictDataRepository.save(dictData);
+
+        // 清除字典数据缓存
+        clearDictDataCache(command.getDictTypeCode(), command.getTenantId());
+        clearAllDictDataCache(command.getTenantId());
+
         return id != null ? Long.valueOf(id) : null;
     }
 
@@ -181,24 +242,71 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         data.setUpdateTime(LocalDateTime.now());
 
         dictDataRepository.update(data);
+
+        // 清除字典数据缓存
+        clearDictDataCache(data.getDictTypeCode(), tenantId);
+        clearAllDictDataCache(tenantId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteDictData(Long id, String tenantId) {
+        // 获取字典数据信息用于清除缓存
+        String dictTypeCode = null;
+        try {
+            java.util.Optional<IamDictData> dictData = dictDataRepository.findById(id.toString(), tenantId);
+            if (dictData.isPresent()) {
+                dictTypeCode = dictData.get().getDictTypeCode();
+            }
+        } catch (Exception e) {
+            log.warn("获取字典数据类型编码失败: {}", e.getMessage());
+        }
+
         dictDataRepository.deleteById(id.toString(), tenantId);
+
+        // 清除字典数据缓存
+        if (dictTypeCode != null) {
+            clearDictDataCache(dictTypeCode, tenantId);
+        }
+        clearAllDictDataCache(tenantId);
     }
 
     @Override
     public List<IamDictDataDTO> listDictDataByTypeCode(String dictTypeCode, String tenantId) {
+        // 尝试从缓存获取
+        String cacheKey = DICT_DATA_BY_CODE_KEY + tenantId + ":" + dictTypeCode;
+        try {
+            @SuppressWarnings("unchecked")
+            List<IamDictDataDTO> cachedList = (List<IamDictDataDTO>) redisTemplate.opsForValue().get(cacheKey);
+            if (cachedList != null) {
+                log.debug("从缓存获取字典数据，tenantId={}, dictTypeCode={}", tenantId, dictTypeCode);
+                return cachedList;
+            }
+        } catch (Exception e) {
+            log.warn("获取字典数据缓存失败: {}", e.getMessage());
+        }
+
+        // 从数据库查询
         List<IamDictData> dictDataList = dictDataRepository.findByDictTypeCode(dictTypeCode, tenantId);
+        List<IamDictDataDTO> result;
         if (dictDataList == null || dictDataList.isEmpty()) {
             // 返回模拟数据
-            return getMockDictDataList(dictTypeCode);
+            result = getMockDictDataList(dictTypeCode);
+        } else {
+            result = dictDataList.stream()
+                    .map(this::convertToDictDataDTO)
+                    .collect(Collectors.toList());
         }
-        return dictDataList.stream()
-                .map(this::convertToDictDataDTO)
-                .collect(Collectors.toList());
+
+        // 放入缓存
+        try {
+            redisTemplate.opsForValue().set(cacheKey, result, CACHE_EXPIRE_SECONDS, TimeUnit.SECONDS);
+            log.debug("字典数据已缓存，tenantId={}, dictTypeCode={}", tenantId, dictTypeCode);
+        } catch (Exception e) {
+            log.warn("缓存字典数据失败: {}", e.getMessage());
+        }
+
+        return result;
     }
 
     @Override
@@ -479,5 +587,49 @@ public class IamDictAppServiceImpl implements IamDictAppService {
         }
 
         return list;
+    }
+
+    // ==================== 缓存管理方法 ====================
+
+    /**
+     * 清除字典类型列表缓存
+     */
+    private void clearDictTypeCache(String tenantId) {
+        try {
+            String cacheKey = DICT_TYPE_LIST_KEY + tenantId;
+            redisTemplate.delete(cacheKey);
+            log.debug("清除字典类型列表缓存，tenantId={}", tenantId);
+        } catch (Exception e) {
+            log.warn("清除字典类型列表缓存失败: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * 清除指定字典类型的数据缓存
+     */
+    private void clearDictDataCache(String dictTypeCode, String tenantId) {
+        if (StrUtil.isBlank(dictTypeCode)) {
+            return;
+        }
+        try {
+            String cacheKey = DICT_DATA_BY_CODE_KEY + tenantId + ":" + dictTypeCode;
+            redisTemplate.delete(cacheKey);
+            log.debug("清除字典数据缓存，tenantId={}, dictTypeCode={}", tenantId, dictTypeCode);
+        } catch (Exception e) {
+            log.warn("清除字典数据缓存失败: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * 清除所有字典数据缓存
+     */
+    private void clearAllDictDataCache(String tenantId) {
+        try {
+            String cacheKey = DICT_DATA_ALL_KEY + tenantId;
+            redisTemplate.delete(cacheKey);
+            log.debug("清除所有字典数据缓存，tenantId={}", tenantId);
+        } catch (Exception e) {
+            log.warn("清除所有字典数据缓存失败: {}", e.getMessage());
+        }
     }
 }

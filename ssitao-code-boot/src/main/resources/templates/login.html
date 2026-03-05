@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="renderer" content="webkit">
 
-    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="assets/img/favicon.ico" />
-    <link th:href="@{/assets/css/backend.min.css}" href="assets/css/backend.min.css" rel="stylesheet">
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.ico}" href="/assets/img/favicon.ico" />
+    <link th:href="@{/assets/css/backend.min.css}" href="/assets/css/backend.min.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
     <![endif]-->
 
     <script th:inline="javascript">
@@ -19,7 +19,7 @@
             "config": {
                 "site": {
                     "name": [[${siteName != null ? siteName : 'SSITAO Code Platform'}]],
-                    "cdnurl": /*[[@{/}]]*/ "./",
+                    "cdnurl": "/",
                     "version": "2.0.0",
                     "timezone": "Asia/Shanghai",
                     "languages": {
@@ -28,8 +28,8 @@
                     }
                 },
                 "upload": {
-                    "cdnurl": /*[[@{/}]]*/ "./",
-                    "uploadurl": /*[[@{/api/upload}]]*/ "api/upload",
+                    "cdnurl": "/",
+                    "uploadurl":"api/upload",
                     "bucket": "yourbucketname",
                     "maxsize": "10mb",
                     "mimetype": "*",
@@ -39,7 +39,7 @@
                 "controllername": "index",
                 "actionname": "login",
                 "jsname": "backend/index",
-                "moduleurl": /*[[@{/}]]*/ "./",
+                "moduleurl": "./",
                 "language": "zh-cn",
                 "referer": null
             }
@@ -47,125 +47,314 @@
     </script>
 
     <style type="text/css">
-        body {
-            color: #999;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-size: cover;
-            min-height: 100vh;
+        body.login-page {
+            background-color: #f1f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-        a {
-            color: #fff;
+
+        .login-container {
+            width: 380px;
+            margin: 80px auto;
         }
-        .login-panel {
-            margin-top: 150px;
+
+        .login-box {
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.05);
+            padding: 30px;
         }
-        .login-screen {
-            max-width: 400px;
-            padding: 0;
-            margin: 100px auto 0 auto;
-        }
-        .login-screen .well {
-            border-radius: 10px;
-            -webkit-box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-        .login-screen .copyright {
+
+        .login-logo {
             text-align: center;
-            color: #fff;
+            margin-bottom: 25px;
         }
-        @media(max-width:767px) {
-            .login-screen {
-                padding: 0 20px;
-            }
+
+        .login-logo img {
+            height: 50px;
         }
-        .profile-img-card {
-            width: 100px;
-            height: 100px;
-            margin: 10px auto;
+
+        .login-logo b {
             display: block;
-            -moz-border-radius: 50%;
-            -webkit-border-radius: 50%;
-            border-radius: 50%;
-        }
-        .profile-name-card {
-            text-align: center;
-            font-size: 18px;
+            font-size: 24px;
             color: #333;
+            margin-top: 10px;
+        }
+
+        .login-logo span {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .login-form .form-group {
             margin-bottom: 20px;
         }
-        #login-form {
-            margin-top: 20px;
+
+        .login-form .form-control {
+            height: 40px;
+            border-radius: 3px;
+            box-shadow: none;
+            border: 1px solid #d5d5d5;
+            font-size: 14px;
         }
-        #login-form .input-group {
-            margin-bottom: 15px;
+
+        .login-form .form-control:focus {
+            border-color: #18bc9c;
+            box-shadow: 0 0 0 2px rgba(24, 188, 156, 0.15);
         }
+
+        .login-form .input-group-addon {
+            border-radius: 3px 0 0 3px;
+            border-color: #d5d5d5;
+            background-color: #f9f9f9;
+            color: #999;
+        }
+
+        .login-form .btn-success {
+            width: 100%;
+            height: 40px;
+            border-radius: 3px;
+            background-color: #18bc9c;
+            border-color: #18bc9c;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .login-form .btn-success:hover,
+        .login-form .btn-success:focus {
+            background-color: #15a589;
+            border-color: #15a589;
+            outline: none;
+        }
+
+        .login-form .btn-success:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .checkbox {
+            margin: 0;
+        }
+
+        .checkbox label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .checkbox input[type="checkbox"] {
+            margin-top: 2px;
+        }
+
+        .alert {
+            border-radius: 3px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+        }
+
         .alert-danger {
-            margin-bottom: 15px;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+            color: #a94442;
         }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .login-footer a {
+            color: #18bc9c;
+        }
+
+        /* 加载动画 */
         .btn-success {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+            position: relative;
         }
-        .btn-success:hover {
-            background: linear-gradient(135deg, #5a6fd6 0%, #6a4190 100%);
+
+        .btn-success .btn-text {
+            transition: opacity 0.2s;
+        }
+
+        .btn-success .btn-loader {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+        }
+
+        .btn-loading.btn-success {
+            pointer-events: none;
+        }
+
+        .btn-loading.btn-success .btn-text {
+            opacity: 0;
+        }
+
+        .btn-loading.btn-success .btn-loader {
+            display: block;
+        }
+
+        .btn-loader .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                margin: 60px auto;
+            }
+
+            .login-box {
+                padding: 20px;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="login-wrapper">
-            <div class="login-screen">
-                <div class="well">
-                    <div class="login-form">
-                        <img id="profile-img" class="profile-img-card" th:src="@{/assets/img/avatar.png}" src="assets/img/avatar.png" />
-                        <p id="profile-name" class="profile-name-card" th:text="${siteName}">SSITAO Code Platform</p>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-logo">
+                <img th:src="@{/assets/img/logo.png}" src="/assets/img/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <b th:text="${siteName}">SSITAO Code Platform</b>
+                <span>企业级低代码开发平台</span>
+            </div>
 
-                        <!-- 错误提示 -->
-                        <div class="alert alert-danger" th:if="${error}" th:text="${error}">
-                            用户名或密码错误
-                        </div>
+            <!-- 错误提示 -->
+            <div class="alert alert-danger" th:if="${error}" th:text="${error}" style="display: none;">
+                用户名或密码错误
+            </div>
 
-                        <form th:action="@{/login}" action="/login" method="post" id="login-form">
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                </div>
-                                <input type="text" class="form-control" id="username" placeholder="用户名"
-                                       name="username" autocomplete="off"
-                                       th:value="${username}" value=""
-                                       data-rule="用户名:required;username" />
-                            </div>
-
-                            <div class="input-group">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                                </div>
-                                <input type="password" class="form-control" id="password" placeholder="密码"
-                                       name="password" autocomplete="off" value=""
-                                       data-rule="密码:required;password" />
-                            </div>
-
-                            <div class="form-group">
-                                <label class="inline" for="keeplogin">
-                                    <input type="checkbox" name="keeplogin" id="keeplogin" value="1" />
-                                    保持会话
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-success btn-lg btn-block">登 录</button>
-                            </div>
-                        </form>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-user"></i>
+                        </span>
+                        <input type="text" class="form-control" id="username" placeholder="用户名"
+                               name="username" autocomplete="username"
+                               th:value="${username}" value=""
+                               required />
                     </div>
                 </div>
-                <p class="copyright">
-                    <a href="javascript:;">Powered By SSITAO Code Platform</a>
-                </p>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="fa fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control" id="password" placeholder="密码"
+                               name="password" autocomplete="current-password" value=""
+                               required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="keeplogin" id="keeplogin" value="true" />
+                            记住登录
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">
+                        <span class="btn-text">登 录</span>
+                        <span class="btn-loader"><div class="spinner"></div></span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="login-footer">
+                <p>Powered By <a href="javascript:;">SSITAO Code Platform</a></p>
             </div>
         </div>
     </div>
-    <script th:src="@{/assets/js/require.min.js}" src="assets/js/require.min.js"
-            data-main="@{/assets/js/require-backend.min.js}"></script>
+
+    <!-- 登录页面只需加载 jQuery 和 Bootstrap -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 显示错误提示（如果有）
+            var $errorAlert = $('.alert-danger');
+            if ($errorAlert.text().trim()) {
+                $errorAlert.show();
+            }
+
+            $('#login-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var username = $('#username').val();
+                var password = $('#password').val();
+
+                if (!username || !password) {
+                    showError('请输入用户名和密码');
+                    return;
+                }
+
+                // 显示加载状态
+                var btn = $(this).find('.btn-success');
+                btn.addClass('btn-loading').prop('disabled', true);
+
+                // 获取 keepLogin 值
+                var keeplogin = $('#keeplogin').is(':checked');
+
+                // 调用登录API
+                $.ajax({
+                    url: '/api/auth/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        username: username,
+                        password: password,
+                        loginType: 'PASSWORD',
+                        keepLogin: keeplogin
+                    }),
+                    success: function(res) {
+                        if (res.code === 200 || res.code === 0) {
+                            // 登录成功，跳转到首页
+                            window.location.href = '/';
+                        } else {
+                            showError(res.msg || '登录失败');
+                            btn.removeClass('btn-loading').prop('disabled', false);
+                        }
+                    },
+                    error: function(xhr) {
+                        var msg = '登录失败，请稍后重试';
+                        try {
+                            var res = JSON.parse(xhr.responseText);
+                            msg = res.msg || msg;
+                        } catch(e) {}
+                        showError(msg);
+                        btn.removeClass('btn-loading').prop('disabled', false);
+                    }
+                });
+            });
+
+            function showError(msg) {
+                $errorAlert.text(msg).show();
+                // 5秒后自动隐藏
+                setTimeout(function() {
+                    $errorAlert.hide();
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>

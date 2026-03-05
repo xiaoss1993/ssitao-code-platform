@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>组织编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {
+                        "backend": "zh-cn",
+                        "frontend": "zh-cn"
+                    }
+                },
+                "upload": {
+                    "cdnurl": "/",
+                    "uploadurl": "/api/upload",
+                    "bucket": "yourbucketname",
+                    "maxsize": "10mb",
+                    "mimetype": "*",
+                    "multiple": false
+                },
+                "modulename": "iam",
+                "controllername": "org",
+                "actionname": "edit",
+                "jsname": "backend/iam/org",
+                "moduleurl": "/",
+                "language": "zh-cn",
+                "referer": null
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside is-dialog">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>组织编辑</h1>
+                        </section>
+                        <div class="content">
+                            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
+                                <input type="hidden" name="id" id="id" value="" />
+                                <input type="hidden" name="orgType" id="orgType" value="group" />
+
+                                <!-- 集团字段 -->
+                                <div class="group-fields">
+                                    <div class="form-group">
+                                        <label for="groupName" class="control-label col-xs-12 col-sm-2">集团名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="groupName" name="groupName" value="" placeholder="请输入集团名称" data-rule="required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="groupCode" class="control-label col-xs-12 col-sm-2">集团编码 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="groupCode" name="groupCode" value="" placeholder="请输入集团编码" data-rule="required" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 公司字段 -->
+                                <div class="company-fields" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="companyName" class="control-label col-xs-12 col-sm-2">公司名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="companyName" name="companyName" value="" placeholder="请输入公司名称" data-rule="required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="companyCode" class="control-label col-xs-12 col-sm-2">公司编码 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="companyCode" name="companyCode" value="" placeholder="请输入公司编码" data-rule="required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="groupId" class="control-label col-xs-12 col-sm-2">所属集团</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <select class="form-control selectpicker" id="groupId" name="groupId">
+                                                <option value="">请选择集团</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="legalPerson" class="control-label col-xs-12 col-sm-2">法定代表人</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="legalPerson" name="legalPerson" value="" placeholder="请输入法定代表人" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="unifiedSocialCreditCode" class="control-label col-xs-12 col-sm-2">统一社会信用代码</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="unifiedSocialCreditCode" name="unifiedSocialCreditCode" value="" placeholder="请输入统一社会信用代码" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contactPhone" class="control-label col-xs-12 col-sm-2">联系电话</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="contactPhone" name="contactPhone" value="" placeholder="请输入联系电话" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address" class="control-label col-xs-12 col-sm-2">地址</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <textarea class="form-control" id="address" name="address" rows="2" placeholder="请输入地址"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 部门字段 -->
+                                <div class="department-fields" style="display:none;">
+                                    <div class="form-group">
+                                        <label for="deptName" class="control-label col-xs-12 col-sm-2">部门名称 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="deptName" name="deptName" value="" placeholder="请输入部门名称" data-rule="required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deptCode" class="control-label col-xs-12 col-sm-2">部门编码 <span class="text-danger">*</span></label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="deptCode" name="deptCode" value="" placeholder="请输入部门编码" data-rule="required" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="companyId" class="control-label col-xs-12 col-sm-2">所属公司</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <select class="form-control selectpicker" id="companyId" name="companyId">
+                                                <option value="">请选择公司</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pid" class="control-label col-xs-12 col-sm-2">上级部门</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <select class="form-control selectpicker" id="pid" name="pid">
+                                                <option value="">请选择上级部门</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="manager" class="control-label col-xs-12 col-sm-2">负责人</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="manager" name="manager" value="" placeholder="请输入负责人" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="contactPhone" class="control-label col-xs-12 col-sm-2">联系电话</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="text" class="form-control" id="deptContactPhone" name="contactPhone" value="" placeholder="请输入联系电话" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sort" class="control-label col-xs-12 col-sm-2">排序</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <input type="number" class="form-control" id="sort" name="sort" value="0" placeholder="请输入排序号" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 通用字段 -->
+                                <div class="form-group">
+                                    <label for="status" class="control-label col-xs-12 col-sm-2">状态</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="status" value="true" checked /> 正常
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="status" value="false" /> 禁用
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="请输入备注"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden layer-footer">
+                                    <label class="control-label col-xs-12 col-sm-2"></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                        <button type="reset" class="btn btn-default btn-embossed">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+    <script>
+        // 获取URL参数
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]);
+            return null;
+        }
+
+        $(function() {
+            var id = getQueryString('id');
+            var orgType = getQueryString('type') || 'group';
+
+            $('#orgType').val(orgType);
+
+            // 根据组织类型显示对应字段
+            function showFields(type) {
+                $('.group-fields, .company-fields, .department-fields').hide();
+                if (type === 'group') {
+                    $('.group-fields').show();
+                } else if (type === 'company') {
+                    $('.company-fields').show();
+                    loadGroups();
+                } else if (type === 'department') {
+                    $('.department-fields').show();
+                    loadCompanies();
+                }
+            }
+
+            // 加载集团列表
+            function loadGroups() {
+                $.ajax({
+                    url: '/iam/org/group/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择集团</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.groupName + '</option>';
+                            });
+                            $('#groupId').html(html);
+                            $('#groupId').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            // 加载公司列表
+            function loadCompanies() {
+                $.ajax({
+                    url: '/iam/org/company/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择公司</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.companyName + '</option>';
+                            });
+                            $('#companyId').html(html);
+                            $('#companyId').selectpicker('refresh');
+
+                            // 加载部门列表（用于上级部门选择）
+                            loadDepartments();
+                        }
+                    }
+                });
+            }
+
+            // 加载部门列表
+            function loadDepartments() {
+                $.ajax({
+                    url: '/iam/org/department/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择上级部门</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.deptName + '</option>';
+                            });
+                            $('#pid').html(html);
+                            $('#pid').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            showFields(orgType);
+
+            if (id) {
+                // 编辑模式
+                var apiMap = {
+                    'group': '/iam/org/group/',
+                    'company': '/iam/org/company/',
+                    'department': '/iam/org/department/'
+                };
+
+                $.ajax({
+                    url: apiMap[orgType] + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#id').val(data.id);
+
+                            if (orgType === 'group') {
+                                $('#groupName').val(data.groupName);
+                                $('#groupCode').val(data.groupCode);
+                                $('#groupCode').attr('readonly', true);
+                            } else if (orgType === 'company') {
+                                $('#companyName').val(data.companyName);
+                                $('#companyCode').val(data.companyCode);
+                                $('#companyCode').attr('readonly', true);
+                                $('#groupId').val(data.groupId);
+                                $('#groupId').selectpicker('refresh');
+                                $('#legalPerson').val(data.legalPerson);
+                                $('#unifiedSocialCreditCode').val(data.unifiedSocialCreditCode);
+                                $('#contactPhone').val(data.contactPhone);
+                                $('#address').val(data.address);
+                            } else if (orgType === 'department') {
+                                $('#deptName').val(data.deptName);
+                                $('#deptCode').val(data.deptCode);
+                                $('#deptCode').attr('readonly', true);
+                                $('#companyId').val(data.companyId);
+                                $('#companyId').selectpicker('refresh');
+                                $('#pid').val(data.pid);
+                                $('#pid').selectpicker('refresh');
+                                $('#manager').val(data.manager);
+                                $('#deptContactPhone').val(data.contactPhone);
+                                $('#sort').val(data.sort || 0);
+                            }
+
+                            $('input[name="status"][value="' + data.status + '"]').prop('checked', true);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+
+                $('#edit-form').attr('action', '/iam/org/' + orgType);
+                $('#edit-form').attr('method', 'PUT');
+            } else {
+                // 添加模式
+                $('#edit-form').attr('action', '/iam/org/' + orgType);
+                $('#edit-form').attr('method', 'POST');
+            }
+
+            // 表单提交
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table-" + orgType).bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

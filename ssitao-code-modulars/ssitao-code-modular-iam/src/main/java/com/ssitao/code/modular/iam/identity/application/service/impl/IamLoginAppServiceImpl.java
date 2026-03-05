@@ -9,6 +9,7 @@ import com.ssitao.code.modular.iam.identity.application.command.IamLoginCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamLogoutCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamRefreshTokenCommand;
 import com.ssitao.code.modular.iam.identity.application.query.IamLoginLogQuery;
+import com.ssitao.code.modular.iam.identity.application.service.CaptchaService;
 import com.ssitao.code.modular.iam.identity.application.service.IamLoginAppService;
 import com.ssitao.code.modular.iam.identity.domain.model.IamAccount;
 import com.ssitao.code.modular.iam.identity.domain.model.IamLoginLog;
@@ -22,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -51,6 +50,9 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
 
     @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private CaptchaService captchaService;
 
     private static final long ACCESS_TOKEN_EXPIRE_SECONDS = 7200L; // 2 hours
     private static final long REFRESH_TOKEN_EXPIRE_DAYS = 7;
@@ -95,6 +97,14 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public IamLoginResultDTO login(IamLoginCommand command) {
+        // 校验图形验证码
+        if (command.getCaptchaId() != null && command.getCaptchaCode() != null) {
+            boolean captchaValid = captchaService.verifyCaptcha(command.getCaptchaId(), command.getCaptchaCode());
+            if (!captchaValid) {
+                throw new IllegalArgumentException("图形验证码错误");
+            }
+        }
+
         String tenantId = command.getTenantId() != null ? command.getTenantId() : "default";
 
         // 首先尝试从数据库查找账号
@@ -108,15 +118,14 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
             // 数据库中存在账号，验证密码
             account = accountOpt.get();
 
-            // 验证密码 (支持 BCrypt 和 MD5 两种格式)
+            // 验证密码 - 只支持 BCrypt 格式
             if (account.getPassword() != null && account.getPassword().startsWith("$2")) {
                 // BCrypt 格式密码，使用 PasswordEncoder 验证
                 passwordMatch = passwordEncoder.matches(command.getPassword(), account.getPassword());
             } else {
-                // MD5 格式密码，计算 MD5 后直接比较
-                String inputPassword = command.getPassword() + (account.getSalt() != null ? account.getSalt() : "");
-                String md5Hash = md5Hash(inputPassword);
-                passwordMatch = md5Hash.equals(account.getPassword());
+                // 不再支持明文或MD5密码
+                log.warn("用户[{}]的密码格式不正确，请使用BCrypt加密", command.getUsername());
+                passwordMatch = false;
             }
 
             if (!passwordMatch) {
@@ -146,7 +155,11 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
         }
 
         // 使用 Sa-Token 进行登录，生成 Token
-        StpUtil.login(account.getId(), tenantId);
+        // 登录ID格式：accountId_tenantId，用于区分不同租户的同一账号
+        String loginId = account.getId() + "_" + tenantId;
+        // 根据 keepLogin 设置 token 有效期：记住登录=30天，普通登录=24小时
+        long tokenTimeout = Boolean.TRUE.equals(command.getKeepLogin()) ? 2592000L : 86400L;
+        StpUtil.login(loginId, tokenTimeout);
         String accessToken = StpUtil.getTokenValue();
         long expiresIn = ACCESS_TOKEN_EXPIRE_SECONDS;
 
@@ -239,16 +252,20 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
         try {
             Object loginId = StpUtil.getLoginIdByToken(token);
             if (loginId != null) {
+                // 从 loginId 中提取真正的 accountId（格式：accountId_tenantId）
+                String accountId = extractAccountId(loginId);
+
                 // 先从数据库查找
-                Optional<IamAccount> accountOpt = accountRepository.findById(loginId.toString());
+                Optional<IamAccount> accountOpt = accountRepository.findById(accountId);
                 if (accountOpt.isPresent()) {
                     return accountConverter.toDTOFromDomain(accountOpt.get());
                 }
 
                 // 如果数据库没有，从模拟数据查找
                 for (MockUser mockUser : MOCK_USERS.values()) {
-                    if (mockUser.id.equals(loginId.toString())) {
-                        IamAccount mockAccount = createMockAccount(mockUser, "default");
+                    if (mockUser.id.equals(accountId)) {
+                        String tenantId = extractTenantId(loginId);
+                        IamAccount mockAccount = createMockAccount(mockUser, tenantId);
                         return accountConverter.toDTOFromDomain(mockAccount);
                     }
                 }
@@ -412,27 +429,6 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
     }
 
     /**
-     * MD5哈希
-     */
-    private String md5Hash(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hash = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("MD5 hash failed", e);
-        }
-    }
-
-    /**
      * 模拟用户
      */
     private static class MockUser {
@@ -463,5 +459,43 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
             this.roles = roles;
             this.permissions = permissions;
         }
+    }
+
+    /**
+     * 从 loginId 中提取账号ID
+     * loginId 格式：accountId_tenantId
+     *
+     * @param loginId 登录ID
+     * @return 账号ID
+     */
+    public static String extractAccountId(Object loginId) {
+        if (loginId == null) {
+            return null;
+        }
+        String loginIdStr = loginId.toString();
+        int underscoreIndex = loginIdStr.lastIndexOf("_");
+        if (underscoreIndex > 0) {
+            return loginIdStr.substring(0, underscoreIndex);
+        }
+        return loginIdStr;
+    }
+
+    /**
+     * 从 loginId 中提取租户ID
+     * loginId 格式：accountId_tenantId
+     *
+     * @param loginId 登录ID
+     * @return 租户ID
+     */
+    public static String extractTenantId(Object loginId) {
+        if (loginId == null) {
+            return null;
+        }
+        String loginIdStr = loginId.toString();
+        int underscoreIndex = loginIdStr.lastIndexOf("_");
+        if (underscoreIndex > 0 && underscoreIndex < loginIdStr.length() - 1) {
+            return loginIdStr.substring(underscoreIndex + 1);
+        }
+        return "default";
     }
 }

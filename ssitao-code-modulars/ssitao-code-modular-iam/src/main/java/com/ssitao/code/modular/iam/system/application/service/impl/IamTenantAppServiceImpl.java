@@ -1,5 +1,7 @@
 package com.ssitao.code.modular.iam.system.application.service.impl;
 
+import com.ssitao.code.common.pojo.PageParam;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.system.application.command.IamTenantCreateCommand;
 import com.ssitao.code.modular.iam.system.application.command.IamTenantUpdateCommand;
 import com.ssitao.code.modular.iam.system.application.service.IamTenantAppService;
@@ -138,6 +140,15 @@ public class IamTenantAppServiceImpl implements IamTenantAppService {
         return tenants.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageResult<IamTenantDTO> listPage(PageParam pageParam, String tenantCode, String tenantName, String tenantStatus) {
+        PageResult<IamTenant> pageResult = tenantRepository.findPage(pageParam, tenantCode, tenantName, tenantStatus);
+        List<IamTenantDTO> dtoList = pageResult.getRows().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+        return new PageResult<>(dtoList, pageResult.getTotal());
     }
 
     @Override

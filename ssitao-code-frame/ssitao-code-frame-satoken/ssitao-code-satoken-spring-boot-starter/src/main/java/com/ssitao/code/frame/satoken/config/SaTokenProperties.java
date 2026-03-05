@@ -54,6 +54,11 @@ public class SaTokenProperties {
     private Boolean isReadCookie = false;
 
     /**
+     * 是否自动把 token 写入到 cookie
+     */
+    private Boolean isWriteCookie = true;
+
+    /**
      * 是否从 header 中读取 token
      */
     private Boolean isReadHeader = true;

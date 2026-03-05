@@ -270,7 +270,7 @@ public class IamDepartment extends AbstractAggregateRoot {
      * 启用部门
      */
     public void enable() {
-        if (!this.status) {
+        if (Boolean.FALSE.equals(this.status)) {
             this.status = true;
 
             // 发布部门启用事件
@@ -289,7 +289,7 @@ public class IamDepartment extends AbstractAggregateRoot {
      * 禁用部门
      */
     public void disable() {
-        if (this.status) {
+        if (Boolean.TRUE.equals(this.status)) {
             this.status = false;
 
             // 发布部门禁用事件
@@ -353,7 +353,7 @@ public class IamDepartment extends AbstractAggregateRoot {
      * @return true-可用，false-不可用
      */
     public boolean isAvailable() {
-        return this.status && !this.deleted;
+        return Boolean.TRUE.equals(this.status) && !Boolean.TRUE.equals(this.deleted);
     }
 
     /**

@@ -7,6 +7,7 @@ import com.ssitao.code.modular.iam.identity.application.command.IamLoginCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamLogoutCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamRefreshTokenCommand;
 import com.ssitao.code.modular.iam.identity.application.service.IamLoginAppService;
+import com.ssitao.code.modular.iam.identity.application.service.impl.IamLoginAppServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +84,7 @@ public class AuthController {
         result.put("user", user);
         result.put("permissions", permissions);
         result.put("roles", roles);
-        result.put("userId", StpUtil.getLoginId());
+        result.put("userId", IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId()));
         result.put("userName", StpUtil.getLoginIdAsString());
 
         return CommonResult.success(result);
@@ -98,7 +99,7 @@ public class AuthController {
         Map<String, Object> result = new HashMap<>();
         result.put("isLogin", StpUtil.isLogin());
         if (StpUtil.isLogin()) {
-            result.put("userId", StpUtil.getLoginId());
+            result.put("userId", IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId()));
             result.put("token", StpUtil.getTokenValue());
         }
         return CommonResult.success(result);

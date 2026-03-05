@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'addtabs', 'adminlte', 'form'], function ($, undefined, Backend, undefined, AdminLTE, Form) {
+define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, undefined, Backend, AdminLTE, Form) {
     var Controller = {
         index: function () {
             //窗口大小改变,修正主窗体最小高度
@@ -108,31 +108,92 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'adminlte', 'form'], functi
                 }
             });
 
-            //绑定tabs事件
-            $('#nav').addtabs({iframeHeight: "100%"});
+            //已移除addtabs插件初始化，使用自定义tab处理逻辑
+            // $('.nav-addtabs').addtabs({iframeHeight: "100%"});
 
             //修复iOS下iframe无法滚动的BUG
             if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
                 $(".tab-addtabs").addClass("ios-iframe-fix");
             }
 
-            if ($("ul.sidebar-menu li.active a").size() > 0) {
-                $("ul.sidebar-menu li.active a").trigger("click");
-            } else {
-                $("ul.sidebar-menu li a[url!='javascript:;']:first").trigger("click");
-            }
+            // 页面加载时手动创建默认的控制台tab
+            (function() {
+                var $nav = $(".nav-addtabs");
+                var $tab = $(".tab-addtabs");
+
+                // 创建默认控制台tab
+                var tabId = 'tab-dashboard';
+                var tabHtml = '<div class="tab-pane active" id="' + tabId + '">' +
+                    '<iframe src="/console" width="100%" height="100%" frameborder="0" style="min-height: 500px;"></iframe>' +
+                    '</div>';
+                $tab.append(tabHtml);
+
+                var navHtml = '<li role="presentation" class="active">' +
+                    '<a href="#' + tabId + '" aria-controls="' + tabId + '" role="tab" data-toggle="tab">' +
+                    '控制台 <i class="fa fa-close close-tab"></i></a>' +
+                    '</li>';
+                $nav.append(navHtml);
+
+                // 标记已初始化，防止重复创建
+                $nav.data("initialized", true);
+            })();
 
             //保留最后一次点击的窗口
             $(document).on("click", "a[addtabs]", function (e) {
-                localStorage.setItem("lastpage", $(this).attr("url"));
+                e.preventDefault();
+                var $this = $(this);
+                var url = $this.attr("url") || $this.attr("href");
+                var id = $this.attr("addtabs");
+                var title = $this.attr("title") || $this.find("span").text() || "新页面";
+
+                localStorage.setItem("lastpage", url);
+
+                // 直接调用 addtabs 插件方法
+                var $nav = top.window.$(".nav-addtabs");
+                var $tab = top.window.$(".tab-addtabs");
+
+                if ($nav.length === 0) {
+                    // 如果找不到 nav，尝试通过触发点击来添加
+                    $("body").append('<a href="' + url + '" addtabs="' + id + '" title="' + title + '" class="hide addtabs-trigger"></a>');
+                    top.window.$(".addtabs-trigger").trigger("click");
+                    top.window.$(".addtabs-trigger").remove();
+                } else {
+                    // 检查是否已存在（优先检查初始化标记）
+                    if ($nav.data("initialized") && id === "dashboard") {
+                        // dashboard已初始化，直接激活现有tab
+                        $nav.find('a[aria-controls="tab-dashboard"]').trigger("click");
+                        return;
+                    }
+                    var existingTab = $nav.find('a[aria-controls="tab-' + id + '"]');
+                    if (existingTab.length > 0) {
+                        existingTab.trigger("click");
+                    } else {
+                        // 添加新 tab
+                        var tabId = 'tab-' + id;
+                        var tabHtml = '<div class="tab-pane" id="' + tabId + '">' +
+                            '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" style="min-height: 500px;"></iframe>' +
+                            '</div>';
+                        $tab.append(tabHtml);
+
+                        var navHtml = '<li role="presentation">' +
+                            '<a href="#' + tabId + '" aria-controls="' + tabId + '" role="tab" data-toggle="tab">' +
+                            title + ' <i class="fa fa-close close-tab"></i></a>' +
+                            '</li>';
+                        $nav.append(navHtml);
+
+                        // 激活新 tab
+                        $nav.find('a[aria-controls="' + tabId + '"]').trigger("click");
+                    }
+                }
             });
             
             //回到最后一次打开的页面
-            var lastpage = localStorage.getItem("lastpage");
-            if (lastpage) {
-                //刷新页面后跳到到刷新前的页面
-                Backend.api.addtabs(lastpage);
-            }
+            // 注意：这里不再自动调用addtabs，因为我们的初始化代码已经创建了控制台tab
+            // 如果需要恢复此功能，请确保lastpage是有效的菜单URL
+            // var lastpage = localStorage.getItem("lastpage");
+            // if (lastpage && lastpage !== 'dashboard' && lastpage.indexOf('console') === -1) {
+            //     Backend.api.addtabs(lastpage);
+            // }
 
             /**
              * List of all the available skins

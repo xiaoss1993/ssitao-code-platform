@@ -1,5 +1,7 @@
 package com.ssitao.code.modular.iam.system.domain.repository;
 
+import com.ssitao.code.common.pojo.PageParam;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.system.domain.model.IamTenant;
 
 import java.util.List;
@@ -80,6 +82,17 @@ public interface IamTenantRepository {
      * @return 租户列表
      */
     List<IamTenant> findExpired();
+
+    /**
+     * 分页查询租户
+     *
+     * @param pageParam 分页参数
+     * @param tenantCode 租户编码（模糊查询）
+     * @param tenantName 租户名称（模糊查询）
+     * @param tenantStatus 租户状态
+     * @return 分页结果
+     */
+    PageResult<IamTenant> findPage(PageParam pageParam, String tenantCode, String tenantName, String tenantStatus);
 
     /**
      * 检查租户编码是否存在

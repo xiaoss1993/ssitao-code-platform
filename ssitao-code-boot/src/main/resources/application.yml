@@ -42,8 +42,8 @@ spring:
   #上传文件大小限制
   server:
     multipart:
-      MaxFileSize: 5120MB
-      MaxRequestSize: 51200MB
+      MaxFileSize: ${MAX_FILE_SIZE:100MB}
+      MaxRequestSize: ${MAX_REQUEST_SIZE:200MB}
   web:
     resources:
       chain:
@@ -64,11 +64,11 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
   redis:
-    host: localhost
-    port: 6379
-    password: 123456
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:123456}
     # 连接超时时间（毫秒）
-    timeout: 1000000
+    timeout: ${REDIS_TIMEOUT:10000}
     pool:
       # 连接池中的最大空闲连接
       max-idle: 8
@@ -114,7 +114,7 @@ knife4j:
     language: zh_cn
     swagger-model-name: 实体类列表
   cors: false  # 关闭 Knife4j 自带的 CORS，使用 WebConfig 中的 CORS 配置
-  production: false
+  production: ${SWAGGER_PRODUCTION:true}
   aggregation:
     enabled: false
 
@@ -124,11 +124,11 @@ fastjson:
 # Sa-Token 配置
 sa-token:
   # token 名称（同时也是 cookie 名称）
-  token-name: Authorization
-  # token 有效期（单位：秒），-1 代表永久有效
-  timeout: 2592000
-  # token 临时有效期（指定时间内无操作就视为 token 过期）单位：秒
-  activity-timeout: -1
+  token-name: satoken
+  # token 有效期（单位：秒），默认 24 小时
+  timeout: 86400
+  # token 临时有效期（指定时间内无操作就视为 token 过期），30分钟无操作自动过期
+  activity-timeout: 1800
   # 是否允许同一账号多地同时登录
   is-concurrent: true
   # 在多人登录同一账号时，是否共用一个 token
@@ -138,15 +138,17 @@ sa-token:
   # 是否输出操作日志
   is-log: false
   # 是否从 cookie 中读取 token
-  is-read-cookie: false
+  is-read-cookie: true
+  # 是否自动把 token 写入到 cookie
+  is-write-cookie: true
   # 是否从 header 中读取 token
   is-read-header: true
-  # token 前缀
-  token-prefix: Bearer
+  # token 前缀（使用空字符串避免与 Cookie 值混淆）
+  token-prefix: ""
   # 是否在初始化配置时打印版本字符画
   is-print: false
   # jwt 秘钥
-  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+  jwt-secret-key: ${JWT_SECRET_KEY:ssitao-code-platform-jwt-secret-key-2024}
   # 是否启用 JWT 模式
   jwt-enabled: true
   # 存储方式：memory-内存存储, redis-Redis存储

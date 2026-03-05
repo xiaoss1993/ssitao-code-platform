@@ -1,5 +1,7 @@
 package com.ssitao.code.modular.iam.system.application.service;
 
+import com.ssitao.code.common.pojo.PageParam;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.system.application.command.IamTenantCreateCommand;
 import com.ssitao.code.modular.iam.system.application.command.IamTenantUpdateCommand;
 import com.ssitao.code.modular.iam.system.api.dto.IamTenantDTO;
@@ -66,6 +68,17 @@ public interface IamTenantAppService {
      * @return 租户列表
      */
     List<IamTenantDTO> listAll();
+
+    /**
+     * 分页查询租户列表
+     *
+     * @param pageParam 分页参数
+     * @param tenantCode 租户编码（模糊查询）
+     * @param tenantName 租户名称（模糊查询）
+     * @param tenantStatus 租户状态
+     * @return 分页结果
+     */
+    PageResult<IamTenantDTO> listPage(PageParam pageParam, String tenantCode, String tenantName, String tenantStatus);
 
     /**
      * 启用租户
