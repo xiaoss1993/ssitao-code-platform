@@ -47,8 +47,8 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
     private final IamPostMapper iamPostMapper;
 
     private final IamUserDataGenerator iamUserDataGenerator;
+    private final IamDepartmentDataGenerator iamDepartmentDataGenerator;
     private final IamRoleDataGenerator iamRoleDataGenerator;
-    privateDataGenerator iamRoleDataGenerator;
     private final IamPermissionDataGenerator iamPermissionDataGenerator;
     private final IamMenuDataGenerator iamMenuDataGenerator;
     private final IamCompanyDataGenerator iamCompanyDataGenerator;
@@ -62,16 +62,22 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
             return generateAllIamData(count);
         }
 
-        return switch (type) {
-            case COMPANY -> generateCompanies(count);
-            case DEPARTMENT -> generateDepartments(count);
-            case POST -> generatePosts(count);
-            case ROLE -> generateRoles(count);
-            case PERMISSION -> generatePermissions(count);
-            case MENU -> generateMenus(count);
-            case USER -> generateUsers(count);
-            default -> 0;
-        };
+        if (type == IamDataTypeEnum.COMPANY) {
+            return generateCompanies(count);
+        } else if (type == IamDataTypeEnum.DEPARTMENT) {
+            return generateDepartments(count);
+        } else if (type == IamDataTypeEnum.POST) {
+            return generatePosts(count);
+        } else if (type == IamDataTypeEnum.ROLE) {
+            return generateRoles(count);
+        } else if (type == IamDataTypeEnum.PERMISSION) {
+            return generatePermissions(count);
+        } else if (type == IamDataTypeEnum.MENU) {
+            return generateMenus(count);
+        } else if (type == IamDataTypeEnum.USER) {
+            return generateUsers(count);
+        }
+        return 0;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
         total += generateCompanies(count / 10);
 
         // 2. 获取公司ID列表
-        List<String> companyIds = iamCompanyMapper.selectList(null).stream()
+        List<String> companyIds = iamCompanyMapper.selectAll().stream()
                 .map(IamCompanyDO::getCompanyId)
                 .collect(Collectors.toList());
         if (CollUtil.isEmpty(companyIds)) {
@@ -94,7 +100,7 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
         total += generateDepartments(count / 8);
 
         // 4. 获取部门ID列表
-        List<String> deptIds = iamDepartmentMapper.selectList(null).stream()
+        List<String> deptIds = iamDepartmentMapper.selectAll().stream()
                 .map(IamDepartmentDO::getDeptId)
                 .collect(Collectors.toList());
 
@@ -102,7 +108,7 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
         total += generatePosts(count / 10);
 
         // 6. 获取岗位ID列表
-        List<String> postIds = iamPostMapper.selectList(null).stream()
+        List<String> postIds = iamPostMapper.selectAll().stream()
                 .map(IamPostDO::getPostId)
                 .collect(Collectors.toList());
 
@@ -139,7 +145,7 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
     }
 
     private int generateDepartments(int count) {
-        List<String> companyIds = iamCompanyMapper.selectList(null).stream()
+        List<String> companyIds = iamCompanyMapper.selectAll().stream()
                 .map(IamCompanyDO::getCompanyId)
                 .collect(Collectors.toList());
         if (CollUtil.isEmpty(companyIds)) {

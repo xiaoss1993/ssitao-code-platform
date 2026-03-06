@@ -58,7 +58,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "Spring Boot.SsitaoCodeApplication.executor": "Debug",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/comprehensive-optimization",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/sizt/ssitao-code-workspace/ssitao-code-platform/ssitao-code-boot/src/main/resources/static",
     "node.js.detected.package.eslint": "true",
@@ -203,7 +203,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/feature/sizt_iam_20260221" />
+                        <option value="develop" />
                       </list>
                     </value>
                   </entry>
