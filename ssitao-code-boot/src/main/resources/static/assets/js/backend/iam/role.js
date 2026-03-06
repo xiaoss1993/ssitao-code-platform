@@ -5,11 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/role/page',
+                    index_url: '/admin/role/page',
                     add_url: '/admin/role/add',
                     edit_url: '/admin/role/edit',
-                    del_url: '/iam/role/delete',
-                    multi_url: '/iam/role/multi',
+                    del_url: '/admin/role/delete',
                     table: 'iam_role',
                 },
                 responseHandler: function (res) {
@@ -92,6 +91,90 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
+            // 获取URL参数
+            var getQueryString = function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return null;
+            };
+
+            // 兼容 id 和 ids 两种参数名
+            var id = getQueryString('id') || getQueryString('ids');
+
+            if (id) {
+                // 编辑模式 - 获取数据
+                $.ajax({
+                    url: '/admin/role/get',
+                    type: 'GET',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#id').val(data.id);
+                            $('#roleCode').val(data.role_code);
+                            $('#roleCode').attr('readonly', true);
+                            $('#roleName').val(data.role_name);
+                            $('#roleType').val(data.role_type || 'CUSTOM');
+                            $('#dataScope').val(data.data_scope || 'ALL');
+                            $('#sortOrder').val(data.sort_order || 0);
+                            $('input[name="status"][value="' + (data.status === true || data.status === 1 || data.status === 'true' ? 'true' : 'false') + '"]').prop('checked', true);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+            }
+
+            // 表单提交处理
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                // 构建 JSON 数据
+                var submitData = {
+                    roleName: $('#roleName').val(),
+                    dataScope: $('#dataScope').val(),
+                    sortOrder: parseInt($('#sortOrder').val()) || 0,
+                    remark: $('#remark').val(),
+                    status: $('input[name="status"]:checked').val() === 'true'
+                };
+
+                var url, method;
+                if (id) {
+                    // 编辑模式
+                    submitData.id = parseInt(id);
+                    url = '/admin/role/update';
+                    method = 'PUT';
+                } else {
+                    // 添加模式
+                    submitData.roleCode = $('#roleCode').val();
+                    submitData.roleType = $('#roleType').val();
+                    url = '/admin/role/create';
+                    method = 'POST';
+                }
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(submitData),
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+
             Form.api.bindevent($("form[role=form]"));
         },
         api: {

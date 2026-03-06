@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.userprofile.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.userprofile.api.dto.IamUserProfileDTO;
@@ -9,6 +10,8 @@ import com.ssitao.code.modular.iam.userprofile.application.command.IamUserProfil
 import com.ssitao.code.modular.iam.userprofile.application.service.IamUserProfileAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,8 +27,8 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  * @since 2.0.0
  */
 @Tag(name = "IAM用户档案管理", description = "IAM用户档案相关接口，基于 tb_iam_user 表")
-@RestController
-@RequestMapping("/iam/user-profile")
+@Controller
+@RequestMapping("/admin/userprofile")
 public class IamUserProfileController {
 
     private final IamUserProfileAppService userProfileAppService;
@@ -34,10 +37,43 @@ public class IamUserProfileController {
         this.userProfileAppService = userProfileAppService;
     }
 
+    // ==================== 页面跳转 ====================
+
+    /**
+     * 用户档案管理页面
+     */
+    @GetMapping
+    @Operation(summary = "用户档案管理页面")
+    public String userprofilePage(Model model) {
+        addCommonModel(model, "用户档案管理", "userprofile");
+        return "iam/userprofile";
+    }
+
+    /**
+     * 用户档案添加页面
+     */
+    @GetMapping("/add")
+    @Operation(summary = "用户档案添加页面")
+    public String userprofileAddPage(Model model) {
+        addCommonModel(model, "添加用户档案", "userprofile");
+        return "iam/userprofile-edit";
+    }
+
+    /**
+     * 用户档案编辑页面
+     */
+    @GetMapping("/edit")
+    @Operation(summary = "用户档案编辑页面")
+    public String userprofileEditPage(Model model) {
+        addCommonModel(model, "编辑用户档案", "userprofile");
+        return "iam/userprofile-edit";
+    }
+
     // ==================== 用户档案 CRUD 接口 ====================
 
     @PostMapping
     @Operation(summary = "创建用户档案", description = "创建新用户档案（HR人员档案信息）")
+    @ResponseBody
     public CommonResult<String> createUserProfile(@Valid @RequestBody IamUserProfileCreateCommand command) {
         String userId = userProfileAppService.createUserProfile(command);
         return success(userId);
@@ -45,6 +81,7 @@ public class IamUserProfileController {
 
     @PostMapping("/batch")
     @Operation(summary = "批量创建用户档案", description = "批量创建用户档案")
+    @ResponseBody
     public CommonResult<List<String>> batchCreateUserProfiles(@Valid @RequestBody List<IamUserProfileCreateCommand> commands) {
         List<String> userIds = userProfileAppService.batchCreateUserProfiles(commands);
         return success(userIds);
@@ -52,6 +89,7 @@ public class IamUserProfileController {
 
     @PutMapping
     @Operation(summary = "更新用户档案", description = "更新用户档案信息")
+    @ResponseBody
     public CommonResult<Void> updateUserProfile(@Valid @RequestBody IamUserProfileUpdateCommand command) {
         userProfileAppService.updateUserProfile(command);
         return success();
@@ -59,6 +97,7 @@ public class IamUserProfileController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除用户档案", description = "删除指定用户档案")
+    @ResponseBody
     public CommonResult<Void> deleteUserProfile(@PathVariable String id,
                                                   @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         userProfileAppService.deleteUserProfile(id, tenantId);
@@ -67,6 +106,7 @@ public class IamUserProfileController {
 
     @GetMapping("/{id}")
     @Operation(summary = "获取用户档案详情", description = "根据ID获取用户档案详情")
+    @ResponseBody
     public CommonResult<IamUserProfileDTO> getUserProfileById(@PathVariable String id,
                                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         IamUserProfileDTO userProfile = userProfileAppService.getUserProfileById(id, tenantId);
@@ -75,6 +115,7 @@ public class IamUserProfileController {
 
     @GetMapping("/code/{userCode}")
     @Operation(summary = "根据用户编码获取档案", description = "根据用户编码获取用户档案信息")
+    @ResponseBody
     public CommonResult<IamUserProfileDTO> getUserProfileByCode(@PathVariable String userCode,
                                                                  @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         IamUserProfileDTO userProfile = userProfileAppService.getUserProfileByCode(userCode, tenantId);
@@ -83,6 +124,7 @@ public class IamUserProfileController {
 
     @GetMapping("/list")
     @Operation(summary = "获取用户档案列表", description = "根据条件查询用户档案列表")
+    @ResponseBody
     public CommonResult<PageResult<IamUserProfileDTO>> listUserProfiles(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer page,
@@ -102,6 +144,7 @@ public class IamUserProfileController {
 
     @PostMapping("/page")
     @Operation(summary = "分页查询用户档案", description = "分页查询用户档案列表")
+    @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> pageUserProfiles(@RequestBody IamUserProfileQueryCommand command,
                                                                    @RequestParam(defaultValue = "1") int page,
                                                                    @RequestParam(defaultValue = "10") int size) {
@@ -113,6 +156,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/enable")
     @Operation(summary = "启用用户档案", description = "启用指定用户档案")
+    @ResponseBody
     public CommonResult<Void> enableUserProfile(@PathVariable String id,
                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         userProfileAppService.enableUserProfile(id, tenantId);
@@ -121,6 +165,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/disable")
     @Operation(summary = "禁用用户档案", description = "禁用指定用户档案")
+    @ResponseBody
     public CommonResult<Void> disableUserProfile(@PathVariable String id,
                                                  @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         userProfileAppService.disableUserProfile(id, tenantId);
@@ -131,6 +176,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/assign-department")
     @Operation(summary = "分配部门", description = "为用户档案分配部门")
+    @ResponseBody
     public CommonResult<Void> assignDepartment(@PathVariable String id,
                                                 @RequestParam String deptId,
                                                 @RequestParam String deptName,
@@ -141,6 +187,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/assign-post")
     @Operation(summary = "分配岗位", description = "为用户档案分配岗位")
+    @ResponseBody
     public CommonResult<Void> assignPost(@PathVariable String id,
                                           @RequestParam String postCode,
                                           @RequestParam String postName,
@@ -151,6 +198,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/assign-role")
     @Operation(summary = "分配角色", description = "为用户档案分配角色")
+    @ResponseBody
     public CommonResult<Void> assignRole(@PathVariable String id,
                                           @RequestParam String roleId,
                                           @RequestParam String roleName,
@@ -163,6 +211,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/info/basic")
     @Operation(summary = "更新基本信息", description = "更新用户档案基本信息")
+    @ResponseBody
     public CommonResult<Void> updateBasicInfo(@PathVariable String id,
                                                @RequestBody IamUserProfileUpdateCommand command) {
         userProfileAppService.updateBasicInfo(id, command);
@@ -171,6 +220,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/info/contact")
     @Operation(summary = "更新联系信息", description = "更新用户档案联系信息")
+    @ResponseBody
     public CommonResult<Void> updateContactInfo(@PathVariable String id,
                                                  @RequestBody IamUserProfileUpdateCommand command) {
         userProfileAppService.updateContactInfo(id, command);
@@ -179,6 +229,7 @@ public class IamUserProfileController {
 
     @PutMapping("/{id}/info/job")
     @Operation(summary = "更新工作信息", description = "更新用户档案工作信息")
+    @ResponseBody
     public CommonResult<Void> updateJobInfo(@PathVariable String id,
                                              @RequestBody IamUserProfileUpdateCommand command) {
         userProfileAppService.updateJobInfo(id, command);
@@ -189,6 +240,7 @@ public class IamUserProfileController {
 
     @GetMapping("/department/{deptId}")
     @Operation(summary = "根据部门查询用户档案", description = "获取指定部门的用户档案列表")
+    @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> getUserProfilesByDepartment(@PathVariable String deptId,
                                                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.getUserProfilesByDepartment(deptId, tenantId);
@@ -197,6 +249,7 @@ public class IamUserProfileController {
 
     @GetMapping("/post/{postCode}")
     @Operation(summary = "根据岗位查询用户档案", description = "获取指定岗位的用户档案列表")
+    @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> getUserProfilesByPost(@PathVariable String postCode,
                                                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.getUserProfilesByPost(postCode, tenantId);
@@ -205,10 +258,30 @@ public class IamUserProfileController {
 
     @GetMapping("/search")
     @Operation(summary = "搜索用户档案", description = "根据关键字搜索用户档案")
+    @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> searchUserProfiles(@RequestParam String keyword,
                                                                      @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.searchUserProfiles(keyword, tenantId);
         return success(userProfiles);
+    }
+
+    // ==================== 通用方法 ====================
+
+    /**
+     * 添加通用模板变量
+     */
+    private void addCommonModel(Model model, String title, String controllerName) {
+        model.addAttribute("title", title);
+        model.addAttribute("controllerName", controllerName);
+        model.addAttribute("moduleName", "iam");
+
+        if (StpUtil.isLogin()) {
+            model.addAttribute("isLogin", true);
+            model.addAttribute("userId", StpUtil.getLoginId());
+            model.addAttribute("userName", StpUtil.getLoginIdAsString());
+        } else {
+            model.addAttribute("isLogin", false);
+        }
     }
 
 }

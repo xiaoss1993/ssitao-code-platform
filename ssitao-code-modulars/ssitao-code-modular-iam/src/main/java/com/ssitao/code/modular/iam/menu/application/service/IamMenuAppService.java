@@ -22,11 +22,12 @@ public interface IamMenuAppService {
     /**
      * 获取菜单列表
      *
+     * @param parentId 父菜单ID（可选，用于获取子菜单）
      * @param menuType 菜单类型
      * @param status   状态
      * @return 菜单列表
      */
-    List<IamMenuDTO> listMenus(String menuType, Integer status);
+    List<IamMenuDTO> listMenus(String parentId, String menuType, Integer status);
 
     /**
      * 获取菜单树

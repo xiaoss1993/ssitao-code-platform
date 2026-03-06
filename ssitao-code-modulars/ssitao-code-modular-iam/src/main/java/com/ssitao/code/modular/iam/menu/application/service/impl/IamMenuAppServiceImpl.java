@@ -49,16 +49,26 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
     }
 
     @Override
-    public List<IamMenuDTO> listMenus(String menuType, Integer status) {
+    public List<IamMenuDTO> listMenus(String parentId, String menuType, Integer status) {
         String tenantId = TenantUtils.getTenantId();
         List<IamMenu> menus;
 
-        if (menuType != null && !menuType.isEmpty()) {
+        // 如果指定了parentId，查询该父节点下的子菜单（平面列表）
+        if (parentId != null && !parentId.isEmpty()) {
+            menus = menuRepository.findByParentId(parentId, tenantId);
+        } else if (menuType != null && !menuType.isEmpty()) {
             menus = menuRepository.findByMenuType(menuType, tenantId);
         } else if (status != null) {
             menus = menuRepository.findByStatus(status, tenantId);
         } else {
+            // 默认返回树形结构
             menus = menuRepository.findAll(tenantId);
+            if (menus == null || menus.isEmpty()) {
+                return new ArrayList<>();
+            }
+            List<IamMenuDTO> dtoList = menuConverter.toDTOList(menus);
+            dtoList.forEach(this::populateFrontendFields);
+            return buildMenuTree(dtoList, "0");
         }
 
         if (menus == null || menus.isEmpty()) {
@@ -69,7 +79,10 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         List<IamMenuDTO> dtoList = menuConverter.toDTOList(menus);
         dtoList.forEach(this::populateFrontendFields);
 
-        // 构建菜单树
+        // 如果有parentId，返回平面列表；否则返回树形结构
+        if (parentId != null && !parentId.isEmpty()) {
+            return dtoList;
+        }
         return buildMenuTree(dtoList, "0");
     }
 

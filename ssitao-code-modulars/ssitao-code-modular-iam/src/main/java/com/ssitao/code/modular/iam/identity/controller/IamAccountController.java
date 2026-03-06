@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountCreateCommand;
@@ -10,6 +11,8 @@ import com.ssitao.code.modular.iam.identity.application.query.IamAccountQuery;
 import com.ssitao.code.modular.iam.identity.application.service.IamAccountAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,8 +28,8 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  * @since 2.0.0
  */
 @Tag(name = "IAM账号管理", description = "IAM账号相关接口，基于 tb_iam_account 表")
-@RestController
-@RequestMapping("/iam/account")
+@Controller
+@RequestMapping("/admin/account")
 public class IamAccountController {
 
     private final IamAccountAppService accountAppService;
@@ -35,10 +38,43 @@ public class IamAccountController {
         this.accountAppService = accountAppService;
     }
 
+    // ==================== 页面跳转 ====================
+
+    /**
+     * 账号管理页面
+     */
+    @GetMapping
+    @Operation(summary = "账号管理页面")
+    public String accountPage(Model model) {
+        addCommonModel(model, "账号管理", "account");
+        return "iam/account";
+    }
+
+    /**
+     * 账号添加页面
+     */
+    @GetMapping("/add")
+    @Operation(summary = "账号添加页面")
+    public String accountAddPage(Model model) {
+        addCommonModel(model, "添加账号", "account");
+        return "iam/account-edit";
+    }
+
+    /**
+     * 账号编辑页面
+     */
+    @GetMapping("/edit")
+    @Operation(summary = "账号编辑页面")
+    public String accountEditPage(Model model) {
+        addCommonModel(model, "编辑账号", "account");
+        return "iam/account-edit";
+    }
+
     // ==================== 账号 CRUD 接口 ====================
 
     @PostMapping
     @Operation(summary = "创建账号", description = "创建新登录账号")
+    @ResponseBody
     public CommonResult<String> createAccount(@Valid @RequestBody IamAccountCreateCommand command) {
         String accountId = accountAppService.createAccount(command);
         return success(accountId);
@@ -46,6 +82,7 @@ public class IamAccountController {
 
     @PutMapping
     @Operation(summary = "更新账号", description = "更新账号信息")
+    @ResponseBody
     public CommonResult<Void> updateAccount(@Valid @RequestBody IamAccountUpdateCommand command) {
         accountAppService.updateAccount(command);
         return success();
@@ -53,6 +90,7 @@ public class IamAccountController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除账号", description = "删除指定账号")
+    @ResponseBody
     public CommonResult<Void> deleteAccount(@PathVariable String id,
                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         accountAppService.deleteAccount(id, tenantId);
@@ -61,6 +99,7 @@ public class IamAccountController {
 
     @GetMapping("/{id}")
     @Operation(summary = "获取账号详情", description = "根据ID获取账号详情")
+    @ResponseBody
     public CommonResult<IamAccountDTO> getAccount(@PathVariable String id,
                                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         IamAccountDTO account = accountAppService.getAccount(id, tenantId);
@@ -69,124 +108,85 @@ public class IamAccountController {
 
     @GetMapping("/code/{accountCode}")
     @Operation(summary = "根据账号编码获取账号", description = "根据账号编码获取账号信息")
+    @ResponseBody
     public CommonResult<IamAccountDTO> getAccountByCode(@PathVariable String accountCode,
                                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         IamAccountDTO account = accountAppService.getAccountByCode(accountCode, tenantId);
         return success(account);
     }
 
-    @PostMapping("/page")
+    @GetMapping("/page")
     @Operation(summary = "分页查询账号", description = "分页查询账号列表")
-    public CommonResult<List<IamAccountDTO>> pageAccounts(@RequestBody IamAccountQuery query,
-                                                           @RequestParam(defaultValue = "1") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
+    @ResponseBody
+    public CommonResult<List<IamAccountDTO>> pageAccounts(IamAccountQuery query,
+                                                            @RequestParam(defaultValue = "1") int page,
+                                                            @RequestParam(defaultValue = "10") int size,
+                                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        query.setTenantId(tenantId);
         List<IamAccountDTO> accounts = accountAppService.pageAccounts(query, page, size);
         return success(accounts);
     }
 
-    @GetMapping("/page")
-    @Operation(summary = "分页查询账号", description = "分页查询账号列表（GET版本）")
-    public CommonResult<List<IamAccountDTO>> pageAccountsGet(@RequestParam(defaultValue = "1") int current,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        IamAccountQuery query = new IamAccountQuery();
-        query.setTenantId(tenantId);
-        List<IamAccountDTO> accounts = accountAppService.pageAccounts(query, current, size);
-        return success(accounts);
-    }
-
-    @PostMapping("/list")
-    @Operation(summary = "查询账号列表", description = "根据条件查询账号列表")
-    public CommonResult<List<IamAccountDTO>> listAccounts(@RequestBody IamAccountQuery query) {
-        List<IamAccountDTO> accounts = accountAppService.listAccounts(query);
-        return success(accounts);
-    }
-
-    // ==================== 账号状态管理接口 ====================
-
-    @PutMapping("/{id}/lock")
-    @Operation(summary = "锁定账号", description = "锁定指定账号")
-    public CommonResult<Void> lockAccount(@PathVariable String id,
-                                          @RequestParam(required = false) Integer expireDays,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.lockAccount(id, expireDays, tenantId);
-        return success();
-    }
-
-    @PutMapping("/{id}/unlock")
-    @Operation(summary = "解锁账号", description = "解锁指定账号")
-    public CommonResult<Void> unlockAccount(@PathVariable String id,
-                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.unlockAccount(id, tenantId);
-        return success();
-    }
-
-    @PutMapping("/{id}/disable")
-    @Operation(summary = "禁用账号", description = "禁用指定账号")
-    public CommonResult<Void> disableAccount(@PathVariable String id,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.disableAccount(id, tenantId);
-        return success();
-    }
-
-    @PutMapping("/{id}/enable")
-    @Operation(summary = "启用账号", description = "启用指定账号")
-    public CommonResult<Void> enableAccount(@PathVariable String id,
-                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.enableAccount(id, tenantId);
-        return success();
-    }
-
-    // ==================== 密码管理接口 ====================
-
     @PostMapping("/change-password")
-    @Operation(summary = "修改密码", description = "用户修改自己的密码")
+    @Operation(summary = "修改密码", description = "修改账号密码")
+    @ResponseBody
     public CommonResult<Void> changePassword(@Valid @RequestBody IamPasswordChangeCommand command) {
         accountAppService.changePassword(command);
         return success();
     }
 
     @PostMapping("/reset-password")
-    @Operation(summary = "重置密码", description = "管理员重置用户密码")
+    @Operation(summary = "重置密码", description = "重置账号密码")
+    @ResponseBody
     public CommonResult<Void> resetPassword(@Valid @RequestBody IamPasswordResetCommand command) {
         accountAppService.resetPassword(command);
         return success();
     }
 
-    @PutMapping("/{id}/reset-password")
-    @Operation(summary = "重置指定用户密码", description = "管理员重置指定用户的密码")
-    public CommonResult<Void> resetPasswordById(@PathVariable String id,
-                                                @RequestParam String newPassword,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.resetPasswordById(id, newPassword, tenantId);
+    @PutMapping("/{id}/enable")
+    @Operation(summary = "启用账号", description = "启用指定账号")
+    @ResponseBody
+    public CommonResult<Void> enableAccount(@PathVariable String id,
+                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        accountAppService.enableAccount(id, tenantId);
         return success();
     }
 
-    // ==================== 账号关联接口 ====================
-
-    @PutMapping("/{id}/bind-user")
-    @Operation(summary = "绑定用户档案", description = "为账号绑定用户档案")
-    public CommonResult<Void> bindUser(@PathVariable String id,
-                                       @RequestParam String userId,
-                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.bindUser(id, userId, tenantId);
-        return success();
-    }
-
-    @PutMapping("/{id}/unbind-user")
-    @Operation(summary = "解绑用户档案", description = "为账号解绑用户档案")
-    public CommonResult<Void> unbindUser(@PathVariable String id,
-                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        accountAppService.unbindUser(id, tenantId);
+    @PutMapping("/{id}/disable")
+    @Operation(summary = "禁用账号", description = "禁用指定账号")
+    @ResponseBody
+    public CommonResult<Void> disableAccount(@PathVariable String id,
+                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        accountAppService.disableAccount(id, tenantId);
         return success();
     }
 
     @GetMapping("/{id}/user")
-    @Operation(summary = "获取账号绑定的用户档案", description = "获取账号绑定的用户档案信息")
-    public CommonResult<Object> getBoundUser(@PathVariable String id,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    @Operation(summary = "获取账号关联用户", description = "获取账号关联的用户信息")
+    @ResponseBody
+    public CommonResult<Object> getAccountUser(@PathVariable String id,
+                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         Object user = accountAppService.getBoundUser(id, tenantId);
         return success(user);
+    }
+
+    // ==================== 通用方法 ====================
+
+    /**
+     * 添加通用模板变量
+     */
+    private void addCommonModel(Model model, String title, String controllerName) {
+        model.addAttribute("title", title);
+        model.addAttribute("controllerName", controllerName);
+        model.addAttribute("moduleName", "iam");
+
+        if (StpUtil.isLogin()) {
+            model.addAttribute("isLogin", true);
+            model.addAttribute("userId", StpUtil.getLoginId());
+            model.addAttribute("userName", StpUtil.getLoginIdAsString());
+        } else {
+            model.addAttribute("isLogin", false);
+        }
     }
 
 }

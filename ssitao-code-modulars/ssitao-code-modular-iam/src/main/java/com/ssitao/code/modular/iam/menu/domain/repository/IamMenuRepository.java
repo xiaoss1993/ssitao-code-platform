@@ -71,4 +71,13 @@ public interface IamMenuRepository {
      */
     List<IamMenu> findByStatus(Integer status, String tenantId);
 
+    /**
+     * 根据父菜单ID查询子菜单
+     *
+     * @param parentId 父菜单ID
+     * @param tenantId 租户ID
+     * @return 子菜单列表
+     */
+    List<IamMenu> findByParentId(String parentId, String tenantId);
+
 }

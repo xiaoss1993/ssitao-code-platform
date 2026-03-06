@@ -42,6 +42,11 @@ public class IamRoleUpdateCommand {
     private Integer sortOrder;
 
     /**
+     * 状态：true-启用 false-禁用
+     */
+    private Boolean status;
+
+    /**
      * 备注
      */
     @Size(max = 512, message = "备注长度不能超过512")

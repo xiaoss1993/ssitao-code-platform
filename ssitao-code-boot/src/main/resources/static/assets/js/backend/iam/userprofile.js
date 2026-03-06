@@ -5,13 +5,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/user-profile/page',
-                    add_url: 'userprofile-edit.html',
-                    edit_url: 'userprofile-edit.html',
-                    del_url: '/iam/user-profile',
-                    multi_url: 'userprofile/multi',
+                    index_url: '/admin/userprofile/page',
+                    add_url: '/admin/userprofile/add',
+                    edit_url: '/admin/userprofile/edit',
+                    del_url: '/admin/userprofile',
                     table: 'iam_user_profile',
-                    list_url: '/iam/user-profile/list',
                 },
                 // 配置响应数据处理
                 responseHandler: function (res) {
@@ -89,7 +87,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-dialog',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/iam/user-profile/' + row.id + '/enable';
+                                        return '/admin/userprofile/' + row.id + '/enable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -102,7 +100,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-dialog',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/iam/user-profile/' + row.id + '/disable';
+                                        return '/admin/userprofile/' + row.id + '/disable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -118,9 +116,214 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Table.api.bindevent(table);
         },
         add: function () {
+            // 获取URL参数
+            var getQueryString = function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return null;
+            };
+
+            // 加载部门列表
+            function loadDepartments() {
+                $.ajax({
+                    url: '/iam/org/department/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择部门</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.deptName + '</option>';
+                            });
+                            $('#departmentId').html(html);
+                            $('#departmentId').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            // 加载岗位列表
+            function loadPosts() {
+                $.ajax({
+                    url: '/iam/org/post/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择岗位</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.postName + '</option>';
+                            });
+                            $('#postId').html(html);
+                            $('#postId').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            $('#birthday').datetimepicker({
+                format: 'YYYY-MM-DD',
+                locale: 'zh-CN'
+            });
+
+            loadDepartments();
+            loadPosts();
+
+            // 添加模式
+            $('#edit-form').attr('action', '/iam/user-profile');
+            $('#edit-form').attr('method', 'POST');
+
+            // 表单提交
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+
             Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
+            // 获取URL参数
+            var getQueryString = function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return null;
+            };
+
+            var id = getQueryString('id');
+
+            // 加载部门列表
+            function loadDepartments() {
+                $.ajax({
+                    url: '/iam/org/department/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择部门</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.deptName + '</option>';
+                            });
+                            $('#departmentId').html(html);
+                            $('#departmentId').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            // 加载岗位列表
+            function loadPosts() {
+                $.ajax({
+                    url: '/iam/org/post/list',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var html = '<option value="">请选择岗位</option>';
+                            $.each(res.data, function(i, item) {
+                                html += '<option value="' + item.id + '">' + item.postName + '</option>';
+                            });
+                            $('#postId').html(html);
+                            $('#postId').selectpicker('refresh');
+                        }
+                    }
+                });
+            }
+
+            // 初始化日期选择器
+            $('#birthday').datetimepicker({
+                format: 'YYYY-MM-DD',
+                locale: 'zh-CN'
+            });
+
+            loadDepartments();
+            loadPosts();
+
+            if (id) {
+                // 编辑模式 - 获取数据
+                $.ajax({
+                    url: '/iam/user-profile/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#id').val(data.id);
+                            $('#nickname').val(data.nickname);
+                            $('#realName').val(data.realName);
+                            $('#departmentId').val(data.departmentId);
+                            $('#departmentId').selectpicker('refresh');
+                            $('#postId').val(data.postId);
+                            $('#postId').selectpicker('refresh');
+                            $('#phone').val(data.phone);
+                            $('#email').val(data.email);
+                            $('#gender').val(data.gender);
+                            $('#birthday').val(data.birthday);
+                            $('#avatar').val(data.avatar);
+                            $('input[name="status"][value="' + data.status + '"]').prop('checked', true);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+
+                $('#edit-form').attr('action', '/iam/user-profile');
+                $('#edit-form').attr('method', 'PUT');
+            }
+
+            // 表单提交
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+
             Form.api.bindevent($("form[role=form]"));
         },
         api: {

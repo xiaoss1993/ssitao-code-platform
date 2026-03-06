@@ -403,6 +403,13 @@ public class IamRole {
     }
 
     /**
+     * 设置角色状态
+     */
+    public void setRoleStatus(Integer roleStatus) {
+        this.roleStatus = roleStatus;
+    }
+
+    /**
      * 获取路径（兼容方法）
      */
     public String getPath() {

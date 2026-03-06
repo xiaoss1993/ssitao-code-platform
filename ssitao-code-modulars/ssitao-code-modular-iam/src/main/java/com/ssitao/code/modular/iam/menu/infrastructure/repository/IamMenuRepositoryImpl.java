@@ -118,4 +118,19 @@ public class IamMenuRepositoryImpl implements IamMenuRepository {
         return menuConverter.toDomainList(menuDOList);
     }
 
+    @Override
+    public List<IamMenu> findByParentId(String parentId, String tenantId) {
+        QueryWrapper query = QueryWrapper.create()
+                .eq("menu_parent_id", parentId)
+                .eq("is_deleted", 0)
+                .orderBy("menu_sort", true);
+
+        if (tenantId != null && !tenantId.isEmpty()) {
+            query.eq("tenant_id", tenantId);
+        }
+
+        List<IamMenuDO> menuDOList = menuMapper.selectListByQuery(query);
+        return menuConverter.toDomainList(menuDOList);
+    }
+
 }

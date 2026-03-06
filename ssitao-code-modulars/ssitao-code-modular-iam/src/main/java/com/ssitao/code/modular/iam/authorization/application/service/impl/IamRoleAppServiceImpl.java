@@ -47,35 +47,22 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
         IamRole role = IamRole.create(
                 command.getRoleCode(),
                 command.getRoleName(),
-                command.getRoleType()
+                command.getTenantId()
         );
 
         // 设置ID
-        role.setId(UUID.randomUUID().toString().replace("-", ""));
+        role.setRoleId(UUID.randomUUID().toString().replace("-", ""));
 
         // 设置其他属性
         role.setDataScope(command.getDataScope());
         if (command.getPermGroupId() != null) {
             role.setPermGroupId(command.getPermGroupId().toString());
         }
-        if (command.getParentId() != null) {
-            role.setParentId(command.getParentId().toString());
+        role.setRoleSort(command.getSortOrder());
+        if (command.getRoleType() != null) {
+            role.setRoleType(command.getRoleType());
         }
-        role.setNodeType(command.getNodeType());
-        role.setSortOrder(command.getSortOrder());
-        role.setTenantId(command.getTenantId());
-        role.setRemark(command.getRemark());
-
-        // 处理层级和路径
-        if (command.getParentId() != null) {
-            IamRole parent = roleRepository.findById(command.getParentId().toString(), command.getTenantId()).orElse(null);
-            if (parent != null) {
-                role.setLayer(parent.getLayer() + 1);
-                role.buildPath(parent.getPath());
-            }
-        } else {
-            role.buildPath(null);
-        }
+        role.setRoleDesc(command.getRemark());
 
         String id = roleRepository.save(role);
         return id != null ? Long.valueOf(id) : null;
@@ -95,9 +82,12 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
         if (command.getPermGroupId() != null) {
             role.setPermGroupId(command.getPermGroupId().toString());
         }
-        role.setSortOrder(command.getSortOrder());
-        role.setRemark(command.getRemark());
-        role.setUpdateTime(LocalDateTime.now());
+        role.setRoleSort(command.getSortOrder());
+        if (command.getStatus() != null) {
+            role.setRoleStatus(command.getStatus() ? 1 : 0);
+        }
+        role.setRoleDesc(command.getRemark());
+        role.setModifyTime(LocalDateTime.now());
 
         roleRepository.update(role);
     }

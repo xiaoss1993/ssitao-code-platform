@@ -5,11 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/tenant/page',
-                    add_url: 'tenant-edit.html',
-                    edit_url: 'tenant-edit.html',
-                    del_url: '/iam/tenant',
-                    multi_url: 'tenant/multi',
+                    index_url: '/admin/tenant/page',
+                    add_url: '/admin/tenant/add',
+                    edit_url: '/admin/tenant/edit',
+                    del_url: '/admin/tenant',
                     table: 'iam_tenant',
                 },
                 // 配置响应数据处理
@@ -76,7 +75,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-dialog',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/iam/tenant/' + row.id + '/enable';
+                                        return '/admin/tenant/' + row.id + '/enable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -89,7 +88,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-dialog',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/iam/tenant/' + row.id + '/disable';
+                                        return '/admin/tenant/' + row.id + '/disable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -105,9 +104,129 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Table.api.bindevent(table);
         },
         add: function () {
+            // 获取URL参数
+            var getQueryString = function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return null;
+            };
+
+            // 初始化日期选择器
+            $('#expireTime').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
+                locale: 'zh-CN'
+            });
+
+            // 添加模式
+            $('#edit-form').attr('action', '/iam/tenant');
+            $('#edit-form').attr('method', 'POST');
+
+            // 表单提交
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+
             Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
+            // 获取URL参数
+            var getQueryString = function(name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return decodeURIComponent(r[2]);
+                return null;
+            };
+
+            var id = getQueryString('id');
+
+            // 初始化日期选择器
+            $('#expireTime').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
+                locale: 'zh-CN'
+            });
+
+            if (id) {
+                // 编辑模式 - 获取数据
+                $.ajax({
+                    url: '/iam/tenant/' + id,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#id').val(data.id);
+                            $('#tenantName').val(data.tenantName);
+                            $('#tenantCode').val(data.tenantCode);
+                            $('#tenantCode').attr('readonly', true);
+                            $('#contactName').val(data.contactName);
+                            $('#contactPhone').val(data.contactPhone);
+                            $('#contactEmail').val(data.contactEmail);
+                            $('#expireTime').val(data.expireTime);
+                            $('#maxUsers').val(data.maxUsers);
+                            $('input[name="status"][value="' + data.status + '"]').prop('checked', true);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+
+                $('#edit-form').attr('action', '/iam/tenant');
+                $('#edit-form').attr('method', 'PUT');
+            }
+
+            // 表单提交
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: formData,
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+
             Form.api.bindevent($("form[role=form]"));
         }
     };
