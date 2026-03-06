@@ -3,7 +3,10 @@ package com.ssitao.code.modular.iam.organization.application.service.impl;
 import com.ssitao.code.modular.iam.organization.api.dto.IamUserOrgDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamUserOrgCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.service.IamUserOrgAppService;
+import com.ssitao.code.modular.iam.organization.domain.repository.IamUserOrgRepository;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +23,11 @@ import java.util.stream.Collectors;
  * @since 2.0.0
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class IamUserOrgAppServiceImpl implements IamUserOrgAppService {
+
+    @Resource
+    private IamUserOrgRepository userOrgRepository;
 
     /**
      * 模拟数据库存储 - key: userId, value: list of user orgs

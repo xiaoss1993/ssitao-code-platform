@@ -4,7 +4,10 @@ import com.ssitao.code.modular.iam.organization.api.dto.IamGroupDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.service.IamGroupAppService;
+import com.ssitao.code.modular.iam.organization.domain.repository.IamGroupRepository;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +25,11 @@ import java.util.stream.Collectors;
  * @since 2.0.0
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class IamGroupAppServiceImpl implements IamGroupAppService {
+
+    @Resource
+    private IamGroupRepository groupRepository;
 
     /**
      * 模拟数据库存储

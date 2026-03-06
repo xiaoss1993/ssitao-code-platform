@@ -7,7 +7,7 @@ import com.ssitao.code.modular.meta.domain.model.MetaProcessInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaTaskInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaWorkflow;
 import com.ssitao.code.modular.meta.domain.repository.MetaWorkflowRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class WorkflowServiceImpl implements WorkflowService {
 
-    @Autowired
+    @Resource
     private MetaWorkflowRepository workflowRepository;
 
     @Override
