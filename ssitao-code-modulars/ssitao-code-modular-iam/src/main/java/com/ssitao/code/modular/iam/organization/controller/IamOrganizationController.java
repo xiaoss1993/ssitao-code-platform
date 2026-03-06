@@ -4,14 +4,18 @@ import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.modular.iam.organization.api.dto.IamCompanyDTO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamDepartmentDTO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamGroupDTO;
+import com.ssitao.code.modular.iam.organization.api.dto.IamPostDTO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamUserOrgDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamCompanyCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupUpdateCommand;
+import com.ssitao.code.modular.iam.organization.application.command.IamPostCreateCommand;
+import com.ssitao.code.modular.iam.organization.application.command.IamPostUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamUserOrgCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.service.IamCompanyAppService;
 import com.ssitao.code.modular.iam.organization.application.service.IamDepartmentAppService;
+import com.ssitao.code.modular.iam.organization.application.service.IamPostAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -36,11 +40,14 @@ public class IamOrganizationController {
 
     private final IamCompanyAppService companyAppService;
     private final IamDepartmentAppService departmentAppService;
+    private final IamPostAppService postAppService;
 
     public IamOrganizationController(IamCompanyAppService companyAppService,
-                                     IamDepartmentAppService departmentAppService) {
+                                     IamDepartmentAppService departmentAppService,
+                                     IamPostAppService postAppService) {
         this.companyAppService = companyAppService;
         this.departmentAppService = departmentAppService;
+        this.postAppService = postAppService;
     }
 
     // ==================== 集团管理接口 ====================
@@ -146,5 +153,46 @@ public class IamOrganizationController {
     public CommonResult<List<IamUserOrgDTO>> getUserOrgs(@PathVariable String userId) {
         // TODO: 实现获取用户组织逻辑
         return success(new ArrayList<>());
+    }
+
+    // ==================== 岗位管理接口 ====================
+
+    @PostMapping("/post")
+    @Operation(summary = "创建岗位", description = "创建新岗位")
+    public CommonResult<Long> createPost(@Valid @RequestBody IamPostCreateCommand command,
+                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        Long postId = postAppService.createPost(command);
+        return success(postId);
+    }
+
+    @GetMapping("/post/list")
+    @Operation(summary = "获取岗位列表", description = "获取所有岗位列表")
+    public CommonResult<List<IamPostDTO>> listPosts(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        List<IamPostDTO> posts = postAppService.listPosts(tenantId);
+        return success(posts);
+    }
+
+    @GetMapping("/post/by-department/{departmentId}")
+    @Operation(summary = "获取部门下的岗位", description = "获取指定部门下的岗位列表")
+    public CommonResult<List<IamPostDTO>> listPostsByDepartment(@PathVariable Long departmentId,
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        List<IamPostDTO> posts = postAppService.listPostsByDeptId(departmentId, tenantId);
+        return success(posts);
+    }
+
+    @PutMapping("/post")
+    @Operation(summary = "更新岗位", description = "更新岗位信息")
+    public CommonResult<Void> updatePost(@Valid @RequestBody IamPostUpdateCommand command,
+                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        postAppService.updatePost(command);
+        return success();
+    }
+
+    @DeleteMapping("/post/{id}")
+    @Operation(summary = "删除岗位", description = "删除指定岗位")
+    public CommonResult<Void> deletePost(@PathVariable Long id,
+                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        postAppService.deletePost(id, tenantId);
+        return success();
     }
 }
