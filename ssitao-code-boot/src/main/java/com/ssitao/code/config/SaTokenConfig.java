@@ -3,16 +3,21 @@ package com.ssitao.code.config;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.frame.satoken.core.SecurityUtil;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
  * Sa-Token 配置类
- * 配置路由拦截规则
+ * 改为基于注解的权限验证方式
+ * 只有添加了@RequiresLogin或@RequiresPermissions注解的接口才进行验证
  *
  * @author ssitao-code
  * @since 2.0.0
@@ -22,31 +27,113 @@ public class SaTokenConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 注册 Sa-Token 拦截器
+        // 注册 Sa-Token 拦截器，改为基于注解验证
         registry.addInterceptor(new HandlerInterceptor() {
             @Override
             public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-                // 1. 首先检查是否登录
-                StpUtil.checkLogin();
+                // 检查是否是HandlerMethod（Controller方法）
+                if (!(handler instanceof org.springframework.web.method.HandlerMethod)) {
+                    return true; // 非Controller方法直接放行
+                }
 
-                // 2. 获取请求信息
-                String method = request.getMethod();
-                String path = request.getRequestURI();
+                org.springframework.web.method.HandlerMethod handlerMethod = (org.springframework.web.method.HandlerMethod) handler;
+                Method method = handlerMethod.getMethod();
 
-                // 3. 根据请求路径进行权限校验
-                // GET 请求只做登录校验（查询操作），非 GET 请求需要权限校验（增删改操作）
-                if (!"GET".equalsIgnoreCase(method)) {
-                    // 提取权限码：从 /api/user/add -> user:add
-                    String permission = extractPermission(path, method);
-                    if (permission != null) {
-                        // 检查是否为超级管理员，如果是则跳过权限校验
-                        if (!SecurityUtil.isSuperAdmin()) {
+                // 检查方法或类上是否有需要登录的注解
+                boolean requiresLogin = isAnnotationPresent(method, handlerMethod.getBeanType(),
+                        "cn.dev33.satoken.annotation.SaLoginCheck",
+                        "org.springframework.security.annotation.AuthenticationPrincipal");
+
+                // 检查方法或类上是否有权限注解
+                boolean requiresPermission = isAnnotationPresent(method, handlerMethod.getBeanType(),
+                        "org.springframework.security.annotation.PreAuthorize",
+                        "cn.dev33.satoken.annotation.SaCheckPermission",
+                        "org.springframework.security.annotation.Secured");
+
+                // 只有添加了注解的接口才进行验证
+                if (requiresLogin || requiresPermission) {
+                    // 先检查登录
+                    StpUtil.checkLogin();
+
+                    // 如果需要权限检查
+                    if (requiresPermission && !SecurityUtil.isSuperAdmin()) {
+                        // 提取权限码进行验证
+                        String permission = extractPermissionFromAnnotations(method);
+                        if (permission != null) {
                             SecurityUtil.checkPermission(permission);
                         }
                     }
                 }
 
                 return true;
+            }
+
+            /**
+             * 检查是否存在指定注解
+             */
+            private boolean isAnnotationPresent(Method method, Class<?> beanClass, String... annotationNames) {
+                // 检查方法上的注解
+                for (String annotationName : annotationNames) {
+                    try {
+                        Class<?> annotationClass = Class.forName(annotationName);
+                        if (AnnotatedElementUtils.hasAnnotation(method, annotationClass)) {
+                            return true;
+                        }
+                    } catch (ClassNotFoundException ignored) {
+                        // 注解类不存在，跳过
+                    }
+                }
+
+                // 检查类上的注解
+                for (String annotationName : annotationNames) {
+                    try {
+                        Class<?> annotationClass = Class.forName(annotationName);
+                        if (AnnotatedElementUtils.hasAnnotation(beanClass, annotationClass)) {
+                            return true;
+                        }
+                    } catch (ClassNotFoundException ignored) {
+                        // 注解类不存在，跳过
+                    }
+                }
+
+                return false;
+            }
+
+            /**
+             * 从注解中提取权限码
+             */
+            private String extractPermissionFromAnnotations(Method method) {
+                // 尝试从 @PreAuthorize 注解提取
+                try {
+                    Class<?> preAuthorizeClass = Class.forName("org.springframework.security.annotation.PreAuthorize");
+                    Object annotation = AnnotatedElementUtils.getMergedAnnotation(method, preAuthorizeClass);
+                    if (annotation != null) {
+                        // 获取 value 属性
+                        Method valueMethod = preAuthorizeClass.getMethod("value");
+                        String value = (String) valueMethod.invoke(annotation);
+                        if (value != null && !value.isEmpty()) {
+                            return value;
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+
+                // 尝试从 @SaCheckPermission 注解提取
+                try {
+                    Class<?> saCheckPermissionClass = Class.forName("cn.dev33.satoken.annotation.SaCheckPermission");
+                    Object annotation = AnnotatedElementUtils.getMergedAnnotation(method, saCheckPermissionClass);
+                    if (annotation != null) {
+                        Method valueMethod = saCheckPermissionClass.getMethod("value");
+                        String[] values = (String[]) valueMethod.invoke(annotation);
+                        if (values != null && values.length > 0) {
+                            return values[0];
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+
+                // 无法从注解提取，返回null表示只验证登录
+                return null;
             }
         })
         .addPathPatterns("/**")
@@ -58,8 +145,9 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 "/api/auth/check",
                 "/api/auth/captcha",
                 "/api/auth/logout",
+                "/api/test-data/**",
 
-                // 页面路由（需要登录后才能访问，但在登录页不拦截）
+                // 页面路由
                 "/",
                 "/index",
                 "/dashboard",
@@ -93,7 +181,6 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 "/webjars/**",
                 "/knife4j/**",
                 "/swagger/**",
-                "/favicon.ico",
 
                 // 演示接口
                 "/demo/**",
@@ -104,23 +191,17 @@ public class SaTokenConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 从请求路径提取权限码
-     * 例如：/api/user/add -> user:add, /api/user/delete/1 -> user:delete
+     * 从请求路径提取权限码（备用方案）
      */
     private String extractPermission(String path, String method) {
-        // 移除前缀 /api
         if (path.startsWith("/api/")) {
             path = path.substring(5);
         }
 
-        // 移除路径变量，例如 /user/delete/1 -> /user/delete
         path = path.replaceAll("/\\d+", "");
-        path = path.replaceAll("/[a-f0-9-]{36}", ""); // 移除 UUID
-
-        // 转换为小写
+        path = path.replaceAll("/[a-f0-9-]{36}", "");
         path = path.toLowerCase();
 
-        // 根据 HTTP 方法映射权限
         String methodPermission;
         switch (method.toUpperCase()) {
             case "POST":
@@ -140,7 +221,6 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 methodPermission = "view";
         }
 
-        // 组合权限码：user:add, user:edit, user:delete, user:view
         String[] parts = path.split("/");
         if (parts.length >= 2) {
             return parts[0] + ":" + methodPermission;
