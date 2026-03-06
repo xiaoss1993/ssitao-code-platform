@@ -3,8 +3,6 @@ package com.ssitao.code.modular.iam.organization.application.service.impl;
 import com.ssitao.code.modular.iam.organization.api.dto.IamUserOrgDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamUserOrgCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.service.IamUserOrgAppService;
-import com.ssitao.code.modular.iam.organization.domain.repository.IamUserOrgRepository;
-import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 /**
  * IAM用户组织应用服务实现
@@ -25,9 +22,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class IamUserOrgAppServiceImpl implements IamUserOrgAppService {
-
-    @Resource
-    private IamUserOrgRepository userOrgRepository;
 
     /**
      * 模拟数据库存储 - key: userId, value: list of user orgs
