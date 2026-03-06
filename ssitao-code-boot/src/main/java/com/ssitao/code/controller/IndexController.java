@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +50,7 @@ public class IndexController {
             return "redirect:/";
         }
         model.addAttribute("siteName", "SSITAO Code Platform");
-        return "login";
+        return "common/login";
     }
 
     /**
@@ -79,7 +80,7 @@ public class IndexController {
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("username", username);
-            return "login";
+            return "common/login";
         }
     }
 
@@ -115,7 +116,7 @@ public class IndexController {
         model.addAttribute("userId", IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId()));
         model.addAttribute("userName", StpUtil.getLoginIdAsString());
 
-        return "index";
+        return "common/index";
     }
 
     /**
@@ -134,7 +135,7 @@ public class IndexController {
         model.addAttribute("totalOrders", 32143);
         model.addAttribute("totalAmount", 174800);
 
-        return "dashboard";
+        return "common/dashboard";
     }
 
     /**
@@ -143,11 +144,72 @@ public class IndexController {
      */
     @GetMapping("/page/{page}")
     @Operation(summary = "通用页面跳转", description = "根据页面名称跳转到对应模板")
-    public String page(@RequestParam String page, Model model) {
+    public String page(@PathVariable String page, Model model) {
         if (!StpUtil.isLogin()) {
             return "redirect:/login";
         }
-        return page;
+        // 映射页面名称到模板路径
+        String templatePath = getTemplatePath(page);
+        return templatePath;
+    }
+
+    /**
+     * 获取模板路径
+     * 根据页面名称映射到对应的模板路径
+     */
+    private String getTemplatePath(String page) {
+        // 页面名称到模板路径的映射
+        switch (page) {
+            // 常规管理
+            case "config":
+                return "admin/config";
+            case "attachment":
+                return "admin/attachment";
+            case "profile":
+                return "common/profile";
+            // 权限管理
+            case "admin":
+                return "admin/admin";
+            case "adminlog":
+                return "admin/adminlog";
+            case "group":
+                return "admin/group";
+            case "rule":
+                return "admin/rule";
+            // 内容管理
+            case "page":
+                return "admin/page";
+            case "category":
+                return "admin/category";
+            // IAM模块
+            case "account":
+                return "iam/account";
+            case "role":
+                return "iam/role";
+            case "permission":
+                return "iam/permission";
+            case "menu":
+                return "iam/menu";
+            case "org":
+                return "iam/org";
+            case "tenant":
+                return "iam/tenant";
+            case "userprofile":
+                return "iam/userprofile";
+            case "audit":
+                return "iam/audit";
+            // Meta模块
+            case "table":
+                return "meta/table";
+            case "column":
+                return "meta/column";
+            case "form":
+                return "meta/form";
+            case "list":
+                return "meta/list";
+            default:
+                return page;
+        }
     }
 
     /**

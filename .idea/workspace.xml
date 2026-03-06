@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3b7f2dc-58ed-46a4-8229-1937b837ae8f" name="更改" comment="2026年03月06日00:15:42" />
+    <list default="true" id="e3b7f2dc-58ed-46a4-8229-1937b837ae8f" name="更改" comment="2026年03月06日00:15:42">
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/IndexController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/IndexController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/PageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/PageController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -237,7 +240,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/IndexController.java</url>
-          <line>76</line>
+          <line>77</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

@@ -78,9 +78,13 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 // API文档
                 "/swagger-ui.html",
                 "/swagger-ui/**",
+                "/swagger-resources/**",
                 "/v3/api-docs/**",
+                "/v3/api-docs",
                 "/doc.html",
                 "/webjars/**",
+                "/knife4j/**",
+                "/swagger/**",
 
                 // 演示接口
                 "/demo/**",

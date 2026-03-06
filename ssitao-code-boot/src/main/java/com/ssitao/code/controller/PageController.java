@@ -29,7 +29,7 @@ public class PageController {
     @Operation(summary = "账号管理页面")
     public String accountPage(Model model) {
         addCommonModel(model, "账号管理", "account");
-        return "account";
+        return "iam/account";
     }
 
     /**
@@ -39,7 +39,7 @@ public class PageController {
     @Operation(summary = "账号添加页面")
     public String accountAddPage(Model model) {
         addCommonModel(model, "添加账号", "account");
-        return "account-edit";
+        return "iam/account-edit";
     }
 
     /**
@@ -49,7 +49,7 @@ public class PageController {
     @Operation(summary = "账号编辑页面")
     public String accountEditPage(Model model) {
         addCommonModel(model, "编辑账号", "account");
-        return "account-edit";
+        return "iam/account-edit";
     }
 
     // ==================== 角色管理 ====================
@@ -61,7 +61,7 @@ public class PageController {
     @Operation(summary = "角色管理页面")
     public String rolePage(Model model) {
         addCommonModel(model, "角色管理", "role");
-        return "role";
+        return "iam/role";
     }
 
     /**
@@ -71,7 +71,7 @@ public class PageController {
     @Operation(summary = "角色添加页面")
     public String roleAddPage(Model model) {
         addCommonModel(model, "添加角色", "role");
-        return "role-edit";
+        return "iam/role-edit";
     }
 
     /**
@@ -81,7 +81,7 @@ public class PageController {
     @Operation(summary = "角色编辑页面")
     public String roleEditPage(Model model) {
         addCommonModel(model, "编辑角色", "role");
-        return "role-edit";
+        return "iam/role-edit";
     }
 
     // ==================== 权限管理 ====================
@@ -93,7 +93,7 @@ public class PageController {
     @Operation(summary = "权限管理页面")
     public String permissionPage(Model model) {
         addCommonModel(model, "权限管理", "permission");
-        return "permission";
+        return "iam/permission";
     }
 
     /**
@@ -103,7 +103,7 @@ public class PageController {
     @Operation(summary = "权限添加页面")
     public String permissionAddPage(Model model) {
         addCommonModel(model, "添加权限", "permission");
-        return "permission-edit";
+        return "iam/permission-edit";
     }
 
     /**
@@ -113,7 +113,7 @@ public class PageController {
     @Operation(summary = "权限编辑页面")
     public String permissionEditPage(Model model) {
         addCommonModel(model, "编辑权限", "permission");
-        return "permission-edit";
+        return "iam/permission-edit";
     }
 
     // ==================== 菜单管理 ====================
@@ -125,7 +125,7 @@ public class PageController {
     @Operation(summary = "菜单管理页面")
     public String menuPage(Model model) {
         addCommonModel(model, "菜单管理", "menu");
-        return "menu";
+        return "iam/menu";
     }
 
     /**
@@ -135,7 +135,7 @@ public class PageController {
     @Operation(summary = "菜单添加页面")
     public String menuAddPage(Model model) {
         addCommonModel(model, "添加菜单", "menu");
-        return "menu-edit";
+        return "iam/menu-edit";
     }
 
     /**
@@ -145,7 +145,7 @@ public class PageController {
     @Operation(summary = "菜单编辑页面")
     public String menuEditPage(Model model) {
         addCommonModel(model, "编辑菜单", "menu");
-        return "menu-edit";
+        return "iam/menu-edit";
     }
 
     // ==================== 组织管理 ====================
@@ -157,7 +157,7 @@ public class PageController {
     @Operation(summary = "组织管理页面")
     public String orgPage(Model model) {
         addCommonModel(model, "组织管理", "org");
-        return "org";
+        return "iam/org";
     }
 
     /**
@@ -167,7 +167,7 @@ public class PageController {
     @Operation(summary = "组织添加页面")
     public String orgAddPage(Model model) {
         addCommonModel(model, "添加组织", "org");
-        return "org-edit";
+        return "iam/org-edit";
     }
 
     /**
@@ -177,7 +177,7 @@ public class PageController {
     @Operation(summary = "组织编辑页面")
     public String orgEditPage(Model model) {
         addCommonModel(model, "编辑组织", "org");
-        return "org-edit";
+        return "iam/org-edit";
     }
 
     // ==================== 租户管理 ====================
@@ -189,7 +189,7 @@ public class PageController {
     @Operation(summary = "租户管理页面")
     public String tenantPage(Model model) {
         addCommonModel(model, "租户管理", "tenant");
-        return "tenant";
+        return "iam/tenant";
     }
 
     /**
@@ -199,7 +199,7 @@ public class PageController {
     @Operation(summary = "租户添加页面")
     public String tenantAddPage(Model model) {
         addCommonModel(model, "添加租户", "tenant");
-        return "tenant-edit";
+        return "iam/tenant-edit";
     }
 
     /**
@@ -209,7 +209,7 @@ public class PageController {
     @Operation(summary = "租户编辑页面")
     public String tenantEditPage(Model model) {
         addCommonModel(model, "编辑租户", "tenant");
-        return "tenant-edit";
+        return "iam/tenant-edit";
     }
 
     // ==================== 用户档案管理 ====================
@@ -221,7 +221,7 @@ public class PageController {
     @Operation(summary = "用户档案管理页面")
     public String userprofilePage(Model model) {
         addCommonModel(model, "用户档案管理", "userprofile");
-        return "userprofile";
+        return "iam/userprofile";
     }
 
     /**
@@ -231,7 +231,7 @@ public class PageController {
     @Operation(summary = "用户档案添加页面")
     public String userprofileAddPage(Model model) {
         addCommonModel(model, "添加用户档案", "userprofile");
-        return "userprofile-edit";
+        return "iam/userprofile-edit";
     }
 
     /**
@@ -241,7 +241,7 @@ public class PageController {
     @Operation(summary = "用户档案编辑页面")
     public String userprofileEditPage(Model model) {
         addCommonModel(model, "编辑用户档案", "userprofile");
-        return "userprofile-edit";
+        return "iam/userprofile-edit";
     }
 
     // ==================== 审计日志 ====================
@@ -253,7 +253,7 @@ public class PageController {
     @Operation(summary = "审计日志页面")
     public String auditPage(Model model) {
         addCommonModel(model, "审计日志", "audit");
-        return "audit";
+        return "iam/audit";
     }
 
     // ==================== 常规管理 ====================
@@ -265,7 +265,7 @@ public class PageController {
     @Operation(summary = "系统配置页面")
     public String configPage(Model model) {
         addCommonModel(model, "系统配置", "config");
-        return "config";
+        return "admin/config";
     }
 
     /**
@@ -275,7 +275,7 @@ public class PageController {
     @Operation(summary = "附件管理页面")
     public String attachmentPage(Model model) {
         addCommonModel(model, "附件管理", "attachment");
-        return "attachment";
+        return "admin/attachment";
     }
 
     /**
@@ -285,7 +285,7 @@ public class PageController {
     @Operation(summary = "定时任务页面")
     public String crontabPage(Model model) {
         addCommonModel(model, "定时任务", "crontab");
-        return "crontab";
+        return "admin/crontab";
     }
 
     /**
@@ -295,7 +295,7 @@ public class PageController {
     @Operation(summary = "定时任务添加页面")
     public String crontabAddPage(Model model) {
         addCommonModel(model, "添加定时任务", "crontab");
-        return "crontab-edit";
+        return "admin/crontab-edit";
     }
 
     /**
@@ -305,7 +305,7 @@ public class PageController {
     @Operation(summary = "定时任务编辑页面")
     public String crontabEditPage(Model model) {
         addCommonModel(model, "编辑定时任务", "crontab");
-        return "crontab-edit";
+        return "admin/crontab-edit";
     }
 
     /**
@@ -315,7 +315,7 @@ public class PageController {
     @Operation(summary = "数据库管理页面")
     public String databasePage(Model model) {
         addCommonModel(model, "数据库管理", "database");
-        return "database";
+        return "admin/database";
     }
 
     /**
@@ -328,7 +328,7 @@ public class PageController {
         if (StpUtil.isLogin()) {
             model.addAttribute("userId", StpUtil.getLoginId());
         }
-        return "profile";
+        return "common/profile";
     }
 
     // ==================== 权限管理 ====================
@@ -340,7 +340,7 @@ public class PageController {
     @Operation(summary = "管理员管理页面")
     public String adminPage(Model model) {
         addCommonModel(model, "管理员管理", "admin");
-        return "admin";
+        return "admin/admin";
     }
 
     /**
@@ -350,7 +350,7 @@ public class PageController {
     @Operation(summary = "管理员添加页面")
     public String adminAddPage(Model model) {
         addCommonModel(model, "添加管理员", "admin");
-        return "admin-edit";
+        return "admin/admin-edit";
     }
 
     /**
@@ -360,7 +360,7 @@ public class PageController {
     @Operation(summary = "管理员编辑页面")
     public String adminEditPage(Model model) {
         addCommonModel(model, "编辑管理员", "admin");
-        return "admin-edit";
+        return "admin/admin-edit";
     }
 
     /**
@@ -370,7 +370,7 @@ public class PageController {
     @Operation(summary = "管理员日志页面")
     public String adminlogPage(Model model) {
         addCommonModel(model, "管理员日志", "adminlog");
-        return "adminlog";
+        return "admin/adminlog";
     }
 
     /**
@@ -380,7 +380,7 @@ public class PageController {
     @Operation(summary = "角色组页面")
     public String groupPage(Model model) {
         addCommonModel(model, "角色组", "group");
-        return "group";
+        return "admin/group";
     }
 
     /**
@@ -390,7 +390,7 @@ public class PageController {
     @Operation(summary = "角色组添加页面")
     public String groupAddPage(Model model) {
         addCommonModel(model, "添加角色组", "group");
-        return "group-edit";
+        return "admin/group-edit";
     }
 
     /**
@@ -400,7 +400,7 @@ public class PageController {
     @Operation(summary = "角色组编辑页面")
     public String groupEditPage(Model model) {
         addCommonModel(model, "编辑角色组", "group");
-        return "group-edit";
+        return "admin/group-edit";
     }
 
     /**
@@ -410,7 +410,7 @@ public class PageController {
     @Operation(summary = "规则管理页面")
     public String rulePage(Model model) {
         addCommonModel(model, "规则管理", "rule");
-        return "rule";
+        return "admin/rule";
     }
 
     /**
@@ -420,7 +420,7 @@ public class PageController {
     @Operation(summary = "规则添加页面")
     public String ruleAddPage(Model model) {
         addCommonModel(model, "添加规则", "rule");
-        return "rule-edit";
+        return "admin/rule-edit";
     }
 
     /**
@@ -430,7 +430,7 @@ public class PageController {
     @Operation(summary = "规则编辑页面")
     public String ruleEditPage(Model model) {
         addCommonModel(model, "编辑规则", "rule");
-        return "rule-edit";
+        return "admin/rule-edit";
     }
 
     // ==================== 内容管理 ====================
@@ -442,7 +442,7 @@ public class PageController {
     @Operation(summary = "单页管理页面")
     public String pageManagePage(Model model) {
         addCommonModel(model, "单页管理", "page");
-        return "page";
+        return "admin/page";
     }
 
     /**
@@ -452,7 +452,7 @@ public class PageController {
     @Operation(summary = "单页添加页面")
     public String pageAddPage(Model model) {
         addCommonModel(model, "添加单页", "page");
-        return "page-edit";
+        return "admin/page-edit";
     }
 
     /**
@@ -462,7 +462,7 @@ public class PageController {
     @Operation(summary = "单页编辑页面")
     public String pageEditPage(Model model) {
         addCommonModel(model, "编辑单页", "page");
-        return "page-edit";
+        return "admin/page-edit";
     }
 
     /**
@@ -472,7 +472,7 @@ public class PageController {
     @Operation(summary = "分类管理页面")
     public String categoryPage(Model model) {
         addCommonModel(model, "分类管理", "category");
-        return "category";
+        return "admin/category";
     }
 
     /**
@@ -482,7 +482,7 @@ public class PageController {
     @Operation(summary = "分类添加页面")
     public String categoryAddPage(Model model) {
         addCommonModel(model, "添加分类", "category");
-        return "category-edit";
+        return "admin/category-edit";
     }
 
     /**
@@ -492,7 +492,7 @@ public class PageController {
     @Operation(summary = "分类编辑页面")
     public String categoryEditPage(Model model) {
         addCommonModel(model, "编辑分类", "category");
-        return "category-edit";
+        return "admin/category-edit";
     }
 
     /**
@@ -502,7 +502,7 @@ public class PageController {
     @Operation(summary = "版本管理页面")
     public String versionPage(Model model) {
         addCommonModel(model, "版本管理", "version");
-        return "version";
+        return "admin/version";
     }
 
     /**
@@ -512,7 +512,7 @@ public class PageController {
     @Operation(summary = "版本添加页面")
     public String versionAddPage(Model model) {
         addCommonModel(model, "添加版本", "version");
-        return "version-edit";
+        return "admin/version-edit";
     }
 
     /**
@@ -522,7 +522,7 @@ public class PageController {
     @Operation(summary = "版本编辑页面")
     public String versionEditPage(Model model) {
         addCommonModel(model, "编辑版本", "version");
-        return "version-edit";
+        return "admin/version-edit";
     }
 
     // ==================== 微信管理 ====================
@@ -534,7 +534,7 @@ public class PageController {
     @Operation(summary = "微信自动回复页面")
     public String autoreplyPage(Model model) {
         addCommonModel(model, "微信自动回复", "autoreply");
-        return "autoreply";
+        return "admin/autoreply";
     }
 
     /**
@@ -544,7 +544,7 @@ public class PageController {
     @Operation(summary = "微信自动回复添加页面")
     public String autoreplyAddPage(Model model) {
         addCommonModel(model, "添加自动回复", "autoreply");
-        return "autoreply-edit";
+        return "admin/autoreply-edit";
     }
 
     /**
@@ -554,7 +554,7 @@ public class PageController {
     @Operation(summary = "微信自动回复编辑页面")
     public String autoreplyEditPage(Model model) {
         addCommonModel(model, "编辑自动回复", "autoreply");
-        return "autoreply-edit";
+        return "admin/autoreply-edit";
     }
 
     /**
@@ -564,7 +564,7 @@ public class PageController {
     @Operation(summary = "微信配置页面")
     public String wechatconfigPage(Model model) {
         addCommonModel(model, "微信配置", "wechatconfig");
-        return "wechatconfig";
+        return "admin/wechatconfig";
     }
 
     /**
@@ -574,7 +574,7 @@ public class PageController {
     @Operation(summary = "微信配置编辑页面")
     public String wechatconfigEditPage(Model model) {
         addCommonModel(model, "编辑微信配置", "wechatconfig");
-        return "wechatconfig-edit";
+        return "admin/wechatconfig-edit";
     }
 
     /**
@@ -584,7 +584,7 @@ public class PageController {
     @Operation(summary = "微信菜单页面")
     public String wechatMenuPage(Model model) {
         addCommonModel(model, "微信菜单", "menu");
-        return "menu";
+        return "iam/menu";
     }
 
     /**
@@ -594,7 +594,7 @@ public class PageController {
     @Operation(summary = "资源管理页面")
     public String responsePage(Model model) {
         addCommonModel(model, "资源管理", "response");
-        return "response";
+        return "admin/response";
     }
 
     /**
@@ -604,7 +604,7 @@ public class PageController {
     @Operation(summary = "资源添加页面")
     public String responseAddPage(Model model) {
         addCommonModel(model, "添加资源", "response");
-        return "response-edit";
+        return "admin/response-edit";
     }
 
     /**
@@ -614,7 +614,7 @@ public class PageController {
     @Operation(summary = "资源编辑页面")
     public String responseEditPage(Model model) {
         addCommonModel(model, "编辑资源", "response");
-        return "response-edit";
+        return "admin/response-edit";
     }
 
     /**
@@ -624,7 +624,7 @@ public class PageController {
     @Operation(summary = "资源选择页面")
     public String responseSelectPage(Model model) {
         addCommonModel(model, "选择资源", "response");
-        return "response-select";
+        return "admin/response-select";
     }
 
     // ==================== 示例管理 ====================
@@ -636,7 +636,7 @@ public class PageController {
     @Operation(summary = "表格完整示例页面")
     public String bootstraptablePage(Model model) {
         addCommonModel(model, "表格完整示例", "bootstraptable");
-        return "bootstraptable";
+        return "admin/bootstraptable";
     }
 
     /**
@@ -646,7 +646,7 @@ public class PageController {
     @Operation(summary = "彩色角标页面")
     public String colorbadgePage(Model model) {
         addCommonModel(model, "彩色角标", "colorbadge");
-        return "colorbadge";
+        return "admin/colorbadge";
     }
 
     /**
@@ -656,7 +656,7 @@ public class PageController {
     @Operation(summary = "控制器跳转页面")
     public String controllerjumpPage(Model model) {
         addCommonModel(model, "控制器跳转", "controllerjump");
-        return "controllerjump";
+        return "admin/controllerjump";
     }
 
     /**
@@ -666,7 +666,7 @@ public class PageController {
     @Operation(summary = "多级联动页面")
     public String cxselectPage(Model model) {
         addCommonModel(model, "多级联动", "cxselect");
-        return "cxselect";
+        return "admin/cxselect";
     }
 
     /**
@@ -676,7 +676,7 @@ public class PageController {
     @Operation(summary = "多表格示例页面")
     public String multitablePage(Model model) {
         addCommonModel(model, "多表格示例", "multitable");
-        return "multitable";
+        return "admin/multitable";
     }
 
     /**
@@ -686,7 +686,7 @@ public class PageController {
     @Operation(summary = "多模型关联页面")
     public String relationmodelPage(Model model) {
         addCommonModel(model, "多模型关联", "relationmodel");
-        return "relationmodel";
+        return "admin/relationmodel";
     }
 
     /**
@@ -696,7 +696,7 @@ public class PageController {
     @Operation(summary = "表格模板示例页面")
     public String tabletemplatePage(Model model) {
         addCommonModel(model, "表格模板示例", "tabletemplate");
-        return "tabletemplate";
+        return "admin/tabletemplate";
     }
 
     /**
@@ -706,7 +706,7 @@ public class PageController {
     @Operation(summary = "测试管理页面")
     public String testPage(Model model) {
         addCommonModel(model, "测试管理", "test");
-        return "test";
+        return "admin/test";
     }
 
     /**
@@ -716,7 +716,7 @@ public class PageController {
     @Operation(summary = "测试添加页面")
     public String testAddPage(Model model) {
         addCommonModel(model, "添加测试", "test");
-        return "test-edit";
+        return "admin/test-edit";
     }
 
     /**
@@ -726,7 +726,7 @@ public class PageController {
     @Operation(summary = "测试编辑页面")
     public String testEditPage(Model model) {
         addCommonModel(model, "编辑测试", "test");
-        return "test-edit";
+        return "admin/test-edit";
     }
 
     // ==================== 工具页面 ====================
@@ -738,7 +738,7 @@ public class PageController {
     @Operation(summary = "跳转页面")
     public String jumpPage(Model model) {
         addCommonModel(model, "跳转中", "jump");
-        return "jump";
+        return "common/jump";
     }
 
     // ==================== 通用方法 ====================

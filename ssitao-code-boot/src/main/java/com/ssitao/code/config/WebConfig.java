@@ -108,6 +108,15 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/webjars/swagger-ui/")
                 .setCachePeriod(0);  // 禁用缓存
 
+        // 映射 Knife4j 静态资源
+        registry.addResourceHandler("/knife4j/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/knife4j/")
+                .setCachePeriod(0);
+
+        // 映射 swagger 资源
+        registry.addResourceHandler("/swagger-resources/**")
+                .addResourceLocations("classpath:/META-INF/resources/swagger-resources/");
+
         // 映射后台管理静态资源 (FastAdmin/Thymeleaf)
         registry.addResourceHandler("/assets/**")
                 .addResourceLocations("classpath:/static/assets/")
