@@ -1,13 +1,17 @@
 package com.ssitao.code.modular.meta.application.service;
 
+import com.ssitao.code.modular.meta.dal.dataobject.MetaProcessInstanceDO;
+import com.ssitao.code.modular.meta.dal.dataobject.MetaTaskInstanceDO;
+import com.ssitao.code.modular.meta.dal.dataobject.MetaWorkflowDO;
 import com.ssitao.code.modular.meta.domain.model.MetaProcessInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaTaskInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaWorkflow;
+import com.ssitao.code.modular.meta.domain.repository.MetaWorkflowRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -19,25 +23,15 @@ import java.util.stream.Collectors;
 @Service
 public class WorkflowServiceImpl implements WorkflowService {
 
-    /**
-     * 流程定义存储（实际项目中应使用数据库）
-     */
-    private final Map<String, MetaWorkflow> workflowStore = new ConcurrentHashMap<>();
-
-    /**
-     * 流程实例存储
-     */
-    private final Map<String, MetaProcessInstance> processStore = new ConcurrentHashMap<>();
-
-    /**
-     * 任务实例存储
-     */
-    private final Map<String, MetaTaskInstance> taskStore = new ConcurrentHashMap<>();
+    @Autowired
+    private MetaWorkflowRepository workflowRepository;
 
     @Override
     public MetaWorkflow createWorkflow(String workflowCode, String workflowName, String entityId,
                                         String category, String flowJson) {
         String id = UUID.randomUUID().toString();
+        LocalDateTime now = LocalDateTime.now();
+
         MetaWorkflow workflow = MetaWorkflow.builder()
                 .id(id)
                 .workflowCode(workflowCode)
@@ -49,63 +43,70 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .status(1)
                 .tenantId("default")
                 .deleted(false)
-                .createTime(LocalDateTime.now())
+                .createTime(now)
                 .build();
-        workflowStore.put(id, workflow);
+
+        // 转换为DO并保存到数据库
+        MetaWorkflowDO workflowDO = convertToWorkflowDO(workflow);
+        workflowRepository.saveWorkflow(workflowDO);
+
         return workflow;
     }
 
     @Override
     public void updateWorkflow(String workflowId, String workflowName, String category, String flowJson) {
-        MetaWorkflow workflow = workflowStore.get(workflowId);
-        if (workflow != null) {
-            workflow.setWorkflowName(workflowName);
-            workflow.setCategory(category);
-            workflow.setFlowJson(flowJson);
-            workflow.setUpdateTime(LocalDateTime.now());
+        MetaWorkflowDO workflowDO = workflowRepository.findWorkflowById(workflowId, "default");
+        if (workflowDO != null) {
+            workflowDO.setWorkflowName(workflowName);
+            workflowDO.setCategory(category);
+            workflowDO.setFlowJson(flowJson);
+            workflowDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateWorkflow(workflowDO);
         }
     }
 
     @Override
     public void publishWorkflow(String workflowId, String flowJson) {
-        MetaWorkflow workflow = workflowStore.get(workflowId);
-        if (workflow != null) {
-            workflow.setVersion(workflow.getVersion() + 1);
-            workflow.setFlowJson(flowJson);
-            workflow.setStatus(1);
-            workflow.setUpdateTime(LocalDateTime.now());
+        MetaWorkflowDO workflowDO = workflowRepository.findWorkflowById(workflowId, "default");
+        if (workflowDO != null) {
+            workflowDO.setVersion(workflowDO.getVersion() + 1);
+            workflowDO.setFlowJson(flowJson);
+            workflowDO.setStatus(1);
+            workflowDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateWorkflow(workflowDO);
         }
     }
 
     @Override
     public MetaWorkflow getWorkflow(String workflowId) {
-        return workflowStore.get(workflowId);
+        MetaWorkflowDO workflowDO = workflowRepository.findWorkflowById(workflowId, "default");
+        return convertToWorkflow(workflowDO);
     }
 
     @Override
     public MetaWorkflow getWorkflowByCode(String workflowCode) {
-        return workflowStore.values().stream()
-                .filter(w -> workflowCode.equals(w.getWorkflowCode()))
-                .findFirst()
-                .orElse(null);
+        MetaWorkflowDO workflowDO = workflowRepository.findWorkflowByCode(workflowCode, "default");
+        return convertToWorkflow(workflowDO);
     }
 
     @Override
     public MetaProcessInstance startProcess(String workflowId, String businessKey, String title,
                                              String initiator, Map<String, Object> variables) {
-        MetaWorkflow workflow = workflowStore.get(workflowId);
-        if (workflow == null) {
+        MetaWorkflowDO workflowDO = workflowRepository.findWorkflowById(workflowId, "default");
+        if (workflowDO == null) {
             throw new IllegalArgumentException("流程定义不存在: " + workflowId);
         }
 
         // 解析流程JSON获取开始节点
         String startNodeId = "start";
-        if (workflow.getFlowJson() != null && workflow.getFlowJson().contains("startNodeId")) {
+        if (workflowDO.getFlowJson() != null && workflowDO.getFlowJson().contains("startNodeId")) {
             // 实际应该解析JSON获取，这里简化处理
             startNodeId = "node_1";
         }
 
         String processId = UUID.randomUUID().toString();
+        LocalDateTime now = LocalDateTime.now();
+
         MetaProcessInstance instance = MetaProcessInstance.builder()
                 .id(processId)
                 .workflowId(workflowId)
@@ -115,12 +116,14 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .currentNodeId(startNodeId)
                 .currentNodeName("开始")
                 .status("RUNNING")
-                .tenantId(workflow.getTenantId())
-                .startTime(LocalDateTime.now())
-                .createTime(LocalDateTime.now())
+                .tenantId(workflowDO.getTenantId())
+                .startTime(now)
+                .createTime(now)
                 .build();
 
-        processStore.put(processId, instance);
+        // 保存流程实例到数据库
+        MetaProcessInstanceDO processDO = convertToProcessInstanceDO(instance);
+        workflowRepository.saveProcessInstance(processDO);
 
         // 创建第一个任务
         createNextTask(instance, startNodeId, initiator);
@@ -130,75 +133,100 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public MetaProcessInstance getProcessInstance(String processId) {
-        return processStore.get(processId);
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceById(processId, "default");
+        return convertToProcessInstance(processDO);
     }
 
     @Override
     public MetaProcessInstance getProcessInstanceByBusinessKey(String businessKey) {
-        return processStore.values().stream()
-                .filter(p -> businessKey.equals(p.getBusinessKey()))
-                .findFirst()
-                .orElse(null);
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceByBusinessKey(businessKey, "default");
+        return convertToProcessInstance(processDO);
     }
 
     @Override
     public void cancelProcess(String processId, String operator) {
-        MetaProcessInstance instance = processStore.get(processId);
-        if (instance != null) {
-            instance.setStatus("CANCELLED");
-            instance.setEndTime(LocalDateTime.now());
-            instance.setUpdateTime(LocalDateTime.now());
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceById(processId, "default");
+        if (processDO != null) {
+            processDO.setStatus("CANCELLED");
+            processDO.setEndTime(LocalDateTime.now());
+            processDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateProcessInstance(processDO);
 
             // 取消所有待处理任务
-            taskStore.values().stream()
-                    .filter(t -> processId.equals(t.getProcessId()) && "PENDING".equals(t.getStatus()))
-                    .forEach(t -> t.cancel());
+            List<MetaTaskInstanceDO> tasks = workflowRepository.findTaskInstancesByProcessId(processId, "default");
+            tasks.stream()
+                    .filter(t -> "PENDING".equals(t.getStatus()))
+                    .forEach(t -> {
+                        t.setStatus("CANCELLED");
+                        t.setCompleteTime(LocalDateTime.now());
+                        t.setUpdateTime(LocalDateTime.now());
+                        workflowRepository.updateTaskInstance(t);
+                    });
         }
     }
 
     @Override
     public void signTask(String taskId, String assignee) {
-        MetaTaskInstance task = taskStore.get(taskId);
-        if (task != null) {
-            task.sign(assignee);
+        MetaTaskInstanceDO taskDO = workflowRepository.findTaskInstanceById(taskId, "default");
+        if (taskDO != null) {
+            taskDO.setAssignee(assignee);
+            taskDO.setStatus("SIGNED");
+            taskDO.setClaimTime(LocalDateTime.now());
+            taskDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateTaskInstance(taskDO);
         }
     }
 
     @Override
     public List<MetaTaskInstance> approveTask(String taskId, String assignee, String comment) {
-        MetaTaskInstance task = taskStore.get(taskId);
-        if (task == null) {
+        MetaTaskInstanceDO taskDO = workflowRepository.findTaskInstanceById(taskId, "default");
+        if (taskDO == null) {
             return Collections.emptyList();
         }
 
-        task.approve(comment);
+        // 更新任务状态
+        taskDO.setStatus("APPROVED");
+        taskDO.setComment(comment);
+        taskDO.setCompleteTime(LocalDateTime.now());
+        taskDO.setUpdateTime(LocalDateTime.now());
+        workflowRepository.updateTaskInstance(taskDO);
 
-        MetaProcessInstance process = processStore.get(task.getProcessId());
-        if (process == null) {
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceById(taskDO.getProcessId(), "default");
+        if (processDO == null) {
             return Collections.emptyList();
         }
+
+        MetaProcessInstance process = convertToProcessInstance(processDO);
 
         // 查找下一个任务
-        return createNextTask(process, task.getTaskId(), assignee);
+        return createNextTask(process, taskDO.getTaskId(), assignee);
     }
 
     @Override
     public void rejectTask(String taskId, String assignee, String comment) {
-        MetaTaskInstance task = taskStore.get(taskId);
-        if (task == null) {
+        MetaTaskInstanceDO taskDO = workflowRepository.findTaskInstanceById(taskId, "default");
+        if (taskDO == null) {
             return;
         }
 
-        task.reject(comment);
+        // 更新任务状态
+        taskDO.setStatus("REJECTED");
+        taskDO.setComment(comment);
+        taskDO.setCompleteTime(LocalDateTime.now());
+        taskDO.setUpdateTime(LocalDateTime.now());
+        workflowRepository.updateTaskInstance(taskDO);
 
         // 驳回到发起人
-        MetaProcessInstance process = processStore.get(task.getProcessId());
-        if (process != null) {
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceById(taskDO.getProcessId(), "default");
+        if (processDO != null) {
             // 更新流程实例状态
-            process.setStatus("RUNNING");
-            process.setCurrentNodeId("start");
-            process.setCurrentNodeName("开始");
-            process.setUpdateTime(LocalDateTime.now());
+            processDO.setStatus("RUNNING");
+            processDO.setCurrentNodeId("start");
+            processDO.setCurrentNodeName("开始");
+            processDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateProcessInstance(processDO);
+
+            MetaProcessInstance process = convertToProcessInstance(processDO);
 
             // 重新创建第一个任务给发起人
             createNextTask(process, "start", process.getInitiator());
@@ -207,55 +235,62 @@ public class WorkflowServiceImpl implements WorkflowService {
 
     @Override
     public void delegateTask(String taskId, String currentAssignee, String newAssignee, String comment) {
-        MetaTaskInstance task = taskStore.get(taskId);
-        if (task != null && currentAssignee.equals(task.getAssignee())) {
-            task.delegate(newAssignee, comment);
+        MetaTaskInstanceDO taskDO = workflowRepository.findTaskInstanceById(taskId, "default");
+        if (taskDO != null && currentAssignee.equals(taskDO.getAssignee())) {
+            taskDO.setAssignee(newAssignee);
+            taskDO.setComment(comment);
+            taskDO.setStatus("DELEGATED");
+            taskDO.setUpdateTime(LocalDateTime.now());
+            workflowRepository.updateTaskInstance(taskDO);
         }
     }
 
     @Override
     public MetaTaskInstance getTask(String taskId) {
-        return taskStore.get(taskId);
+        MetaTaskInstanceDO taskDO = workflowRepository.findTaskInstanceById(taskId, "default");
+        return convertToTaskInstance(taskDO);
     }
 
     @Override
     public List<MetaTaskInstance> getTodoTasks(String userId) {
-        return taskStore.values().stream()
-                .filter(t -> userId.equals(t.getAssignee()))
-                .filter(t -> "PENDING".equals(t.getStatus()) || "SIGNED".equals(t.getStatus()))
+        List<MetaTaskInstanceDO> taskDOs = workflowRepository.findTodoTasks(userId, "default");
+        return taskDOs.stream()
+                .map(this::convertToTaskInstance)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<MetaTaskInstance> getDoneTasks(String userId) {
-        return taskStore.values().stream()
-                .filter(t -> userId.equals(t.getAssignee()))
-                .filter(t -> t.isCompleted())
+        List<MetaTaskInstanceDO> taskDOs = workflowRepository.findDoneTasks(userId, "default");
+        return taskDOs.stream()
+                .map(this::convertToTaskInstance)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<MetaProcessInstance> getMyProcesses(String initiator) {
-        return processStore.values().stream()
-                .filter(p -> initiator.equals(p.getInitiator()))
+        List<MetaProcessInstanceDO> processDOs = workflowRepository.findProcessInstancesByInitiator(initiator, "default");
+        return processDOs.stream()
+                .map(this::convertToProcessInstance)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<MetaTaskInstance> getProcessHistory(String processId) {
-        return taskStore.values().stream()
-                .filter(t -> processId.equals(t.getProcessId()))
-                .filter(MetaTaskInstance::isCompleted)
-                .sorted(Comparator.comparing(MetaTaskInstance::getCreateTime))
+        List<MetaTaskInstanceDO> taskDOs = workflowRepository.findTaskInstancesByProcessId(processId, "default");
+        return taskDOs.stream()
+                .filter(t -> "APPROVED".equals(t.getStatus()) || "REJECTED".equals(t.getStatus()))
+                .sorted(Comparator.comparing(MetaTaskInstanceDO::getCreateTime))
+                .map(this::convertToTaskInstance)
                 .collect(Collectors.toList());
     }
 
     /**
      * 创建下一个任务
      *
-     * @param process   流程实例
-     * @param currentTaskId 当前任务ID
-     * @param nextAssignee 下一个处理人
+     * @param process         流程实例
+     * @param currentTaskId   当前任务ID
+     * @param nextAssignee    下一个处理人
      * @return 创建的任务列表
      */
     private List<MetaTaskInstance> createNextTask(MetaProcessInstance process, String currentTaskId, String nextAssignee) {
@@ -265,6 +300,8 @@ public class WorkflowServiceImpl implements WorkflowService {
         // 实际应该根据流程图解析确定下一个节点
         String nextNodeId = "node_2";
         String nextNodeName = "审批";
+
+        LocalDateTime now = LocalDateTime.now();
 
         MetaTaskInstance task = MetaTaskInstance.builder()
                 .id(UUID.randomUUID().toString())
@@ -276,17 +313,186 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .status("PENDING")
                 .priority(2)
                 .tenantId(process.getTenantId())
-                .createTime(LocalDateTime.now())
+                .createTime(now)
                 .build();
 
-        taskStore.put(task.getId(), task);
+        // 保存任务到数据库
+        MetaTaskInstanceDO taskDO = convertToTaskInstanceDO(task);
+        workflowRepository.saveTaskInstance(taskDO);
+
         tasks.add(task);
 
         // 更新流程实例当前节点
-        process.setCurrentNodeId(nextNodeId);
-        process.setCurrentNodeName(nextNodeName);
-        process.setUpdateTime(LocalDateTime.now());
+        MetaProcessInstanceDO processDO = workflowRepository.findProcessInstanceById(process.getId(), "default");
+        if (processDO != null) {
+            processDO.setCurrentNodeId(nextNodeId);
+            processDO.setCurrentNodeName(nextNodeName);
+            processDO.setUpdateTime(now);
+            workflowRepository.updateProcessInstance(processDO);
+        }
 
         return tasks;
+    }
+
+    // ==================== 转换方法 ====================
+
+    /**
+     * 将领域模型转换为DO对象
+     */
+    private MetaWorkflowDO convertToWorkflowDO(MetaWorkflow workflow) {
+        if (workflow == null) {
+            return null;
+        }
+        return MetaWorkflowDO.builder()
+                .id(workflow.getId())
+                .workflowCode(workflow.getWorkflowCode())
+                .workflowName(workflow.getWorkflowName())
+                .entityId(workflow.getEntityId())
+                .category(workflow.getCategory())
+                .version(workflow.getVersion())
+                .flowJson(workflow.getFlowJson())
+                .status(workflow.getStatus())
+                .tenantId(workflow.getTenantId())
+                .creator(workflow.getCreator())
+                .createTime(workflow.getCreateTime())
+                .updater(workflow.getUpdater())
+                .updateTime(workflow.getUpdateTime())
+                .deleted(workflow.getDeleted() ? 1 : 0)
+                .build();
+    }
+
+    /**
+     * 将DO对象转换为领域模型
+     */
+    private MetaWorkflow convertToWorkflow(MetaWorkflowDO workflowDO) {
+        if (workflowDO == null) {
+            return null;
+        }
+        return MetaWorkflow.builder()
+                .id(workflowDO.getId())
+                .workflowCode(workflowDO.getWorkflowCode())
+                .workflowName(workflowDO.getWorkflowName())
+                .entityId(workflowDO.getEntityId())
+                .category(workflowDO.getCategory())
+                .version(workflowDO.getVersion())
+                .flowJson(workflowDO.getFlowJson())
+                .status(workflowDO.getStatus())
+                .tenantId(workflowDO.getTenantId())
+                .creator(workflowDO.getCreator())
+                .createTime(workflowDO.getCreateTime())
+                .updater(workflowDO.getUpdater())
+                .updateTime(workflowDO.getUpdateTime())
+                .deleted(workflowDO.getDeleted() != null && workflowDO.getDeleted() == 1)
+                .build();
+    }
+
+    /**
+     * 将流程实例领域模型转换为DO对象
+     */
+    private MetaProcessInstanceDO convertToProcessInstanceDO(MetaProcessInstance instance) {
+        if (instance == null) {
+            return null;
+        }
+        return MetaProcessInstanceDO.builder()
+                .id(instance.getId())
+                .workflowId(instance.getWorkflowId())
+                .businessKey(instance.getBusinessKey())
+                .title(instance.getTitle())
+                .initiator(instance.getInitiator())
+                .currentNodeId(instance.getCurrentNodeId())
+                .currentNodeName(instance.getCurrentNodeName())
+                .status(instance.getStatus())
+                .tenantId(instance.getTenantId())
+                .startTime(instance.getStartTime())
+                .endTime(instance.getEndTime())
+                .creator(instance.getCreator())
+                .createTime(instance.getCreateTime())
+                .updater(instance.getUpdater())
+                .updateTime(instance.getUpdateTime())
+                .deleted(instance.getDeleted() ? 1 : 0)
+                .build();
+    }
+
+    /**
+     * 将流程实例DO对象转换为领域模型
+     */
+    private MetaProcessInstance convertToProcessInstance(MetaProcessInstanceDO processDO) {
+        if (processDO == null) {
+            return null;
+        }
+        return MetaProcessInstance.builder()
+                .id(processDO.getId())
+                .workflowId(processDO.getWorkflowId())
+                .businessKey(processDO.getBusinessKey())
+                .title(processDO.getTitle())
+                .initiator(processDO.getInitiator())
+                .currentNodeId(processDO.getCurrentNodeId())
+                .currentNodeName(processDO.getCurrentNodeName())
+                .status(processDO.getStatus())
+                .tenantId(processDO.getTenantId())
+                .startTime(processDO.getStartTime())
+                .endTime(processDO.getEndTime())
+                .creator(processDO.getCreator())
+                .createTime(processDO.getCreateTime())
+                .updater(processDO.getUpdater())
+                .updateTime(processDO.getUpdateTime())
+                .deleted(processDO.getDeleted() != null && processDO.getDeleted() == 1)
+                .build();
+    }
+
+    /**
+     * 将任务实例领域模型转换为DO对象
+     */
+    private MetaTaskInstanceDO convertToTaskInstanceDO(MetaTaskInstance task) {
+        if (task == null) {
+            return null;
+        }
+        return MetaTaskInstanceDO.builder()
+                .id(task.getId())
+                .processId(task.getProcessId())
+                .taskId(task.getTaskId())
+                .taskName(task.getTaskName())
+                .taskType(task.getTaskType())
+                .assignee(task.getAssignee())
+                .status(task.getStatus())
+                .priority(task.getPriority())
+                .comment(task.getComment())
+                .tenantId(task.getTenantId())
+                .claimTime(task.getClaimTime())
+                .completeTime(task.getCompleteTime())
+                .creator(task.getCreator())
+                .createTime(task.getCreateTime())
+                .updater(task.getUpdater())
+                .updateTime(task.getUpdateTime())
+                .deleted(task.getDeleted() ? 1 : 0)
+                .build();
+    }
+
+    /**
+     * 将任务实例DO对象转换为领域模型
+     */
+    private MetaTaskInstance convertToTaskInstance(MetaTaskInstanceDO taskDO) {
+        if (taskDO == null) {
+            return null;
+        }
+        return MetaTaskInstance.builder()
+                .id(taskDO.getId())
+                .processId(taskDO.getProcessId())
+                .taskId(taskDO.getTaskId())
+                .taskName(taskDO.getTaskName())
+                .taskType(taskDO.getTaskType())
+                .assignee(taskDO.getAssignee())
+                .status(taskDO.getStatus())
+                .priority(taskDO.getPriority())
+                .comment(taskDO.getComment())
+                .tenantId(taskDO.getTenantId())
+                .claimTime(taskDO.getClaimTime())
+                .completeTime(taskDO.getCompleteTime())
+                .creator(taskDO.getCreator())
+                .createTime(taskDO.getCreateTime())
+                .updater(taskDO.getUpdater())
+                .updateTime(taskDO.getUpdateTime())
+                .deleted(taskDO.getDeleted() != null && taskDO.getDeleted() == 1)
+                .build();
     }
 }
