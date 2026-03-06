@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.organization.dal.dataobject.IamPostDO;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class IamPostDataGenerator {
         for (int i = 0; i < count; i++) {
             IamPostDO post = IamPostDO.builder()
                     .postId(generateId())
-                    .postCode("POST" + RandomUtil.randomNumbers(5))
+                    .postCode("POST" + IdUtil.getSnowflakeNextIdStr())
                     .postName(RandomUtil.randomEle(POST_NAMES) + (i + 1))
                     .postType("TECHNICAL")
                     .postStatus(1)

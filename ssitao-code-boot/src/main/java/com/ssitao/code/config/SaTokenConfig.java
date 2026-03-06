@@ -71,12 +71,13 @@ public class SaTokenConfig implements WebMvcConfigurer {
             /**
              * 检查是否存在指定注解
              */
+            @SuppressWarnings("unchecked")
             private boolean isAnnotationPresent(Method method, Class<?> beanClass, String... annotationNames) {
                 // 检查方法上的注解
                 for (String annotationName : annotationNames) {
                     try {
                         Class<?> annotationClass = Class.forName(annotationName);
-                        if (AnnotatedElementUtils.hasAnnotation(method, annotationClass)) {
+                        if (AnnotatedElementUtils.hasAnnotation(method, (Class<java.lang.annotation.Annotation>) annotationClass)) {
                             return true;
                         }
                     } catch (ClassNotFoundException ignored) {
@@ -88,7 +89,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 for (String annotationName : annotationNames) {
                     try {
                         Class<?> annotationClass = Class.forName(annotationName);
-                        if (AnnotatedElementUtils.hasAnnotation(beanClass, annotationClass)) {
+                        if (AnnotatedElementUtils.hasAnnotation(beanClass, (Class<java.lang.annotation.Annotation>) annotationClass)) {
                             return true;
                         }
                     } catch (ClassNotFoundException ignored) {
@@ -102,11 +103,12 @@ public class SaTokenConfig implements WebMvcConfigurer {
             /**
              * 从注解中提取权限码
              */
+            @SuppressWarnings("unchecked")
             private String extractPermissionFromAnnotations(Method method) {
                 // 尝试从 @PreAuthorize 注解提取
                 try {
                     Class<?> preAuthorizeClass = Class.forName("org.springframework.security.annotation.PreAuthorize");
-                    Object annotation = AnnotatedElementUtils.getMergedAnnotation(method, preAuthorizeClass);
+                    java.lang.annotation.Annotation annotation = AnnotatedElementUtils.getMergedAnnotation(method, (Class<java.lang.annotation.Annotation>) preAuthorizeClass);
                     if (annotation != null) {
                         // 获取 value 属性
                         Method valueMethod = preAuthorizeClass.getMethod("value");
@@ -121,7 +123,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 // 尝试从 @SaCheckPermission 注解提取
                 try {
                     Class<?> saCheckPermissionClass = Class.forName("cn.dev33.satoken.annotation.SaCheckPermission");
-                    Object annotation = AnnotatedElementUtils.getMergedAnnotation(method, saCheckPermissionClass);
+                    java.lang.annotation.Annotation annotation = AnnotatedElementUtils.getMergedAnnotation(method, (Class<java.lang.annotation.Annotation>) saCheckPermissionClass);
                     if (annotation != null) {
                         Method valueMethod = saCheckPermissionClass.getMethod("value");
                         String[] values = (String[]) valueMethod.invoke(annotation);

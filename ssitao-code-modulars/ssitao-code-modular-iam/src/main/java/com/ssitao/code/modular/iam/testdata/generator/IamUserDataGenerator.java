@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.userprofile.dal.dataobject.IamUserDO;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,8 @@ public class IamUserDataGenerator {
      */
     public IamUserDO generate(List<String> deptIds, List<String> postIds, String tenantId) {
         IamUserDO user = IamUserDO.builder()
-                .userCode("U" + RandomUtil.randomNumbers(8))
+                .userId(generateUserId())
+                .userCode("U" + IdUtil.getSnowflakeNextIdStr())
                 .userName(generateRandomName())
                 .userSex(RandomUtil.randomEle(SEX_LIST))
                 .userBirthday(generateRandomBirthday())
@@ -45,7 +47,7 @@ public class IamUserDataGenerator {
                 .userNation("汉族")
                 .userMaritalStatus(RandomUtil.randomBoolean() ? "MARRIED" : "SINGLE")
                 .userPoliticalStatus(RandomUtil.randomEle(Arrays.asList("群众", "党员", "团员")))
-                .userWorkNumber("W" + RandomUtil.randomNumbers(6))
+                .userWorkNumber("W" + IdUtil.getSnowflakeNextIdStr())
                 .userEntryDate(generateRandomEntryDate())
                 .userEmploymentType(RandomUtil.randomEle(EMPLOYMENT_TYPE_LIST))
                 .userEducation(RandomUtil.randomEle(EDUCATION_LIST))
@@ -80,5 +82,9 @@ public class IamUserDataGenerator {
 
     private LocalDate generateRandomEntryDate() {
         return LocalDate.now().minusMonths(RandomUtil.randomInt(0, 36));
+    }
+
+    private String generateUserId() {
+        return "USER" + IdUtil.getSnowflakeNextIdStr();
     }
 }

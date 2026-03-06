@@ -4,7 +4,7 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
         },
         api: {
             submit: function (form, onBeforeSubmit, onAfterSubmit) {
-                if (form.size() == 0)
+                if (form.length == 0)
                     return Toastr.error("表单未初始化完成,无法提交");
                 //提交前事件
                 var beforeSubmit = form.data("before-submit");
@@ -108,14 +108,14 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
                 $(".layer-footer .btn.disabled", form).removeClass("disabled");
 
                 //绑定select元素事件
-                if ($(".selectpicker", form).size() > 0) {
+                if ($(".selectpicker", form).length > 0) {
                     require(['bootstrap-select', 'bootstrap-select-lang'], function () {
                         $('.selectpicker', form).selectpicker();
                     });
                 }
 
                 //绑定selectpage元素事件
-                if ($(".selectpage", form).size() > 0) {
+                if ($(".selectpage", form).length > 0) {
                     require(['selectpage'], function () {
                         $('.selectpage', form).selectPage({
                             source: 'ajax/selectpage',
@@ -128,7 +128,7 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
                 }
 
                 //绑定cxselect元素事件
-                if ($("[data-toggle='cxselect']").size() > 0) {
+                if ($("[data-toggle='cxselect']").length > 0) {
                     require(['cxselect'], function () {
                         $.cxSelect.defaults.jsonName = 'name';
                         $.cxSelect.defaults.jsonValue = 'value';
@@ -138,7 +138,7 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
                 }
 
                 //绑定日期时间元素事件
-                if ($(".datetimepicker", form).size() > 0) {
+                if ($(".datetimepicker", form).length > 0) {
                     require(['bootstrap-datetimepicker'], function () {
                         $('.datetimepicker', form).parent().css('position', 'relative');
                         $('.datetimepicker', form)
@@ -162,7 +162,7 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
                 }
 
                 //绑定summernote事件
-                if ($(".summernote", form).size() > 0) {
+                if ($(".summernote", form).length > 0) {
                     require(['summernote'], function () {
                         $(".summernote", form).summernote({
                             height: 250,
@@ -201,12 +201,12 @@ define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, U
                 }
 
                 //绑定plupload上传元素事件
-                if ($(".plupload", form).size() > 0) {
+                if ($(".plupload", form).length > 0) {
                     Upload.api.plupload();
                 }
 
                 //绑定fachoose选择附件事件
-                if ($(".fachoose", form).size() > 0) {
+                if ($(".fachoose", form).length > 0) {
                     $(document).on('click', ".fachoose", function () {
                         var multiple = $(this).data("multiple") ? $(this).data("multiple") : false;
                         var mimetype = $(this).data("mimetype") ? $(this).data("mimetype") : '';

@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamRoleDO;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class IamRoleDataGenerator {
         for (int i = 0; i < count; i++) {
             IamRoleDO role = IamRoleDO.builder()
                     .roleId(generateId())
-                    .roleCode("ROLE" + RandomUtil.randomNumbers(6))
+                    .roleCode("ROLE" + IdUtil.getSnowflakeNextIdStr())
                     .roleName(RandomUtil.randomEle(ROLE_NAMES) + (i + 1))
                     .roleType(RandomUtil.randomBoolean() ? "SYSTEM" : "BUSINESS")
                     .roleLevel(RandomUtil.randomInt(1, 10))

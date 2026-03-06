@@ -1,7 +1,6 @@
 package com.ssitao.code.modular.iam.organization.dal.dataobject;
 
 import com.ssitao.code.frame.mybatisflex.annotation.Id;
-import com.ssitao.code.frame.mybatisflex.annotation.KeyType;
 import com.ssitao.code.frame.mybatisflex.annotation.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,7 @@ public class IamPostDO {
     /**
      * 岗位ID
      */
-    @Id(keyType = KeyType.Auto)
+    @Id
     private String postId;
 
     /**

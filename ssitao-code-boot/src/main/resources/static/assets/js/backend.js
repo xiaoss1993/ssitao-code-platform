@@ -33,25 +33,25 @@ define(['fast', 'moment'], function (Fast, Moment) {
             addtabs: function (url, title, icon) {
                 var dom = "a[url='{url}']"
                 var leftlink = top.window.$(dom.replace(/\{url\}/, url));
-                if (leftlink.size() > 0) {
+                if (leftlink.length > 0) {
                     leftlink.trigger("click");
                 } else {
                     url = Fast.api.fixurl(url);
                     leftlink = top.window.$(dom.replace(/\{url\}/, url));
-                    if (leftlink.size() > 0) {
+                    if (leftlink.length > 0) {
                         var event = leftlink.parent().hasClass("active") ? "dblclick" : "click";
                         leftlink.trigger(event);
                     } else {
                         var baseurl = url.substr(0, url.indexOf("?") > -1 ? url.indexOf("?") : url.length);
                         leftlink = top.window.$(dom.replace(/\{url\}/, baseurl));
                         //能找到相对地址
-                        if (leftlink.size() > 0) {
+                        if (leftlink.length > 0) {
                             icon = typeof icon != 'undefined' ? icon : leftlink.find("i").attr("class");
                             title = typeof title != 'undefined' ? title : leftlink.find("span:first").text();
                             leftlink.trigger("fa.event.toggleitem");
                         }
                         var navnode = $(".nav-tabs ul li a[node-url='" + url + "']");
-                        if (navnode.size() > 0) {
+                        if (navnode.length > 0) {
                             navnode.trigger("click");
                         } else {
                             //追加新的tab
@@ -79,7 +79,7 @@ define(['fast', 'moment'], function (Fast, Moment) {
                 Backend.api.addtabs($(this).attr("href"), $(this).attr("title"));
             });
             //修复含有fixed-footer类的body边距
-            if ($(".fixed-footer").size() > 0) {
+            if ($(".fixed-footer").length > 0) {
                 $(document.body).css("padding-bottom", $(".fixed-footer").height());
             }
         }

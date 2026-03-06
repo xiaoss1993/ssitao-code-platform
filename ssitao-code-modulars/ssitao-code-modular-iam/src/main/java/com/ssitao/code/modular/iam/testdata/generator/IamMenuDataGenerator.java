@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.menu.dal.dataobject.IamMenuDO;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,7 @@ public class IamMenuDataGenerator {
             String menuId = generateId();
             IamMenuDO menu = IamMenuDO.builder()
                     .menuId(menuId)
-                    .menuCode("MENU" + RandomUtil.randomNumbers(6))
+                    .menuCode("MENU" + IdUtil.getSnowflakeNextIdStr())
                     .menuName(RandomUtil.randomEle(MENU_NAMES))
                     .menuType("DIRECTORY")
                     .menuParentId("0")
@@ -64,7 +65,7 @@ public class IamMenuDataGenerator {
                 String childId = generateId();
                 IamMenuDO child = IamMenuDO.builder()
                         .menuId(childId)
-                        .menuCode("MENU" + RandomUtil.randomNumbers(6))
+                        .menuCode("MENU" + IdUtil.getSnowflakeNextIdStr())
                         .menuName(RandomUtil.randomEle(MENU_NAMES))
                         .menuType("MENU")
                         .menuParentId(menuId)
@@ -91,7 +92,7 @@ public class IamMenuDataGenerator {
                     String btnId = generateId();
                     IamMenuDO btn = IamMenuDO.builder()
                             .menuId(btnId)
-                            .menuCode("BTN" + RandomUtil.randomNumbers(6))
+                            .menuCode("BTN" + IdUtil.getSnowflakeNextIdStr())
                             .menuName(RandomUtil.randomEle(Arrays.asList("新增", "编辑", "删除", "导出", "导入")))
                             .menuType("BUTTON")
                             .menuParentId(childId)

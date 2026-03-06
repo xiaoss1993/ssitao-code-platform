@@ -44,6 +44,7 @@ require.config({
         'plupload': '../libs/plupload/js/plupload.min',
         'toastr': '../libs/toastr/toastr',
         'jstree': '../libs/jstree/dist/jstree.min',
+        'ztree': '../libs/jquery-ztree/js/jquery.ztree.all-3.5',
         'layer': '../libs/layer/src/layer',
         'cookie': '../libs/jquery.cookie/jquery.cookie',
         'cxselect': '../libs/jquery-cxselect/js/jquery.cxselect',
@@ -105,6 +106,7 @@ require.config({
         'summernote': ['../libs/summernote/dist/summernote.min', 'css!../libs/summernote/dist/summernote.css'],
 //        'toastr': ['css!../libs/toastr/toastr.min.css'],
         'jstree': ['css!../libs/jstree/dist/themes/default/style.css', ],
+        'ztree': ['css!../libs/jquery-ztree/css/zTreeStyle/zTreeStyle.css'],
         'plupload': {
             deps: ['../libs/plupload/js/moxie.min'],
             exports: "plupload"

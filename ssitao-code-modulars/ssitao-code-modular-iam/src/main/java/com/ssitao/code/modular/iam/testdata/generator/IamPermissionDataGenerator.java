@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.authorization.dal.dataobject.IamPermissionDO;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +39,7 @@ public class IamPermissionDataGenerator {
 
             IamPermissionDO permission = IamPermissionDO.builder()
                     .permissionId(generateId())
-                    .permissionCode(resource + ":" + action)
+                    .permissionCode(resource + ":" + action + ":" + IdUtil.getSnowflakeNextIdStr())
                     .permissionName(RandomUtil.randomEle(PERMISSION_NAMES))
                     .permissionType(RandomUtil.randomEle(TYPE_LIST))
                     .permissionResource(resource)

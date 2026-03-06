@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.organization.dal.dataobject.IamCompanyDO;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +32,7 @@ public class IamCompanyDataGenerator {
         for (int i = 0; i < count; i++) {
             IamCompanyDO company = IamCompanyDO.builder()
                     .companyId(generateId())
-                    .companyCode("CO" + RandomUtil.randomNumbers(6))
+                    .companyCode("CO" + IdUtil.getSnowflakeNextIdStr())
                     .companyName(RandomUtil.randomEle(COMPANY_NAMES) + (i + 1) + "分公司")
                     .companyType("COMPANY")
                     .companyParentId("0")

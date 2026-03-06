@@ -23,7 +23,7 @@
         var form = $("form.form-commonsearch", that.$container);
 
         //绑定日期时间元素事件
-        if ($(".datetimepicker", form).size() > 0) {
+        if ($(".datetimepicker", form).length > 0) {
 
             require(['bootstrap-datetimepicker'], function () {
                 $('.datetimepicker', form).parent().css('position', 'relative');
@@ -173,10 +173,10 @@
             var name = $(this).data("name");
             var sym = $(this).val();
             var obj = $("[name='" + name + "']");
-            if (obj.size() == 0)
+            if (obj.length == 0)
                 return true;
             var vObjCol = ColumnsForSearch[i];
-            if (obj.size() > 1) {
+            if (obj.length > 1) {
                 if (/BETWEEN$/.test(sym)) {
                     var value_begin = $.trim($("[name='" + name + "']:first").val()), value_end = $.trim($("[name='" + name + "']:last").val());
                     if (!value_begin.length || !value_end.length) {
@@ -283,7 +283,7 @@
 
         that.$container.on("click", "." + that.options.searchClass, function () {
             var obj = $("form [name='" + $(this).data("field") + "']", searchContainer);
-            if (obj.size() > 0) {
+            if (obj.length > 0) {
                 obj.val($(this).data("value"));
                 $("form", searchContainer).trigger("submit");
             }

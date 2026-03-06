@@ -20,6 +20,16 @@ public interface TestDataGeneratorService {
     int generateIamData(IamDataTypeEnum type, int count);
 
     /**
+     * 生成 IAM 模块测试数据（指定租户）
+     *
+     * @param type 数据类型
+     * @param count 数量
+     * @param tenantId 租户ID
+     * @return 生成数量
+     */
+    int generateIamData(IamDataTypeEnum type, int count, String tenantId);
+
+    /**
      * 生成全部 IAM 模块测试数据
      *
      * @param count 每个实体生成的数量
@@ -28,10 +38,28 @@ public interface TestDataGeneratorService {
     int generateAllIamData(int count);
 
     /**
+     * 生成全部 IAM 模块测试数据（指定租户）
+     *
+     * @param count 每个实体生成的数量
+     * @param tenantId 租户ID
+     * @return 生成的总数量
+     */
+    int generateAllIamData(int count, String tenantId);
+
+    /**
      * 清空测试数据
      *
      * @param type 数据类型
      * @return 清空数量
      */
     int clearTestData(IamDataTypeEnum type);
+
+    /**
+     * 清空测试数据（指定租户）
+     *
+     * @param type 数据类型
+     * @param tenantId 租户ID
+     * @return 清空数量
+     */
+    int clearTestData(IamDataTypeEnum type, String tenantId);
 }

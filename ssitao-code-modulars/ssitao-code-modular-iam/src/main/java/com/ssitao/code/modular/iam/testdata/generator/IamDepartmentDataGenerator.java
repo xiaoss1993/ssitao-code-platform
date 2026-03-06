@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.testdata.generator;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.IdUtil;
 import com.ssitao.code.modular.iam.organization.dal.dataobject.IamDepartmentDO;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class IamDepartmentDataGenerator {
             String deptId = generateId();
             IamDepartmentDO dept = IamDepartmentDO.builder()
                     .deptId(deptId)
-                    .deptCode("DEPT" + RandomUtil.randomNumbers(6))
+                    .deptCode("DEPT" + IdUtil.getSnowflakeNextIdStr())
                     .deptName(RandomUtil.randomEle(DEPT_NAMES) + (i + 1))
                     .deptType("DEPARTMENT")
                     .deptParentId("0")
@@ -59,7 +60,7 @@ public class IamDepartmentDataGenerator {
                 String childId = generateId();
                 IamDepartmentDO child = IamDepartmentDO.builder()
                         .deptId(childId)
-                        .deptCode("DEPT" + RandomUtil.randomNumbers(6))
+                        .deptCode("DEPT" + IdUtil.getSnowflakeNextIdStr())
                         .deptName(RandomUtil.randomEle(DEPT_NAMES) + (j + 1))
                         .deptType("DEPARTMENT")
                         .deptParentId(dept.getDeptId())

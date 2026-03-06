@@ -114,7 +114,7 @@ define(['jquery', 'bootstrap', 'moment', 'moment/locale/zh-cn', 'bootstrap-table
                     $(Table.config.refreshbtn, toolbar).find(".fa").removeClass("fa-spin");
                     $(Table.config.disabledbtn, toolbar).toggleClass('disabled', true);
 
-                    if ($(Table.config.firsttd, table).find("input[type='checkbox'][data-index]").size() > 0) {
+                    if ($(Table.config.firsttd, table).find("input[type='checkbox'][data-index]").length > 0) {
                         // 挺拽选择,需要重新绑定事件
                         require(['drag', 'drop'], function () {
                             $(Table.config.firsttd, table).drag("start", function (ev, dd) {

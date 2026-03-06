@@ -27,7 +27,7 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
                 if (isAndroid) {
                     $.AdminLTE.options.sidebarSlimScroll = false;
                 }
-                if ($("a", searchResult).size() > 0) {
+                if ($("a", searchResult).length > 0) {
                     searchResult.removeClass("hide");
                 }
             }).on("keyup", "input[name=q]", function () {

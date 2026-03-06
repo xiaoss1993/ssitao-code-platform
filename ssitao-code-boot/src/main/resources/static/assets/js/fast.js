@@ -111,7 +111,7 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
                                         return false;
                                     }
                                 }
-                                if ($('.summernote').size() > 0 && data && typeof data.url !== 'undefined') {
+                                if ($('.summernote').length > 0 && data && typeof data.url !== 'undefined') {
                                     $('.summernote').summernote("insertImage", data.url, 'filename');
                                 }
                                 Toastr.success(__('Operation completed'));
@@ -151,7 +151,7 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
                         Fast.api.layerfooter(layero, index, that);
 
                         //绑定事件
-                        if (layerfooter.size() > 0) {
+                        if (layerfooter.length > 0) {
                             // 监听窗口内的元素及属性变化
                             // Firefox和Chrome早期版本中带有前缀
                             var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
@@ -177,11 +177,11 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
             layerfooter: function (layero, index, that) {
                 var frame = Layer.getChildFrame('html', index);
                 var layerfooter = frame.find(".layer-footer");
-                if (layerfooter.size() > 0) {
+                if (layerfooter.length > 0) {
                     $(".layui-layer-footer", layero).remove();
                     var footer = $("<div />").addClass('layui-layer-btn layui-layer-footer');
                     footer.html(layerfooter.html());
-                    if ($(".row", footer).size() === 0) {
+                    if ($(".row", footer).length === 0) {
                         $(">", footer).wrapAll("<div class='row'></div>");
                     }
                     footer.insertAfter(layero.find('.layui-layer-content'));
@@ -196,7 +196,7 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
                     maxheg = $(window).height();
                 }
                 // 如果有.layer-footer或窗口小于600则重新排
-                if (layerfooter.size() > 0 || oldheg < maxheg || that.area[0].indexOf("%") > -1) {
+                if (layerfooter.length > 0 || oldheg < maxheg || that.area[0].indexOf("%") > -1) {
                     var footerHeight = layero.find('.layui-layer-footer').outerHeight() || 0;
                     footerHeight = 0;
                     if (oldheg >= maxheg) {
@@ -205,7 +205,7 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
                     layero.css({height: heg + titHeight + btnHeight + footerHeight});
                     layero.find("iframe").css({height: heg});
                 }
-                if (layerfooter.size() > 0) {
+                if (layerfooter.length > 0) {
                     footer.on("click", ".btn", function () {
                         if ($(this).hasClass("disabled") || $(this).parent().hasClass("disabled")) {
                             return;
@@ -290,7 +290,7 @@ define(['jquery', 'bootstrap', 'toastr', 'layer', 'lang'], function ($, undefine
             // 绑定ESC关闭窗口事件
             $(window).keyup(function (e) {
                 if (e.keyCode == 27) {
-                    if ($(".layui-layer").size() > 0) {
+                    if ($(".layui-layer").length > 0) {
                         var index = 0;
                         $(".layui-layer").each(function () {
                             index = Math.max(index, parseInt($(this).attr("times")));
