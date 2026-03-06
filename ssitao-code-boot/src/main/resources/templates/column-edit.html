@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>字段编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {"backend": "zh-cn", "frontend": "zh-cn"}
+                },
+                "upload": {
+                    "cdnurl": "/",
+                    "uploadurl": "/api/upload",
+                    "bucket": "yourbucketname",
+                    "maxsize": "10mb",
+                    "mimetype": "*",
+                    "multiple": false
+                },
+                "modulename": "meta",
+                "controllername": "column",
+                "actionname": "edit",
+                "jsname": "backend/meta/column",
+                "moduleurl": "/",
+                "language": "zh-cn",
+                "referer": null
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside is-dialog">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>字段编辑</h1>
+                        </section>
+                        <div class="content">
+                            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
+                                <input type="hidden" name="columnId" id="columnId" value="" />
+                                <input type="hidden" name="tableId" id="tableId" value="" />
+
+                                <div class="form-group">
+                                    <label for="columnName" class="control-label col-xs-12 col-sm-2">字段名称 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="columnName" name="columnName" value="" placeholder="请输入字段名称" data-rule="required" />
+                                        <span class="help-block">数据库中的字段名，如 user_name</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="columnDesc" class="control-label col-xs-12 col-sm-2">字段描述</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="columnDesc" name="columnDesc" value="" placeholder="请输入字段描述" />
+                                        <span class="help-block">字段的中文描述</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="columnType" class="control-label col-xs-12 col-sm-2">字段类型 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="columnType" name="columnType">
+                                            <option value="varchar">varchar - 字符串</option>
+                                            <option value="int">int - 整数</option>
+                                            <option value="bigint">bigint - 长整数</option>
+                                            <option value="decimal">decimal - 小数</option>
+                                            <option value="text">text - 文本</option>
+                                            <option value="datetime">datetime - 日期时间</option>
+                                            <option value="date">date - 日期</option>
+                                            <option value="time">time - 时间</option>
+                                            <option value="tinyint">tinyint - 微整数</option>
+                                            <option value="char">char - 固定字符串</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="javaType" class="control-label col-xs-12 col-sm-2">Java类型 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="javaType" name="javaType">
+                                            <option value="String">String</option>
+                                            <option value="Integer">Integer</option>
+                                            <option value="Long">Long</option>
+                                            <option value="BigDecimal">BigDecimal</option>
+                                            <option value="LocalDateTime">LocalDateTime</option>
+                                            <option value="LocalDate">LocalDate</option>
+                                            <option value="LocalTime">LocalTime</option>
+                                            <option value="Boolean">Boolean</option>
+                                            <option value="Double">Double</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="javaField" class="control-label col-xs-12 col-sm-2">Java字段名 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="javaField" name="javaField" value="" placeholder="请输入Java字段名" data-rule="required" />
+                                        <span class="help-block">驼峰命名，如 userName</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">字段属性</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="isPk" id="isPk" value="1" /> 主键
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" name="isIncrement" id="isIncrement" value="1" /> 自增
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" name="isRequired" id="isRequired" value="1" /> 必填
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">显示配置</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" name="isQuery" id="isQuery" value="1" /> 查询条件
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" name="isDisplay" id="isDisplay" value="1" /> 显示字段
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" name="isList" id="isList" value="1" /> 列表显示
+                                            </label>
+                                            <label>
+                                                <input type="checkbox" name="isForm" id="isForm" value="1" /> 表单字段
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="queryType" class="control-label col-xs-12 col-sm-2">查询方式</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="queryType" name="queryType">
+                                            <option value="1">精确查询</option>
+                                            <option value="2">模糊查询</option>
+                                            <option value="3">范围查询</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="formType" class="control-label col-xs-12 col-sm-2">表单类型</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="formType" name="formType">
+                                            <option value="1">文本框</option>
+                                            <option value="2">文本域</option>
+                                            <option value="3">下拉框</option>
+                                            <option value="4">单选框</option>
+                                            <option value="5">复选框</option>
+                                            <option value="6">日期选择</option>
+                                            <option value="7">文件上传</option>
+                                            <option value="8">富文本</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dictType" class="control-label col-xs-12 col-sm-2">字典类型</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="dictType" name="dictType" value="" placeholder="请输入字典类型" />
+                                        <span class="help-block">关联的字典类型，如需从字典加载选项</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="defaultValue" class="control-label col-xs-12 col-sm-2">默认值</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="defaultValue" name="defaultValue" value="" placeholder="请输入默认值" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="columnSort" class="control-label col-xs-12 col-sm-2">排序</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="number" class="form-control" id="columnSort" name="columnSort" value="0" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" id="remark" name="remark" rows="3" placeholder="请输入备注"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden layer-footer">
+                                    <label class="control-label col-xs-12 col-sm-2"></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                        <button type="reset" class="btn btn-default btn-embossed">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+    <script>
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]);
+            return null;
+        }
+
+        $(function() {
+            var id = getQueryString('id');
+            var tableId = getQueryString('tableId');
+
+            // 设置tableId
+            if (tableId) {
+                $('#tableId').val(tableId);
+            }
+
+            if (id) {
+                // 编辑模式
+                $.ajax({
+                    url: '/meta/column/get',
+                    type: 'GET',
+                    data: { columnId: id },
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#columnId').val(data.columnId);
+                            $('#tableId').val(data.tableId);
+                            $('#columnName').val(data.columnName);
+                            $('#columnName').attr('readonly', true);
+                            $('#columnDesc').val(data.columnDesc);
+                            $('#columnType').val(data.columnType);
+                            $('#javaType').val(data.javaType);
+                            $('#javaField').val(data.javaField);
+
+                            // 复选框处理
+                            if (data.isPk === 1) $('#isPk').prop('checked', true);
+                            if (data.isIncrement === 1) $('#isIncrement').prop('checked', true);
+                            if (data.isRequired === 1) $('#isRequired').prop('checked', true);
+                            if (data.isQuery === 1) $('#isQuery').prop('checked', true);
+                            if (data.isDisplay === 1) $('#isDisplay').prop('checked', true);
+                            if (data.isList === 1) $('#isList').prop('checked', true);
+                            if (data.isForm === 1) $('#isForm').prop('checked', true);
+
+                            $('#queryType').val(data.queryType || 1);
+                            $('#formType').val(data.formType || 1);
+                            $('#dictType').val(data.dictType);
+                            $('#defaultValue').val(data.defaultValue);
+                            $('#columnSort').val(data.columnSort || 0);
+                            $('#remark').val(data.remark);
+                        }
+                    }
+                });
+                $('#edit-form').attr('action', '/meta/column/update');
+                $('#edit-form').attr('method', 'PUT');
+            } else {
+                // 添加模式
+                if (!tableId) {
+                    Layer.msg('缺少tableId参数', {icon: 2});
+                    return;
+                }
+                $('#edit-form').attr('action', '/meta/column/create');
+                $('#edit-form').attr('method', 'POST');
+            }
+
+            // 处理复选框值
+            function getCheckboxValue(name) {
+                return $('#' + name).is(':checked') ? 1 : 0;
+            }
+
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('action');
+                var method = $(this).attr('method');
+
+                // 收集表单数据
+                var formData = {
+                    tableId: $('#tableId').val(),
+                    columnName: $('#columnName').val(),
+                    columnDesc: $('#columnDesc').val(),
+                    columnType: $('#columnType').val(),
+                    javaType: $('#javaType').val(),
+                    javaField: $('#javaField').val(),
+                    isPk: getCheckboxValue('isPk'),
+                    isIncrement: getCheckboxValue('isIncrement'),
+                    isRequired: getCheckboxValue('isRequired'),
+                    isQuery: getCheckboxValue('isQuery'),
+                    isDisplay: getCheckboxValue('isDisplay'),
+                    isList: getCheckboxValue('isList'),
+                    isForm: getCheckboxValue('isForm'),
+                    queryType: $('#queryType').val(),
+                    formType: $('#formType').val(),
+                    dictType: $('#dictType').val(),
+                    defaultValue: $('#defaultValue').val(),
+                    columnSort: $('#columnSort').val(),
+                    remark: $('#remark').val()
+                };
+
+                // 编辑时添加columnId
+                if (id) {
+                    formData.columnId = id;
+                }
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    },
+                    error: function() {
+                        Layer.msg('网络错误', {icon: 2});
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
