@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>元数据列表编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {"backend": "zh-cn", "frontend": "zh-cn"}
+                },
+                "modulename": "meta",
+                "controllername": "list",
+                "actionname": "edit",
+                "jsname": "backend/meta/list",
+                "moduleurl": "/",
+                "language": "zh-cn"
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside is-dialog">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>元数据列表编辑</h1>
+                        </section>
+                        <div class="content">
+                            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
+                                <input type="hidden" name="listId" id="listId" value="" />
+                                <input type="hidden" name="entityId" id="entityId" value="" />
+
+                                <div class="form-group">
+                                    <label for="entityIdSelect" class="control-label col-xs-12 col-sm-2">所属实体 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="entityIdSelect" name="entityIdSelect" data-rule="required">
+                                            <option value="">请选择实体</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="listCode" class="control-label col-xs-12 col-sm-2">列表编码 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="listCode" name="listCode" value="" placeholder="请输入列表编码" data-rule="required" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="listName" class="control-label col-xs-12 col-sm-2">列表名称 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="listName" name="listName" value="" placeholder="请输入列表名称" data-rule="required" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="listType" class="control-label col-xs-12 col-sm-2">列表类型</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="listType" name="listType">
+                                            <option value="1">默认列表</option>
+                                            <option value="2">树形列表</option>
+                                            <option value="3">表格列表</option>
+                                            <option value="4">分组列表</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rowStyle" class="control-label col-xs-12 col-sm-2">行样式</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="rowStyle" name="rowStyle">
+                                            <option value="1">默认</option>
+                                            <option value="2">紧凑</option>
+                                            <option value="3">舒适</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">表格显示</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="stripe" id="stripe" value="1" checked /> 斑马纹</label>
+                                            <label><input type="checkbox" name="border" id="border" value="1" checked /> 边框</label>
+                                            <label><input type="checkbox" name="showHeader" id="showHeader" value="1" checked /> 表头</label>
+                                            <label><input type="checkbox" name="highlightCurrentRow" id="highlightCurrentRow" value="1" checked /> 高亮当前行</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="defaultPageSize" class="control-label col-xs-12 col-sm-2">默认分页大小</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="number" class="form-control" id="defaultPageSize" name="defaultPageSize" value="10" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">功能开关</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="showPagination" id="showPagination" value="1" checked /> 分页</label>
+                                            <label><input type="checkbox" name="showRefresh" id="showRefresh" value="1" checked /> 刷新按钮</label>
+                                            <label><input type="checkbox" name="showColumnSetting" id="showColumnSetting" value="1" checked /> 列设置</label>
+                                            <label><input type="checkbox" name="showFullscreen" id="showFullscreen" value="1" checked /> 全屏按钮</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="showSearchBar" id="showSearchBar" value="1" checked /> 搜索栏</label>
+                                            <label><input type="checkbox" name="showAdvancedSearch" id="showAdvancedSearch" value="1" /> 高级搜索</label>
+                                            <label><input type="checkbox" name="showToolbar" id="showToolbar" value="1" checked /> 工具栏</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">操作按钮</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="showAddButton" id="showAddButton" value="1" checked /> 新增</label>
+                                            <label><input type="checkbox" name="showBatchAddButton" id="showBatchAddButton" value="1" /> 批量新增</label>
+                                            <label><input type="checkbox" name="showEditButton" id="showEditButton" value="1" checked /> 编辑</label>
+                                            <label><input type="checkbox" name="showDeleteButton" id="showDeleteButton" value="1" checked /> 删除</label>
+                                        </div>
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="showExportButton" id="showExportButton" value="1" /> 导出</label>
+                                            <label><input type="checkbox" name="showImportButton" id="showImportButton" value="1" /> 导入</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sortMode" class="control-label col-xs-12 col-sm-2">排序方式</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <select class="form-control" id="sortMode" name="sortMode">
+                                            <option value="1">服务端排序</option>
+                                            <option value="2">客户端排序</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">状态</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" name="status" id="status" value="1" checked /> 启用</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden layer-footer">
+                                    <label class="control-label col-xs-12 col-sm-2"></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                        <button type="reset" class="btn btn-default btn-embossed">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+    <script>
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]);
+            return null;
+        }
+
+        $(function() {
+            var id = getQueryString('id');
+            var copy = getQueryString('copy');
+
+            $.ajax({
+                url: '/meta/table/list',
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    if (res.code === 200 && res.rows) {
+                        var options = '<option value="">请选择实体</option>';
+                        res.rows.forEach(function(table) {
+                            options += '<option value="' + table.id + '">' + table.tableName + ' - ' + (table.tableDesc || '') + '</option>';
+                        });
+                        $('#entityIdSelect').html(options);
+                    }
+                }
+            });
+
+            if (id) {
+                $.ajax({
+                    url: '/meta/list/get',
+                    type: 'GET',
+                    data: {listId: id},
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200 && res.data) {
+                            var data = res.data;
+                            $('#listId').val(data.listId);
+                            $('#entityId').val(data.entityId);
+                            $('#entityIdSelect').val(data.entityId);
+                            $('#listCode').val(data.listCode);
+                            $('#listName').val(data.listName);
+                            $('#listType').val(data.listType || 1);
+                            $('#rowStyle').val(data.rowStyle || 3);
+                            $('#defaultPageSize').val(data.defaultPageSize || 10);
+                            $('#sortMode').val(data.sortMode || 1);
+                            $('#remark').val(data.remark || '');
+
+                            setCheckbox('stripe', data.stripe);
+                            setCheckbox('border', data.border);
+                            setCheckbox('showHeader', data.showHeader);
+                            setCheckbox('highlightCurrentRow', data.highlightCurrentRow);
+                            setCheckbox('showPagination', data.showPagination);
+                            setCheckbox('showRefresh', data.showRefresh);
+                            setCheckbox('showColumnSetting', data.showColumnSetting);
+                            setCheckbox('showFullscreen', data.showFullscreen);
+                            setCheckbox('showSearchBar', data.showSearchBar);
+                            setCheckbox('showAdvancedSearch', data.showAdvancedSearch);
+                            setCheckbox('showToolbar', data.showToolbar);
+                            setCheckbox('showAddButton', data.showAddButton);
+                            setCheckbox('showBatchAddButton', data.showBatchAddButton);
+                            setCheckbox('showEditButton', data.showEditButton);
+                            setCheckbox('showDeleteButton', data.showDeleteButton);
+                            setCheckbox('showExportButton', data.showExportButton);
+                            setCheckbox('showImportButton', data.showImportButton);
+                            setCheckbox('status', data.status);
+
+                            if (copy === '1') {
+                                $('#listId').val('');
+                                $('#listCode').val(data.listCode + '_copy');
+                                $('#listName').val(data.listName + '(副本)');
+                            }
+                        }
+                    }
+                });
+            }
+
+            function setCheckbox(id, value) {
+                if (value === 1) {
+                    $('#' + id).prop('checked', true);
+                } else {
+                    $('#' + id).prop('checked', false);
+                }
+            }
+
+            var action = (id && copy !== '1') ? '/meta/list/update' : '/meta/list/create';
+            var method = (id && copy !== '1') ? 'PUT' : 'POST';
+
+            $('#edit-form').on('submit', function(e) {
+                e.preventDefault();
+                var formData = getFormData();
+                if (id && copy !== '1') {
+                    formData.listId = id;
+                }
+
+                $.ajax({
+                    url: action,
+                    type: method,
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 200) {
+                            Layer.msg('操作成功', {icon: 1});
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                            parent.$("#table").bootstrapTable('refresh');
+                        } else {
+                            Layer.msg(res.msg || '操作失败', {icon: 2});
+                        }
+                    }
+                });
+            });
+
+            function getFormData() {
+                return {
+                    entityId: $('#entityIdSelect').val(),
+                    listCode: $('#listCode').val(),
+                    listName: $('#listName').val(),
+                    listType: parseInt($('#listType').val()),
+                    rowStyle: parseInt($('#rowStyle').val()),
+                    stripe: $('#stripe').is(':checked') ? 1 : 0,
+                    border: $('#border').is(':checked') ? 1 : 0,
+                    showHeader: $('#showHeader').is(':checked') ? 1 : 0,
+                    highlightCurrentRow: $('#highlightCurrentRow').is(':checked') ? 1 : 0,
+                    defaultPageSize: parseInt($('#defaultPageSize').val()),
+                    sortMode: parseInt($('#sortMode').val()),
+                    showPagination: $('#showPagination').is(':checked') ? 1 : 0,
+                    showRefresh: $('#showRefresh').is(':checked') ? 1 : 0,
+                    showColumnSetting: $('#showColumnSetting').is(':checked') ? 1 : 0,
+                    showFullscreen: $('#showFullscreen').is(':checked') ? 1 : 0,
+                    showSearchBar: $('#showSearchBar').is(':checked') ? 1 : 0,
+                    showAdvancedSearch: $('#showAdvancedSearch').is(':checked') ? 1 : 0,
+                    showToolbar: $('#showToolbar').is(':checked') ? 1 : 0,
+                    showAddButton: $('#showAddButton').is(':checked') ? 1 : 0,
+                    showBatchAddButton: $('#showBatchAddButton').is(':checked') ? 1 : 0,
+                    showEditButton: $('#showEditButton').is(':checked') ? 1 : 0,
+                    showDeleteButton: $('#showDeleteButton').is(':checked') ? 1 : 0,
+                    showExportButton: $('#showExportButton').is(':checked') ? 1 : 0,
+                    showImportButton: $('#showImportButton').is(':checked') ? 1 : 0,
+                    status: $('#status').is(':checked') ? 1 : 0,
+                    remark: $('#remark').val()
+                };
+            }
+        });
+    </script>
+</body>
+</html>
