@@ -405,11 +405,9 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .tenantId(instance.getTenantId())
                 .startTime(instance.getStartTime())
                 .endTime(instance.getEndTime())
-                .creator(instance.getCreator())
                 .createTime(instance.getCreateTime())
-                .updater(instance.getUpdater())
                 .updateTime(instance.getUpdateTime())
-                .deleted(instance.getDeleted() ? 1 : 0)
+                .deleted(0)
                 .build();
     }
 
@@ -432,11 +430,8 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .tenantId(processDO.getTenantId())
                 .startTime(processDO.getStartTime())
                 .endTime(processDO.getEndTime())
-                .creator(processDO.getCreator())
                 .createTime(processDO.getCreateTime())
-                .updater(processDO.getUpdater())
                 .updateTime(processDO.getUpdateTime())
-                .deleted(processDO.getDeleted() != null && processDO.getDeleted() == 1)
                 .build();
     }
 
@@ -458,13 +453,11 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .priority(task.getPriority())
                 .comment(task.getComment())
                 .tenantId(task.getTenantId())
-                .claimTime(task.getClaimTime())
+                .claimTime(task.getSignTime())
                 .completeTime(task.getCompleteTime())
-                .creator(task.getCreator())
                 .createTime(task.getCreateTime())
-                .updater(task.getUpdater())
                 .updateTime(task.getUpdateTime())
-                .deleted(task.getDeleted() ? 1 : 0)
+                .deleted(0)
                 .build();
     }
 
@@ -486,13 +479,10 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .priority(taskDO.getPriority())
                 .comment(taskDO.getComment())
                 .tenantId(taskDO.getTenantId())
-                .claimTime(taskDO.getClaimTime())
+                .signTime(taskDO.getClaimTime())
                 .completeTime(taskDO.getCompleteTime())
-                .creator(taskDO.getCreator())
                 .createTime(taskDO.getCreateTime())
-                .updater(taskDO.getUpdater())
                 .updateTime(taskDO.getUpdateTime())
-                .deleted(taskDO.getDeleted() != null && taskDO.getDeleted() == 1)
                 .build();
     }
 }
