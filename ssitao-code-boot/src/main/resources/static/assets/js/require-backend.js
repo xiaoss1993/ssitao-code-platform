@@ -1,5 +1,4 @@
 require.config({
-    urlArgs: "v=" + requirejs.s.contexts._.config.config.site.version,
     packages: [{
         name: 'moment',
         location: '/assets/libs/moment',
@@ -51,6 +50,7 @@ require.config({
         'cxselect': '/assets/libs/jquery-cxselect/js/jquery.cxselect',
         'template': '/assets/libs/art-template/dist/template-native',
         'selectpage': '/assets/libs/selectpage/selectpage',
+        'css': '/assets/libs/require-css/css.min',
     },
     // shim依赖配置
     shim: {
@@ -112,9 +112,10 @@ require.config({
         'validator-lang': ['validator-core'],
     },
     baseUrl: '/assets/js/', //资源基础路径
+    // 别名配置（用于 css! 插件）
     map: {
         '*': {
-            'css': '/assets/libs/require-css/css.min'
+            'css': 'css'
         }
     },
     waitSeconds: 30,
