@@ -91,6 +91,22 @@ public class IamMenuController {
     }
 
     /**
+     * 分页获取菜单列表
+     */
+    @GetMapping("/page")
+    @Operation(summary = "分页获取菜单列表", description = "分页获取菜单列表")
+    @ResponseBody
+    public CommonResult<List<IamMenuDTO>> pageMenus(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String parentId,
+            @RequestParam(required = false) String menuType,
+            @RequestParam(required = false) Integer status) {
+        List<IamMenuDTO> menus = menuAppService.pageMenus(page, size, parentId, menuType, status);
+        return success(menus);
+    }
+
+    /**
      * 获取菜单树
      */
     @GetMapping("/tree")

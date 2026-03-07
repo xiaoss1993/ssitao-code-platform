@@ -5,9 +5,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
         return data.map(function(item) {
             var node = {
                 id: item.id,
-                name: item.menuName,
-                pId: item.parentId || '0',
-                isParent: item.menuType === 'DIRECTORY' || item.menuType === 'MENU',
+                name: item.menu_name,
+                pId: item.parent_id || '0',
+                isParent: item.menu_type === 'DIRECTORY' || item.menu_type === 'MENU',
                 open: false
             };
             return node;
@@ -102,7 +102,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
-                sortName: 'sortOrder',
+                sortName: 'sort_order',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 // 查询参数函数
                 queryParams: function (params) {
                     // 添加 parentId 参数（如果有选中节点）
@@ -116,7 +120,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                         {field: 'state', checkbox: true},
                         {field: 'id', title: 'ID', sortable: true},
                         {
-                            field: 'menuName',
+                            field: 'menu_name',
                             title: '菜单名称',
                             formatter: function(value, row, index) {
                                 var icon = row.icon ? '<i class="fa ' + row.icon + '"></i> ' : '';
@@ -124,7 +128,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                             }
                         },
                         {
-                            field: 'menuType',
+                            field: 'menu_type',
                             title: '菜单类型',
                             searchList: {"DIRECTORY": "目录", "MENU": "菜单", "BUTTON": "按钮"},
                             formatter: function (value, row, index) {
@@ -141,7 +145,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                         {field: 'icon', title: '图标', formatter: function(value, row, index) {
                             return value ? '<i class="fa ' + value + '"></i>' : '-';
                         }},
-                        {field: 'sortOrder', title: '排序', sortable: true},
+                        {field: 'sort_order', title: '排序', sortable: true},
                         {
                             field: 'status',
                             title: '状态',
@@ -152,7 +156,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                                     : '<span class="label label-default">禁用</span>';
                             }
                         },
-                        {field: 'createTime', title: '创建时间', operate: 'RANGE', addclass: 'datetimerange', formatter: Table.api.formatter.datetime},
+                        {field: 'create_time', title: '创建时间', operate: 'RANGE', addclass: 'datetimerange', formatter: Table.api.formatter.datetime},
                         {
                             field: 'operate',
                             title: '操作',

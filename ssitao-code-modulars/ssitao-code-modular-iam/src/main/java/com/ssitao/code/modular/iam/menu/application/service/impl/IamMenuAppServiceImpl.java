@@ -87,6 +87,48 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
     }
 
     @Override
+    public List<IamMenuDTO> pageMenus(int page, int size, String parentId, String menuType, Integer status) {
+        String tenantId = TenantUtils.getTenantId();
+
+        // 使用分页查询
+        List<IamMenu> menus = menuRepository.findAll(tenantId);
+
+        if (menus == null || menus.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 过滤数据
+        List<IamMenu> filteredMenus = menus;
+        if (parentId != null && !parentId.isEmpty()) {
+            filteredMenus = menus.stream()
+                    .filter(m -> parentId.equals(m.getParentId()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if (menuType != null && !menuType.isEmpty()) {
+            filteredMenus = menus.stream()
+                    .filter(m -> menuType.equals(m.getMenuType().toString()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if (status != null) {
+            filteredMenus = menus.stream()
+                    .filter(m -> status.equals(m.getStatus()))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        // 分页
+        int start = (page - 1) * size;
+        int end = Math.min(start + size, filteredMenus.size());
+        if (start >= filteredMenus.size()) {
+            return new ArrayList<>();
+        }
+        List<IamMenu> pagedMenus = filteredMenus.subList(start, end);
+
+        // 转换为DTO
+        List<IamMenuDTO> dtoList = menuConverter.toDTOList(pagedMenus);
+        dtoList.forEach(this::populateFrontendFields);
+
+        return dtoList;
+    }
+
+    @Override
     public List<IamMenuDTO> getMenuTree() {
         String tenantId = TenantUtils.getTenantId();
         List<IamMenu> menus = menuRepository.findAll(tenantId);

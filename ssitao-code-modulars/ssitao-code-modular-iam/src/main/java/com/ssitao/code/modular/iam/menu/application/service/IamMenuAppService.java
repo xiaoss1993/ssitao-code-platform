@@ -30,6 +30,18 @@ public interface IamMenuAppService {
     List<IamMenuDTO> listMenus(String parentId, String menuType, Integer status);
 
     /**
+     * 分页获取菜单列表
+     *
+     * @param page     页码
+     * @param size     每页大小
+     * @param parentId 父菜单ID（可选）
+     * @param menuType 菜单类型
+     * @param status   状态
+     * @return 菜单列表
+     */
+    List<IamMenuDTO> pageMenus(int page, int size, String parentId, String menuType, Integer status);
+
+    /**
      * 获取菜单树
      *
      * @return 菜单树
