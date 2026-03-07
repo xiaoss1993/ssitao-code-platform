@@ -57,19 +57,21 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
             });
 
             //切换左侧sidebar显示隐藏
-            $(document).on("click fa.event.toggleitem", ".sidebar-menu li > a", function (e) {
-                $(".sidebar-menu li").removeClass("active");
-                //当外部触发隐藏的a时,触发父辈a的事件
-                if (!$(this).closest("ul").is(":visible")) {
-                    //如果不需要左侧的菜单栏联动可以注释下面一行即可
-                    $(this).closest("ul").prev().trigger("click");
+            // 注意：AdminLTE已在adminlte.js中绑定了treeview菜单的点击事件
+            // 此处只需要处理顶级菜单项的active状态切换，避免重复绑定导致冲突
+            $(document).on("click", ".sidebar-menu li > a", function (e) {
+                var $this = $(this);
+                var $parentLi = $this.parent();
+
+                // 如果是treeview菜单项（有子菜单），不需要手动处理
+                // 由AdminLTE.tree统一处理展开/折叠
+                if ($parentLi.hasClass('treeview')) {
+                    return;
                 }
 
-                var visible = $(this).next("ul").is(":visible");
-                if (!visible) {
-                    $(this).parents("li").addClass("active");
-                } else {
-                }
+                // 非treeview菜单项，处理active状态
+                $(".sidebar-menu li").removeClass("active");
+                $parentLi.addClass("active");
                 e.stopPropagation();
             });
 

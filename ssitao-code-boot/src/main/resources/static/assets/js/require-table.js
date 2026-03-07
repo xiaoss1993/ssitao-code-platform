@@ -370,8 +370,280 @@ define(['jquery', 'bootstrap', 'moment', 'moment/locale/zh-cn', 'bootstrap-table
                     });
                     return html.join(' ');
                 },
-                datetime: function (value, row, index) {
-                    return value ? Moment(parseInt(value) * 1000).format("YYYY-MM-DD HH:mm:ss") : __('None');
+                /**
+                 * 时间格式化
+                 * @param {*} value 值
+                 * @param {*} row 行数据
+                 * @param {*} index 行索引
+                 * @param {*} custom 自定义格式: 输出格式字符串，或配置对象 {format: '输出格式', inputFormat: '输入格式'}
+                 * @returns 格式化后的时间字符串
+                 */
+                datetime: function (value, row, index, custom) {
+                    if (!value && value !== 0) return __('None');
+
+                    var inputFormat = null;
+                    var outputFormat = 'YYYY-MM-DD HH:mm:ss';
+
+                    // 解析自定义配置
+                    if (typeof custom === 'string') {
+                        outputFormat = custom;
+                    } else if (typeof custom === 'object') {
+                        inputFormat = custom.inputFormat || null;
+                        outputFormat = custom.format || outputFormat;
+                    }
+
+                    var momentObj = null;
+                    var valueType = typeof value;
+
+                    // 时间戳（数字类型）
+                    if (valueType === 'number') {
+                        // 小于100亿认为是秒级时间戳，否则是毫秒级
+                        momentObj = Moment(value < 10000000000 ? value * 1000 : value);
+                    }
+                    // 字符串类型
+                    else if (valueType === 'string') {
+                        // 纯数字字符串
+                        if (/^\d+$/.test(value)) {
+                            var num = parseInt(value);
+                            momentObj = Moment(num < 10000000000 ? num * 1000 : num);
+                        }
+                        // 有指定输入格式
+                        else if (inputFormat) {
+                            momentObj = Moment(value, inputFormat, true);
+                            if (!momentObj.isValid()) {
+                                momentObj = Moment(value, inputFormat);
+                            }
+                        }
+                        // 无指定格式，尝试多种常见格式
+                        else {
+                            // 支持的输入格式列表
+                            var formats = [
+                                'YYYY-MM-DD HH:mm:ss',      // 2024-01-01 12:30:00
+                                'YYYY-MM-DDTHH:mm:ss',      // 2024-01-01T12:30:00 (ISO)
+                                'YYYY-MM-DD',               // 2024-01-01
+                                'YYYY/MM/DD HH:mm:ss',     // 2024/01/01 12:30:00
+                                'YYYY/MM/DD',              // 2024/01/01
+                                'DD/MM/YYYY HH:mm:ss',     // 01/01/2024 12:30:00
+                                'DD/MM/YYYY',              // 01/01/2024
+                                'MM/DD/YYYY HH:mm:ss',     // 01/01/2024 12:30:00
+                                'MM/DD/YYYY',              // 01/01/2024
+                                'HH:mm:ss',                // 12:30:00
+                                'YYYYMMDD',                // 20240101
+                                'yyyy-MMM-DD HH:mm:ss',    // 2024-Jan-01 12:30:00
+                            ];
+
+                            // 尝试严格解析
+                            momentObj = Moment(value, formats, true);
+                            // 如果严格解析失败，尝试宽松解析
+                            if (!momentObj.isValid()) {
+                                momentObj = Moment(value);
+                            }
+                        }
+                    }
+                    // Date对象
+                    else if (value instanceof Date) {
+                        momentObj = Moment(value);
+                    }
+                    // Moment对象
+                    else if (value._isMoment) {
+                        momentObj = value;
+                    }
+
+                    return momentObj && momentObj.isValid() ? momentObj.format(outputFormat) : __('None');
+                },
+                // 开关切换
+                switch: function (value, row, index, field) {
+                    if (!value && value !== 0) return '';
+                    var checked = value ? 'checked' : '';
+                    var disabled = (typeof row.disabled !== 'undefined' && row.disabled) ? 'disabled' : '';
+                    return '<input type="checkbox" class="bs-switch" data-field="' + (field || this.field) + '" ' + checked + ' ' + disabled + '>';
+                },
+                // 进度条
+                progress: function (value, row, index, custom) {
+                    if (!value && value !== 0) return '0%';
+                    value = parseFloat(value);
+                    if (isNaN(value)) value = 0;
+                    if (value < 0) value = 0;
+                    if (value > 100) value = 100;
+
+                    var color = 'progress-bar-success';
+                    if (typeof custom !== 'undefined') {
+                        if (custom === 'danger' || value < 30) color = 'progress-bar-danger';
+                        else if (custom === 'warning' || value < 60) color = 'progress-bar-warning';
+                        else if (custom === 'info' || value < 80) color = 'progress-bar-info';
+                    } else {
+                        if (value < 30) color = 'progress-bar-danger';
+                        else if (value < 60) color = 'progress-bar-warning';
+                        else if (value < 80) color = 'progress-bar-info';
+                    }
+                    return '<div class="progress progress-xs" style="margin-bottom:0;">' +
+                        '<div class="progress-bar ' + color + '" style="width: ' + value + '%"></div>' +
+                        '</div><span class="sr-only">' + value + '%</span>';
+                },
+                // 进度条（带文字）
+                progressText: function (value, row, index, custom) {
+                    if (!value && value !== 0) return '0%';
+                    value = parseFloat(value);
+                    if (isNaN(value)) value = 0;
+                    if (value < 0) value = 0;
+                    if (value > 100) value = 100;
+
+                    var color = 'success';
+                    if (typeof custom !== 'undefined') {
+                        if (custom === 'danger' || value < 30) color = 'danger';
+                        else if (custom === 'warning' || value < 60) color = 'warning';
+                        else if (custom === 'info' || value < 80) color = 'info';
+                    } else {
+                        if (value < 30) color = 'danger';
+                        else if (value < 60) color = 'warning';
+                        else if (value < 80) color = 'info';
+                    }
+                    return '<div class="progress progress-xs" style="margin-bottom:0;">' +
+                        '<div class="progress-bar bg-' + color + '" style="width: ' + value + '%"></div>' +
+                        '</div><span class="text-xs">' + value + '%</span>';
+                },
+                // 文件大小格式化
+                byte: function (value, row, index) {
+                    if (!value && value !== 0) return '0 B';
+                    value = parseInt(value);
+                    if (isNaN(value)) return '0 B';
+                    if (value < 1024) return value + ' B';
+                    var units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+                    var i = 0;
+                    while (value >= 1024 && i < units.length - 1) {
+                        value /= 1024;
+                        i++;
+                    }
+                    return value.toFixed(2) + ' ' + units[i];
+                },
+                // 数字格式化（千分位）
+                number: function (value, row, index, custom) {
+                    if (!value && value !== 0) return '0';
+                    value = parseFloat(value);
+                    if (isNaN(value)) return '0';
+
+                    var decimals = (typeof custom !== 'undefined') ? parseInt(custom) : 0;
+                    return value.toLocaleString('zh-CN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+                },
+                // 货币格式化
+                currency: function (value, row, index, custom) {
+                    if (!value && value !== 0) return '¥0.00';
+                    value = parseFloat(value);
+                    if (isNaN(value)) return '¥0.00';
+
+                    var symbol = '¥';
+                    if (typeof custom !== 'undefined') {
+                        symbol = custom;
+                    }
+                    return symbol + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                },
+                // 文本截断
+                truncate: function (value, row, index, custom) {
+                    if (!value) return '';
+                    var len = (typeof custom !== 'undefined') ? parseInt(custom) : 50;
+                    if (value.length <= len) return value;
+                    return '<span title="' + value + '">' + value.substring(0, len) + '...</span>';
+                },
+                // 布尔值显示
+                bool: function (value, row, index, custom) {
+                    var trueText = '是';
+                    var falseText = '否';
+                    var trueClass = 'success';
+                    var falseClass = 'default';
+
+                    if (typeof custom !== 'undefined') {
+                        if (typeof custom === 'object') {
+                            trueText = custom.trueText || trueText;
+                            falseText = custom.falseText || falseText;
+                            trueClass = custom.trueClass || trueClass;
+                            falseClass = custom.falseClass || falseClass;
+                        } else {
+                            var arr = custom.split(',');
+                            if (arr.length >= 1) trueText = arr[0];
+                            if (arr.length >= 2) falseText = arr[1];
+                            if (arr.length >= 3) trueClass = arr[2];
+                            if (arr.length >= 4) falseClass = arr[3];
+                        }
+                    }
+
+                    if (value === true || value === 'true' || value === 1 || value === '1' || value === 'yes') {
+                        return '<span class="label label-' + trueClass + '">' + trueText + '</span>';
+                    }
+                    return '<span class="label label-' + falseClass + '">' + falseText + '</span>';
+                },
+                // 百分比
+                percent: function (value, row, index, custom) {
+                    if (!value && value !== 0) return '0%';
+                    value = parseFloat(value);
+                    if (isNaN(value)) return '0%';
+                    if (value < 0) value = 0;
+                    if (value > 100) value = 100;
+
+                    var decimals = (typeof custom !== 'undefined') ? parseInt(custom) : 0;
+                    return value.toFixed(decimals) + '%';
+                },
+                // 短日期（仅日期）
+                date: function (value, row, index) {
+                    if (!value) return __('None');
+                    var result = value;
+                    if (typeof value === 'number') {
+                        result = Moment(value < 10000000000 ? value * 1000 : value);
+                    } else if (typeof value === 'string') {
+                        if (/^\d+$/.test(value)) {
+                            var num = parseInt(value);
+                            result = Moment(num < 10000000000 ? num * 1000 : num);
+                        } else {
+                            result = Moment(value, 'YYYY-MM-DD', true);
+                            if (!result.isValid()) {
+                                result = Moment(value);
+                            }
+                        }
+                    }
+                    return result && result.isValid() ? result.format('YYYY-MM-DD') : __('None');
+                },
+                // 时间（仅时间）
+                time: function (value, row, index) {
+                    if (!value) return __('None');
+                    var result = value;
+                    if (typeof value === 'number') {
+                        result = Moment(value < 10000000000 ? value * 1000 : value);
+                    } else if (typeof value === 'string') {
+                        if (/^\d+$/.test(value)) {
+                            var num = parseInt(value);
+                            result = Moment(num < 10000000000 ? num * 1000 : num);
+                        } else {
+                            result = Moment(value, 'HH:mm:ss', true);
+                            if (!result.isValid()) {
+                                result = Moment(value);
+                            }
+                        }
+                    }
+                    return result && result.isValid() ? result.format('HH:mm:ss') : __('None');
+                },
+                // 相对时间（如：刚刚、5分钟前）
+                relativeTime: function (value, row, index) {
+                    if (!value) return __('None');
+                    var result = value;
+                    if (typeof value === 'number') {
+                        result = Moment(value < 10000000000 ? value * 1000 : value);
+                    } else if (typeof value === 'string') {
+                        if (/^\d+$/.test(value)) {
+                            var num = parseInt(value);
+                            result = Moment(num < 10000000000 ? num * 1000 : num);
+                        } else {
+                            result = Moment(value);
+                        }
+                    }
+                    if (!result || !result.isValid()) return __('None');
+
+                    var now = Moment();
+                    var diff = now.diff(result, 'seconds');
+
+                    if (diff < 60) return '刚刚';
+                    if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+                    if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+                    if (diff < 604800) return Math.floor(diff / 86400) + '天前';
+                    return result.format('YYYY-MM-DD');
                 },
                 operate: function (value, row, index, table) {
                     var showweigh = true;

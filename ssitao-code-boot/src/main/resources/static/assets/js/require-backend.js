@@ -1,10 +1,10 @@
 require.config({
     urlArgs: "v=" + requirejs.s.contexts._.config.config.site.version,
     packages: [{
-            name: 'moment',
-            location: '/assets/libs/moment',
-            main: 'moment'
-        }],
+        name: 'moment',
+        location: '/assets/libs/moment',
+        main: 'moment'
+    }],
     //在打包压缩时将会把include中的模块合并到主文件中
     include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage'],
     paths: {
@@ -42,6 +42,7 @@ require.config({
         'validator-core': '/assets/libs/nice-validator/dist/jquery.validator',
         'validator-lang': '/assets/libs/nice-validator/dist/local/zh-CN',
         'plupload': '/assets/libs/plupload/js/plupload.min',
+        'plupload-moxie': '/assets/libs/plupload/js/moxie.min',
         'toastr': '/assets/libs/toastr/toastr',
         'jstree': '/assets/libs/jstree/dist/jstree.min',
         'ztree': '/assets/libs/jquery-ztree/js/jquery.ztree.all-3.5',
@@ -105,7 +106,7 @@ require.config({
         'jstree': ['css!/assets/libs/jstree/dist/themes/default/style.css'],
         'ztree': ['css!/assets/libs/jquery-ztree/css/default/zTreeStyle.css'],
         'plupload': {
-            deps: ['/assets/libs/plupload/js/moxie.min'],
+            deps: ['plupload-moxie'],
             exports: "plupload"
         },
         'validator-lang': ['validator-core'],
