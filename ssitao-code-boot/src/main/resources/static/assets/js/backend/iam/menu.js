@@ -1,15 +1,27 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     // 格式化树数据
     function formatTreeData(data) {
+        if (!data || !Array.isArray(data)) {
+            return [];
+        }
         return data.map(function(item) {
+            // 同时支持 snake_case 和 camelCase 两种格式
+            var menuName = item.menu_name || item.menuName || '';
+            var parentId = item.parent_id || item.parentId || '0';
+            var menuType = item.menu_type || item.menuType || '';
+
             var node = {
                 id: item.id,
-                name: item.menu_name,
-                pId: item.parent_id || '0',
-                isParent: item.menu_type === 'DIRECTORY' || item.menu_type === 'MENU',
+                name: menuName,
+                pId: parentId,
+                isParent: menuType === 'DIRECTORY' || menuType === 'MENU' || (item.children && item.children.length > 0),
                 open: false
             };
+            // 递归处理子节点
+            if (item.children && item.children.length > 0) {
+                node.children = formatTreeData(item.children);
+            }
             return node;
         });
     }
@@ -25,27 +37,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                 view: {
                     dblClickExpand: false,
                     showLine: true,
-                    selectedMulti: false
+                    selectedMulti: false,
+                    nameIsHTML: true
                 },
                 async: {
-                    enable: true,
-                    url: '/iam/menu/tree',
-                    autoParam: ["id"],
-                    dataFilter: function (treeId, parentNode, responseData) {
-                        if (responseData.code === 200 && responseData.data) {
-                            return responseData.data;
-                        }
-                        return [];
-                    }
+                    enable: false
                 },
                 callback: {
                     onClick: function (event, treeId, treeNode) {
                         currentMenuId = treeNode.id;
                         // 点击节点时刷新右侧表格，显示该节点下的子菜单
                         table.bootstrapTable('refresh');
-                    },
-                    onAsyncSuccess: function (event, treeId, treeNode, msg) {
-                        zTreeObj.expandAll(true);
                     }
                 }
             };
@@ -61,11 +63,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                             // 转换数据格式
                             var treeData = formatTreeData(res.data);
                             zTreeObj = $.fn.zTree.init($("#menuTree"), zTreeSettings, treeData);
-                            // 默认展开第一级
-                            var nodes = zTreeObj.getNodes();
-                            if (nodes.length > 0) {
-                                zTreeObj.expandNode(nodes[0], true);
-                            }
+                            // 默认不展开，需要用户手动点击展开
                         }
                     }
                 });
@@ -85,6 +83,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                         var data = res.data;
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
                         }
                         if (data.records) {
                             return { rows: data.records, total: data.totalRow || data.records.length };
@@ -107,13 +109,16 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
                 // 查询参数函数
                 queryParams: function (params) {
-                    // 添加 parentId 参数（如果有选中节点）
-                    if (currentMenuId) {
-                        params.parentId = currentMenuId;
-                    }
-                    return params;
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder,
+                        parentId: currentMenuId
+                    };
                 },
                 columns: [
                     [
@@ -333,13 +338,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
             Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
-            // 获取URL参数
-            var getQueryString = function(name) {
-                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-                var r = window.location.search.substr(1).match(reg);
-                if (r != null) return decodeURIComponent(r[2]);
-                return null;
-            };
+            // 使用通用方法获取主键ID
+            var id = Utils.getPkId('id');
 
             // 加载菜单树
             var loadMenuTree = function(selectedId) {
@@ -357,9 +357,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                                 }
                                 $.each(nodes, function(idx, node) {
                                     var selected = selectedId && node.id == selectedId ? 'selected' : '';
+                                    // 统一获取菜单名称
+                                    var menuName = node.name || node.menu_name || node.menuName || '';
                                     // 排除自身和子节点，防止选择自己作为父级
                                     if (!selectedId || (node.id != selectedId && !isChildNode(node, selectedId))) {
-                                        options += '<option value="' + node.id + '" ' + selected + '>' + indent + (level > 0 ? '├ ' : '') + node.menuName + '</option>';
+                                        options += '<option value="' + node.id + '" ' + selected + '>' + indent + (level > 0 ? '├ ' : '') + menuName + '</option>';
                                     }
                                     if (node.children && node.children.length > 0) {
                                         options += renderTree(node.children, level + 1);
@@ -384,7 +386,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                 return false;
             };
 
-            var id = getQueryString('id');
+            // 初始化父级菜单树
+            loadMenuTree(id || 0);
 
             if (id) {
                 // 编辑模式

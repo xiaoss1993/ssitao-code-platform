@@ -65,6 +65,11 @@ public interface MetaFormRepository {
     List<MetaFormDO> findActiveFormsByEntityId(String entityId, String tenantId);
 
     /**
+     * 分页查询表单配置
+     */
+    List<MetaFormDO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查表单编码是否存在
      *
      * @param entityId  实体ID

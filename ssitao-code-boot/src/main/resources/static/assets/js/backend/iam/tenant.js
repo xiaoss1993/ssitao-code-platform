@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
@@ -14,13 +14,21 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 // 配置响应数据处理
                 responseHandler: function (res) {
                     if (res.code === 200 && res.data) {
-                        if (res.data.records) {
-                            return { rows: res.data.records, total: res.data.totalRow || res.data.records.length };
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
                         }
-                        if (res.data.content) {
-                            return { rows: res.data.content, total: res.data.totalElements || res.data.total };
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
                         }
-                        return { rows: res.data, total: res.data.length };
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        if (data.content) {
+                            return { rows: data.content, total: data.totalElements || data.total };
+                        }
+                        return { rows: data, total: data.length };
                     }
                     return { rows: [], total: 0 };
                 }
@@ -37,6 +45,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},
@@ -166,7 +183,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 return null;
             };
 
-            var id = getQueryString('id');
+            var id = Utils.getPkId('id');
 
             // 初始化日期选择器
             $('#expireTime').datetimepicker({

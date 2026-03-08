@@ -239,6 +239,12 @@ public class MetaListAppServiceImpl implements MetaListAppService {
     }
 
     @Override
+    public List<MetaListDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        List<MetaListDO> lists = metaListRepository.page(keyword, page, limit, sort, order, tenantId);
+        return MetaListConverter.INSTANCE.toDTOList(lists);
+    }
+
+    @Override
     public boolean checkExists(String entityId, String listCode, String tenantId, String excludeId) {
         return metaListRepository.existsByListCode(entityId, listCode, tenantId, excludeId);
     }

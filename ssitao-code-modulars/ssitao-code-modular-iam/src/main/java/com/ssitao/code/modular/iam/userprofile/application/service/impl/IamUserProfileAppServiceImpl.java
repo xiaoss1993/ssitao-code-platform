@@ -268,13 +268,7 @@ public class IamUserProfileAppServiceImpl implements IamUserProfileAppService {
 
     @Override
     public List<IamUserProfileDTO> pageUserProfiles(IamUserProfileQueryCommand command, int page, int size) {
-        List<IamUserProfile> userProfiles = userProfileRepository.findPage(
-                command.getSyTenantId(),
-                command.getKeyword(),
-                command.getUserMonitordeptId(),
-                page,
-                size
-        );
+        List<IamUserProfile> userProfiles = userProfileRepository.findPageByCommand(command, page, size);
         if (userProfiles == null || userProfiles.isEmpty()) {
             return getMockUserProfiles();
         }

@@ -68,7 +68,7 @@ public class IamAuditController {
             @RequestParam(required = false) String operateModule,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId,
             @RequestParam(defaultValue = "1") int current,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -85,7 +85,7 @@ public class IamAuditController {
     @GetMapping("/operate-log/type/{operateType}")
     @Operation(summary = "根据操作类型获取日志", description = "根据操作类型获取操作日志")
     public CommonResult<List<IamOperateLogDTO>> getLogsByType(@PathVariable String operateType,
-                                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+                                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId,
                                                                @RequestParam(defaultValue = "1") int page,
                                                                @RequestParam(defaultValue = "10") int size) {
         List<IamOperateLogDTO> logs = operateLogAppService.getLogsByOperateType(operateType, tenantId, page, size);
@@ -95,7 +95,7 @@ public class IamAuditController {
     @GetMapping("/operate-log/module/{operateModule}")
     @Operation(summary = "根据操作模块获取日志", description = "根据操作模块获取操作日志")
     public CommonResult<List<IamOperateLogDTO>> getLogsByModule(@PathVariable String operateModule,
-                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId,
                                                                  @RequestParam(defaultValue = "1") int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
         List<IamOperateLogDTO> logs = operateLogAppService.getLogsByOperateModule(operateModule, tenantId, page, size);
@@ -121,7 +121,7 @@ public class IamAuditController {
     @DeleteMapping("/operate-log/before/{days}")
     @Operation(summary = "删除历史日志", description = "删除指定天数之前的操作日志")
     public CommonResult<Void> deleteLogsBeforeDays(@PathVariable Integer days,
-                                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         operateLogAppService.deleteLogsBeforeDays(days, tenantId);
         return success();
     }

@@ -48,16 +48,7 @@ spring:
     resources:
       chain:
         cache: true
-        strategy:
-          content:
-            enabled: true
-            paths: /**
-      cache:
-        period: 31536000
-        cachecontrol:
-          max-age: 31536000
-          cache-public: true
-      static-locations: classpath:/static/,classpath:/public/
+
   thymeleaf:
     mode: LEGACYHTML5
     cache: false
@@ -159,7 +150,7 @@ ssitao:
   # 多租户配置
   tenant:
     # 是否启用多租户
-    enabled: false
+    enabled: true
     # 租户ID 请求头名称
     header-name: Tenant-Id
     # 租户ID 请求参数名称

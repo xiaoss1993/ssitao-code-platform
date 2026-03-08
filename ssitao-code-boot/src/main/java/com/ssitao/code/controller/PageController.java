@@ -335,6 +335,16 @@ public class PageController {
         return "meta/list";
     }
 
+    /**
+     * 测试数据生成页面
+     */
+    @GetMapping("/iam/testdata")
+    @Operation(summary = "测试数据生成页面")
+    public String testDataPage(Model model) {
+        addCommonModel(model, "测试数据生成", "iam/testdata");
+        return "iam/testdata";
+    }
+
     // ==================== 微信管理 ====================
 
     /**

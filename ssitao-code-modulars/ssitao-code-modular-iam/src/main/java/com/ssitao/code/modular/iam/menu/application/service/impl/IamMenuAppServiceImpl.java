@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.menu.application.service.impl;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.frame.security.tenant.utils.TenantUtils;
 import com.ssitao.code.modular.iam.menu.api.dto.IamMenuDTO;
 import com.ssitao.code.modular.iam.menu.application.service.IamMenuAppService;
@@ -130,6 +131,100 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         dtoList.forEach(this::populateFrontendFields);
 
         return dtoList;
+    }
+
+    @Override
+    public PageResult<IamMenuDTO> listMenusPage(Integer page, Integer size, String parentId, String menuType, Integer status, String sort, String order) {
+        String tenantId = TenantUtils.getTenantId();
+
+        // 获取所有菜单
+        List<IamMenu> menus = menuRepository.findAll(tenantId);
+
+        if (menus == null || menus.isEmpty()) {
+            return PageResult.of(new ArrayList<>(), 0);
+        }
+
+        // 过滤数据
+        List<IamMenu> filteredMenus = menus;
+        if (parentId != null && !parentId.isEmpty()) {
+            filteredMenus = menus.stream()
+                    .filter(m -> parentId.equals(m.getParentId()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if (menuType != null && !menuType.isEmpty()) {
+            filteredMenus = menus.stream()
+                    .filter(m -> menuType.equals(m.getMenuType().toString()))
+                    .collect(java.util.stream.Collectors.toList());
+        } else if (status != null) {
+            filteredMenus = menus.stream()
+                    .filter(m -> status.equals(m.getStatus()))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        // 记录总数
+        int total = filteredMenus.size();
+
+        // 排序
+        if (sort != null && !sort.isEmpty()) {
+            String finalSort = convertSortField(sort);
+            String finalOrder = order != null ? order.toLowerCase() : "asc";
+            filteredMenus.sort((a, b) -> {
+                int cmp = 0;
+                switch (finalSort) {
+                    case "sort_order":
+                        cmp = Integer.compare(a.getMenuSort() != null ? a.getMenuSort() : 0,
+                                             b.getMenuSort() != null ? b.getMenuSort() : 0);
+                        break;
+                    case "menu_name":
+                        cmp = (a.getMenuName() != null ? a.getMenuName() : "").compareTo(
+                              b.getMenuName() != null ? b.getMenuName() : "");
+                        break;
+                    case "create_time":
+                        cmp = (a.getCreateTime() != null ? a.getCreateTime().toString() : "").compareTo(
+                              b.getCreateTime() != null ? b.getCreateTime().toString() : "");
+                        break;
+                    default:
+                        cmp = Integer.compare(a.getMenuSort() != null ? a.getMenuSort() : 0,
+                                             b.getMenuSort() != null ? b.getMenuSort() : 0);
+                }
+                return "desc".equals(finalOrder) ? -cmp : cmp;
+            });
+        }
+
+        // 分页
+        int pageNum = page != null && page > 0 ? page : 1;
+        int pageSize = size != null && size > 0 ? size : 10;
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, filteredMenus.size());
+        if (start >= filteredMenus.size()) {
+            return PageResult.of(new ArrayList<>(), total);
+        }
+        List<IamMenu> pagedMenus = filteredMenus.subList(start, end);
+
+        // 转换为DTO
+        List<IamMenuDTO> dtoList = menuConverter.toDTOList(pagedMenus);
+        dtoList.forEach(this::populateFrontendFields);
+
+        return PageResult.of(dtoList, total);
+    }
+
+    /**
+     * 转换排序字段名
+     */
+    private String convertSortField(String sort) {
+        if (sort == null) return "sort_order";
+        switch (sort) {
+            case "sortOrder":
+            case "sort_order":
+                return "sort_order";
+            case "menuName":
+            case "menu_name":
+                return "menu_name";
+            case "createTime":
+            case "create_time":
+                return "create_time";
+            default:
+                return sort;
+        }
     }
 
     @Override

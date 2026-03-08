@@ -34,7 +34,7 @@ public class MetaFormController {
     @PostMapping("/create")
     @Operation(summary = "创建表单配置", description = "创建一个新的元数据表单配置")
     public CommonResult<String> create(@Valid @RequestBody MetaFormCreateCommand command,
-                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                        @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String formId = metaFormAppService.create(command, tenantId);
         return success(formId);
     }
@@ -42,7 +42,7 @@ public class MetaFormController {
     @PutMapping("/update")
     @Operation(summary = "更新表单配置", description = "更新元数据表单配置信息")
     public CommonResult<Void> update(@Valid @RequestBody MetaFormUpdateCommand command,
-                                      @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                      @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaFormAppService.update(command, tenantId);
         return success();
     }
@@ -50,7 +50,7 @@ public class MetaFormController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除表单配置", description = "删除指定表单配置")
     public CommonResult<Void> delete(@RequestParam String formId,
-                                      @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                      @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaFormAppService.delete(formId, tenantId);
         return success();
     }
@@ -58,7 +58,7 @@ public class MetaFormController {
     @GetMapping("/get")
     @Operation(summary = "获取表单配置详情", description = "根据ID获取表单配置详细信息")
     public CommonResult<MetaFormDTO> getById(@RequestParam String formId,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         MetaFormDTO form = metaFormAppService.getById(formId, tenantId);
         return success(form);
     }
@@ -66,7 +66,7 @@ public class MetaFormController {
     @GetMapping("/list")
     @Operation(summary = "获取表单配置列表", description = "获取指定实体的所有表单配置列表")
     public CommonResult<List<MetaFormDTO>> listByEntityId(@RequestParam String entityId,
-                                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaFormDTO> forms = metaFormAppService.listByEntityId(entityId, tenantId);
         return success(forms);
     }
@@ -74,8 +74,21 @@ public class MetaFormController {
     @GetMapping("/list-by-entity/{entityId}")
     @Operation(summary = "根据实体ID获取表单列表", description = "根据实体ID获取表单配置列表")
     public CommonResult<List<MetaFormDTO>> listByEntityIdPath(@PathVariable String entityId,
-                                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaFormDTO> forms = metaFormAppService.listByEntityId(entityId, tenantId);
+        return success(forms);
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页获取表单配置", description = "分页获取表单配置列表")
+    public CommonResult<List<MetaFormDTO>> page(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        List<MetaFormDTO> forms = metaFormAppService.page(keyword, page, limit, sort, order, tenantId);
         return success(forms);
     }
 
@@ -85,7 +98,7 @@ public class MetaFormController {
     @Operation(summary = "创建表单字段", description = "创建表单字段配置")
     public CommonResult<String> createField(@RequestParam String formId,
                                              @Valid @RequestBody MetaFormFieldDTO command,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                             @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String fieldId = metaFormAppService.createField(formId, command, tenantId);
         return success(fieldId);
     }
@@ -93,7 +106,7 @@ public class MetaFormController {
     @PutMapping("/field/update")
     @Operation(summary = "更新表单字段", description = "更新表单字段配置")
     public CommonResult<Void> updateField(@Valid @RequestBody MetaFormFieldDTO command,
-                                           @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                           @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaFormAppService.updateField(command, tenantId);
         return success();
     }
@@ -101,7 +114,7 @@ public class MetaFormController {
     @DeleteMapping("/field/delete")
     @Operation(summary = "删除表单字段", description = "删除指定表单字段")
     public CommonResult<Void> deleteField(@RequestParam String fieldId,
-                                           @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                           @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaFormAppService.deleteField(fieldId, tenantId);
         return success();
     }
@@ -109,7 +122,7 @@ public class MetaFormController {
     @GetMapping("/field/get")
     @Operation(summary = "获取表单字段详情", description = "根据ID获取表单字段详细信息")
     public CommonResult<MetaFormFieldDTO> getFieldById(@RequestParam String fieldId,
-                                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                        @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         MetaFormFieldDTO field = metaFormAppService.getFieldById(fieldId, tenantId);
         return success(field);
     }
@@ -117,7 +130,7 @@ public class MetaFormController {
     @GetMapping("/field/list")
     @Operation(summary = "获取表单字段列表", description = "获取指定表单的所有字段列表")
     public CommonResult<List<MetaFormFieldDTO>> listFieldsByFormId(@RequestParam String formId,
-                                                                  @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaFormFieldDTO> fields = metaFormAppService.listFieldsByFormId(formId, tenantId);
         return success(fields);
     }

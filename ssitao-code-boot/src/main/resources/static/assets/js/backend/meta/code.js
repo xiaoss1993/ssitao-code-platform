@@ -8,12 +8,29 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格
             Table.api.init({
                 extend: {
-                    index_url: 'meta/table/index',
-                    add_url: 'meta/table/add',
-                    edit_url: 'meta/table/edit',
-                    del_url: 'meta/table/del',
-                    multi_url: 'meta/table/multi',
+                    index_url: '/meta/table/page',
+                    add_url: '/meta/table/add',
+                    edit_url: '/meta/table/edit',
+                    del_url: '/meta/table/delete',
+                    multi_url: '/meta/table/multi',
                     table: 'meta_table',
+                },
+                responseHandler: function (res) {
+                    if (res.code === 200 && res.data) {
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return {rows: data, total: data.length};
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return {rows: data.rows, total: data.total};
+                        }
+                        if (data.records) {
+                            return {rows: data.records, total: data.totalRow || data.records.length};
+                        }
+                        return {rows: data, total: data.length};
+                    }
+                    return {rows: [], total: 0};
                 }
             });
 
@@ -27,6 +44,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 sidePagination: 'server',
                 pagination: true,
                 pageSize: 10,
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},

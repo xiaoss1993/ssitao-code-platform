@@ -94,6 +94,23 @@ public class MetaListRepositoryImpl implements MetaListRepository {
     }
 
     @Override
+    public List<MetaListDO> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        QueryWrapper wrapper = QueryWrapper.create()
+                .eq("tenant_id", tenantId)
+                .eq("is_deleted", 0);
+
+        // 处理排序
+        String sortColumn = sort != null && !sort.isEmpty() ? sort : "create_time";
+        boolean ascending = order == null || !"desc".equalsIgnoreCase(order);
+        wrapper.orderBy(sortColumn, ascending);
+
+        // 处理分页
+        wrapper.offset((page - 1) * limit).limit(limit);
+
+        return metaListMapper.selectListByQuery(wrapper);
+    }
+
+    @Override
     public boolean existsByListCode(String entityId, String listCode, String tenantId, String excludeId) {
         QueryWrapper wrapper = QueryWrapper.create()
                 .eq(MetaListDO::getEntityId, entityId)

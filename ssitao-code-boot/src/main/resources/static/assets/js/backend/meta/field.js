@@ -17,6 +17,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         if (Array.isArray(data)) {
                             return {rows: data, total: data.length};
                         }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return {rows: data.rows, total: data.total};
+                        }
                         if (data.records) {
                             return {rows: data.records, total: data.totalRow || data.records.length};
                         }
@@ -37,6 +41,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 20,
                 pageList: [10, 20, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},

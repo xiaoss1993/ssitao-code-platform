@@ -22,11 +22,20 @@ public class IamUserProfileQueryCommand {
     @Schema(description = "用户名称（模糊查询）")
     private String userName;
 
+    @Schema(description = "昵称")
+    private String nickname;
+
+    @Schema(description = "真实姓名")
+    private String realName;
+
     @Schema(description = "手机号")
     private String userPhone;
 
     @Schema(description = "邮箱")
     private String userMail;
+
+    @Schema(description = "部门ID")
+    private String deptId;
 
     @Schema(description = "岗位代码")
     private String userPostCode;
@@ -42,6 +51,9 @@ public class IamUserProfileQueryCommand {
 
     @Schema(description = "数据状态")
     private String syStatus;
+
+    @Schema(description = "状态(1启用,0禁用)")
+    private Integer status;
 
     @Schema(description = "租户ID")
     private String syTenantId;

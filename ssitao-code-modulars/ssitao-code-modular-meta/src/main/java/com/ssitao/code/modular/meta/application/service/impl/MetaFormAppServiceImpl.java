@@ -152,6 +152,12 @@ public class MetaFormAppServiceImpl implements MetaFormAppService {
     }
 
     @Override
+    public List<MetaFormDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        List<MetaFormDO> forms = metaFormRepository.page(keyword, page, limit, sort, order, tenantId);
+        return MetaFormConverter.INSTANCE.toDTOList(forms);
+    }
+
+    @Override
     public boolean checkExists(String entityId, String formCode, String tenantId, String excludeId) {
         return metaFormRepository.existsByFormCode(entityId, formCode, tenantId, excludeId);
     }

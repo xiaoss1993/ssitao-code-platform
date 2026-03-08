@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.userprofile.infrastructure.repository;
 
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
+import com.ssitao.code.modular.iam.userprofile.application.command.IamUserProfileQueryCommand;
 import com.ssitao.code.modular.iam.userprofile.dal.dataobject.IamUserDO;
 import com.ssitao.code.modular.iam.userprofile.dal.mapper.IamUserMapper;
 import com.ssitao.code.modular.iam.userprofile.domain.model.IamUserProfile;
@@ -190,6 +191,67 @@ public class IamUserProfileRepositoryImpl implements IamUserProfileRepository {
                        .or("user_mail", "%" + keyword + "%");
             });
         }
+        query.orderBy("create_time", false)
+             .offset((page - 1) * size)
+             .limit(size);
+        List<IamUserDO> list = userMapper.selectListByQuery(query);
+        return userProfileConverter.toDomainList(list);
+    }
+
+    @Override
+    public List<IamUserProfile> findPageByCommand(IamUserProfileQueryCommand command, int page, int size) {
+        QueryWrapper query = QueryWrapper.create();
+
+        String tenantId = command.getSyTenantId();
+        if (tenantId != null && !tenantId.isEmpty() && !"default".equals(tenantId)) {
+            query.eq("tenant_id", tenantId);
+        }
+        query.eq("is_deleted", NOT_DELETED);
+
+        // 关键字搜索
+        if (command.getKeyword() != null && !command.getKeyword().isEmpty()) {
+            query.and(wrapper -> {
+                wrapper.like("user_name", "%" + command.getKeyword() + "%")
+                       .or("user_phone", "%" + command.getKeyword() + "%")
+                       .or("user_mail", "%" + command.getKeyword() + "%");
+            });
+        }
+
+        // 用户名搜索
+        if (command.getUserName() != null && !command.getUserName().isEmpty()) {
+            query.like("user_name", command.getUserName());
+        }
+
+        // 昵称搜索
+        if (command.getNickname() != null && !command.getNickname().isEmpty()) {
+            query.like("nickname", command.getNickname());
+        }
+
+        // 真实姓名搜索
+        if (command.getRealName() != null && !command.getRealName().isEmpty()) {
+            query.like("real_name", command.getRealName());
+        }
+
+        // 手机号搜索
+        if (command.getUserPhone() != null && !command.getUserPhone().isEmpty()) {
+            query.like("user_phone", command.getUserPhone());
+        }
+
+        // 邮箱搜索
+        if (command.getUserMail() != null && !command.getUserMail().isEmpty()) {
+            query.like("user_mail", command.getUserMail());
+        }
+
+        // 部门ID搜索
+        if (command.getDeptId() != null && !command.getDeptId().isEmpty()) {
+            query.eq("dept_id", command.getDeptId());
+        }
+
+        // 状态搜索
+        if (command.getStatus() != null) {
+            query.eq("status", command.getStatus());
+        }
+
         query.orderBy("create_time", false)
              .offset((page - 1) * size)
              .limit(size);

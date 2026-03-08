@@ -5,14 +5,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
     var Controller = {
         index: function () {
-            // 初始化表格
+            // 初始化表格 - 使用 client 模式因为后端没有分页接口
             Table.api.init({
                 extend: {
-                    index_url: 'iam/system/dict-data/index',
-                    add_url: 'iam/system/dict-data/add',
-                    edit_url: 'iam/system/dict-data/edit',
-                    del_url: 'iam/system/dict-data/del',
-                    multi_url: 'iam/system/dict-data/multi',
+                    index_url: '/iam/system/dict-data/all',
+                    add_url: '/iam/dict/item/add',
+                    edit_url: '/iam/dict/item/edit',
+                    del_url: '/iam/system/dict-data',
                     table: 'core_dictionary_item',
                 }
             });
@@ -24,7 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'item_id',
                 sortName: 'item_sort',
-                sidePagination: 'server',
+                sidePagination: 'client',
                 pagination: true,
                 pageSize: 10,
                 columns: [
@@ -63,7 +62,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         add: function () {
             // 加载字典列表
             $.ajax({
-                url: 'iam/system/dict-types',
+                url: '/iam/system/dict-types',
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {
@@ -81,7 +80,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         edit: function () {
             // 加载字典列表
             $.ajax({
-                url: 'iam/system/dict-types',
+                url: '/iam/system/dict-types',
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {

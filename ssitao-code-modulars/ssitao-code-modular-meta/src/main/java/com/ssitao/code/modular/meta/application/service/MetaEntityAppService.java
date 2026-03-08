@@ -23,5 +23,18 @@ public interface MetaEntityAppService {
 
     List<MetaEntityDTO> list(String tenantId);
 
+    /**
+     * 分页获取实体列表
+     *
+     * @param keyword 关键词
+     * @param page 页码
+     * @param limit 每页条数
+     * @param sort 排序字段
+     * @param order 排序方式
+     * @param tenantId 租户ID
+     * @return 实体列表
+     */
+    List<MetaEntityDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
     boolean checkExists(String entityCode, String tenantId, String excludeId);
 }

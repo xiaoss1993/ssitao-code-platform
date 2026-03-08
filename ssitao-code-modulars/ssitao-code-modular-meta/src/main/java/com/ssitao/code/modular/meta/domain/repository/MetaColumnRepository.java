@@ -78,6 +78,20 @@ public interface MetaColumnRepository {
     List<MetaColumnDO> findActiveByTableId(String tableId, String tenantId);
 
     /**
+     * 分页查询字段列表
+     *
+     * @param tableId  表ID
+     * @param keyword 关键字
+     * @param page    页码
+     * @param limit   每页条数
+     * @param sort    排序字段
+     * @param order   排序方向
+     * @param tenantId 租户ID
+     * @return 字段列表
+     */
+    List<MetaColumnDO> page(String tableId, String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查字段名是否存在
      *
      * @param tableId    表ID

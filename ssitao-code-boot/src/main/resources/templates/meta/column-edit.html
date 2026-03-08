@@ -34,7 +34,7 @@
                 "modulename": "meta",
                 "controllername": "column",
                 "actionname": "edit",
-                "jsname": "backend/meta/column",
+                "jsname": "backend/meta/column-edit",
                 "moduleurl": "/",
                 "language": "zh-cn",
                 "referer": null
@@ -223,133 +223,7 @@
             </div>
         </div>
     </div>
+</div>
     <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
-    <script>
-        function getQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return decodeURIComponent(r[2]);
-            return null;
-        }
-
-        $(function() {
-            var id = getQueryString('id');
-            var tableId = getQueryString('tableId');
-
-            // 设置tableId
-            if (tableId) {
-                $('#tableId').val(tableId);
-            }
-
-            if (id) {
-                // 编辑模式
-                $.ajax({
-                    url: '/meta/column/get',
-                    type: 'GET',
-                    data: { columnId: id },
-                    dataType: 'json',
-                    success: function(res) {
-                        if (res.code === 200 && res.data) {
-                            var data = res.data;
-                            $('#columnId').val(data.columnId);
-                            $('#tableId').val(data.tableId);
-                            $('#columnName').val(data.columnName);
-                            $('#columnName').attr('readonly', true);
-                            $('#columnDesc').val(data.columnDesc);
-                            $('#columnType').val(data.columnType);
-                            $('#javaType').val(data.javaType);
-                            $('#javaField').val(data.javaField);
-
-                            // 复选框处理
-                            if (data.isPk === 1) $('#isPk').prop('checked', true);
-                            if (data.isIncrement === 1) $('#isIncrement').prop('checked', true);
-                            if (data.isRequired === 1) $('#isRequired').prop('checked', true);
-                            if (data.isQuery === 1) $('#isQuery').prop('checked', true);
-                            if (data.isDisplay === 1) $('#isDisplay').prop('checked', true);
-                            if (data.isList === 1) $('#isList').prop('checked', true);
-                            if (data.isForm === 1) $('#isForm').prop('checked', true);
-
-                            $('#queryType').val(data.queryType || 1);
-                            $('#formType').val(data.formType || 1);
-                            $('#dictType').val(data.dictType);
-                            $('#defaultValue').val(data.defaultValue);
-                            $('#columnSort').val(data.columnSort || 0);
-                            $('#remark').val(data.remark);
-                        }
-                    }
-                });
-                $('#edit-form').attr('action', '/meta/column/update');
-                $('#edit-form').attr('method', 'PUT');
-            } else {
-                // 添加模式
-                if (!tableId) {
-                    Layer.msg('缺少tableId参数', {icon: 2});
-                    return;
-                }
-                $('#edit-form').attr('action', '/meta/column/create');
-                $('#edit-form').attr('method', 'POST');
-            }
-
-            // 处理复选框值
-            function getCheckboxValue(name) {
-                return $('#' + name).is(':checked') ? 1 : 0;
-            }
-
-            $('#edit-form').on('submit', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('action');
-                var method = $(this).attr('method');
-
-                // 收集表单数据
-                var formData = {
-                    tableId: $('#tableId').val(),
-                    columnName: $('#columnName').val(),
-                    columnDesc: $('#columnDesc').val(),
-                    columnType: $('#columnType').val(),
-                    javaType: $('#javaType').val(),
-                    javaField: $('#javaField').val(),
-                    isPk: getCheckboxValue('isPk'),
-                    isIncrement: getCheckboxValue('isIncrement'),
-                    isRequired: getCheckboxValue('isRequired'),
-                    isQuery: getCheckboxValue('isQuery'),
-                    isDisplay: getCheckboxValue('isDisplay'),
-                    isList: getCheckboxValue('isList'),
-                    isForm: getCheckboxValue('isForm'),
-                    queryType: $('#queryType').val(),
-                    formType: $('#formType').val(),
-                    dictType: $('#dictType').val(),
-                    defaultValue: $('#defaultValue').val(),
-                    columnSort: $('#columnSort').val(),
-                    remark: $('#remark').val()
-                };
-
-                // 编辑时添加columnId
-                if (id) {
-                    formData.columnId = id;
-                }
-
-                $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    dataType: 'json',
-                    success: function(res) {
-                        if (res.code === 200) {
-                            Layer.msg('操作成功', {icon: 1});
-                            var index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                            parent.$("#table").bootstrapTable('refresh');
-                        } else {
-                            Layer.msg(res.msg || '操作失败', {icon: 2});
-                        }
-                    },
-                    error: function() {
-                        Layer.msg('网络错误', {icon: 2});
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>

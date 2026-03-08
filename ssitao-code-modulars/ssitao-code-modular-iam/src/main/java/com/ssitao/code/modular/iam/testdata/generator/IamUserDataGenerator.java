@@ -40,6 +40,8 @@ public class IamUserDataGenerator {
                 .userId(generateUserId())
                 .userCode("U" + IdUtil.getSnowflakeNextIdStr())
                 .userName(generateRandomName())
+                .nickname(generateRandomName())
+                .realName(generateRandomName())
                 .userSex(RandomUtil.randomEle(SEX_LIST))
                 .userBirthday(generateRandomBirthday())
                 .userPhone(generateRandomPhone())
@@ -52,6 +54,7 @@ public class IamUserDataGenerator {
                 .userEmploymentType(RandomUtil.randomEle(EMPLOYMENT_TYPE_LIST))
                 .userEducation(RandomUtil.randomEle(EDUCATION_LIST))
                 .userStatus(RandomUtil.randomEle(STATUS_LIST))
+                .status(1)
                 .tenantId(tenantId)
                 .createTime(LocalDateTime.now())
                 .isDeleted(0)
@@ -60,6 +63,7 @@ public class IamUserDataGenerator {
 
         // 关联部门
         if (deptIds != null && !deptIds.isEmpty()) {
+            user.setDeptId(RandomUtil.randomEle(deptIds));
             user.setCreateOrgId(RandomUtil.randomEle(deptIds));
         }
 

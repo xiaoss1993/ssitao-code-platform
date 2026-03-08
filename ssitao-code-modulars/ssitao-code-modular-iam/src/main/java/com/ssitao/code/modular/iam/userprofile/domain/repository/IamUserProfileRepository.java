@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.userprofile.domain.repository;
 
+import com.ssitao.code.modular.iam.userprofile.application.command.IamUserProfileQueryCommand;
 import com.ssitao.code.modular.iam.userprofile.domain.model.IamUserProfile;
 
 import java.util.List;
@@ -77,6 +78,11 @@ public interface IamUserProfileRepository {
      * 分页查询用户档案
      */
     List<IamUserProfile> findPage(String tenantId, String keyword, String deptId, int page, int size);
+
+    /**
+     * 分页查询用户档案（支持更多查询条件）
+     */
+    List<IamUserProfile> findPageByCommand(IamUserProfileQueryCommand command, int page, int size);
 
     /**
      * 统计用户档案数量

@@ -78,6 +78,42 @@ public class MetaEntityRepositoryImpl implements MetaEntityRepository {
     }
 
     @Override
+    public List<MetaEntity> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        QueryWrapper wrapper = QueryWrapper.create()
+                .eq(MetaEntityDO::getTenantId, tenantId)
+                .eq(MetaEntityDO::getIsDeleted, 0);
+
+        // 处理排序
+        if (sort != null && !sort.isEmpty()) {
+            boolean isDesc = "desc".equalsIgnoreCase(order);
+            switch (sort) {
+                case "create_time":
+                    wrapper.orderBy(MetaEntityDO::getCreateTime, isDesc);
+                    break;
+                case "entity_code":
+                    wrapper.orderBy(MetaEntityDO::getEntityCode, isDesc);
+                    break;
+                case "entity_name":
+                    wrapper.orderBy(MetaEntityDO::getEntityName, isDesc);
+                    break;
+                default:
+                    wrapper.orderBy(MetaEntityDO::getCreateTime, true);
+                    break;
+            }
+        } else {
+            wrapper.orderBy(MetaEntityDO::getCreateTime, true);
+        }
+
+        int offset = (page - 1) * limit;
+        wrapper.limit(offset, limit);
+
+        List<MetaEntityDO> entities = metaEntityMapper.selectListByQuery(wrapper);
+        return entities.stream()
+                .map(MetaEntityConverter.INSTANCE::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean existsByCode(String entityCode, String tenantId, String excludeId) {
         QueryWrapper wrapper = QueryWrapper.create()
                 .eq(MetaEntityDO::getEntityCode, entityCode)

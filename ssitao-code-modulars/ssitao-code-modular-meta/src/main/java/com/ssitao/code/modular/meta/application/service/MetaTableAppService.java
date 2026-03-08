@@ -23,6 +23,8 @@ public interface MetaTableAppService {
 
     List<MetaTableDTO> list(String tenantId);
 
+    List<MetaTableDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
     boolean checkExists(String tableName, String tenantId, String excludeId);
 
     /**

@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
@@ -23,6 +23,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         var data = res.data;
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
                         }
                         // 如果返回的是分页对象
                         if (data.records) {
@@ -50,6 +54,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},
@@ -111,7 +124,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-ajax',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/admin/permission/enable?id=' + row.id;
+                                        return '/iam/permission/enable?id=' + row.id;
                                     },
                                     success: function (res, data) {
                                         $("#table").bootstrapTable('refresh');
@@ -127,7 +140,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-ajax',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/admin/permission/disable?id=' + row.id;
+                                        return '/iam/permission/disable?id=' + row.id;
                                     },
                                     success: function (res, data) {
                                         $("#table").bootstrapTable('refresh');
@@ -178,7 +191,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         // 显示树形结构
         showTree: function () {
             $.ajax({
-                url: '/admin/permission/tree',
+                url: '/iam/permission/tree',
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {
@@ -211,8 +224,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 html += '<span class="tree-name">' + item.permissionName + '</span>';
                 html += '<span class="tree-code text-muted">(' + item.permissionCode + ')</span>';
                 html += '<span class="tree-actions pull-right">';
-                html += '<a href="/admin/permission/edit?id=' + item.id + '" class="btn btn-xs btn-primary btn-dialog" title="编辑"><i class="fa fa-edit"></i></a> ';
-                html += '<a href="/admin/permission/' + item.id + '" class="btn btn-xs btn-info btn-dialog" title="查看"><i class="fa fa-eye"></i></a>';
+                html += '<a href="/iam/permission/edit?id=' + item.id + '" class="btn btn-xs btn-primary btn-dialog" title="编辑"><i class="fa fa-edit"></i></a> ';
+                html += '<a href="/iam/permission/' + item.id + '" class="btn btn-xs btn-info btn-dialog" title="查看"><i class="fa fa-eye"></i></a>';
                 html += '</span>';
                 html += '</div>';
                 if (item.children && item.children.length > 0) {
@@ -348,7 +361,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 return options;
             };
 
-            var id = getQueryString('id');
+            var id = Utils.getPkId('id');
 
             // 加载权限树
             loadPermissionTree(0);

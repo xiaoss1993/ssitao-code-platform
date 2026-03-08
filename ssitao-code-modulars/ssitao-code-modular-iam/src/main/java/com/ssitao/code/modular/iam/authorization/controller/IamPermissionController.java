@@ -94,7 +94,7 @@ public class IamPermissionController {
     @Operation(summary = "删除权限", description = "删除指定权限")
     @ResponseBody
     public CommonResult<Void> deletePermission(@PathVariable String id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.deletePermission(Long.parseLong(id), tenantId);
         return success();
     }
@@ -103,7 +103,7 @@ public class IamPermissionController {
     @Operation(summary = "获取权限详情", description = "根据ID获取权限详细信息")
     @ResponseBody
     public CommonResult<IamPermissionDTO> getPermissionById(@PathVariable String id,
-                                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamPermissionDTO permission = permissionAppService.getPermissionById(Long.parseLong(id), tenantId);
         return success(permission);
     }
@@ -111,7 +111,7 @@ public class IamPermissionController {
     @GetMapping("/list")
     @Operation(summary = "获取权限列表", description = "获取所有权限列表")
     @ResponseBody
-    public CommonResult<List<IamPermissionDTO>> listPermissions(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPermissionDTO>> listPermissions(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> permissions = permissionAppService.listPermissions(tenantId);
         return success(permissions);
     }
@@ -119,7 +119,7 @@ public class IamPermissionController {
     @GetMapping("/tree")
     @Operation(summary = "获取权限树", description = "获取权限树形结构")
     @ResponseBody
-    public CommonResult<List<IamPermissionDTO>> getPermissionTree(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPermissionDTO>> getPermissionTree(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> tree = permissionAppService.getPermissionTree(tenantId);
         return success(tree);
     }
@@ -140,7 +140,7 @@ public class IamPermissionController {
     @Operation(summary = "启用权限", description = "启用指定权限")
     @ResponseBody
     public CommonResult<Void> enablePermission(@RequestParam String id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.enablePermission(Long.parseLong(id), tenantId);
         return success();
     }
@@ -149,7 +149,7 @@ public class IamPermissionController {
     @Operation(summary = "禁用权限", description = "禁用指定权限")
     @ResponseBody
     public CommonResult<Void> disablePermission(@RequestParam String id,
-                                                  @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.disablePermission(Long.parseLong(id), tenantId);
         return success();
     }

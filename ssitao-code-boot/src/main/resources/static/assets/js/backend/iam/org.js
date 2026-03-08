@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
@@ -26,6 +26,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     add_url: '/iam/org/add',
                     edit_url: '/iam/org/edit',
                     del_url: '/iam/org/group',
+                },
+                responseHandler: function(res) {
+                    if (res.code === 200 && res.data) {
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
+                        }
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
+                    }
+                    return { rows: [], total: 0 };
                 }
             });
 
@@ -35,19 +52,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'createTime',
-                responseHandler: function(res) {
-                    if (res.code === 200 && res.data) {
-                        var data = res.data;
-                        if (Array.isArray(data)) {
-                            return { rows: data, total: data.length };
-                        }
-                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
-                        if (data.records) {
-                            return { rows: data.records, total: data.totalRow || data.records.length };
-                        }
-                        return { rows: data, total: data.length };
-                    }
-                    return { rows: [], total: 0 };
+                sidePagination: 'server',
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
                 },
                 columns: [
                     [
@@ -93,6 +106,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     add_url: '/iam/org/add',
                     edit_url: '/iam/org/edit',
                     del_url: '/iam/org/company',
+                },
+                responseHandler: function(res) {
+                    if (res.code === 200 && res.data) {
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
+                        }
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
+                    }
+                    return { rows: [], total: 0 };
                 }
             });
 
@@ -102,19 +132,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'createTime',
-                responseHandler: function(res) {
-                    if (res.code === 200 && res.data) {
-                        var data = res.data;
-                        if (Array.isArray(data)) {
-                            return { rows: data, total: data.length };
-                        }
-                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
-                        if (data.records) {
-                            return { rows: data.records, total: data.totalRow || data.records.length };
-                        }
-                        return { rows: data, total: data.length };
-                    }
-                    return { rows: [], total: 0 };
+                sidePagination: 'server',
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
                 },
                 columns: [
                     [
@@ -164,6 +190,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     add_url: '/iam/org/add',
                     edit_url: '/iam/org/edit',
                     del_url: '/iam/org/department',
+                },
+                responseHandler: function(res) {
+                    if (res.code === 200 && res.data) {
+                        var data = res.data;
+                        if (Array.isArray(data)) {
+                            return { rows: data, total: data.length };
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
+                        }
+                        if (data.records) {
+                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        }
+                        return { rows: data, total: data.length };
+                    }
+                    return { rows: [], total: 0 };
                 }
             });
 
@@ -173,19 +216,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'sort',
-                responseHandler: function(res) {
-                    if (res.code === 200 && res.data) {
-                        var data = res.data;
-                        if (Array.isArray(data)) {
-                            return { rows: data, total: data.length };
-                        }
-                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
-                        if (data.records) {
-                            return { rows: data.records, total: data.totalRow || data.records.length };
-                        }
-                        return { rows: data, total: data.length };
-                    }
-                    return { rows: [], total: 0 };
+                sidePagination: 'server',
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
                 },
                 columns: [
                     [
@@ -362,8 +401,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 return null;
             };
 
-            var id = getQueryString('id');
-            var orgType = getQueryString('type') || 'group';
+            var id = Utils.getPkId('id');
+            var orgType = Utils.getQueryString('type') || 'group';
 
             $('#orgType').val(orgType);
 

@@ -1,6 +1,8 @@
 package com.ssitao.code.modular.iam.testdata;
 
+import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.modular.iam.enums.IamDataTypeEnum;
+import com.ssitao.code.modular.iam.testdata.dto.TestDataGenerateResultDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,22 +27,22 @@ public class TestDataController {
      * @param type  数据类型
      * @param count 数量
      * @param tenantId 租户ID（可选）
-     * @return 生成数量
+     * @return 生成结果
      */
     @PostMapping("/iam/{type}")
-    public int generateIamData(@PathVariable String type,
+    public CommonResult<TestDataGenerateResultDTO> generateIamData(@PathVariable String type,
                                 @RequestParam(defaultValue = "1000") int count,
                                 @RequestParam(required = false) String tenantId) {
         log.info("开始生成 IAM 测试数据, type: {}, count: {}, tenantId: {}", type, count, tenantId);
         IamDataTypeEnum dataType = IamDataTypeEnum.getByCode(type);
-        int result;
+        TestDataGenerateResultDTO result;
         if (tenantId != null && !tenantId.isEmpty()) {
             result = testDataGeneratorService.generateIamData(dataType, count, tenantId);
         } else {
             result = testDataGeneratorService.generateIamData(dataType, count);
         }
-        log.info("IAM 测试数据生成完成, 数量: {}", result);
-        return result;
+        log.info("IAM 测试数据生成完成, 数量: {}", result.getTotalCount());
+        return CommonResult.success(result);
     }
 
     /**
@@ -48,20 +50,20 @@ public class TestDataController {
      *
      * @param count 数量
      * @param tenantId 租户ID（可选）
-     * @return 生成数量
+     * @return 生成结果
      */
     @PostMapping("/all")
-    public int generateAllData(@RequestParam(defaultValue = "1000") int count,
+    public CommonResult<TestDataGenerateResultDTO> generateAllData(@RequestParam(defaultValue = "1000") int count,
                                 @RequestParam(required = false) String tenantId) {
         log.info("开始生成全部测试数据, count: {}, tenantId: {}", count, tenantId);
-        int result;
+        TestDataGenerateResultDTO result;
         if (tenantId != null && !tenantId.isEmpty()) {
             result = testDataGeneratorService.generateAllIamData(count, tenantId);
         } else {
             result = testDataGeneratorService.generateAllIamData(count);
         }
-        log.info("全部测试数据生成完成, 数量: {}", result);
-        return result;
+        log.info("全部测试数据生成完成, 数量: {}", result.getTotalCount());
+        return CommonResult.success(result);
     }
 
     /**
@@ -72,7 +74,7 @@ public class TestDataController {
      * @return 清空数量
      */
     @DeleteMapping("/clear")
-    public int clearTestData(@RequestParam(required = false) String type,
+    public CommonResult<Integer> clearTestData(@RequestParam(required = false) String type,
                              @RequestParam(required = false) String tenantId) {
         log.info("开始清空测试数据, type: {}, tenantId: {}", type, tenantId);
         IamDataTypeEnum dataType = IamDataTypeEnum.getByCode(type);
@@ -83,6 +85,6 @@ public class TestDataController {
             result = testDataGeneratorService.clearTestData(dataType);
         }
         log.info("测试数据清空完成, 数量: {}", result);
-        return result;
+        return CommonResult.success(result);
     }
 }

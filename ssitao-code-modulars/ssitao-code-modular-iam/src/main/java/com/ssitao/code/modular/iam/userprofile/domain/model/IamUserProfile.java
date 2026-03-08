@@ -25,6 +25,16 @@ public class IamUserProfile {
     private String userName;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
      * 用户编码
      */
     private String userCode;
@@ -208,6 +218,16 @@ public class IamUserProfile {
      * 人员状态
      */
     private String userEmployeeStatus;
+
+    /**
+     * 账号状态(1启用,0禁用)
+     */
+    private Integer status;
+
+    /**
+     * 部门ID
+     */
+    private String deptId;
 
     /**
      * 数据状态

@@ -47,6 +47,11 @@ public interface MetaListRepository {
     List<MetaListDO> findActiveListsByEntityId(String entityId, String tenantId);
 
     /**
+     * 分页查询列表配置
+     */
+    List<MetaListDO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查列表编码是否存在
      */
     boolean existsByListCode(String entityId, String listCode, String tenantId, String excludeId);

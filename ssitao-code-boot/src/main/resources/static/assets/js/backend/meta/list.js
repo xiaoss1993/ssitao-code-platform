@@ -5,10 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: 'meta/list/index',
-                    add_url: 'meta/list/add',
-                    edit_url: 'meta/list/edit',
-                    del_url: 'meta/list/del',
+                    index_url: '/meta/list/page',
+                    add_url: '/meta/list/add',
+                    edit_url: '/meta/list/edit',
+                    del_url: '/meta/list/delete',
                     table: 'meta_list',
                 },
                 responseHandler: function (res) {
@@ -16,6 +16,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         var data = res.data;
                         if (Array.isArray(data)) {
                             return {rows: data, total: data.length};
+                        }
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return {rows: data.rows, total: data.total};
                         }
                         if (data.records) {
                             return {rows: data.records, total: data.totalRow || data.records.length};
@@ -37,6 +41,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},

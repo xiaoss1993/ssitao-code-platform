@@ -69,7 +69,7 @@ public class IamAuthorizationController {
     @DeleteMapping("/role/{id}")
     @Operation(summary = "删除角色", description = "删除指定角色")
     public CommonResult<Void> deleteRole(@PathVariable String id,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         roleAppService.deleteRole(id, tenantId);
         return success();
     }
@@ -77,14 +77,14 @@ public class IamAuthorizationController {
     @GetMapping("/role/{id}")
     @Operation(summary = "获取角色详情", description = "根据ID获取角色详情")
     public CommonResult<IamRoleDTO> getRole(@PathVariable String id,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                             @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamRoleDTO role = roleAppService.getRoleById(id, tenantId);
         return success(role);
     }
 
     @GetMapping("/roles")
     @Operation(summary = "获取角色列表", description = "获取所有角色列表")
-    public CommonResult<PageResult<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<PageResult<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamRoleDTO> roles = roleAppService.listRoles(tenantId);
         PageResult<IamRoleDTO> result = new PageResult<>();
         result.setRows(roles);
@@ -95,7 +95,7 @@ public class IamAuthorizationController {
     @GetMapping("/role/page")
     @Operation(summary = "分页查询角色", description = "分页查询角色列表")
     public CommonResult<Page<IamRoleDTO>> pageRoles(
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId,
             @RequestParam(defaultValue = "1") int current,
             @RequestParam(defaultValue = "10") int size) {
         Page<IamRoleDTO> page = roleAppService.pageRoles(tenantId, current, size);
@@ -104,7 +104,7 @@ public class IamAuthorizationController {
 
     @GetMapping("/role/tree")
     @Operation(summary = "获取角色树", description = "获取角色树形结构")
-    public CommonResult<List<IamRoleDTO>> getRoleTree(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamRoleDTO>> getRoleTree(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamRoleDTO> tree = roleAppService.getRoleTree(tenantId);
         return success(tree);
     }
@@ -151,7 +151,7 @@ public class IamAuthorizationController {
     @DeleteMapping("/permission/{id}")
     @Operation(summary = "删除权限", description = "删除指定权限")
     public CommonResult<Void> deletePermission(@PathVariable Long id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.deletePermission(id, tenantId);
         return success();
     }
@@ -159,21 +159,21 @@ public class IamAuthorizationController {
     @GetMapping("/permission/{id}")
     @Operation(summary = "获取权限详情", description = "根据ID获取权限详情")
     public CommonResult<IamPermissionDTO> getPermission(@PathVariable Long id,
-                                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamPermissionDTO permission = permissionAppService.getPermissionById(id, tenantId);
         return success(permission);
     }
 
     @GetMapping("/permissions")
     @Operation(summary = "获取权限列表", description = "获取所有权限列表")
-    public CommonResult<List<IamPermissionDTO>> listPermissions(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPermissionDTO>> listPermissions(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> permissions = permissionAppService.listPermissions(tenantId);
         return success(permissions);
     }
 
     @GetMapping("/permission/tree")
     @Operation(summary = "获取权限树", description = "获取权限树形结构")
-    public CommonResult<List<IamPermissionDTO>> getPermissionTree(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPermissionDTO>> getPermissionTree(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> tree = permissionAppService.getPermissionTree(tenantId);
         return success(tree);
     }
@@ -181,7 +181,7 @@ public class IamAuthorizationController {
     @GetMapping("/permissions/type/{permType}")
     @Operation(summary = "根据类型获取权限", description = "根据权限类型获取权限列表")
     public CommonResult<List<IamPermissionDTO>> listPermissionsByType(@PathVariable String permType,
-                                                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> permissions = permissionAppService.listPermissionsByType(permType, tenantId);
         return success(permissions);
     }
@@ -189,7 +189,7 @@ public class IamAuthorizationController {
     @GetMapping("/permissions/user/{userId}")
     @Operation(summary = "获取用户权限", description = "获取指定用户的权限列表")
     public CommonResult<List<IamPermissionDTO>> listPermissionsByUserId(@PathVariable Long userId,
-                                                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> permissions = permissionAppService.listPermissionsByUserId(userId, tenantId);
         return success(permissions);
     }
@@ -197,7 +197,7 @@ public class IamAuthorizationController {
     @PutMapping("/permission/{id}/enable")
     @Operation(summary = "启用权限", description = "启用指定权限")
     public CommonResult<Void> enablePermission(@PathVariable Long id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.enablePermission(id, tenantId);
         return success();
     }
@@ -205,7 +205,7 @@ public class IamAuthorizationController {
     @PutMapping("/permission/{id}/disable")
     @Operation(summary = "禁用权限", description = "禁用指定权限")
     public CommonResult<Void> disablePermission(@PathVariable Long id,
-                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permissionAppService.disablePermission(id, tenantId);
         return success();
     }
@@ -229,7 +229,7 @@ public class IamAuthorizationController {
     @DeleteMapping("/perm-group/{id}")
     @Operation(summary = "删除权限组", description = "删除指定权限组")
     public CommonResult<Void> deletePermGroup(@PathVariable Long id,
-                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permGroupAppService.deletePermGroup(id, tenantId);
         return success();
     }
@@ -237,14 +237,14 @@ public class IamAuthorizationController {
     @GetMapping("/perm-group/{id}")
     @Operation(summary = "获取权限组详情", description = "根据ID获取权限组详情")
     public CommonResult<IamPermGroupDTO> getPermGroup(@PathVariable Long id,
-                                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamPermGroupDTO group = permGroupAppService.getPermGroupById(id, tenantId);
         return success(group);
     }
 
     @GetMapping("/perm-groups")
     @Operation(summary = "获取权限组列表", description = "获取所有权限组列表")
-    public CommonResult<List<IamPermGroupDTO>> listPermGroups(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPermGroupDTO>> listPermGroups(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermGroupDTO> groups = permGroupAppService.listPermGroups(tenantId);
         return success(groups);
     }
@@ -259,7 +259,7 @@ public class IamAuthorizationController {
     @PutMapping("/perm-group/{id}/enable")
     @Operation(summary = "启用权限组", description = "启用指定权限组")
     public CommonResult<Void> enablePermGroup(@PathVariable Long id,
-                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permGroupAppService.enablePermGroup(id, tenantId);
         return success();
     }
@@ -267,7 +267,7 @@ public class IamAuthorizationController {
     @PutMapping("/perm-group/{id}/disable")
     @Operation(summary = "禁用权限组", description = "禁用指定权限组")
     public CommonResult<Void> disablePermGroup(@PathVariable Long id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         permGroupAppService.disablePermGroup(id, tenantId);
         return success();
     }

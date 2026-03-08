@@ -67,7 +67,7 @@ public class DynamicCrudController {
     @PostMapping("/table/create")
     @Operation(summary = "创建表", description = "根据实体定义和字段定义创建数据库表")
     public CommonResult<String> createTable(@RequestBody Map<String, Object> request,
-                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String entityCode = (String) request.get("entityCode");
 
         // 获取实体定义
@@ -89,7 +89,7 @@ public class DynamicCrudController {
     @PostMapping("/table/alter")
     @Operation(summary = "修改表", description = "修改数据库表结构")
     public CommonResult<Void> alterTable(@RequestBody Map<String, Object> request,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String entityCode = (String) request.get("entityCode");
         @SuppressWarnings("unchecked")
         List<MetaField> newFields = (List<MetaField>) request.get("newFields");
@@ -118,7 +118,7 @@ public class DynamicCrudController {
     @Operation(summary = "同步字段", description = "根据实体定义同步数据库表字段")
     public CommonResult<Void> syncFields(
             @Parameter(description = "实体ID") @PathVariable String entityId,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaTableService.syncFields(entityId);
         return success();
     }
@@ -128,7 +128,7 @@ public class DynamicCrudController {
     @PostMapping("/entity/register")
     @Operation(summary = "注册动态实体", description = "注册动态实体到系统")
     public CommonResult<Void> registerEntity(@RequestBody Map<String, Object> request,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String entityCode = (String) request.get("entityCode");
         String tableName = (String) request.get("tableName");
         @SuppressWarnings("unchecked")
@@ -153,7 +153,7 @@ public class DynamicCrudController {
     public CommonResult<Map<String, Object>> create(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @RequestBody Map<String, Object> data,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -201,7 +201,7 @@ public class DynamicCrudController {
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @Parameter(description = "数据ID") @PathVariable Object id,
             @RequestBody Map<String, Object> data,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -242,7 +242,7 @@ public class DynamicCrudController {
     public CommonResult<Void> delete(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @Parameter(description = "数据ID") @PathVariable Object id,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -261,7 +261,7 @@ public class DynamicCrudController {
     public CommonResult<Map<String, Object>> getById(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @Parameter(description = "数据ID") @PathVariable Object id,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -283,7 +283,7 @@ public class DynamicCrudController {
     public CommonResult<PageResult<Map<String, Object>>> list(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @Parameter(description = "查询参数") @RequestParam Map<String, Object> params,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -337,7 +337,7 @@ public class DynamicCrudController {
     public CommonResult<Long> count(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @Parameter(description = "查询参数") @RequestParam Map<String, Object> params,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {
@@ -370,7 +370,7 @@ public class DynamicCrudController {
     public CommonResult<Integer> batchCreate(
             @Parameter(description = "实体编码") @PathVariable String entityCode,
             @RequestBody List<Map<String, Object>> dataList,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         String tableName = getTableName(entityCode, tenantId);
         if (StrUtil.isBlank(tableName)) {

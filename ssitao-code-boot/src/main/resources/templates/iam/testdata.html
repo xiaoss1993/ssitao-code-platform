@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>测试数据生成 - SSITAO Code Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai",
+                    "languages": {
+                        "backend": "zh-cn",
+                        "frontend": "zh-cn"
+                    }
+                },
+                "upload": {
+                    "cdnurl": "/",
+                    "uploadurl": "/api/upload",
+                    "bucket": "yourbucketname",
+                    "maxsize": "10mb",
+                    "mimetype": "*",
+                    "multiple": false
+                },
+                "modulename": "iam",
+                "controllername": "testdata",
+                "actionname": "index",
+                "jsname": "backend/iam/testdata",
+                "moduleurl": "/",
+                "language": "zh-cn",
+                "referer": null
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>测试数据生成</h1>
+                        </section>
+                        <!-- RIBBON -->
+                        <div id="ribbon">
+                            <ol class="breadcrumb pull-left">
+                                <li><a href="/console" class="addtabsit"><i class="fa fa-dashboard"></i> 控制台</a></li>
+                                <li><a href="javascript:;" data-url="iam">系统管理</a></li>
+                                <li><a href="javascript:;" data-url="iam/testdata">测试数据生成</a></li>
+                            </ol>
+                        </div>
+                        <!-- END RIBBON -->
+                        <div class="content">
+                            <div class="panel panel-default panel-intro">
+                                <div class="panel-body">
+                                    <div id="myTabContent" class="tab-content">
+                                        <div class="tab-pane fade active in" id="one">
+                                            <div class="widget-body no-padding">
+                                                <div class="toolbar" id="toolbar">
+                                                    <a href="javascript:;" class="btn btn-primary btn-refresh" title="刷新">
+                                                        <i class="fa fa-refresh"></i> 刷新
+                                                    </a>
+                                                </div>
+                                                <div class="form-horizontal" style="padding: 20px;">
+                                                    <!-- 生成全部测试数据 -->
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title"><i class="fa fa-database"></i> 生成全部测试数据</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">生成数量</label>
+                                                                <div class="col-sm-4">
+                                                                    <input type="number" class="form-control" id="allCount" value="100" min="1" max="10000" />
+                                                                    <span class="help-block">每个实体类型将按比例生成（用户=100%，部门=12.5%，角色=10%等）</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">租户ID</label>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" class="form-control" id="allTenantId" value="TEST_TENANT" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-offset-2 col-sm-10">
+                                                                    <button type="button" class="btn btn-success" id="btnGenerateAll">
+                                                                        <i class="fa fa-plus"></i> 生成全部
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-danger" id="btnClearAll">
+                                                                        <i class="fa fa-trash"></i> 清空全部
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- 分类型生成 -->
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title"><i class="fa fa-th-list"></i> 分类型生成</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">数据类型</label>
+                                                                <div class="col-sm-4">
+                                                                    <select class="form-control" id="dataType">
+                                                                        <option value="company">公司</option>
+                                                                        <option value="department">部门</option>
+                                                                        <option value="post">岗位</option>
+                                                                        <option value="role">角色</option>
+                                                                        <option value="permission">权限</option>
+                                                                        <option value="menu">菜单</option>
+                                                                        <option value="user">用户</option>
+                                                                        <option value="account">账号</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">生成数量</label>
+                                                                <div class="col-sm-4">
+                                                                    <input type="number" class="form-control" id="singleCount" value="100" min="1" max="10000" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label">租户ID</label>
+                                                                <div class="col-sm-4">
+                                                                    <input type="text" class="form-control" id="singleTenantId" value="TEST_TENANT" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-offset-2 col-sm-10">
+                                                                    <button type="button" class="btn btn-primary" id="btnGenerateSingle">
+                                                                        <i class="fa fa-plus"></i> 生成
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-warning" id="btnClearSingle">
+                                                                        <i class="fa fa-trash"></i> 清空
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- 生成结果 -->
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title"><i class="fa fa-info-circle"></i> 生成结果</h3>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div id="resultContent">
+                                                                <p class="text-muted">点击生成按钮查看结果...</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+</body>
+</html>

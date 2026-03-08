@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
@@ -11,6 +11,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     del_url: '/iam/account',
                     table: 'iam_account',
                 },
+                // 兼容不同的主键字段名
+                pk: 'id',
                 // 配置响应数据处理
                 responseHandler: function (res) {
                     // 处理后端返回的数据格式
@@ -20,11 +22,11 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
                         }
-                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
-                        if (data.records) {
-                            return { rows: data.records, total: data.totalRow || data.records.length };
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
                         }
-                        // 如果返回的是分页对象
+                        // 如果返回的是分页对象 (content)
                         if (data.content) {
                             return { rows: data.content, total: data.totalElements || data.content.length };
                         }
@@ -45,6 +47,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},
@@ -160,40 +171,88 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
-            // 获取URL参数
-            var getQueryString = function(name) {
-                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-                var r = window.location.search.substr(1).match(reg);
-                if (r != null) return decodeURIComponent(r[2]);
-                return null;
+            // 从表格配置获取主键字段名
+            var pkField = 'id'; // 默认主键字段
+            var $table = parent.$("#table");
+            if ($table.length) {
+                var tableOptions = $table.bootstrapTable('getOptions');
+                pkField = tableOptions.pk || 'id';
+            }
+
+            // 使用通用方法获取主键ID
+            var id = Utils.getPkId(pkField);
+
+            // 字段名映射：后端字段 -> 表单字段
+            var fieldMapping = {
+                'id': 'id',
+                'account_code': 'accountCode',
+                'account_name': 'accountName',
+                'phone': 'phone',
+                'email': 'email',
+                'status': 'status',
+                'remark': 'remark'
             };
 
-            var id = getQueryString('id');
+            // 字段转换器：将后端字段名转换为表单字段名
+            function fieldTransformer(fieldName, value) {
+                var mappedField = fieldMapping[fieldName];
+                if (mappedField) {
+                    return { field: mappedField, value: value };
+                }
+                return { field: fieldName, value: value };
+            }
 
             if (id) {
                 // 编辑模式 - 获取数据
                 $('#password-group .control-label').html('密码 <span class="text-danger">*</span>（留空不修改）');
                 $('#password-group input').removeAttr('data-rule');
 
-                // 获取账号详情
-                $.ajax({
-                    url: '/iam/account/' + id,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(res) {
-                        if (res.code === 200 && res.data) {
-                            var data = res.data;
-                            $('#id').val(data.id);
-                            $('#accountCode').val(data.accountCode);
-                            $('#accountCode').attr('readonly', true);
-                            $('#accountName').val(data.accountName);
-                            $('#phone').val(data.phone);
-                            $('#email').val(data.email);
-                            $('input[name="status"][value="' + data.status + '"]').prop('checked', true);
-                            $('#remark').val(data.remark);
+                // 读取 JSON 数据并回显
+                var loadAndFill = function(data) {
+                    if (!data) return;
+                    // 字段映射转换
+                    var mappedData = {};
+                    $.each(fieldMapping, function(backendField, formField) {
+                        if (data[backendField] !== undefined) {
+                            mappedData[formField] = data[backendField];
                         }
+                    });
+                    Utils.fillForm('#edit-form', mappedData);
+                    $('#accountCode').attr('readonly', true);
+                };
+
+                // 优先从隐藏字段读取 JSON 数据
+                var rowData = $('#rowData').val();
+                if (rowData) {
+                    try {
+                        var data = JSON.parse(rowData);
+                        loadAndFill(data);
+                    } catch (e) {
+                        // JSON 解析失败，通过 AJAX 获取
+                        $.ajax({
+                            url: '/iam/account/' + id,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function(res) {
+                                if (res.code === 200 && res.data) {
+                                    loadAndFill(res.data);
+                                }
+                            }
+                        });
                     }
-                });
+                } else {
+                    // 没有隐藏数据，通过 AJAX 获取
+                    $.ajax({
+                        url: '/iam/account/' + id,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(res) {
+                            if (res.code === 200 && res.data) {
+                                loadAndFill(res.data);
+                            }
+                        }
+                    });
+                }
 
                 // 设置表单提交地址
                 $('#edit-form').attr('action', '/iam/account');

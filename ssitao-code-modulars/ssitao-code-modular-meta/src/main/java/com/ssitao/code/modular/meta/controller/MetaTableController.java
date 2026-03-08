@@ -33,7 +33,7 @@ public class MetaTableController {
     @PostMapping("/create")
     @Operation(summary = "创建元数据表", description = "创建一个新的元数据表")
     public CommonResult<String> create(@Valid @RequestBody MetaTableCreateCommand command,
-                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String id = metaTableAppService.create(command, tenantId);
         return success(id);
     }
@@ -41,7 +41,7 @@ public class MetaTableController {
     @PutMapping("/update")
     @Operation(summary = "更新元数据表", description = "更新元数据表信息")
     public CommonResult<Void> update(@Valid @RequestBody MetaTableUpdateCommand command,
-                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaTableAppService.update(command, tenantId);
         return success();
     }
@@ -49,7 +49,7 @@ public class MetaTableController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除元数据表", description = "删除指定元数据表")
     public CommonResult<Void> delete(@RequestParam String id,
-                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaTableAppService.delete(id, tenantId);
         return success();
     }
@@ -57,22 +57,35 @@ public class MetaTableController {
     @GetMapping("/get")
     @Operation(summary = "获取元数据表详情", description = "根据ID获取元数据表详细信息")
     public CommonResult<MetaTableDTO> getById(@RequestParam String id,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         MetaTableDTO table = metaTableAppService.getById(id, tenantId);
         return success(table);
     }
 
     @GetMapping("/list")
     @Operation(summary = "获取元数据表列表", description = "获取所有元数据表列表")
-    public CommonResult<List<MetaTableDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<MetaTableDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaTableDTO> tables = metaTableAppService.list(tenantId);
+        return success(tables);
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页获取元数据表", description = "分页获取元数据表列表")
+    public CommonResult<List<MetaTableDTO>> page(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        List<MetaTableDTO> tables = metaTableAppService.page(keyword, page, limit, sort, order, tenantId);
         return success(tables);
     }
 
     @PostMapping("/generate/{id}")
     @Operation(summary = "生成代码", description = "生成代码")
     public CommonResult<Void> generate(@PathVariable String id,
-                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaTableAppService.generate(id, tenantId);
         return success();
     }

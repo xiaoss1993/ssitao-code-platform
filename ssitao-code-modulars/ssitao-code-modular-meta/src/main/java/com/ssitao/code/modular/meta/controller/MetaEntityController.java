@@ -33,7 +33,7 @@ public class MetaEntityController {
     @PostMapping("/create")
     @Operation(summary = "创建元数据实体", description = "创建一个新的元数据实体")
     public CommonResult<String> create(@Valid @RequestBody MetaEntityCreateCommand command,
-                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String id = metaEntityAppService.create(command, tenantId);
         return success(id);
     }
@@ -41,7 +41,7 @@ public class MetaEntityController {
     @PutMapping("/update")
     @Operation(summary = "更新元数据实体", description = "更新元数据实体信息")
     public CommonResult<Void> update(@Valid @RequestBody MetaEntityUpdateCommand command,
-                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaEntityAppService.update(command, tenantId);
         return success();
     }
@@ -49,7 +49,7 @@ public class MetaEntityController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除元数据实体", description = "删除指定元数据实体")
     public CommonResult<Void> delete(@RequestParam String id,
-                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaEntityAppService.delete(id, tenantId);
         return success();
     }
@@ -57,15 +57,28 @@ public class MetaEntityController {
     @GetMapping("/get")
     @Operation(summary = "获取元数据实体详情", description = "根据ID获取元数据实体详细信息")
     public CommonResult<MetaEntityDTO> getById(@RequestParam String id,
-                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         MetaEntityDTO entity = metaEntityAppService.getById(id, tenantId);
         return success(entity);
     }
 
     @GetMapping("/list")
     @Operation(summary = "获取元数据实体列表", description = "获取所有元数据实体列表")
-    public CommonResult<List<MetaEntityDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<MetaEntityDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaEntityDTO> entities = metaEntityAppService.list(tenantId);
+        return success(entities);
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页获取元数据实体", description = "分页获取元数据实体列表")
+    public CommonResult<List<MetaEntityDTO>> page(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        List<MetaEntityDTO> entities = metaEntityAppService.page(keyword, page, limit, sort, order, tenantId);
         return success(entities);
     }
 }

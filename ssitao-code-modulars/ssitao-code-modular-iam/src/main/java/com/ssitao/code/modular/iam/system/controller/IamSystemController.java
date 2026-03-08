@@ -139,22 +139,35 @@ public class IamSystemController {
     @DeleteMapping("/dict-type/{id}")
     @Operation(summary = "删除字典类型", description = "删除指定字典类型")
     public CommonResult<Void> deleteDictType(@PathVariable Long id,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         dictAppService.deleteDictType(id, tenantId);
+        return success();
+    }
+
+    @PostMapping("/dict-type/multi")
+    @Operation(summary = "批量操作字典类型", description = "批量启用/禁用字典类型")
+    public CommonResult<Void> multiDictType(@RequestParam String ids,
+                                            @RequestParam String action,
+                                            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        if ("enable".equals(action)) {
+            dictAppService.enableDictType(ids, tenantId);
+        } else if ("disable".equals(action)) {
+            dictAppService.disableDictType(ids, tenantId);
+        }
         return success();
     }
 
     @GetMapping("/dict-type/{id}")
     @Operation(summary = "获取字典类型详情", description = "根据ID获取字典类型详情")
     public CommonResult<IamDictTypeDTO> getDictType(@PathVariable Long id,
-                                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamDictTypeDTO dictType = dictAppService.getDictTypeById(id, tenantId);
         return success(dictType);
     }
 
     @GetMapping("/dict-types")
     @Operation(summary = "获取所有字典类型", description = "获取所有字典类型列表")
-    public CommonResult<List<IamDictTypeDTO>> listDictTypes(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamDictTypeDTO>> listDictTypes(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamDictTypeDTO> dictTypes = dictAppService.listDictTypes(tenantId);
         return success(dictTypes);
     }
@@ -178,7 +191,7 @@ public class IamSystemController {
     @DeleteMapping("/dict-data/{id}")
     @Operation(summary = "删除字典数据", description = "删除指定字典数据")
     public CommonResult<Void> deleteDictData(@PathVariable Long id,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         dictAppService.deleteDictData(id, tenantId);
         return success();
     }
@@ -186,14 +199,14 @@ public class IamSystemController {
     @GetMapping("/dict-data/type/{dictTypeCode}")
     @Operation(summary = "根据类型编码获取字典数据", description = "根据字典类型编码获取字典数据列表")
     public CommonResult<List<IamDictDataDTO>> listDictDataByTypeCode(@PathVariable String dictTypeCode,
-                                                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamDictDataDTO> dictDataList = dictAppService.listDictDataByTypeCode(dictTypeCode, tenantId);
         return success(dictDataList);
     }
 
     @GetMapping("/dict-data/all")
     @Operation(summary = "获取所有字典数据", description = "获取所有字典数据")
-    public CommonResult<Map<String, List<IamDictDataDTO>>> getAllDictData(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<Map<String, List<IamDictDataDTO>>> getAllDictData(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         Map<String, List<IamDictDataDTO>> dictDataMap = dictAppService.getAllDictData(tenantId);
         return success(dictDataMap);
     }

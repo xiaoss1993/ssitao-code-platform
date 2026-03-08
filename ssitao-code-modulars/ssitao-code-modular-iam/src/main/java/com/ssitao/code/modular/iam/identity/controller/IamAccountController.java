@@ -1,5 +1,7 @@
 package com.ssitao.code.modular.iam.identity.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.common.pojo.PageResult;
@@ -34,9 +36,11 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
 public class IamAccountController {
 
     private final IamAccountAppService accountAppService;
+    private final ObjectMapper objectMapper;
 
-    public IamAccountController(IamAccountAppService accountAppService) {
+    public IamAccountController(IamAccountAppService accountAppService, ObjectMapper objectMapper) {
         this.accountAppService = accountAppService;
+        this.objectMapper = objectMapper;
     }
 
     // ==================== 页面跳转 ====================
@@ -66,8 +70,24 @@ public class IamAccountController {
      */
     @GetMapping("/edit")
     @Operation(summary = "账号编辑页面")
-    public String accountEditPage(Model model) {
+    public String accountEditPage(Model model,
+                                  @RequestParam(required = false) String id,
+                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑账号", "account");
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (id != null && !id.isEmpty()) {
+            try {
+                IamAccountDTO account = accountAppService.getAccount(id, tenantId);
+                if (account != null) {
+                    String jsonData = objectMapper.writeValueAsString(account);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (JsonProcessingException e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/account-edit";
     }
 
@@ -93,7 +113,7 @@ public class IamAccountController {
     @Operation(summary = "删除账号", description = "删除指定账号")
     @ResponseBody
     public CommonResult<Void> deleteAccount(@PathVariable String id,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                             @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         accountAppService.deleteAccount(id, tenantId);
         return success();
     }
@@ -102,7 +122,7 @@ public class IamAccountController {
     @Operation(summary = "获取账号详情", description = "根据ID获取账号详情")
     @ResponseBody
     public CommonResult<IamAccountDTO> getAccount(@PathVariable String id,
-                                                   @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamAccountDTO account = accountAppService.getAccount(id, tenantId);
         return success(account);
     }
@@ -111,7 +131,7 @@ public class IamAccountController {
     @Operation(summary = "根据账号编码获取账号", description = "根据账号编码获取账号信息")
     @ResponseBody
     public CommonResult<IamAccountDTO> getAccountByCode(@PathVariable String accountCode,
-                                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamAccountDTO account = accountAppService.getAccountByCode(accountCode, tenantId);
         return success(account);
     }
@@ -122,7 +142,7 @@ public class IamAccountController {
     public CommonResult<PageResult<IamAccountDTO>> pageAccounts(IamAccountQuery query,
                                                             @RequestParam(defaultValue = "1") int page,
                                                             @RequestParam(defaultValue = "10") int size,
-                                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         query.setTenantId(tenantId);
         PageResult<IamAccountDTO> pageResult = accountAppService.pageAccounts(query, page, size);
         return success(pageResult);
@@ -148,7 +168,7 @@ public class IamAccountController {
     @Operation(summary = "启用账号", description = "启用指定账号")
     @ResponseBody
     public CommonResult<Void> enableAccount(@PathVariable String id,
-                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         accountAppService.enableAccount(id, tenantId);
         return success();
     }
@@ -157,7 +177,7 @@ public class IamAccountController {
     @Operation(summary = "禁用账号", description = "禁用指定账号")
     @ResponseBody
     public CommonResult<Void> disableAccount(@PathVariable String id,
-                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                             @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         accountAppService.disableAccount(id, tenantId);
         return success();
     }
@@ -166,7 +186,7 @@ public class IamAccountController {
     @Operation(summary = "获取账号关联用户", description = "获取账号关联的用户信息")
     @ResponseBody
     public CommonResult<Object> getAccountUser(@PathVariable String id,
-                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         Object user = accountAppService.getBoundUser(id, tenantId);
         return success(user);
     }

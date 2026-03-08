@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.menu.application.service;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.menu.api.dto.IamMenuDTO;
 
 import java.util.List;
@@ -40,6 +41,20 @@ public interface IamMenuAppService {
      * @return 菜单列表
      */
     List<IamMenuDTO> pageMenus(int page, int size, String parentId, String menuType, Integer status);
+
+    /**
+     * 获取菜单列表（支持分页和排序）
+     *
+     * @param page     页码
+     * @param size     每页大小
+     * @param parentId 父菜单ID（可选）
+     * @param menuType 菜单类型
+     * @param status   状态
+     * @param sort     排序字段
+     * @param order    排序方式
+     * @return 分页结果
+     */
+    PageResult<IamMenuDTO> listMenusPage(Integer page, Integer size, String parentId, String menuType, Integer status, String sort, String order);
 
     /**
      * 获取菜单树

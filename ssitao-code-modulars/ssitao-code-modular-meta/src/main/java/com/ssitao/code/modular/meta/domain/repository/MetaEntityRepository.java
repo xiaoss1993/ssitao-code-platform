@@ -53,6 +53,19 @@ public interface MetaEntityRepository {
     List<MetaEntity> findAll(String tenantId);
 
     /**
+     * 分页查询
+     *
+     * @param keyword 关键词
+     * @param page 页码
+     * @param limit 每页条数
+     * @param sort 排序字段
+     * @param order 排序方式
+     * @param tenantId 租户ID
+     * @return 实体列表
+     */
+    List<MetaEntity> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查编码是否存在
      *
      * @param entityCode 实体编码

@@ -7,7 +7,7 @@ define(['jquery', 'bootstrap', 'backend', 'form'], function ($, undefined, Backe
         index: function () {
             // 加载字典列表
             $.ajax({
-                url: 'iam/system/dict-types',
+                url: '/iam/system/dict-types',
                 type: 'GET',
                 dataType: 'json',
                 success: function (res) {
@@ -27,7 +27,7 @@ define(['jquery', 'bootstrap', 'backend', 'form'], function ($, undefined, Backe
                 Form.api.bindevent($("form[role=form]"), function (data, ret) {
                     Layer.msg(ret.msg || '保存成功');
                     setTimeout(function () {
-                        location.href = Fast.api.fixurl('iam/dict/item');
+                        location.href = Fast.api.fixurl('/iam/dict/item');
                     }, 1000);
                 }, function (data, ret) {
                     Layer.error(ret.msg || '保存失败');

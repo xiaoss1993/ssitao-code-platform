@@ -100,7 +100,7 @@ public class IamRoleController {
     @Operation(summary = "删除角色", description = "删除指定角色")
     @ResponseBody
     public CommonResult<Void> deleteRole(@RequestParam String id,
-                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         roleAppService.deleteRole(id, tenantId);
         return success();
     }
@@ -109,7 +109,7 @@ public class IamRoleController {
     @Operation(summary = "获取角色详情", description = "根据ID获取角色详细信息")
     @ResponseBody
     public CommonResult<IamRoleDTO> getRoleById(@RequestParam String id,
-                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamRoleDTO role = roleAppService.getRoleById(id, tenantId);
         return success(role);
     }
@@ -117,7 +117,7 @@ public class IamRoleController {
     @GetMapping("/list")
     @Operation(summary = "获取角色列表", description = "获取所有角色列表")
     @ResponseBody
-    public CommonResult<List<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamRoleDTO>> listRoles(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamRoleDTO> roles = roleAppService.listRoles(tenantId);
         return success(roles);
     }
@@ -125,7 +125,7 @@ public class IamRoleController {
     @GetMapping("/page")
     @Operation(summary = "分页查询角色", description = "分页查询角色列表")
     @ResponseBody
-    public CommonResult<Page<IamRoleDTO>> pageRoles(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId,
+    public CommonResult<Page<IamRoleDTO>> pageRoles(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId,
                                                       @RequestParam(defaultValue = "1") int current,
                                                       @RequestParam(defaultValue = "10") int size,
                                                       @RequestParam(name = "page", defaultValue = "1") int page,
@@ -140,7 +140,7 @@ public class IamRoleController {
     @GetMapping("/tree")
     @Operation(summary = "获取角色树", description = "获取角色树形结构")
     @ResponseBody
-    public CommonResult<List<IamRoleDTO>> getRoleTree(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamRoleDTO>> getRoleTree(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamRoleDTO> tree = roleAppService.getRoleTree(tenantId);
         return success(tree);
     }
@@ -161,7 +161,7 @@ public class IamRoleController {
     @Operation(summary = "启用角色", description = "启用指定角色")
     @ResponseBody
     public CommonResult<Void> enableRole(@RequestParam String id,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         roleAppService.enableRole(id, tenantId);
         return success();
     }
@@ -170,7 +170,7 @@ public class IamRoleController {
     @Operation(summary = "禁用角色", description = "禁用指定角色")
     @ResponseBody
     public CommonResult<Void> disableRole(@RequestParam String id,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         roleAppService.disableRole(id, tenantId);
         return success();
     }

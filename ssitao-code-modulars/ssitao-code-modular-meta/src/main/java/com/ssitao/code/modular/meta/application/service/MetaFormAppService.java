@@ -60,6 +60,11 @@ public interface MetaFormAppService {
     List<MetaFormDTO> listByEntityId(String entityId, String tenantId);
 
     /**
+     * 分页获取表单配置
+     */
+    List<MetaFormDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查表单编码是否存在
      *
      * @param entityId  实体ID

@@ -26,5 +26,7 @@ public interface MetaColumnAppService {
 
     List<MetaColumnDTO> listByTableId(String tableId, String tenantId);
 
+    List<MetaColumnDTO> page(String tableId, String keyword, int page, int limit, String sort, String order, String tenantId);
+
     boolean checkExists(String tableId, String columnName, String tenantId, String excludeId);
 }

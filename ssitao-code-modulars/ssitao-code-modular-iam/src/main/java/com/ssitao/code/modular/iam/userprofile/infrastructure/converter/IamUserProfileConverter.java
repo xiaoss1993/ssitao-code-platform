@@ -36,6 +36,8 @@ public interface IamUserProfileConverter {
     @Mapping(source = "userId", target = "userId")
     @Mapping(source = "userCode", target = "userCode")
     @Mapping(source = "userName", target = "userName")
+    @Mapping(source = "nickname", target = "nickname")
+    @Mapping(source = "realName", target = "realName")
     @Mapping(source = "userSex", target = "userSexCode")
     @Mapping(source = "userPhone", target = "userPhone")
     @Mapping(source = "userMail", target = "userMail")
@@ -50,6 +52,8 @@ public interface IamUserProfileConverter {
     @Mapping(source = "userEntryDate", target = "userEntryDate", qualifiedByName = "localDateToString")
     @Mapping(source = "userEducation", target = "userEducationCode")
     @Mapping(source = "userStatus", target = "userEmployeeStatus")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "deptId", target = "deptId")
     @Mapping(source = "tenantId", target = "syTenantId")
     @Mapping(source = "createOrgId", target = "syOrgId")
     @Mapping(source = "createTime", target = "syCreatetime", qualifiedByName = "localDateTimeToString")
@@ -117,6 +121,17 @@ public interface IamUserProfileConverter {
      * DO转DTO
      */
     @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "userId", target = "id")
+    @Mapping(source = "userName", target = "userName")
+    @Mapping(source = "userName", target = "user_name")
+    @Mapping(source = "nickname", target = "nickname")
+    @Mapping(source = "realName", target = "real_name")
+    @Mapping(source = "userPhone", target = "phone")
+    @Mapping(source = "userMail", target = "email")
+    @Mapping(source = "userSex", target = "gender")
+    @Mapping(source = "deptId", target = "dept_id")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "createTime", target = "create_time", qualifiedByName = "localDateTimeToString")
     IamUserProfileDTO toDTO(IamUserDO userDO);
 
     /**

@@ -8,23 +8,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格
             Table.api.init({
                 extend: {
-                    index_url: 'iam/system/dict-type/index',
-                    add_url: 'iam/system/dict-type/add',
-                    edit_url: 'iam/system/dict-type/edit',
-                    del_url: 'iam/system/dict-type/del',
-                    multi_url: 'iam/system/dict-type/multi',
+                    index_url: '/iam/system/dict-types',
+                    add_url: '/iam/dict/add',
+                    edit_url: '/iam/dict/edit',
+                    del_url: '/iam/system/dict-type',
+                    multi_url: '/iam/system/dict-type/multi',
                     table: 'core_dictionary',
                 }
             });
 
             var table = $("#table");
 
-            // 初始化表格
+            // 初始化表格 - 使用 client 模式因为后端没有分页接口
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'dict_id',
                 sortName: 'dict_sort',
-                sidePagination: 'server',
+                sidePagination: 'client',
                 pagination: true,
                 pageSize: 10,
                 columns: [
@@ -65,7 +65,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     title: '字典项管理',
                                     classname: 'btn btn-xs btn-info btn-dialog',
                                     icon: 'fa fa-list',
-                                    url: 'iam/dict/item'
+                                    url: '/iam/dict/item'
                                 }
                             ]
                         }
@@ -84,7 +84,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         },
         api: {
             bindevent: function () {
-                Form.api.bindevent($("form[role=form]"));
+                Form.api.bindevent($("form[role=form]"), function (data, ret) {
+                    Layer.msg(ret.msg || '保存成功');
+                    setTimeout(function () {
+                        location.href = Fast.api.fixurl('iam/dict');
+                    }, 1000);
+                }, function (data, ret) {
+                    Layer.error(ret.msg || '保存失败');
+                });
             }
         }
     };

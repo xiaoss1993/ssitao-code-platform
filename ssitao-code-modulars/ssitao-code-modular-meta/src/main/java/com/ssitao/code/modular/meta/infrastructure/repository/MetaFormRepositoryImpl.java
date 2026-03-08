@@ -84,6 +84,23 @@ public class MetaFormRepositoryImpl implements MetaFormRepository {
     }
 
     @Override
+    public List<MetaFormDO> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        QueryWrapper wrapper = QueryWrapper.create()
+                .eq("tenant_id", tenantId)
+                .eq("is_deleted", 0);
+
+        // 处理排序
+        String sortColumn = sort != null && !sort.isEmpty() ? sort : "create_time";
+        boolean ascending = order == null || !"desc".equalsIgnoreCase(order);
+        wrapper.orderBy(sortColumn, ascending);
+
+        // 处理分页
+        wrapper.offset((page - 1) * limit).limit(limit);
+
+        return metaFormMapper.selectListByQuery(wrapper);
+    }
+
+    @Override
     public boolean existsByFormCode(String entityId, String formCode, String tenantId, String excludeId) {
         QueryWrapper wrapper = QueryWrapper.create()
                 .eq(MetaFormDO::getEntityId, entityId)

@@ -57,6 +57,8 @@
                         </section>
                         <div class="content">
                             <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
+                                <!-- JSON 数据隐藏字段 -->
+                                <input type="hidden" id="rowData" name="rowData" th:value="${rowData}" />
                                 <input type="hidden" name="id" id="id" value="" />
 
                                 <div class="form-group">

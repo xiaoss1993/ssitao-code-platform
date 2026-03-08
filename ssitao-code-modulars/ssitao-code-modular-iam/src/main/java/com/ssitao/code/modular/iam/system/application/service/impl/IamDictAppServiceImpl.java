@@ -132,6 +132,30 @@ public class IamDictAppServiceImpl implements IamDictAppService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void enableDictType(String ids, String tenantId) {
+        String[] idArray = ids.split(",");
+        for (String id : idArray) {
+            if (!id.trim().isEmpty()) {
+                dictTypeRepository.updateStatus(id.trim(), "1", tenantId);
+            }
+        }
+        clearDictTypeCache(tenantId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void disableDictType(String ids, String tenantId) {
+        String[] idArray = ids.split(",");
+        for (String id : idArray) {
+            if (!id.trim().isEmpty()) {
+                dictTypeRepository.updateStatus(id.trim(), "0", tenantId);
+            }
+        }
+        clearDictTypeCache(tenantId);
+    }
+
+    @Override
     public IamDictTypeDTO getDictTypeById(Long id, String tenantId) {
         IamDictType dictType = dictTypeRepository.findById(id.toString(), tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("字典类型不存在: " + id));

@@ -41,6 +41,16 @@ public class IamUserDO {
     private String userName;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    /**
      * 性别: MALE-男, FEMALE-女, UNKNOWN-未知
      */
     private String userSex;
@@ -124,6 +134,16 @@ public class IamUserDO {
      * 员工状态: ON_JOB-在职, RESIGN-离职, probation-试用期
      */
     private String userStatus;
+
+    /**
+     * 账号状态(1启用,0禁用)
+     */
+    private Integer status;
+
+    /**
+     * 部门ID
+     */
+    private String deptId;
 
     /**
      * 租户ID

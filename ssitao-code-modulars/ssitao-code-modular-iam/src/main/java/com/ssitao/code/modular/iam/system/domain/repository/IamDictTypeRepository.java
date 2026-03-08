@@ -72,4 +72,13 @@ public interface IamDictTypeRepository {
      */
     boolean existsByDictTypeCode(String dictTypeCode, String tenantId, String excludeId);
 
+    /**
+     * 更新字典类型状态
+     *
+     * @param id       字典类型ID
+     * @param status   状态
+     * @param tenantId 租户ID
+     */
+    void updateStatus(String id, String status, String tenantId);
+
 }

@@ -90,6 +90,13 @@ public class MetaEntityAppServiceImpl implements MetaEntityAppService {
     }
 
     @Override
+    public List<MetaEntityDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId) {
+        return metaEntityRepository.page(keyword, page, limit, sort, order, tenantId).stream()
+                .map(entity -> MetaEntityConverter.INSTANCE.toDTO(MetaEntityConverter.INSTANCE.toDO(entity)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean checkExists(String entityCode, String tenantId, String excludeId) {
         return metaEntityRepository.existsByCode(entityCode, tenantId, excludeId);
     }

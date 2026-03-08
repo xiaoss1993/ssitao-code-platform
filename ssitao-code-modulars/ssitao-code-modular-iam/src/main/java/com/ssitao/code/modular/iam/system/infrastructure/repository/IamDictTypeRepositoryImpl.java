@@ -107,4 +107,13 @@ public class IamDictTypeRepositoryImpl implements IamDictTypeRepository {
         }
         return dictTypeMapper.selectCountByQuery(query) > 0;
     }
+
+    @Override
+    public void updateStatus(String id, String status, String tenantId) {
+        IamDictTypeDO dictTypeDO = new IamDictTypeDO();
+        dictTypeDO.setId(id);
+        dictTypeDO.setStatus(Integer.parseInt(status));
+        dictTypeDO.setUpdateTime(LocalDateTime.now());
+        dictTypeMapper.update(dictTypeDO);
+    }
 }

@@ -95,6 +95,27 @@ public class MetaColumnRepositoryImpl implements MetaColumnRepository {
     }
 
     @Override
+    public List<MetaColumnDO> page(String tableId, String keyword, int page, int limit, String sort, String order, String tenantId) {
+        QueryWrapper wrapper = QueryWrapper.create()
+                .eq("tenant_id", tenantId)
+                .eq("is_deleted", 0);
+
+        if (tableId != null && !tableId.isEmpty()) {
+            wrapper.eq("table_id", tableId);
+        }
+
+        // 处理排序
+        String sortColumn = sort != null && !sort.isEmpty() ? sort : "column_sort";
+        boolean ascending = order == null || !"desc".equalsIgnoreCase(order);
+        wrapper.orderBy(sortColumn, ascending);
+
+        // 处理分页
+        wrapper.offset((page - 1) * limit).limit(limit);
+
+        return metaColumnMapper.selectListByQuery(wrapper);
+    }
+
+    @Override
     public boolean existsByColumnName(String tableId, String columnName, String tenantId, String excludeId) {
         QueryWrapper wrapper = QueryWrapper.create()
                 .eq(MetaColumnDO::getTableId, tableId)

@@ -122,6 +122,12 @@ public class MetaColumnAppServiceImpl implements MetaColumnAppService {
     }
 
     @Override
+    public List<MetaColumnDTO> page(String tableId, String keyword, int page, int limit, String sort, String order, String tenantId) {
+        List<MetaColumnDO> columns = metaColumnRepository.page(tableId, keyword, page, limit, sort, order, tenantId);
+        return MetaColumnConverter.INSTANCE.toDTOList(columns);
+    }
+
+    @Override
     public boolean checkExists(String tableId, String columnName, String tenantId, String excludeId) {
         return metaColumnRepository.existsByColumnName(tableId, columnName, tenantId, excludeId);
     }

@@ -33,7 +33,7 @@ public class MetaListController {
     @PostMapping("/create")
     @Operation(summary = "创建列表配置", description = "创建一个新的元数据列表配置")
     public CommonResult<String> create(@Valid @RequestBody MetaListCreateCommand command,
-                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         String listId = metaListAppService.create(command, tenantId);
         return success(listId);
     }
@@ -41,7 +41,7 @@ public class MetaListController {
     @PutMapping("/update")
     @Operation(summary = "更新列表配置", description = "更新元数据列表配置信息")
     public CommonResult<Void> update(@Valid @RequestBody MetaListUpdateCommand command,
-                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaListAppService.update(command, tenantId);
         return success();
     }
@@ -49,7 +49,7 @@ public class MetaListController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除列表配置", description = "删除指定列表配置")
     public CommonResult<Void> delete(@RequestParam String listId,
-                                      @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                      @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         metaListAppService.delete(listId, tenantId);
         return success();
     }
@@ -57,7 +57,7 @@ public class MetaListController {
     @GetMapping("/get")
     @Operation(summary = "获取列表配置详情", description = "根据ID获取列表配置详细信息")
     public CommonResult<MetaListDTO> getById(@RequestParam String listId,
-                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         MetaListDTO list = metaListAppService.getById(listId, tenantId);
         return success(list);
     }
@@ -65,7 +65,7 @@ public class MetaListController {
     @GetMapping("/list")
     @Operation(summary = "获取列表配置列表", description = "获取指定实体的所有列表配置列表")
     public CommonResult<List<MetaListDTO>> listByEntityId(@RequestParam String entityId,
-                                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaListDTO> lists = metaListAppService.listByEntityId(entityId, tenantId);
         return success(lists);
     }
@@ -73,8 +73,21 @@ public class MetaListController {
     @GetMapping("/list-by-entity/{entityId}")
     @Operation(summary = "根据实体ID获取列表", description = "根据实体ID获取列表配置列表")
     public CommonResult<List<MetaListDTO>> listByEntityIdPath(@PathVariable String entityId,
-                                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<MetaListDTO> lists = metaListAppService.listByEntityId(entityId, tenantId);
+        return success(lists);
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "分页获取列表配置", description = "分页获取列表配置列表")
+    public CommonResult<List<MetaListDTO>> page(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        List<MetaListDTO> lists = metaListAppService.page(keyword, page, limit, sort, order, tenantId);
         return success(lists);
     }
 }

@@ -43,6 +43,22 @@ public interface IamDictAppService {
     void deleteDictType(Long id, String tenantId);
 
     /**
+     * 批量启用字典类型
+     *
+     * @param ids      字典类型ID列表（逗号分隔）
+     * @param tenantId 租户ID
+     */
+    void enableDictType(String ids, String tenantId);
+
+    /**
+     * 批量禁用字典类型
+     *
+     * @param ids      字典类型ID列表（逗号分隔）
+     * @param tenantId 租户ID
+     */
+    void disableDictType(String ids, String tenantId);
+
+    /**
      * 根据ID获取字典类型
      *
      * @param id       字典类型ID

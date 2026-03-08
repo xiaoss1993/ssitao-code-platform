@@ -2,6 +2,7 @@ package com.ssitao.code.modular.iam.menu.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.menu.api.dto.IamMenuDTO;
 import com.ssitao.code.modular.iam.menu.application.service.IamMenuAppService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,17 +78,21 @@ public class IamMenuController {
     }
 
     /**
-     * 获取菜单列表
+     * 获取菜单列表（支持分页）
      */
     @GetMapping("/list")
-    @Operation(summary = "获取菜单列表", description = "获取菜单列表，支持按父节点筛选")
+    @Operation(summary = "获取菜单列表", description = "获取菜单列表，支持按父节点筛选和分页")
     @ResponseBody
-    public CommonResult<List<IamMenuDTO>> listMenus(
+    public CommonResult<PageResult<IamMenuDTO>> listMenus(
             @RequestParam(required = false) String parentId,
             @RequestParam(required = false) String menuType,
-            @RequestParam(required = false) Integer status) {
-        List<IamMenuDTO> menus = menuAppService.listMenus(parentId, menuType, status);
-        return success(menus);
+            @RequestParam(required = false) Integer status,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order) {
+        PageResult<IamMenuDTO> result = menuAppService.listMenusPage(page, size, parentId, menuType, status, sort, order);
+        return success(result);
     }
 
     /**

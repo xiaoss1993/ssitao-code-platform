@@ -36,7 +36,7 @@ public class IamDepartmentUserController {
     @Operation(summary = "添加用户到部门", description = "将一个或多个用户添加到指定部门")
     public CommonResult<Void> addUsersToDepartment(@RequestParam String departmentId,
                                                    @RequestBody List<String> userIds,
-                                                   @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         departmentUserService.addUsersToDepartment(departmentId, userIds, tenantId);
         return success();
     }
@@ -45,7 +45,7 @@ public class IamDepartmentUserController {
     @Operation(summary = "从部门移除用户", description = "从指定部门移除一个或多个用户")
     public CommonResult<Void> removeUsersFromDepartment(@RequestParam String departmentId,
                                                         @RequestBody List<String> userIds,
-                                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                        @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         departmentUserService.removeUsersFromDepartment(departmentId, userIds, tenantId);
         return success();
     }
@@ -55,7 +55,7 @@ public class IamDepartmentUserController {
     public CommonResult<Void> transferUsers(@RequestParam String fromDepartmentId,
                                             @RequestParam String toDepartmentId,
                                             @RequestBody List<String> userIds,
-                                            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         departmentUserService.transferUsers(fromDepartmentId, toDepartmentId, userIds, tenantId);
         return success();
     }
@@ -63,7 +63,7 @@ public class IamDepartmentUserController {
     @GetMapping("/department/{departmentId}/users")
     @Operation(summary = "获取部门用户列表", description = "获取指定部门下的所有用户")
     public CommonResult<List<IamUserProfileDTO>> getDepartmentUsers(@PathVariable String departmentId,
-                                                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamUserProfileDTO> users = departmentUserService.getDepartmentUsers(departmentId, tenantId);
         return success(users);
     }
@@ -71,7 +71,7 @@ public class IamDepartmentUserController {
     @GetMapping("/user/{userId}/departments")
     @Operation(summary = "获取用户的部门列表", description = "获取用户所属的所有部门")
     public CommonResult<List<IamDepartmentDTO>> getUserDepartments(@PathVariable String userId,
-                                                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamDepartmentDTO> departments = departmentUserService.getUserDepartments(userId, tenantId);
         return success(departments);
     }
@@ -79,7 +79,7 @@ public class IamDepartmentUserController {
     @GetMapping("/user/{userId}/main-department")
     @Operation(summary = "获取用户的主部门", description = "获取用户的主部门")
     public CommonResult<IamDepartmentDTO> getUserMainDepartment(@PathVariable String userId,
-                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamDepartmentDTO department = departmentUserService.getUserMainDepartment(userId, tenantId);
         return success(department);
     }
@@ -88,7 +88,7 @@ public class IamDepartmentUserController {
     @Operation(summary = "设置用户的主部门", description = "设置用户的主部门")
     public CommonResult<Void> setUserMainDepartment(@PathVariable String userId,
                                                     @RequestParam String departmentId,
-                                                    @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         departmentUserService.setUserMainDepartment(userId, departmentId, tenantId);
         return success();
     }

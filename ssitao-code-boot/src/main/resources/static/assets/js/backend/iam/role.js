@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
@@ -17,10 +17,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
                         }
-                        // 处理分页对象 (records: 数据列表, totalRow: 总数)
+                        // 处理分页对象 (rows: 数据列表, total: 总数)
+                        if (data.rows) {
+                            return { rows: data.rows, total: data.total };
+                        }
+                        // 如果返回的是分页对象 (records)
                         if (data.records) {
                             return { rows: data.records, total: data.totalRow || data.records.length };
                         }
+                        // 如果返回的是分页对象 (content)
                         if (data.content) {
                             return { rows: data.content, total: data.totalElements || data.content.length };
                         }
@@ -41,6 +46,15 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 pagination: true,
                 pageSize: 10,
                 pageList: [10, 25, 50, 100],
+                queryParamsType: 'undefined',
+                queryParams: function (params) {
+                    return {
+                        page: params.pageNumber,
+                        size: params.pageSize,
+                        sort: params.sortName,
+                        order: params.sortOrder
+                    };
+                },
                 columns: [
                     [
                         {field: 'state', checkbox: true},
@@ -103,13 +117,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 return null;
             };
 
-            // 兼容 id 和 ids 两种参数名
-            var id = getQueryString('id') || getQueryString('ids');
+            // 使用通用方法获取主键ID
+            var id = Utils.getPkId('id');
 
             if (id) {
                 // 编辑模式 - 获取数据
                 $.ajax({
-                    url: '/admin/role/get',
+                    url: '/iam/role/get',
                     type: 'GET',
                     data: { id: id },
                     dataType: 'json',
@@ -147,13 +161,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 if (id) {
                     // 编辑模式
                     submitData.id = parseInt(id);
-                    url = '/admin/role/update';
+                    url = '/iam/role';
                     method = 'PUT';
                 } else {
                     // 添加模式
                     submitData.roleCode = $('#roleCode').val();
                     submitData.roleType = $('#roleType').val();
-                    url = '/admin/role/create';
+                    url = '/iam/role';
                     method = 'POST';
                 }
 

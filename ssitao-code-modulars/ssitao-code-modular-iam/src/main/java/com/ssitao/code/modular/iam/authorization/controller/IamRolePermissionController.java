@@ -36,7 +36,7 @@ public class IamRolePermissionController {
     @Operation(summary = "为角色分配权限", description = "为角色分配一个或多个权限")
     public CommonResult<Void> assignPermissions(@RequestParam String roleId,
                                                  @RequestBody List<String> permissionIds,
-                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         rolePermissionService.assignPermissions(roleId, permissionIds, tenantId);
         return success();
     }
@@ -45,7 +45,7 @@ public class IamRolePermissionController {
     @Operation(summary = "撤销角色权限", description = "撤销角色中的一个或多个权限")
     public CommonResult<Void> revokePermissions(@RequestParam String roleId,
                                                 @RequestBody List<String> permissionIds,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         rolePermissionService.revokePermissions(roleId, permissionIds, tenantId);
         return success();
     }
@@ -53,7 +53,7 @@ public class IamRolePermissionController {
     @PostMapping("/revoke-all")
     @Operation(summary = "撤销角色所有权限", description = "撤销角色的所有权限")
     public CommonResult<Void> revokeAllPermissions(@RequestParam String roleId,
-                                                   @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         rolePermissionService.revokeAllPermissions(roleId, tenantId);
         return success();
     }
@@ -61,7 +61,7 @@ public class IamRolePermissionController {
     @GetMapping("/role/{roleId}")
     @Operation(summary = "获取角色的权限列表", description = "获取指定角色的所有权限")
     public CommonResult<List<IamPermissionDTO>> getRolePermissions(@PathVariable String roleId,
-                                                                   @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPermissionDTO> permissions = rolePermissionService.getRolePermissions(roleId, tenantId);
         return success(permissions);
     }
@@ -69,7 +69,7 @@ public class IamRolePermissionController {
     @GetMapping("/permission/{permissionId}")
     @Operation(summary = "获取权限下的角色列表", description = "获取指定权限下的所有角色")
     public CommonResult<List<IamRoleDTO>> getPermissionRoles(@PathVariable String permissionId,
-                                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamRoleDTO> roles = rolePermissionService.getPermissionRoles(permissionId, tenantId);
         return success(roles);
     }
@@ -78,7 +78,7 @@ public class IamRolePermissionController {
     @Operation(summary = "检查角色是否有指定权限", description = "检查角色是否拥有指定权限")
     public CommonResult<Boolean> checkPermission(@RequestParam String roleId,
                                                  @RequestParam String permissionId,
-                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         Boolean hasPermission = rolePermissionService.checkPermission(roleId, permissionId, tenantId);
         return success(hasPermission);
     }
@@ -87,7 +87,7 @@ public class IamRolePermissionController {
     @Operation(summary = "批量分配权限", description = "为多个角色批量分配权限")
     public CommonResult<Void> batchAssignPermissions(@RequestBody List<String> roleIds,
                                                      @RequestBody List<String> permissionIds,
-                                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         rolePermissionService.batchAssignPermissions(roleIds, permissionIds, tenantId);
         return success();
     }

@@ -102,6 +102,24 @@ public interface IamAccountConverter {
      * 领域模型转DTO
      */
     @Mapping(source = "id", target = "id")
+    @Mapping(source = "accountCode", target = "accountCode")
+    @Mapping(source = "accountName", target = "accountName")
+    @Mapping(source = "phone", target = "phone")
+    @Mapping(source = "email", target = "email")
+    @Mapping(source = "avatar", target = "avatar")
+    @Mapping(source = "status", target = "status")
+    @Mapping(source = "locked", target = "locked")
+    @Mapping(source = "lockExpireTime", target = "lockExpireTime")
+    @Mapping(source = "expireTime", target = "expireTime")
+    @Mapping(source = "passwordInited", target = "passwordInited")
+    @Mapping(source = "permanent", target = "permanent")
+    @Mapping(source = "lastLoginIp", target = "lastLoginIp")
+    @Mapping(source = "lastLoginTime", target = "lastLoginTime")
+    @Mapping(source = "userId", target = "userId")
+    @Mapping(source = "tenantId", target = "tenantId")
+    @Mapping(source = "orgId", target = "orgId")
+    @Mapping(source = "remark", target = "remark")
+    @Mapping(source = "createTime", target = "createTime")
     IamAccountDTO toDTOFromDomain(IamAccount domain);
 
     /**

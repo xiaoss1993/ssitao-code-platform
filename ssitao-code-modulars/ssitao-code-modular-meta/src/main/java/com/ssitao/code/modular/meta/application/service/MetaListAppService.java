@@ -42,6 +42,11 @@ public interface MetaListAppService {
     List<MetaListDTO> listByEntityId(String entityId, String tenantId);
 
     /**
+     * 分页获取列表配置
+     */
+    List<MetaListDTO> page(String keyword, int page, int limit, String sort, String order, String tenantId);
+
+    /**
      * 检查列表编码是否存在
      */
     boolean checkExists(String entityId, String listCode, String tenantId, String excludeId);

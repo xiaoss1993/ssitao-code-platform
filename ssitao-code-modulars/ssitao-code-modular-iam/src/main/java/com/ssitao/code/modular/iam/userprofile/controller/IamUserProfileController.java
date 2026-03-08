@@ -1,5 +1,7 @@
 package com.ssitao.code.modular.iam.userprofile.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.common.pojo.PageResult;
@@ -32,9 +34,11 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
 public class IamUserProfileController {
 
     private final IamUserProfileAppService userProfileAppService;
+    private final ObjectMapper objectMapper;
 
-    public IamUserProfileController(IamUserProfileAppService userProfileAppService) {
+    public IamUserProfileController(IamUserProfileAppService userProfileAppService, ObjectMapper objectMapper) {
         this.userProfileAppService = userProfileAppService;
+        this.objectMapper = objectMapper;
     }
 
     // ==================== 页面跳转 ====================
@@ -64,8 +68,24 @@ public class IamUserProfileController {
      */
     @GetMapping("/edit")
     @Operation(summary = "用户档案编辑页面")
-    public String userprofileEditPage(Model model) {
+    public String userprofileEditPage(Model model,
+                                       @RequestParam(required = false) String id,
+                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑用户档案", "userprofile");
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (id != null && !id.isEmpty()) {
+            try {
+                IamUserProfileDTO userProfile = userProfileAppService.getUserProfileById(id, tenantId);
+                if (userProfile != null) {
+                    String jsonData = objectMapper.writeValueAsString(userProfile);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (JsonProcessingException e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/userprofile-edit";
     }
 
@@ -99,7 +119,7 @@ public class IamUserProfileController {
     @Operation(summary = "删除用户档案", description = "删除指定用户档案")
     @ResponseBody
     public CommonResult<Void> deleteUserProfile(@PathVariable String id,
-                                                  @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.deleteUserProfile(id, tenantId);
         return success();
     }
@@ -108,7 +128,7 @@ public class IamUserProfileController {
     @Operation(summary = "获取用户档案详情", description = "根据ID获取用户档案详情")
     @ResponseBody
     public CommonResult<IamUserProfileDTO> getUserProfileById(@PathVariable String id,
-                                                               @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamUserProfileDTO userProfile = userProfileAppService.getUserProfileById(id, tenantId);
         return success(userProfile);
     }
@@ -117,7 +137,7 @@ public class IamUserProfileController {
     @Operation(summary = "根据用户编码获取档案", description = "根据用户编码获取用户档案信息")
     @ResponseBody
     public CommonResult<IamUserProfileDTO> getUserProfileByCode(@PathVariable String userCode,
-                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamUserProfileDTO userProfile = userProfileAppService.getUserProfileByCode(userCode, tenantId);
         return success(userProfile);
     }
@@ -129,7 +149,7 @@ public class IamUserProfileController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer pageSize,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         IamUserProfileQueryCommand command = new IamUserProfileQueryCommand();
         command.setKeyword(keyword);
         command.setSyTenantId(tenantId);
@@ -152,13 +172,59 @@ public class IamUserProfileController {
         return success(userProfiles);
     }
 
+    /**
+     * GET分页查询用户档案（支持前端Bootstrap Table）
+     */
+    @GetMapping("/page")
+    @Operation(summary = "分页查询用户档案", description = "GET分页查询用户档案列表，支持前端Bootstrap Table")
+    @ResponseBody
+    public CommonResult<PageResult<IamUserProfileDTO>> pageUserProfilesGet(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String realName,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String deptId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String offset,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order,
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+
+        IamUserProfileQueryCommand command = new IamUserProfileQueryCommand();
+        command.setKeyword(keyword);
+        command.setSyTenantId(tenantId);
+        command.setUserName(userName);
+        command.setNickname(nickname);
+        command.setRealName(realName);
+        command.setUserPhone(phone);
+        command.setUserMail(email);
+
+        if (status != null && !status.isEmpty()) {
+            command.setStatus(Integer.parseInt(status));
+        }
+        if (deptId != null && !deptId.isEmpty()) {
+            command.setDeptId(deptId);
+        }
+
+        List<IamUserProfileDTO> userProfiles = userProfileAppService.pageUserProfiles(command, page, limit);
+
+        PageResult<IamUserProfileDTO> result = new PageResult<>();
+        result.setRows(userProfiles);
+        result.setTotal(userProfiles.size());
+        return success(result);
+    }
+
     // ==================== 用户档案状态管理接口 ====================
 
     @PutMapping("/{id}/enable")
     @Operation(summary = "启用用户档案", description = "启用指定用户档案")
     @ResponseBody
     public CommonResult<Void> enableUserProfile(@PathVariable String id,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.enableUserProfile(id, tenantId);
         return success();
     }
@@ -167,7 +233,7 @@ public class IamUserProfileController {
     @Operation(summary = "禁用用户档案", description = "禁用指定用户档案")
     @ResponseBody
     public CommonResult<Void> disableUserProfile(@PathVariable String id,
-                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.disableUserProfile(id, tenantId);
         return success();
     }
@@ -180,7 +246,7 @@ public class IamUserProfileController {
     public CommonResult<Void> assignDepartment(@PathVariable String id,
                                                 @RequestParam String deptId,
                                                 @RequestParam String deptName,
-                                                @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.assignDepartment(id, deptId, deptName, tenantId);
         return success();
     }
@@ -191,7 +257,7 @@ public class IamUserProfileController {
     public CommonResult<Void> assignPost(@PathVariable String id,
                                           @RequestParam String postCode,
                                           @RequestParam String postName,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.assignPost(id, postCode, postName, tenantId);
         return success();
     }
@@ -202,7 +268,7 @@ public class IamUserProfileController {
     public CommonResult<Void> assignRole(@PathVariable String id,
                                           @RequestParam String roleId,
                                           @RequestParam String roleName,
-                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                          @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         userProfileAppService.assignRole(id, roleId, roleName, tenantId);
         return success();
     }
@@ -242,7 +308,7 @@ public class IamUserProfileController {
     @Operation(summary = "根据部门查询用户档案", description = "获取指定部门的用户档案列表")
     @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> getUserProfilesByDepartment(@PathVariable String deptId,
-                                                                              @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                              @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.getUserProfilesByDepartment(deptId, tenantId);
         return success(userProfiles);
     }
@@ -251,7 +317,7 @@ public class IamUserProfileController {
     @Operation(summary = "根据岗位查询用户档案", description = "获取指定岗位的用户档案列表")
     @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> getUserProfilesByPost(@PathVariable String postCode,
-                                                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                       @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.getUserProfilesByPost(postCode, tenantId);
         return success(userProfiles);
     }
@@ -260,7 +326,7 @@ public class IamUserProfileController {
     @Operation(summary = "搜索用户档案", description = "根据关键字搜索用户档案")
     @ResponseBody
     public CommonResult<List<IamUserProfileDTO>> searchUserProfiles(@RequestParam String keyword,
-                                                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                     @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamUserProfileDTO> userProfiles = userProfileAppService.searchUserProfiles(keyword, tenantId);
         return success(userProfiles);
     }

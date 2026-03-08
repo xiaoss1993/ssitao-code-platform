@@ -47,7 +47,7 @@ public class DynamicRenderController {
     public CommonResult<Map<String, Object>> getFormConfig(
             @Parameter(description = "实体ID") @PathVariable String entityId,
             @Parameter(description = "表单类型") @RequestParam(required = false, defaultValue = "1") Integer formType,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         // 获取指定类型的表单
         List<MetaFormDTO> forms = metaFormAppService.listByEntityId(entityId, tenantId);
@@ -79,7 +79,7 @@ public class DynamicRenderController {
     @Operation(summary = "获取所有表单配置", description = "根据实体ID获取所有表单配置列表")
     public CommonResult<List<Map<String, Object>>> getAllFormConfigs(
             @Parameter(description = "实体ID") @PathVariable String entityId,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         List<MetaFormDTO> forms = metaFormAppService.listByEntityId(entityId, tenantId);
         if (CollUtil.isEmpty(forms)) {
@@ -107,7 +107,7 @@ public class DynamicRenderController {
     public CommonResult<Map<String, Object>> getListConfig(
             @Parameter(description = "实体ID") @PathVariable String entityId,
             @Parameter(description = "列表类型") @RequestParam(required = false, defaultValue = "1") Integer listType,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         // 获取指定类型的列表
         List<MetaListDTO> lists = metaListAppService.listByEntityId(entityId, tenantId);
@@ -140,7 +140,7 @@ public class DynamicRenderController {
     @Operation(summary = "获取所有列表配置", description = "根据实体ID获取所有列表配置列表")
     public CommonResult<List<Map<String, Object>>> getAllListConfigs(
             @Parameter(description = "实体ID") @PathVariable String entityId,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         List<MetaListDTO> lists = metaListAppService.listByEntityId(entityId, tenantId);
         if (CollUtil.isEmpty(lists)) {
@@ -166,7 +166,7 @@ public class DynamicRenderController {
     @Operation(summary = "获取实体完整配置", description = "获取实体的表单和列表配置，用于配置页面")
     public CommonResult<Map<String, Object>> getEntityConfig(
             @Parameter(description = "实体ID") @PathVariable String entityId,
-            @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+            @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
 
         Map<String, Object> config = new HashMap<>();
 

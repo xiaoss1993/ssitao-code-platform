@@ -220,7 +220,7 @@ public class IamOrganizationController {
     @GetMapping("/group/list")
     @Operation(summary = "获取集团列表", description = "获取所有集团列表")
     @ResponseBody
-    public CommonResult<List<IamGroupDTO>> listGroups(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamGroupDTO>> listGroups(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamGroupDTO> groups = groupAppService.listGroups(tenantId);
         return success(groups);
     }
@@ -238,7 +238,7 @@ public class IamOrganizationController {
     @GetMapping("/company/list")
     @Operation(summary = "获取公司列表", description = "获取所有公司列表")
     @ResponseBody
-    public CommonResult<List<IamCompanyDTO>> listCompanies(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamCompanyDTO>> listCompanies(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamCompanyDTO> companies = companyAppService.listCompanies(tenantId);
         return success(companies);
     }
@@ -256,7 +256,7 @@ public class IamOrganizationController {
     @GetMapping("/department/list")
     @Operation(summary = "获取部门列表", description = "获取所有部门列表")
     @ResponseBody
-    public CommonResult<List<IamDepartmentDTO>> listDepartments(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamDepartmentDTO>> listDepartments(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamDepartmentDTO> departments = departmentAppService.listDepartments(tenantId);
         return success(departments);
     }
@@ -285,7 +285,7 @@ public class IamOrganizationController {
     @Operation(summary = "创建岗位", description = "创建新岗位")
     @ResponseBody
     public CommonResult<Long> createPost(@Valid @RequestBody IamPostCreateCommand command,
-                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         Long postId = postAppService.createPost(command);
         return success(postId);
     }
@@ -293,7 +293,7 @@ public class IamOrganizationController {
     @GetMapping("/post/list")
     @Operation(summary = "获取岗位列表", description = "获取所有岗位列表")
     @ResponseBody
-    public CommonResult<List<IamPostDTO>> listPosts(@RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+    public CommonResult<List<IamPostDTO>> listPosts(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPostDTO> posts = postAppService.listPosts(tenantId);
         return success(posts);
     }
@@ -302,7 +302,7 @@ public class IamOrganizationController {
     @Operation(summary = "更新岗位", description = "更新岗位信息")
     @ResponseBody
     public CommonResult<Void> updatePost(@Valid @RequestBody IamPostUpdateCommand command,
-                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                        @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         postAppService.updatePost(command);
         return success();
     }
@@ -311,7 +311,7 @@ public class IamOrganizationController {
     @Operation(summary = "删除岗位", description = "删除指定岗位")
     @ResponseBody
     public CommonResult<Void> deletePost(@PathVariable Long id,
-                                         @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         postAppService.deletePost(id, tenantId);
         return success();
     }
@@ -320,7 +320,7 @@ public class IamOrganizationController {
     @Operation(summary = "根据部门获取岗位", description = "获取指定部门下的岗位列表")
     @ResponseBody
     public CommonResult<List<IamPostDTO>> listPostsByDepartment(@PathVariable Long departmentId,
-                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         List<IamPostDTO> posts = postAppService.listPostsByDeptId(departmentId, tenantId);
         return success(posts);
     }

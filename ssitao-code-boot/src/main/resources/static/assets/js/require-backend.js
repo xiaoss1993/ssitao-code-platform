@@ -5,7 +5,7 @@ require.config({
         main: 'moment'
     }],
     //在打包压缩时将会把include中的模块合并到主文件中
-    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage'],
+    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage', 'utils'],
     paths: {
         // lang 模块路径
         'lang': '/assets/js/lang',
@@ -24,7 +24,7 @@ require.config({
         // 以下的包从libs目录加载（使用绝对路径）
         'jquery': '/assets/libs/jquery/dist/jquery.min',
         'bootstrap': '/assets/libs/bootstrap/dist/js/bootstrap.min',
-        'bootstrap-datetimepicker': '/assets/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
+        'bootstrap-datetimepicker': '/assets/libs/datapicker/bootstrap-datetimepicker.min',
         'bootstrap-select': '/assets/libs/bootstrap-select/dist/js/bootstrap-select.min',
         'bootstrap-select-lang': '/assets/libs/bootstrap-select/dist/js/i18n/defaults-zh_CN',
         'bootstrap-table': '/assets/libs/bootstrap-table/dist/bootstrap-table.min',
@@ -51,6 +51,8 @@ require.config({
         'template': '/assets/libs/art-template/dist/template-native',
         'selectpage': '/assets/libs/selectpage/selectpage',
         'css': '/assets/libs/require-css/css.min',
+        // 公共工具模块
+        'utils': '/assets/js/backend/utils',
     },
     // shim依赖配置
     shim: {
@@ -98,7 +100,7 @@ require.config({
             exports: '$.AdminLTE'
         },
         'bootstrap-datetimepicker': [
-            'moment/locale/zh-cn',
+            'css!/assets/libs/datapicker/bootstrap-datetimepicker.min.css'
         ],
         'bootstrap-select': ['css!/assets/libs/bootstrap-select/dist/css/bootstrap-select.min.css'],
         'bootstrap-select-lang': ['bootstrap-select'],

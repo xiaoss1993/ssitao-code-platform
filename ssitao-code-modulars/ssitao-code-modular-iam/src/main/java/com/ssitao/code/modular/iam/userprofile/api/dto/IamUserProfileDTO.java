@@ -32,6 +32,27 @@ public class IamUserProfileDTO {
     @Schema(description = "登录账号（前端兼容）")
     private String userName;
 
+    @Schema(description = "用户名")
+    private String user_name;
+
+    @Schema(description = "昵称")
+    private String nickname;
+
+    @Schema(description = "真实姓名")
+    private String real_name;
+
+    @Schema(description = "手机号")
+    private String phone;
+
+    @Schema(description = "邮箱")
+    private String email;
+
+    @Schema(description = "性别")
+    private String gender;
+
+    @Schema(description = "部门ID")
+    private String dept_id;
+
     @Schema(description = "姓名（前端兼容）")
     private String name;
 
@@ -40,6 +61,9 @@ public class IamUserProfileDTO {
 
     @Schema(description = "加入时间（前端兼容）")
     private String date;
+
+    @Schema(description = "创建时间")
+    private String create_time;
 
     @Schema(description = "状态（前端兼容）")
     private Integer status;
