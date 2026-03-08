@@ -22,7 +22,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "IAM菜单管理", description = "IAM菜单相关接口")
 @Controller
-@RequestMapping("/admin/menu")
+@RequestMapping("/iam/menu")
 public class IamMenuController {
 
     private final IamMenuAppService menuAppService;

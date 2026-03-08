@@ -8,139 +8,158 @@ import com.ssitao.code.modular.iam.organization.domain.event.DepartmentDisabledE
 import com.ssitao.code.modular.iam.organization.domain.event.DepartmentEnabledEvent;
 import com.ssitao.code.modular.iam.organization.domain.event.DepartmentLeaderUpdatedEvent;
 import com.ssitao.code.modular.iam.organization.domain.event.DepartmentUpdatedEvent;
+import com.ssitao.code.modular.iam.organization.domain.repository.IamDepartmentRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * 部门领域事件处理器
- * <p>
- * 处理部门相关的所有领域事件，包括：
- * - 部门创建事件
- * - 部门更新事件
- * - 部门删除事件
- * - 部门启用/禁用事件
- * - 子部门添加事件
- * - 负责人更新事件
  *
  * @author ssitao-code
  * @since 2.0.0
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class DepartmentEventHandler {
+
+    private final IamDepartmentRepository departmentRepository;
 
     /**
      * 处理部门创建事件
-     *
-     * @param event 部门创建事件
      */
     @EventHandler
     public void handle(DepartmentCreatedEvent event) {
         log.info("处理部门创建事件 - 部门ID: {}, 部门编码: {}, 部门名称: {}, 租户ID: {}",
                 event.getDeptId(), event.getDeptCode(), event.getDeptName(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 发送通知给相关部门人员
-        // 2. 同步到其他系统
-        // 3. 记录审计日志
-        // 4. 更新缓存
-        // 5. 发送消息到消息队列
+        // 1. 记录审计日志
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_CREATE",
+                "创建部门: " + event.getDeptName() + "(" + event.getDeptCode() + ")");
+
+        log.info("部门创建事件处理完成 - 部门ID: {}", event.getDeptId());
     }
 
     /**
      * 处理部门更新事件
-     *
-     * @param event 部门更新事件
      */
     @EventHandler
     public void handle(DepartmentUpdatedEvent event) {
         log.info("处理部门更新事件 - 部门ID: {}, 原名称: {}, 新名称: {}, 租户ID: {}",
                 event.getDeptId(), event.getOldDeptName(), event.getNewDeptName(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 清除部门缓存
-        // 2. 同步更新到其他系统
-        // 3. 记录变更历史
+        // 1. 记录变更历史
+        String changeInfo = buildChangeInfo(event);
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_UPDATE",
+                "更新部门: " + event.getNewDeptName() + ", 变更内容: " + changeInfo);
+
+        log.info("部门更新事件处理完成 - 部门ID: {}", event.getDeptId());
     }
 
     /**
      * 处理部门删除事件
-     *
-     * @param event 部门删除事件
      */
     @EventHandler
     public void handle(DepartmentDeletedEvent event) {
         log.info("处理部门删除事件 - 部门ID: {}, 部门编码: {}, 部门名称: {}, 租户ID: {}",
                 event.getDeptId(), event.getDeptCode(), event.getDeptName(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 检查并处理子部门
-        // 2. 检查并处理部门下的用户
-        // 3. 清除所有相关缓存
-        // 4. 记录删除日志
+        // 1. 检查是否存在子部门
+        List<?> childDepts = departmentRepository.findByParentId(event.getDeptId(), event.getTenantId());
+        if (childDepts != null && !childDepts.isEmpty()) {
+            log.warn("部门存在子部门，删除前需先处理子部门 - 部门ID: {}, 子部门数量: {}",
+                    event.getDeptId(), childDepts.size());
+        }
+
+        // 2. 记录删除日志
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_DELETE",
+                "删除部门: " + event.getDeptName() + "(" + event.getDeptCode() + ")");
+
+        log.info("部门删除事件处理完成 - 部门ID: {}", event.getDeptId());
     }
 
     /**
      * 处理部门启用事件
-     *
-     * @param event 部门启用事件
      */
     @EventHandler
     public void handle(DepartmentEnabledEvent event) {
         log.info("处理部门启用事件 - 部门ID: {}, 部门编码: {}, 部门名称: {}, 租户ID: {}",
                 event.getDeptId(), event.getDeptCode(), event.getDeptName(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 更新部门状态缓存
-        // 2. 通知相关部门人员
-        // 3. 恢复相关业务功能
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_ENABLE",
+                "启用部门: " + event.getDeptName() + "(" + event.getDeptCode() + ")");
+
+        log.info("部门启用事件处理完成 - 部门ID: {}", event.getDeptId());
     }
 
     /**
      * 处理部门禁用事件
-     *
-     * @param event 部门禁用事件
      */
     @EventHandler
     public void handle(DepartmentDisabledEvent event) {
         log.info("处理部门禁用事件 - 部门ID: {}, 部门编码: {}, 部门名称: {}, 租户ID: {}",
                 event.getDeptId(), event.getDeptCode(), event.getDeptName(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 清除部门状态缓存
-        // 2. 暂停相关业务功能
-        // 3. 通知相关部门人员
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_DISABLE",
+                "禁用部门: " + event.getDeptName() + "(" + event.getDeptCode() + ")");
+
+        log.info("部门禁用事件处理完成 - 部门ID: {}", event.getDeptId());
     }
 
     /**
      * 处理子部门添加事件
-     *
-     * @param event 子部门添加事件
      */
     @EventHandler
     public void handle(DepartmentChildAddedEvent event) {
         log.info("处理子部门添加事件 - 父部门ID: {}, 子部门ID: {}, 租户ID: {}",
                 event.getParentDeptId(), event.getChildDeptId(), event.getTenantId());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 更新部门树缓存
-        // 2. 更新层级关系
-        // 3. 同步到其他系统
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_CHILD_ADD",
+                "添加子部门: 父部门ID=" + event.getParentDeptId() + ", 子部门ID=" + event.getChildDeptId());
+
+        log.info("子部门添加事件处理完成 - 父部门ID: {}, 子部门ID: {}",
+                event.getParentDeptId(), event.getChildDeptId());
     }
 
     /**
      * 处理负责人更新事件
-     *
-     * @param event 负责人更新事件
      */
     @EventHandler
     public void handle(DepartmentLeaderUpdatedEvent event) {
         log.info("处理负责人更新事件 - 部门ID: {}, 原负责人: {}, 新负责人: {}, 新负责人姓名: {}",
                 event.getDeptId(), event.getOldLeaderId(), event.getNewLeaderId(), event.getNewLeaderName());
 
-        // TODO: 可以在这里添加以下业务逻辑：
-        // 1. 通知新旧负责人
-        // 2. 更新权限缓存
-        // 3. 记录变更历史
+        String changeInfo = String.format("原负责人ID: %s -> 新负责人ID: %s (姓名: %s)",
+                event.getOldLeaderId(), event.getNewLeaderId(), event.getNewLeaderName());
+        recordAuditLog(event.getTenantId(), "DEPARTMENT_LEADER_UPDATE",
+                "更新部门负责人: 部门ID=" + event.getDeptId() + ", " + changeInfo);
+
+        log.info("负责人更新事件处理完成 - 部门ID: {}", event.getDeptId());
+    }
+
+    // ==================== 辅助方法 ====================
+
+    /**
+     * 构建变更信息
+     */
+    private String buildChangeInfo(DepartmentUpdatedEvent event) {
+        StringBuilder sb = new StringBuilder();
+        if (event.getOldDeptName() != null && event.getNewDeptName() != null
+                && !event.getOldDeptName().equals(event.getNewDeptName())) {
+            sb.append("部门名称:").append(event.getOldDeptName()).append("->").append(event.getNewDeptName());
+        }
+        return sb.length() > 0 ? sb.toString() : "无变更";
+    }
+
+    /**
+     * 记录审计日志
+     */
+    private void recordAuditLog(String tenantId, String operation, String detail) {
+        log.debug("审计日志 - 租户:{}, 操作:{}, 详情:{}, 时间:{}",
+                tenantId, operation, detail, LocalDateTime.now());
     }
 }

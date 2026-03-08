@@ -40,7 +40,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "组织机构管理", description = "集团/公司/部门/岗位管理")
 @Controller
-@RequestMapping("/admin/org")
+@RequestMapping("/iam/org")
 public class IamOrganizationController {
 
     private final IamCompanyAppService companyAppService;
@@ -90,6 +90,96 @@ public class IamOrganizationController {
     @Operation(summary = "组织编辑页面")
     public String orgEditPage(Model model) {
         addCommonModel(model, "编辑组织", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 公司管理页面
+     */
+    @GetMapping("/company")
+    @Operation(summary = "公司管理页面")
+    public String companyPage(Model model) {
+        addCommonModel(model, "公司管理", "org");
+        return "iam/org";
+    }
+
+    /**
+     * 公司添加页面
+     */
+    @GetMapping("/company/add")
+    @Operation(summary = "公司添加页面")
+    public String companyAddPage(Model model) {
+        addCommonModel(model, "添加公司", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 公司编辑页面
+     */
+    @GetMapping("/company/edit")
+    @Operation(summary = "公司编辑页面")
+    public String companyEditPage(Model model) {
+        addCommonModel(model, "编辑公司", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 部门管理页面
+     */
+    @GetMapping("/department")
+    @Operation(summary = "部门管理页面")
+    public String departmentPage(Model model) {
+        addCommonModel(model, "部门管理", "org");
+        return "iam/org";
+    }
+
+    /**
+     * 部门添加页面
+     */
+    @GetMapping("/department/add")
+    @Operation(summary = "部门添加页面")
+    public String departmentAddPage(Model model) {
+        addCommonModel(model, "添加部门", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 部门编辑页面
+     */
+    @GetMapping("/department/edit")
+    @Operation(summary = "部门编辑页面")
+    public String departmentEditPage(Model model) {
+        addCommonModel(model, "编辑部门", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 岗位管理页面
+     */
+    @GetMapping("/post")
+    @Operation(summary = "岗位管理页面")
+    public String postPage(Model model) {
+        addCommonModel(model, "岗位管理", "org");
+        return "iam/org";
+    }
+
+    /**
+     * 岗位添加页面
+     */
+    @GetMapping("/post/add")
+    @Operation(summary = "岗位添加页面")
+    public String postAddPage(Model model) {
+        addCommonModel(model, "添加岗位", "org");
+        return "iam/org-edit";
+    }
+
+    /**
+     * 岗位编辑页面
+     */
+    @GetMapping("/post/edit")
+    @Operation(summary = "岗位编辑页面")
+    public String postEditPage(Model model) {
+        addCommonModel(model, "编辑岗位", "org");
         return "iam/org-edit";
     }
 
@@ -224,6 +314,15 @@ public class IamOrganizationController {
                                          @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         postAppService.deletePost(id, tenantId);
         return success();
+    }
+
+    @GetMapping("/post/by-department/{departmentId}")
+    @Operation(summary = "根据部门获取岗位", description = "获取指定部门下的岗位列表")
+    @ResponseBody
+    public CommonResult<List<IamPostDTO>> listPostsByDepartment(@PathVariable Long departmentId,
+                                                                 @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        List<IamPostDTO> posts = postAppService.listPostsByDeptId(departmentId, tenantId);
+        return success(posts);
     }
 
     // ==================== 通用方法 ====================

@@ -165,7 +165,7 @@ ssitao:
     # 租户ID 请求参数名称
     param-name: tenantId
     # 默认租户ID
-    default-tenant-id: default
+    default-tenant-id: 1
     # 忽略租户隔离的表
     ignore-tables:
       - iam_tenant

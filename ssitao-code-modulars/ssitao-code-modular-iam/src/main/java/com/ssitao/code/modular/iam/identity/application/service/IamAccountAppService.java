@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.application.service;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountCreateCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountUpdateCommand;
@@ -53,7 +54,7 @@ public interface IamAccountAppService {
     /**
      * 分页查询账号
      */
-    List<IamAccountDTO> pageAccounts(IamAccountQuery query, int page, int size);
+    PageResult<IamAccountDTO> pageAccounts(IamAccountQuery query, int page, int size);
 
     // ==================== 状态管理 ====================
 

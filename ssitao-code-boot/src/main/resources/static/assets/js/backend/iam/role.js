@@ -5,10 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/role/page',
-                    add_url: '/admin/role/add',
-                    edit_url: '/admin/role/edit',
-                    del_url: '/admin/role/delete',
+                    index_url: '/iam/role/page',
+                    add_url: '/iam/role/add',
+                    edit_url: '/iam/role/edit',
+                    del_url: '/iam/role/delete',
                     table: 'iam_role',
                 },
                 responseHandler: function (res) {
@@ -37,6 +37,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'sort_order',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 columns: [
                     [
                         {field: 'state', checkbox: true},

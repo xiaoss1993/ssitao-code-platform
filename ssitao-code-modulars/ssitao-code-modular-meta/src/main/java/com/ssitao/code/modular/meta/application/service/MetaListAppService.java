@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.meta.application.service;
 
+import com.ssitao.code.modular.meta.api.dto.MetaListColumnDTO;
 import com.ssitao.code.modular.meta.api.dto.MetaListDTO;
 import com.ssitao.code.modular.meta.application.command.MetaListCreateCommand;
 import com.ssitao.code.modular.meta.application.command.MetaListUpdateCommand;
@@ -44,4 +45,9 @@ public interface MetaListAppService {
      * 检查列表编码是否存在
      */
     boolean checkExists(String entityId, String listCode, String tenantId, String excludeId);
+
+    /**
+     * 根据列表ID获取列配置列表
+     */
+    List<MetaListColumnDTO> listColumnsByListId(String listId, String tenantId);
 }

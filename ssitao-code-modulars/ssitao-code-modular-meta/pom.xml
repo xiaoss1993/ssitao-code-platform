@@ -57,6 +57,12 @@
             <artifactId>ssitao-code-mybatis-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- MyBatis-Flex 代码生成器 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-codegen</artifactId>
+        </dependency>
+
         <!-- MySQL Driver -->
         <dependency>
             <groupId>com.mysql</groupId>

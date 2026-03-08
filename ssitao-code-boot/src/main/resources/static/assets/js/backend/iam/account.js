@@ -5,10 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/account/page',
-                    add_url: '/admin/account/add',
-                    edit_url: '/admin/account/edit',
-                    del_url: '/admin/account',
+                    index_url: '/iam/account/page',
+                    add_url: '/iam/account/add',
+                    edit_url: '/iam/account/edit',
+                    del_url: '/iam/account',
                     table: 'iam_account',
                 },
                 // 配置响应数据处理
@@ -41,6 +41,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'create_time',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 columns: [
                     [
                         {field: 'state', checkbox: true},
@@ -100,7 +104,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-dialog',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/admin/account/' + row.id + '/enable';
+                                        return '/iam/account/' + row.id + '/enable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -113,7 +117,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-dialog',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/admin/account/' + row.id + '/disable';
+                                        return '/iam/account/' + row.id + '/disable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');

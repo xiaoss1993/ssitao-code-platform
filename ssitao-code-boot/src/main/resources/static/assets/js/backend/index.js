@@ -1,6 +1,9 @@
 define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, undefined, Backend, AdminLTE, Form) {
     var Controller = {
         index: function () {
+            // 加载菜单数据
+            Controller.loadMenus();
+
             //窗口大小改变,修正主窗体最小高度
             $(window).resize(function () {
                 $(".tab-addtabs").css("height", $(".content-wrapper").height() + "px");
@@ -395,6 +398,148 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
                 localStorage.setItem("lastlogin", JSON.stringify({id: data.id, username: data.username, avatar: data.avatar}));
                 location.href = Backend.api.fixurl(data.url);
             });
+        },
+
+        /**
+         * 加载菜单数据并渲染
+         */
+        loadMenus: function () {
+            var $menuContainer = $("#sidebar-menu");
+            if ($menuContainer.length === 0) {
+                return;
+            }
+
+            $.ajax({
+                url: "/api/menus",
+                type: "GET",
+                dataType: "json",
+                success: function (res) {
+                    if (res.code === 200 && res.data && res.data.length > 0) {
+                        var html = '<li class="header">站内导航</li>';
+                        html += Controller.renderMenus(res.data);
+                        $menuContainer.html(html);
+
+                        // 初始化 AdminLTE 树形菜单
+                        if ($.AdminLTE && $.AdminLTE.tree) {
+                            $.AdminLTE.tree('.sidebar');
+                        }
+                    } else {
+                        // 菜单为空，显示提示
+                        $menuContainer.html('<li class="header">站内导航</li><li class="text-center" style="padding:20px;">暂无菜单权限</li>');
+                    }
+                },
+                error: function () {
+                    $menuContainer.html('<li class="header">站内导航</li><li class="text-center text-danger" style="padding:20px;">加载菜单失败</li>');
+                }
+            });
+        },
+
+        /**
+         * 图标名称映射：Ant Design -> Font Awesome
+         */
+        mapIcon: function (antIcon) {
+            if (!antIcon || antIcon === '') {
+                return 'fa fa-circle-o';
+            }
+            var map = {
+                // 常用图标映射
+                'DashboardOutlined': 'fa fa-dashboard',
+                'SettingOutlined': 'fa fa-cog',
+                'ApartmentOutlined': 'fa fa-building',
+                'BuildOutlined': 'fa fa-wrench',
+                'MenuOutlined': 'fa fa-bars',
+                'BookOutlined': 'fa fa-book',
+                'HomeOutlined': 'fa fa-home',
+                'UserOutlined': 'fa fa-user',
+                'TeamOutlined': 'fa fa-users',
+                'FileOutlined': 'fa fa-file',
+                'FolderOutlined': 'fa fa-folder',
+                'AppstoreOutlined': 'fa fa-th-large',
+                'MailOutlined': 'fa fa-envelope',
+                'LockOutlined': 'fa fa-lock',
+                'SafetyOutlined': 'fa fa-shield',
+                'GlobalOutlined': 'fa fa-globe',
+                'CloudOutlined': 'fa fa-cloud',
+                'DesktopOutlined': 'fa fa-desktop',
+                'MobileOutlined': 'fa fa-mobile',
+                'TableOutlined': 'fa fa-table',
+                'FormOutlined': 'fa fa-list-alt',
+                'SearchOutlined': 'fa fa-search',
+                'BellOutlined': 'fa fa-bell',
+                'CalendarOutlined': 'fa fa-calendar',
+                'ClockCircleOutlined': 'fa fa-clock-o',
+                'MoneyCollectOutlined': 'fa fa-money',
+                'ShoppingCartOutlined': 'fa fa-shopping-cart',
+                'MessageOutlined': 'fa fa-comment',
+                'StarOutlined': 'fa fa-star',
+                'HeartOutlined': 'fa fa-heart',
+                'FlagOutlined': 'fa fa-flag',
+                'TagOutlined': 'fa fa-tag',
+                'ToolOutlined': 'fa fa-gavel',
+                'DatabaseOutlined': 'fa fa-database',
+                'CodeOutlined': 'fa fa-code',
+                'ApiOutlined': 'fa fa-plug',
+                'RobotOutlined': 'fa fa-robot',
+                'ExperimentOutlined': 'fa fa-flask',
+                'FireOutlined': 'fa fa-fire',
+                'ThunderboltOutlined': 'fa fa-bolt',
+                'KeyOutlined': 'fa fa-key',
+                'IdCardOutlined': 'fa fa-id-card',
+                'CreditCardOutlined': 'fa fa-credit-card',
+                'BankOutlined': 'fa fa-university',
+                'CarOutlined': 'fa fa-car',
+                'EnvironmentOutlined': 'fa fa-leaf',
+                'CoffeeOutlined': 'fa fa-coffee',
+                'FilmOutlined': 'fa fa-film',
+                'CameraOutlined': 'fa fa-camera',
+                'PictureOutlined': 'fa fa-picture-o',
+                'VideoCameraOutlined': 'fa fa-video-camera',
+                'CustomerServiceOutlined': 'fa fa-headphones',
+                'SoundOutlined': 'fa fa-volume-up',
+                'Html5Outlined': 'fa fa-html5',
+                'Css3Outlined': 'fa fa-css3',
+                'AndroidOutlined': 'fa fa-android',
+                'AppleOutlined': 'fa fa-apple',
+                'WindowsOutlined': 'fa fa-windows',
+                'LinuxOutlined': 'fa fa-linux'
+            };
+            return map[antIcon] || 'fa fa-circle-o';
+        },
+
+        /**
+         * 渲染菜单 HTML
+         */
+        renderMenus: function (menus) {
+            var html = '';
+            for (var i = 0; i < menus.length; i++) {
+                var menu = menus[i];
+                var hasChildren = menu.children && menu.children.length > 0;
+                var icon = Controller.mapIcon(menu.icon);
+
+                if (hasChildren) {
+                    // 有子菜单，渲染为树形菜单
+                    html += '<li class="treeview">';
+                    html += '<a href="javascript:;">';
+                    html += '<i class="' + icon + '"></i> ';
+                    html += '<span>' + (menu.menuName || '未命名') + '</span>';
+                    html += '<span class="pull-right-container"><i class="fa fa-angle-left"></i></span>';
+                    html += '</a>';
+                    html += '<ul class="treeview-menu">';
+                    html += Controller.renderMenus(menu.children);
+                    html += '</ul>';
+                    html += '</li>';
+                } else {
+                    // 没有子菜单，渲染为普通菜单
+                    var path = menu.path && menu.path !== '' ? menu.path : 'javascript:;';
+                    html += '<li>';
+                    html += '<a href="' + path + '" addtabs="' + menu.id + '" url="' + path + '">';
+                    html += '<i class="' + icon + '"></i> ';
+                    html += '<span>' + (menu.menuName || '未命名') + '</span>';
+                    html += '</a>';
+                    html += '</li>';
+                }
+            }
+            return html;
         }
     };
 

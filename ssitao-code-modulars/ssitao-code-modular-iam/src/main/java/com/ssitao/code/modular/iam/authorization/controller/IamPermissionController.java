@@ -30,7 +30,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "IAM权限管理", description = "IAM权限管理接口")
 @Controller
-@RequestMapping("/admin/permission")
+@RequestMapping("/iam/permission")
 @Validated
 public class IamPermissionController {
 

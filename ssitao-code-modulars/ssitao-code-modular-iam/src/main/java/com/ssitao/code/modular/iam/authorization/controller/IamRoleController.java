@@ -30,7 +30,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "IAM角色管理", description = "IAM角色管理接口")
 @Controller
-@RequestMapping("/admin/role")
+@RequestMapping("/iam/role")
 @Validated
 public class IamRoleController {
 

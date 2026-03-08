@@ -3,6 +3,7 @@ package com.ssitao.code.controller;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.frame.mybatisflex.core.paginate.Page;
+import com.ssitao.code.frame.security.tenant.core.TenantContextHolder;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamPermissionDTO;
 import com.ssitao.code.modular.iam.authorization.api.dto.IamRoleDTO;
 import com.ssitao.code.modular.iam.authorization.application.command.IamRoleAssignPermissionCommand;
@@ -191,8 +192,8 @@ public class RoleManageController {
      * 获取当前租户ID
      */
     private String getTenantId() {
-        // TODO: 从上下文或Token中获取租户ID
-        return "default";
+        String tenantId = TenantContextHolder.getTenantId();
+        return tenantId != null ? tenantId : "default";
     }
 
 }

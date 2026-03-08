@@ -18,6 +18,11 @@ public class TenantContextHolder {
     private static final ThreadLocal<String> TENANT_ID = new TransmittableThreadLocal<>();
 
     /**
+     * 是否忽略租户隔离 线程变量
+     */
+    private static final ThreadLocal<Boolean> IGNORE_TENANT = new TransmittableThreadLocal<>();
+
+    /**
      * 获取当前租户ID
      *
      * @return 租户ID
@@ -49,6 +54,40 @@ public class TenantContextHolder {
      */
     public static boolean isTenant() {
         return TENANT_ID.get() != null;
+    }
+
+    /**
+     * 获取是否忽略租户隔离
+     *
+     * @return 是否忽略租户隔离
+     */
+    public static boolean isIgnoreTenant() {
+        Boolean ignore = IGNORE_TENANT.get();
+        return ignore != null && ignore;
+    }
+
+    /**
+     * 设置是否忽略租户隔离
+     *
+     * @param ignore 是否忽略租户隔离
+     */
+    public static void setIgnoreTenant(boolean ignore) {
+        IGNORE_TENANT.set(ignore);
+    }
+
+    /**
+     * 清除忽略租户隔离标志
+     */
+    public static void clearIgnoreTenant() {
+        IGNORE_TENANT.remove();
+    }
+
+    /**
+     * 清除所有租户上下文
+     */
+    public static void clearAll() {
+        TENANT_ID.remove();
+        IGNORE_TENANT.remove();
     }
 
 }

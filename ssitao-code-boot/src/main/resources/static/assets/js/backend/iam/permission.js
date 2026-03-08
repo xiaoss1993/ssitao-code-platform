@@ -5,14 +5,14 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/permission/page',
-                    list_url: '/admin/permission/list',
-                    add_url: '/admin/permission/add',
-                    edit_url: '/admin/permission/edit',
-                    del_url: '/admin/permission',
-                    enable_url: '/admin/permission/enable',
-                    disable_url: '/admin/permission/disable',
-                    tree_url: '/admin/permission/tree',
+                    index_url: '/iam/permission/page',
+                    list_url: '/iam/permission/list',
+                    add_url: '/iam/permission/add',
+                    edit_url: '/iam/permission/edit',
+                    del_url: '/iam/permission',
+                    enable_url: '/iam/permission/enable',
+                    disable_url: '/iam/permission/disable',
+                    tree_url: '/iam/permission/tree',
                     table: 'iam_permission',
                 },
                 // 配置响应数据处理
@@ -44,8 +44,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'sort_order',
-                treeShowField: 'permissionName',
+                treeShowField: 'permission_name',
                 parentIdField: 'parent_id',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 columns: [
                     [
                         {field: 'state', checkbox: true},

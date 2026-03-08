@@ -3,6 +3,7 @@ package com.ssitao.code.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
 import com.ssitao.code.common.pojo.PageResult;
+import com.ssitao.code.frame.security.tenant.core.TenantContextHolder;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountCreateCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountUpdateCommand;
@@ -59,9 +60,7 @@ public class UserManageController {
         query.setStatus(status);
         query.setTenantId(getTenantId());
 
-        List<IamAccountDTO> list = accountAppService.pageAccounts(query, page, size);
-
-        PageResult<IamAccountDTO> result = PageResult.of(list, list.size());
+        PageResult<IamAccountDTO> result = accountAppService.pageAccounts(query, page, size);
 
         return CommonResult.success(result);
     }
@@ -299,8 +298,8 @@ public class UserManageController {
      * 获取当前租户ID
      */
     private String getTenantId() {
-        // TODO: 从上下文或Token中获取租户ID
-        return "default";
+        String tenantId = TenantContextHolder.getTenantId();
+        return tenantId != null ? tenantId : "default";
     }
 
 }

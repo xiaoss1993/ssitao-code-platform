@@ -29,7 +29,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
                 },
                 async: {
                     enable: true,
-                    url: '/admin/menu/tree',
+                    url: '/iam/menu/tree',
                     autoParam: ["id"],
                     dataFilter: function (treeId, parentNode, responseData) {
                         if (responseData.code === 200 && responseData.data) {
@@ -53,7 +53,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
             // 加载树数据
             function loadTree() {
                 $.ajax({
-                    url: '/admin/menu/tree',
+                    url: '/iam/menu/tree',
                     type: 'get',
                     dataType: 'json',
                     success: function (res) {
@@ -74,10 +74,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree'], function ($
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/menu/list',
-                    add_url: '/admin/menu/add',
-                    edit_url: '/admin/menu/edit',
-                    del_url: '/admin/menu',
+                    index_url: '/iam/menu/list',
+                    add_url: '/iam/menu/add',
+                    edit_url: '/iam/menu/edit',
+                    del_url: '/iam/menu',
                     table: 'iam_menu',
                 },
                 responseHandler: function (res) {

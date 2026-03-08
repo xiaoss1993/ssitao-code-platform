@@ -50,6 +50,11 @@ public class SsitaoTenantLine implements TenantLine {
 
     @Override
     public boolean ignoreTable(String tableName) {
+        // 检查是否全局忽略租户隔离
+        if (TenantContextHolder.isIgnoreTenant()) {
+            return true;
+        }
+
         if (IGNORE_TABLES.contains(tableName)) {
             return true;
         }

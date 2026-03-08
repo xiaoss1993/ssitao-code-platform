@@ -5,10 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/tenant/page',
-                    add_url: '/admin/tenant/add',
-                    edit_url: '/admin/tenant/edit',
-                    del_url: '/admin/tenant',
+                    index_url: '/iam/tenant/page',
+                    add_url: '/iam/tenant/add',
+                    edit_url: '/iam/tenant/edit',
+                    del_url: '/iam/tenant',
                     table: 'iam_tenant',
                 },
                 // 配置响应数据处理
@@ -32,18 +32,22 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
-                sortName: 'createTime',
+                sortName: 'create_time',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 columns: [
                     [
                         {field: 'state', checkbox: true},
                         {field: 'id', title: 'ID', sortable: true},
-                        {field: 'tenantCode', title: '租户编码', operate: 'LIKE'},
-                        {field: 'tenantName', title: '租户名称', operate: 'LIKE'},
-                        {field: 'contactName', title: '联系人'},
-                        {field: 'contactPhone', title: '联系电话', operate: 'LIKE'},
-                        {field: 'contactEmail', title: '联系邮箱', operate: 'LIKE'},
-                        {field: 'expireTime', title: '过期时间', operate: 'RANGE', addclass: 'datetimerange'},
-                        {field: 'maxUsers', title: '最大用户数'},
+                        {field: 'tenant_code', title: '租户编码', operate: 'LIKE'},
+                        {field: 'tenant_name', title: '租户名称', operate: 'LIKE'},
+                        {field: 'contact_name', title: '联系人'},
+                        {field: 'contact_phone', title: '联系电话', operate: 'LIKE'},
+                        {field: 'contact_email', title: '联系邮箱', operate: 'LIKE'},
+                        {field: 'expire_time', title: '过期时间', operate: 'RANGE', addclass: 'datetimerange'},
+                        {field: 'max_users', title: '最大用户数'},
                         {
                             field: 'status',
                             title: '状态',
@@ -75,7 +79,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-dialog',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/admin/tenant/' + row.id + '/enable';
+                                        return '/iam/tenant/' + row.id + '/enable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -88,7 +92,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-dialog',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/admin/tenant/' + row.id + '/disable';
+                                        return '/iam/tenant/' + row.id + '/disable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');

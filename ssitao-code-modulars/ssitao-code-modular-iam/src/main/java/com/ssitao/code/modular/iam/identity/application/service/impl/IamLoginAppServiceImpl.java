@@ -105,7 +105,7 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
             }
         }
 
-        String tenantId = command.getTenantId() != null ? command.getTenantId() : "default";
+        String tenantId = command.getTenantId() != null ? command.getTenantId() : "1";
 
         // 首先尝试从数据库查找账号
         Optional<IamAccount> accountOpt = accountRepository.findByAccountCode(command.getUsername(), tenantId);

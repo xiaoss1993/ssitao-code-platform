@@ -89,9 +89,8 @@ public class WebTemplateConfig implements WebMvcConfigurer {
                 List<Map<String, Object>> menuList = createMenuList();
                 modelAndView.addObject("menuList", menuList);
 
-                // 添加左侧菜单数据
-                List<Map<String, Object>> menus = createMenus();
-                modelAndView.addObject("menus", menus);
+                // 禁用拦截器自动添加菜单，由IndexController统一设置
+                // 不再在这里添加默认菜单，避免覆盖Controller设置的菜单
 
                 // 添加消息提醒
                 modelAndView.addObject("hasNewMessage", false);

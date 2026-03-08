@@ -3,6 +3,8 @@ package com.ssitao.code.frame.security.tenant.utils;
 import com.ssitao.code.frame.security.tenant.config.TenantProperties;
 import com.ssitao.code.frame.security.tenant.core.TenantContextHolder;
 
+import java.util.function.Supplier;
+
 /**
  * 租户工具类
  * <p>
@@ -96,16 +98,50 @@ public class TenantUtils {
     /**
      * 忽略租户条件执行操作
      * <p>
-     * 在执行操作时临时忽略租户隔离
+     * 在执行操作时临时忽略租户隔离，用于跨租户查询或系统级操作
      *
      * @param runnable 要执行的操作
      */
     public static void withoutTenant(Runnable runnable) {
-        // TODO: 集成 MyBatis-Flex 的租户忽略功能
+        // 保存之前的忽略状态
+        Boolean previousIgnore = TenantContextHolder.isIgnoreTenant();
         try {
+            // 设置忽略租户隔离
+            TenantContextHolder.setIgnoreTenant(true);
             runnable.run();
         } finally {
-            // 清除可能设置的忽略标志
+            // 恢复之前的忽略状态
+            if (previousIgnore != null && previousIgnore) {
+                TenantContextHolder.setIgnoreTenant(true);
+            } else {
+                TenantContextHolder.clearIgnoreTenant();
+            }
+        }
+    }
+
+    /**
+     * 忽略租户条件执行操作并返回结果
+     * <p>
+     * 在执行操作时临时忽略租户隔离，用于跨租户查询或系统级操作
+     *
+     * @param supplier 要执行的操作
+     * @param <T> 返回值类型
+     * @return 操作结果
+     */
+    public static <T> T withoutTenant(Supplier<T> supplier) {
+        // 保存之前的忽略状态
+        Boolean previousIgnore = TenantContextHolder.isIgnoreTenant();
+        try {
+            // 设置忽略租户隔离
+            TenantContextHolder.setIgnoreTenant(true);
+            return supplier.get();
+        } finally {
+            // 恢复之前的忽略状态
+            if (previousIgnore != null && previousIgnore) {
+                TenantContextHolder.setIgnoreTenant(true);
+            } else {
+                TenantContextHolder.clearIgnoreTenant();
+            }
         }
     }
 

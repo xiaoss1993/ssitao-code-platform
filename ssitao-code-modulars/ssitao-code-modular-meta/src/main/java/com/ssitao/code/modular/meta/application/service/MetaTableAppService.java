@@ -24,4 +24,12 @@ public interface MetaTableAppService {
     List<MetaTableDTO> list(String tenantId);
 
     boolean checkExists(String tableName, String tenantId, String excludeId);
+
+    /**
+     * 生成代码
+     *
+     * @param id      表配置ID
+     * @param tenantId 租户ID
+     */
+    void generate(String id, String tenantId);
 }

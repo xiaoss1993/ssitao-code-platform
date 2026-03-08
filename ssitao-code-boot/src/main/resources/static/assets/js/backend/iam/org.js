@@ -22,10 +22,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         initGroupTable: function() {
             Table.api.init({
                 extend: {
-                    index_url: '/admin/org/group/list',
-                    add_url: '/admin/org/add',
-                    edit_url: '/admin/org/edit',
-                    del_url: '/admin/org/group',
+                    index_url: '/iam/org/group/list',
+                    add_url: '/iam/org/add',
+                    edit_url: '/iam/org/edit',
+                    del_url: '/iam/org/group',
                 }
             });
 
@@ -89,10 +89,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         initCompanyTable: function() {
             Table.api.init({
                 extend: {
-                    index_url: '/admin/org/company/list',
-                    add_url: '/admin/org/add',
-                    edit_url: '/admin/org/edit',
-                    del_url: '/admin/org/company',
+                    index_url: '/iam/org/company/list',
+                    add_url: '/iam/org/add',
+                    edit_url: '/iam/org/edit',
+                    del_url: '/iam/org/company',
                 }
             });
 
@@ -160,10 +160,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         initDepartmentTable: function() {
             Table.api.init({
                 extend: {
-                    index_url: '/admin/org/department/list',
-                    add_url: '/admin/org/add',
-                    edit_url: '/admin/org/edit',
-                    del_url: '/admin/org/department',
+                    index_url: '/iam/org/department/list',
+                    add_url: '/iam/org/add',
+                    edit_url: '/iam/org/edit',
+                    del_url: '/iam/org/department',
                 }
             });
 

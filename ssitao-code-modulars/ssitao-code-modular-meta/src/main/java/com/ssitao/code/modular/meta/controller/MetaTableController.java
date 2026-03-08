@@ -49,7 +49,7 @@ public class MetaTableController {
     @DeleteMapping("/delete")
     @Operation(summary = "删除元数据表", description = "删除指定元数据表")
     public CommonResult<Void> delete(@RequestParam String id,
-                                      @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+                                     @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         metaTableAppService.delete(id, tenantId);
         return success();
     }
@@ -72,8 +72,8 @@ public class MetaTableController {
     @PostMapping("/generate/{id}")
     @Operation(summary = "生成代码", description = "生成代码")
     public CommonResult<Void> generate(@PathVariable String id,
-                                        @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
-        // TODO: 实现代码生成逻辑
+                                       @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
+        metaTableAppService.generate(id, tenantId);
         return success();
     }
 }

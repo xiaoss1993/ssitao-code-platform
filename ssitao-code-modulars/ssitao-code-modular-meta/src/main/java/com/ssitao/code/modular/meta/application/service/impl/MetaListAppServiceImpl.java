@@ -242,4 +242,13 @@ public class MetaListAppServiceImpl implements MetaListAppService {
     public boolean checkExists(String entityId, String listCode, String tenantId, String excludeId) {
         return metaListRepository.existsByListCode(entityId, listCode, tenantId, excludeId);
     }
+
+    @Override
+    public List<MetaListColumnDTO> listColumnsByListId(String listId, String tenantId) {
+        List<MetaListColumnDO> columns = metaListRepository.findActiveColumnsByListId(listId, tenantId);
+        if (columns == null || columns.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        return MetaListConverter.INSTANCE.toColumnDTOList(columns);
+    }
 }

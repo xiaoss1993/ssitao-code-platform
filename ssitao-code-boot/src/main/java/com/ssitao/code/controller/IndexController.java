@@ -7,6 +7,8 @@ import com.ssitao.code.modular.iam.identity.application.command.IamLoginCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamLogoutCommand;
 import com.ssitao.code.modular.iam.identity.application.service.IamLoginAppService;
 import com.ssitao.code.modular.iam.identity.application.service.impl.IamLoginAppServiceImpl;
+import com.ssitao.code.modular.iam.menu.api.dto.IamMenuDTO;
+import com.ssitao.code.modular.iam.menu.application.service.IamMenuAppService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -38,6 +41,7 @@ import java.util.Map;
 public class IndexController {
 
     private final IamLoginAppService loginAppService;
+    private final IamMenuAppService menuAppService;
 
     /**
      * 登录页面
@@ -116,6 +120,10 @@ public class IndexController {
         model.addAttribute("userId", IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId()));
         model.addAttribute("userName", StpUtil.getLoginIdAsString());
 
+        // 获取当前用户的菜单列表
+        List<IamMenuDTO> menus = menuAppService.getMyMenus();
+        model.addAttribute("menus", menus);
+
         return "common/index";
     }
 
@@ -139,122 +147,134 @@ public class IndexController {
     }
 
     /**
-     * 通用页面跳转
-     * 根据页面名称跳转到对应的模板
-     */
-    @GetMapping("/page/{page}")
-    @Operation(summary = "通用页面跳转", description = "根据页面名称跳转到对应模板")
-    public String page(@PathVariable String page, Model model) {
-        if (!StpUtil.isLogin()) {
-            return "redirect:/login";
-        }
-        // 映射页面名称到模板路径
-        String templatePath = getTemplatePath(page);
-        return templatePath;
-    }
-
-    /**
-     * 获取模板路径
-     * 根据页面名称映射到对应的模板路径
-     */
-    private String getTemplatePath(String page) {
-        // 页面名称到模板路径的映射
-        switch (page) {
-            // 常规管理
-            case "config":
-                return "admin/config";
-            case "attachment":
-                return "admin/attachment";
-            case "profile":
-                return "common/profile";
-            // 权限管理
-            case "admin":
-                return "admin/admin";
-            case "adminlog":
-                return "admin/adminlog";
-            case "group":
-                return "admin/group";
-            case "rule":
-                return "admin/rule";
-            // 内容管理
-            case "page":
-                return "admin/page";
-            case "category":
-                return "admin/category";
-            // IAM模块
-            case "account":
-                return "iam/account";
-            case "role":
-                return "iam/role";
-            case "permission":
-                return "iam/permission";
-            case "menu":
-                return "iam/menu";
-            case "org":
-                return "iam/org";
-            case "tenant":
-                return "iam/tenant";
-            case "userprofile":
-                return "iam/userprofile";
-            case "audit":
-                return "iam/audit";
-            // Meta模块
-            case "table":
-                return "meta/table";
-            case "column":
-                return "meta/column";
-            case "form":
-                return "meta/form";
-            case "list":
-                return "meta/list";
-            default:
-                return page;
-        }
-    }
-
-    /**
-     * 获取当前用户菜单
+     * 获取当前用户菜单（JSON格式）
      */
     @GetMapping("/api/menus")
+    @ResponseBody
     @Operation(summary = "获取菜单", description = "获取当前用户的菜单列表")
-    public String getMenus(Model model) {
+    public Map<String, Object> getMenus() {
+        Map<String, Object> result = new HashMap<>();
+
         if (!StpUtil.isLogin()) {
-            return "redirect:/login";
+            result.put("code", 401);
+            result.put("msg", "未登录");
+            return result;
         }
 
-        // 获取用户权限
-        Object permissions = loginAppService.getCurrentUserPermissions(StpUtil.getTokenValue());
+        try {
+            // 获取当前用户的菜单数据
+            List<Map<String, Object>> menus = buildMenus();
+            result.put("code", 200);
+            result.put("msg", "success");
+            result.put("data", menus);
+        } catch (Exception e) {
+            result.put("code", 500);
+            result.put("msg", "获取菜单失败: " + e.getMessage());
+        }
 
-        // 构建菜单数据
-        List<Map<String, Object>> menus = buildMenus();
-        model.addAttribute("menus", menus);
+        return result;
+    }
 
-        return "fragments/menu :: sidebar";
+    /**
+     * 获取当前用户信息（JSON格式）
+     */
+    @GetMapping("/api/userinfo")
+    @ResponseBody
+    @Operation(summary = "获取用户信息", description = "获取当前登录用户的信息")
+    public Map<String, Object> getUserInfo() {
+        Map<String, Object> result = new HashMap<>();
+
+        if (!StpUtil.isLogin()) {
+            result.put("code", 401);
+            result.put("msg", "未登录");
+            return result;
+        }
+
+        try {
+            Object user = loginAppService.getCurrentUser(StpUtil.getTokenValue());
+            String userId = IamLoginAppServiceImpl.extractAccountId(StpUtil.getLoginId());
+            String userName = StpUtil.getLoginIdAsString();
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("userId", userId);
+            data.put("userName", userName);
+            data.put("realName", userName);
+            data.put("avatar", "/assets/img/default-avatar.png");
+
+            result.put("code", 200);
+            result.put("msg", "success");
+            result.put("data", data);
+        } catch (Exception e) {
+            result.put("code", 500);
+            result.put("msg", "获取用户信息失败: " + e.getMessage());
+        }
+
+        return result;
     }
 
     /**
      * 构建菜单数据
      */
     private List<Map<String, Object>> buildMenus() {
-        // TODO: 从数据库获取菜单
-        return Arrays.asList(
-                createMenu("dashboard", "控制台", "fa fa-dashboard", "/dashboard", true),
-                createMenu("general", "常规管理", "fa fa-cogs", null, false,
-                        createSubMenu("config", "系统配置", "fa fa-cog", "/page/config"),
-                        createSubMenu("attachment", "附件管理", "fa fa-file-image-o", "/page/attachment"),
-                        createSubMenu("profile", "个人配置", "fa fa-user", "/page/profile")
-                ),
-                createMenu("auth", "权限管理", "fa fa-group", null, false,
-                        createSubMenu("admin", "管理员管理", "fa fa-user", "/page/admin"),
-                        createSubMenu("adminlog", "管理员日志", "fa fa-list-alt", "/page/adminlog"),
-                        createSubMenu("group", "角色组", "fa fa-group", "/page/group"),
-                        createSubMenu("rule", "规则管理", "fa fa-bars", "/page/rule")
-                ),
-                createMenu("content", "内容管理", "fa fa-tags", null, false,
-                        createSubMenu("page", "单页管理", "fa fa-tags", "/page/page"),
-                        createSubMenu("category", "分类管理", "fa fa-list", "/page/category")
-                )
-        );
+        // 从数据库获取当前用户的菜单
+        List<IamMenuDTO> menuDTOs = menuAppService.getMyMenus();
+
+        if (menuDTOs == null || menuDTOs.isEmpty()) {
+            // 如果数据库没有菜单，返回空列表
+            return new java.util.ArrayList<>();
+        }
+
+        // 将 DTO 转换为前端需要的 Map 格式
+        return convertMenus(menuDTOs);
+    }
+
+    /**
+     * 将菜单DTO转换为前端兼容的Map格式
+     */
+    private List<Map<String, Object>> convertMenus(List<IamMenuDTO> menuDTOs) {
+        List<Map<String, Object>> menus = new java.util.ArrayList<>();
+
+        for (IamMenuDTO dto : menuDTOs) {
+            Map<String, Object> menu = new HashMap<>();
+            menu.put("id", dto.getId());
+            menu.put("menuName", dto.getMenuName());
+            menu.put("icon", dto.getIcon());
+            // 将菜单路径映射到正确的后端路由
+            menu.put("path", convertMenuPath(dto.getPath()));
+            menu.put("menuType", dto.getMenuType());
+            menu.put("children", new java.util.ArrayList<>());
+
+            // 递归处理子菜单
+            if (dto.getChildren() != null && !dto.getChildren().isEmpty()) {
+                menu.put("children", convertMenus(dto.getChildren()));
+            }
+
+            menus.add(menu);
+        }
+
+        return menus;
+    }
+
+    /**
+     * 将菜单路径转换为实际的后端路由
+     * 将旧的前端路径映射到新的后端Controller路由
+     */
+    private String convertMenuPath(String path) {
+        if (path == null || path.isEmpty()) {
+            return "javascript:;";
+        }
+
+        // 旧路径 -> 新路径 映射
+        if (path.startsWith("/admin/")) {
+            // /admin/system -> /iam/system
+            // /admin/org -> /iam/org
+            // /admin/menu -> /iam/menu
+            // /admin/tenant -> /iam/tenant
+            // /admin/monitor -> /iam/monitor
+            path = path.replaceFirst("/admin/", "/iam/");
+        }
+
+        return path;
     }
 
     private Map<String, Object> createMenu(String id, String name, String icon, String url, boolean isActive, Map<String, Object>... children) {

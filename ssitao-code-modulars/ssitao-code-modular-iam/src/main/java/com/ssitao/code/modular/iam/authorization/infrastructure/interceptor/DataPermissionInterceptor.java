@@ -3,14 +3,20 @@ package com.ssitao.code.modular.iam.authorization.infrastructure.interceptor;
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.frame.satoken.api.LoginUser;
 import com.ssitao.code.frame.satoken.core.SecurityUtil;
+import com.ssitao.code.frame.security.tenant.core.TenantContextHolder;
 import com.ssitao.code.modular.iam.authorization.domain.context.DataPermissionContext;
+import com.ssitao.code.modular.iam.authorization.domain.model.IamRole;
+import com.ssitao.code.modular.iam.authorization.domain.repository.IamRoleRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 数据权限拦截器
@@ -21,6 +27,7 @@ import java.util.Set;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class DataPermissionInterceptor implements HandlerInterceptor {
 
     /**
@@ -36,6 +43,8 @@ public class DataPermissionInterceptor implements HandlerInterceptor {
      * 超管角色编码
      */
     private static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
+
+    private final IamRoleRepository roleRepository;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -119,21 +128,102 @@ public class DataPermissionInterceptor implements HandlerInterceptor {
 
     /**
      * 根据角色确定数据权限范围
-     * 这里可以根据业务需求扩展：
-     * - 可以从数据库角色配置中读取数据权限范围
-     * - 可以根据角色级别确定权限范围
+     * 优先从数据库角色配置中读取数据权限范围
+     * 如果角色没有配置，则根据角色级别确定
      *
      * @param roles 角色编码集合
      * @return 数据权限范围
      */
     private String determineDataScopeFromRoles(Set<String> roles) {
-        // TODO: 可以根据业务需求扩展
-        // 示例实现：
-        // - 管理员角色：ALL
-        // - 部门经理角色：DEPT_AND_CHILD
-        // - 普通员工角色：SELF
+        String tenantId = TenantContextHolder.getTenantId();
 
-        // 目前默认返回：部门及子部门
-        return DATA_SCOPE_DEPT_AND_CHILD;
+        // 1. 尝试从数据库获取角色的数据权限配置
+        for (String roleCode : roles) {
+            Optional<IamRole> roleOpt = roleRepository.findByRoleCode(roleCode, tenantId);
+            if (roleOpt.isPresent()) {
+                IamRole role = roleOpt.get();
+                // 如果角色配置了数据权限范围，直接返回
+                String dataScope = getDataScopeFromRole(role);
+                if (dataScope != null) {
+                    log.debug("从角色配置获取数据权限: roleCode={}, dataScope={}", roleCode, dataScope);
+                    return dataScope;
+                }
+            }
+        }
+
+        // 2. 如果角色没有配置数据权限，则根据角色级别确定
+        // 获取用户拥有的最高角色级别（数值越小级别越高）
+        Integer highestLevel = getHighestRoleLevel(roles, tenantId);
+        if (highestLevel != null) {
+            return determineDataScopeByRoleLevel(highestLevel);
+        }
+
+        // 3. 默认返回：仅自己
+        return DATA_SCOPE_SELF;
+    }
+
+    /**
+     * 从角色对象获取数据权限范围
+     */
+    private String getDataScopeFromRole(IamRole role) {
+        // 使用 role暂时Level 作为判断依据
+        // 级别越高，权限越大
+        Integer level = role.getRoleLevel();
+        if (level == null) {
+            return null;
+        }
+
+        // 根据角色级别确定数据权限范围
+        // 级别1（最高）：全部数据
+        // 级别2：部门及子部门
+        // 级别3：仅本部门
+        // 级别4及以上：仅自己
+        if (level <= 1) {
+            return DATA_SCOPE_ALL;
+        } else if (level == 2) {
+            return DATA_SCOPE_DEPT_AND_CHILD;
+        } else if (level == 3) {
+            return DATA_SCOPE_DEPT;
+        } else {
+            return DATA_SCOPE_SELF;
+        }
+    }
+
+    /**
+     * 根据角色级别确定数据权限范围
+     */
+    private String determineDataScopeByRoleLevel(Integer roleLevel) {
+        if (roleLevel <= 1) {
+            return DATA_SCOPE_ALL;
+        } else if (roleLevel == 2) {
+            return DATA_SCOPE_DEPT_AND_CHILD;
+        } else if (roleLevel == 3) {
+            return DATA_SCOPE_DEPT;
+        } else {
+            return DATA_SCOPE_SELF;
+        }
+    }
+
+    /**
+     * 获取用户拥有的最高角色级别
+     * 数值越小级别越高
+     */
+    private Integer getHighestRoleLevel(Set<String> roles, String tenantId) {
+        Integer highestLevel = null;
+
+        for (String roleCode : roles) {
+            Optional<IamRole> roleOpt = roleRepository.findByRoleCode(roleCode, tenantId);
+            if (roleOpt.isPresent()) {
+                IamRole role = roleOpt.get();
+                Integer level = role.getRoleLevel();
+                if (level != null) {
+                    if (highestLevel == null || level < highestLevel) {
+                        highestLevel = level;
+                    }
+                }
+            }
+        }
+
+        return highestLevel;
     }
 }

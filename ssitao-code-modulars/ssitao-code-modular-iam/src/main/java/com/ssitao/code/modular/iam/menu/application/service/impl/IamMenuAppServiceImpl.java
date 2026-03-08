@@ -33,7 +33,11 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
     public List<IamMenuDTO> getMyMenus() {
         // TODO: 从当前用户获取权限后过滤菜单
         // 暂时返回所有菜单
+        // 如果租户功能未启用，使用默认租户ID "1"
         String tenantId = TenantUtils.getTenantId();
+        if (tenantId == null || tenantId.isEmpty()) {
+            tenantId = "1";
+        }
         List<IamMenu> menus = menuRepository.findAll(tenantId);
 
         if (menus == null || menus.isEmpty()) {

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.identity.application.service.impl;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountCreateCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountUpdateCommand;
@@ -142,7 +143,7 @@ public class IamAccountAppServiceImpl implements IamAccountAppService {
     }
 
     @Override
-    public List<IamAccountDTO> pageAccounts(IamAccountQuery query, int page, int size) {
+    public PageResult<IamAccountDTO> pageAccounts(IamAccountQuery query, int page, int size) {
         // 简单分页实现
         List<IamAccount> accounts = accountRepository.findByConditions(
                 query.getAccountName(),
@@ -150,11 +151,13 @@ public class IamAccountAppServiceImpl implements IamAccountAppService {
                 query.getStatus(),
                 query.getTenantId()
         );
-        return accounts.stream()
+        int total = accounts.size();
+        List<IamAccountDTO> pagedList = accounts.stream()
                 .skip((long) (page - 1) * size)
                 .limit(size)
                 .map(accountConverter::toDTOFromDomain)
                 .collect(Collectors.toList());
+        return PageResult.of(pagedList, total);
     }
 
     @Override

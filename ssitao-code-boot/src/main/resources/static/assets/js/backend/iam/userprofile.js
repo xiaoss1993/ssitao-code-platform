@@ -5,10 +5,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/admin/userprofile/page',
-                    add_url: '/admin/userprofile/add',
-                    edit_url: '/admin/userprofile/edit',
-                    del_url: '/admin/userprofile',
+                    index_url: '/iam/user/page',
+                    add_url: '/iam/user/add',
+                    edit_url: '/iam/user/edit',
+                    del_url: '/iam/user',
                     table: 'iam_user_profile',
                 },
                 // 配置响应数据处理
@@ -32,15 +32,19 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
-                sortName: 'createTime',
+                sortName: 'create_time',
+                sidePagination: 'server',
+                pagination: true,
+                pageSize: 10,
+                pageList: [10, 25, 50, 100],
                 columns: [
                     [
                         {field: 'state', checkbox: true},
                         {field: 'id', title: 'ID', sortable: true},
                         {field: 'nickname', title: '昵称', operate: 'LIKE'},
-                        {field: 'realName', title: '真实姓名', operate: 'LIKE'},
-                        {field: 'departmentName', title: '所属部门', operate: false},
-                        {field: 'postName', title: '岗位', operate: false},
+                        {field: 'real_name', title: '真实姓名', operate: 'LIKE'},
+                        {field: 'department_name', title: '所属部门', operate: false},
+                        {field: 'post_name', title: '岗位', operate: false},
                         {field: 'phone', title: '手机号', operate: 'LIKE'},
                         {field: 'email', title: '邮箱', operate: 'LIKE'},
                         {
@@ -87,7 +91,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-success btn-dialog',
                                     icon: 'fa fa-check',
                                     url: function (row) {
-                                        return '/admin/userprofile/' + row.id + '/enable';
+                                        return '/iam/user/' + row.id + '/enable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -100,7 +104,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     classname: 'btn btn-xs btn-warning btn-dialog',
                                     icon: 'fa fa-ban',
                                     url: function (row) {
-                                        return '/admin/userprofile/' + row.id + '/disable';
+                                        return '/iam/user/' + row.id + '/disable';
                                     },
                                     callback: function (data) {
                                         $("#table").bootstrapTable('refresh');
@@ -172,7 +176,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             loadPosts();
 
             // 添加模式
-            $('#edit-form').attr('action', '/iam/user-profile');
+            $('#edit-form').attr('action', '/iam/user');
             $('#edit-form').attr('method', 'POST');
 
             // 表单提交
@@ -267,7 +271,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             if (id) {
                 // 编辑模式 - 获取数据
                 $.ajax({
-                    url: '/iam/user-profile/' + id,
+                    url: '/iam/user/' + id,
                     type: 'GET',
                     dataType: 'json',
                     success: function(res) {
@@ -291,7 +295,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     }
                 });
 
-                $('#edit-form').attr('action', '/iam/user-profile');
+                $('#edit-form').attr('action', '/iam/user');
                 $('#edit-form').attr('method', 'PUT');
             }
 

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.meta.application.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.ssitao.code.modular.meta.dal.dataobject.MetaProcessInstanceDO;
 import com.ssitao.code.modular.meta.dal.dataobject.MetaTaskInstanceDO;
 import com.ssitao.code.modular.meta.dal.dataobject.MetaWorkflowDO;
@@ -7,6 +8,8 @@ import com.ssitao.code.modular.meta.domain.model.MetaProcessInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaTaskInstance;
 import com.ssitao.code.modular.meta.domain.model.MetaWorkflow;
 import com.ssitao.code.modular.meta.domain.repository.MetaWorkflowRepository;
+import com.ssitao.code.modular.meta.infrastructure.workflow.FlowJsonParser;
+import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +23,15 @@ import java.util.stream.Collectors;
  *
  * @author ssitao-code
  */
+@Slf4j
 @Service
 public class WorkflowServiceImpl implements WorkflowService {
 
     @Resource
     private MetaWorkflowRepository workflowRepository;
+
+    @Resource
+    private FlowJsonParser flowJsonParser;
 
     @Override
     public MetaWorkflow createWorkflow(String workflowCode, String workflowName, String entityId,
@@ -98,11 +105,9 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
 
         // 解析流程JSON获取开始节点
-        String startNodeId = "start";
-        if (workflowDO.getFlowJson() != null && workflowDO.getFlowJson().contains("startNodeId")) {
-            // 实际应该解析JSON获取，这里简化处理
-            startNodeId = "node_1";
-        }
+        FlowJsonParser.FlowNode startNode = flowJsonParser.getStartNode(workflowDO.getFlowJson());
+        String startNodeId = startNode != null ? startNode.getId() : "start";
+        String startNodeName = startNode != null ? startNode.getName() : "开始";
 
         String processId = UUID.randomUUID().toString();
         LocalDateTime now = LocalDateTime.now();
@@ -114,7 +119,7 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .title(title)
                 .initiator(initiator)
                 .currentNodeId(startNodeId)
-                .currentNodeName("开始")
+                .currentNodeName(startNodeName)
                 .status("RUNNING")
                 .tenantId(workflowDO.getTenantId())
                 .startTime(now)
@@ -126,7 +131,9 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowRepository.saveProcessInstance(processDO);
 
         // 创建第一个任务
-        createNextTask(instance, startNodeId, initiator);
+        createNextTask(instance, startNodeId, initiator, workflowDO.getFlowJson(), variables);
+
+        log.info("启动流程成功 - processId: {}, workflowId: {}, initiator: {}", processId, workflowId, initiator);
 
         return instance;
     }
@@ -294,15 +301,56 @@ public class WorkflowServiceImpl implements WorkflowService {
      * @return 创建的任务列表
      */
     private List<MetaTaskInstance> createNextTask(MetaProcessInstance process, String currentTaskId, String nextAssignee) {
+        return createNextTask(process, currentTaskId, nextAssignee, null, null);
+    }
+
+    /**
+     * 创建下一个任务（带流程JSON和变量）
+     *
+     * @param process         流程实例
+     * @param currentTaskId   当前任务ID
+     * @param nextAssignee    下一个处理人
+     * @param flowJson       流程JSON
+     * @param variables      流程变量
+     * @return 创建的任务列表
+     */
+    private List<MetaTaskInstance> createNextTask(MetaProcessInstance process, String currentTaskId,
+                                                  String nextAssignee, String flowJson,
+                                                  Map<String, Object> variables) {
         List<MetaTaskInstance> tasks = new ArrayList<>();
-
-        // 简化实现：创建下一个审批任务
-        // 实际应该根据流程图解析确定下一个节点
-        String nextNodeId = "node_2";
-        String nextNodeName = "审批";
-
         LocalDateTime now = LocalDateTime.now();
 
+        // 解析流程JSON获取下一个节点
+        String nextNodeId;
+        String nextNodeName;
+
+        if (flowJson != null && flowJsonParser != null) {
+            // 使用流程解析器获取下一个节点
+            List<FlowJsonParser.FlowNode> nextNodes = flowJsonParser.getNextNodes(flowJson, currentTaskId, variables);
+
+            if (CollUtil.isEmpty(nextNodes)) {
+                // 没有下一个节点，流程结束
+                log.info("流程已结束 - processId: {}", process.getId());
+                return tasks;
+            }
+
+            // 取第一个节点
+            FlowJsonParser.FlowNode nextNode = nextNodes.get(0);
+            nextNodeId = nextNode.getId();
+            nextNodeName = nextNode.getName();
+
+            // 检查是否为结束节点
+            if (flowJsonParser.isEndNode(flowJson, nextNodeId)) {
+                log.info("流程已结束 - processId: {}", process.getId());
+                return tasks;
+            }
+        } else {
+            // 降级处理：使用硬编码的节点
+            nextNodeId = "node_2";
+            nextNodeName = "审批";
+        }
+
+        // 创建任务
         MetaTaskInstance task = MetaTaskInstance.builder()
                 .id(UUID.randomUUID().toString())
                 .processId(process.getId())

@@ -28,7 +28,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "IAM用户档案管理", description = "IAM用户档案相关接口，基于 tb_iam_user 表")
 @Controller
-@RequestMapping("/admin/userprofile")
+@RequestMapping("/iam/user")
 public class IamUserProfileController {
 
     private final IamUserProfileAppService userProfileAppService;

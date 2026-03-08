@@ -2,6 +2,7 @@ package com.ssitao.code.modular.iam.identity.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.identity.api.dto.IamAccountDTO;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountCreateCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamAccountUpdateCommand;
@@ -29,7 +30,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "IAM账号管理", description = "IAM账号相关接口，基于 tb_iam_account 表")
 @Controller
-@RequestMapping("/admin/account")
+@RequestMapping("/iam/account")
 public class IamAccountController {
 
     private final IamAccountAppService accountAppService;
@@ -118,13 +119,13 @@ public class IamAccountController {
     @GetMapping("/page")
     @Operation(summary = "分页查询账号", description = "分页查询账号列表")
     @ResponseBody
-    public CommonResult<List<IamAccountDTO>> pageAccounts(IamAccountQuery query,
+    public CommonResult<PageResult<IamAccountDTO>> pageAccounts(IamAccountQuery query,
                                                             @RequestParam(defaultValue = "1") int page,
                                                             @RequestParam(defaultValue = "10") int size,
                                                             @RequestHeader(value = "tenantId", defaultValue = "default") String tenantId) {
         query.setTenantId(tenantId);
-        List<IamAccountDTO> accounts = accountAppService.pageAccounts(query, page, size);
-        return success(accounts);
+        PageResult<IamAccountDTO> pageResult = accountAppService.pageAccounts(query, page, size);
+        return success(pageResult);
     }
 
     @PostMapping("/change-password")

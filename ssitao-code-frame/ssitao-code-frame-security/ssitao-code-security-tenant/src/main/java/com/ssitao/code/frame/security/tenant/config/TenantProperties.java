@@ -44,6 +44,6 @@ public class TenantProperties {
     /**
      * 默认租户ID
      */
-    private String defaultTenantId = "0";
+    private String defaultTenantId = "1";
 
 }

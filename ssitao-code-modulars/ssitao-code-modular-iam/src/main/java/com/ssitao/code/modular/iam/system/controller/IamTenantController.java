@@ -26,7 +26,7 @@ import static com.ssitao.code.common.pojo.CommonResult.success;
  */
 @Tag(name = "租户管理", description = "租户CRUD操作")
 @Controller
-@RequestMapping("/admin/tenant")
+@RequestMapping("/iam/tenant")
 public class IamTenantController {
 
     private final IamTenantAppService tenantAppService;
