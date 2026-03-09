@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.organization.application.service.impl;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.service.IamDepartmentAppService;
@@ -132,6 +133,58 @@ public class IamDepartmentAppServiceImpl implements IamDepartmentAppService {
             return getMockDepartmentList();
         }
         return departmentConverter.toDTOList(departments);
+    }
+
+    @Override
+    public PageResult<IamDepartmentDTO> listDepartmentsPage(Integer page, Integer size, String tenantId, String sort, String order) {
+        List<IamDepartment> departments = departmentRepository.findAll(tenantId);
+
+        if (departments == null || departments.isEmpty()) {
+            List<IamDepartmentDTO> mockList = getMockDepartmentList();
+            return PageResult.of(mockList, mockList.size());
+        }
+
+        // 排序
+        if (sort != null && !sort.isEmpty()) {
+            String finalSort = sort;
+            String finalOrder = order != null ? order.toLowerCase() : "asc";
+            departments.sort((a, b) -> {
+                int cmp = 0;
+                switch (finalSort) {
+                    case "deptName":
+                    case "dept_name":
+                        cmp = (a.getDeptName() != null ? a.getDeptName() : "").compareTo(
+                              b.getDeptName() != null ? b.getDeptName() : "");
+                        break;
+                    case "createTime":
+                    case "create_time":
+                        cmp = (a.getCreateTime() != null ? a.getCreateTime().toString() : "").compareTo(
+                              b.getCreateTime() != null ? b.getCreateTime().toString() : "");
+                        break;
+                    default:
+                        cmp = (a.getDeptName() != null ? a.getDeptName() : "").compareTo(
+                              b.getDeptName() != null ? b.getDeptName() : "");
+                }
+                return "desc".equals(finalOrder) ? -cmp : cmp;
+            });
+        }
+
+        // 记录总数
+        int total = departments.size();
+
+        // 分页
+        int pageNum = page != null && page > 0 ? page : 1;
+        int pageSize = size != null && size > 0 ? size : 10;
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, departments.size());
+        if (start >= departments.size()) {
+            return PageResult.of(new ArrayList<>(), total);
+        }
+
+        List<IamDepartment> pagedDepartments = departments.subList(start, end);
+        List<IamDepartmentDTO> dtos = departmentConverter.toDTOList(pagedDepartments);
+
+        return PageResult.of(dtos, total);
     }
 
     @Override

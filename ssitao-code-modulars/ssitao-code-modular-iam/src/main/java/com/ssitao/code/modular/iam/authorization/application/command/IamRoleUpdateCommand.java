@@ -27,6 +27,16 @@ public class IamRoleUpdateCommand {
     private String roleName;
 
     /**
+     * 角色编码
+     */
+    private String roleCode;
+
+    /**
+     * 角色类型：SYSTEM-系统角色 CUSTOM-自定义角色
+     */
+    private String roleType;
+
+    /**
      * 数据权限范围
      */
     private String dataScope;

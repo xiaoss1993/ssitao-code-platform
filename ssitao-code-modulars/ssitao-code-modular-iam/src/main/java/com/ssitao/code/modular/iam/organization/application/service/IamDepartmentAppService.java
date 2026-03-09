@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.organization.application.service;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentUpdateCommand;
 import com.ssitao.code.modular.iam.organization.api.dto.IamDepartmentDTO;
@@ -61,6 +62,11 @@ public interface IamDepartmentAppService {
      * @return 部门列表
      */
     List<IamDepartmentDTO> listDepartments(String tenantId);
+
+    /**
+     * 分页获取部门列表
+     */
+    PageResult<IamDepartmentDTO> listDepartmentsPage(Integer page, Integer size, String tenantId, String sort, String order);
 
     /**
      * 获取部门树

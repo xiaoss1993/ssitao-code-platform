@@ -58,6 +58,14 @@
                         <div class="content">
                             <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST">
                                 <input type="hidden" name="id" id="id" value="" />
+                                <input type="hidden" name="syTenantId" id="syTenantId" value="1" />
+
+                                <div class="form-group">
+                                    <label class="control-label col-xs-12 col-sm-2">用户编码 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" name="userCode" value="" placeholder="用户唯一编码" data-rule="required;" />
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-xs-12 col-sm-2">用户名 <span class="text-danger">*</span></label>
@@ -101,14 +109,14 @@
                                 <div class="form-group">
                                     <label class="control-label col-xs-12 col-sm-2">手机号</label>
                                     <div class="col-xs-12 col-sm-8">
-                                        <input type="text" class="form-control" name="phone" value="" placeholder="请输入手机号" />
+                                        <input type="text" class="form-control" name="userPhone" value="" placeholder="请输入手机号" />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label col-xs-12 col-sm-2">邮箱</label>
                                     <div class="col-xs-12 col-sm-8">
-                                        <input type="email" class="form-control" name="email" value="" placeholder="请输入邮箱" />
+                                        <input type="email" class="form-control" name="userMail" value="" placeholder="请输入邮箱" />
                                     </div>
                                 </div>
 

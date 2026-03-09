@@ -8,7 +8,9 @@ import com.ssitao.code.modular.iam.organization.api.dto.IamGroupDTO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamPostDTO;
 import com.ssitao.code.modular.iam.organization.api.dto.IamUserOrgDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamCompanyCreateCommand;
+import com.ssitao.code.modular.iam.organization.application.command.IamCompanyUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentCreateCommand;
+import com.ssitao.code.modular.iam.organization.application.command.IamDepartmentUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamGroupUpdateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamPostCreateCommand;
@@ -235,6 +237,38 @@ public class IamOrganizationController {
         return success(companyId);
     }
 
+    @PutMapping("/company")
+    @Operation(summary = "更新公司", description = "更新公司信息")
+    @ResponseBody
+    public CommonResult<Void> updateCompany(@Valid @RequestBody IamCompanyUpdateCommand command) {
+        companyAppService.updateCompany(command);
+        return success();
+    }
+
+    @PutMapping(value = "/company", consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "更新公司(表单)", description = "更新公司信息-表单提交")
+    @ResponseBody
+    public CommonResult<Void> updateCompanyForm(IamCompanyUpdateCommand command) {
+        companyAppService.updateCompany(command);
+        return success();
+    }
+
+    @DeleteMapping("/company/{id}")
+    @Operation(summary = "删除公司", description = "删除指定公司")
+    @ResponseBody
+    public CommonResult<Void> deleteCompany(@PathVariable String id) {
+        companyAppService.deleteCompany(id);
+        return success();
+    }
+
+    @GetMapping("/company/{id}")
+    @Operation(summary = "获取公司详情", description = "根据ID获取公司详情")
+    @ResponseBody
+    public CommonResult<IamCompanyDTO> getCompany(@PathVariable String id) {
+        IamCompanyDTO company = companyAppService.getCompany(id);
+        return success(company);
+    }
+
     @GetMapping("/company/list")
     @Operation(summary = "获取公司列表", description = "获取所有公司列表")
     @ResponseBody
@@ -251,6 +285,42 @@ public class IamOrganizationController {
     public CommonResult<Long> createDepartment(@Valid @RequestBody IamDepartmentCreateCommand command) {
         Long deptId = departmentAppService.createDepartment(command);
         return success(deptId);
+    }
+
+    @PutMapping("/department")
+    @Operation(summary = "更新部门", description = "更新部门信息")
+    @ResponseBody
+    public CommonResult<Void> updateDepartment(@Valid @RequestBody IamDepartmentUpdateCommand command,
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        departmentAppService.updateDepartment(command);
+        return success();
+    }
+
+    @PutMapping(value = "/department", consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "更新部门(表单)", description = "更新部门信息-表单提交")
+    @ResponseBody
+    public CommonResult<Void> updateDepartmentForm(IamDepartmentUpdateCommand command,
+                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        departmentAppService.updateDepartment(command);
+        return success();
+    }
+
+    @DeleteMapping("/department/{id}")
+    @Operation(summary = "删除部门", description = "删除指定部门")
+    @ResponseBody
+    public CommonResult<Void> deleteDepartment(@PathVariable Long id,
+                                               @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        departmentAppService.deleteDepartment(id, tenantId);
+        return success();
+    }
+
+    @GetMapping("/department/{id}")
+    @Operation(summary = "获取部门详情", description = "根据ID获取部门详情")
+    @ResponseBody
+    public CommonResult<IamDepartmentDTO> getDepartment(@PathVariable Long id,
+                                                         @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        IamDepartmentDTO department = departmentAppService.getDepartmentById(id, tenantId);
+        return success(department);
     }
 
     @GetMapping("/department/list")

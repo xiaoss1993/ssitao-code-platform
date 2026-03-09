@@ -293,47 +293,7 @@ public class PageController {
         return "admin/version-edit";
     }
 
-    // ==================== 低代码平台 ====================
-
-    /**
-     * 表格管理页面
-     */
-    @GetMapping("/meta/table")
-    @Operation(summary = "表格管理页面")
-    public String metaTablePage(Model model) {
-        addCommonModel(model, "表格管理", "meta/table");
-        return "meta/table";
-    }
-
-    /**
-     * 字段管理页面
-     */
-    @GetMapping("/meta/column")
-    @Operation(summary = "字段管理页面")
-    public String metaColumnPage(Model model) {
-        addCommonModel(model, "字段管理", "meta/column");
-        return "meta/column";
-    }
-
-    /**
-     * 表单管理页面
-     */
-    @GetMapping("/meta/form")
-    @Operation(summary = "表单管理页面")
-    public String metaFormPage(Model model) {
-        addCommonModel(model, "表单管理", "meta/form");
-        return "meta/form";
-    }
-
-    /**
-     * 列表管理页面
-     */
-    @GetMapping("/meta/list")
-    @Operation(summary = "列表管理页面")
-    public String metaListPage(Model model) {
-        addCommonModel(model, "列表管理", "meta/list");
-        return "meta/list";
-    }
+    // ==================== 测试数据生成页面 ====================
 
     /**
      * 测试数据生成页面

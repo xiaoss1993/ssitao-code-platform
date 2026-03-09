@@ -304,15 +304,27 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         IamMenu menu = new IamMenu();
 
         menu.setId(dto.getId());
-        menu.setParentId(dto.getParentId());
+        // 处理 parentId：空字符串转为 null
+        String parentId = dto.getParentId();
+        menu.setParentId(parentId != null && !parentId.isEmpty() ? parentId : null);
         menu.setMenuName(dto.getMenuName());
-        menu.setMenuType(dto.getMenuType());
+        // 转换菜单类型：大写 DIRECTORY/MENU/BUTTON
+        menu.setMenuType(convertMenuType(dto.getMenuType()));
         menu.setPath(dto.getPath());
         menu.setComponent(dto.getComponent());
         menu.setPermission(dto.getPermission());
         menu.setIcon(dto.getIcon());
         menu.setSortOrder(dto.getSortOrder());
-        menu.setVisible(dto.getVisible());
+        
+        // 处理可见性：优先使用 meta.hidden，其次使用 visible
+        if (dto.getMeta() != null && dto.getMeta().getHidden() != null) {
+            menu.setVisible(dto.getMeta().getHidden() ? 0 : 1);
+        } else if (dto.getVisible() != null) {
+            menu.setVisible(dto.getVisible());
+        } else {
+            menu.setVisible(1);
+        }
+        
         menu.setStatus(dto.getStatus() != null ? dto.getStatus() : 1);
 
         // 前端扩展字段
@@ -323,13 +335,13 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         menu.setTag(dto.getTag());
         menu.setHiddenBreadcrumb(dto.getHiddenBreadcrumb());
 
-        // 从meta中提取字段
+        // 从meta中提取字段（优先级高于直接字段）
         if (dto.getMeta() != null) {
-            if (dto.getMeta().getTitle() != null) {
+            if (dto.getMeta().getTitle() != null && !dto.getMeta().getTitle().isEmpty()) {
                 menu.setMenuName(dto.getMeta().getTitle());
             }
-            if (dto.getMeta().getType() != null) {
-                menu.setMenuType(dto.getMeta().getType());
+            if (dto.getMeta().getType() != null && !dto.getMeta().getType().isEmpty()) {
+                menu.setMenuType(convertMenuType(dto.getMeta().getType()));
             }
             if (dto.getMeta().getIcon() != null) {
                 menu.setIcon(dto.getMeta().getIcon());
@@ -340,6 +352,35 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         }
 
         return menu;
+    }
+
+    /**
+     * 转换菜单类型：前端小写 -> 数据库大写
+     */
+    private String convertMenuType(String menuType) {
+        if (menuType == null || menuType.isEmpty()) {
+            return "MENU";
+        }
+        switch (menuType.toLowerCase()) {
+            case "directory":
+                return "DIRECTORY";
+            case "menu":
+                return "MENU";
+            case "button":
+                return "BUTTON";
+            default:
+                return menuType.toUpperCase();
+        }
+    }
+
+    /**
+     * 转换菜单类型为小写（数据库大写 -> 前端小写）
+     */
+    private String convertMenuTypeToLower(String menuType) {
+        if (menuType == null || menuType.isEmpty()) {
+            return "menu";
+        }
+        return menuType.toLowerCase();
     }
 
     /**
@@ -370,7 +411,10 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
         meta.setTitle(dto.getMenuName() != null ? dto.getMenuName() : "");
         meta.setIcon(dto.getIcon() != null ? dto.getIcon() : "");
         meta.setHidden(dto.getVisible() != null && dto.getVisible() == 0);
-        meta.setType(dto.getMenuType() != null ? dto.getMenuType() : "menu");
+        // 转换 menuType 为小写格式返回给前端
+        String menuTypeLower = convertMenuTypeToLower(dto.getMenuType());
+        dto.setMenuType(menuTypeLower);
+        meta.setType(menuTypeLower);
         meta.setColor(dto.getColor());
         meta.setFullpage(dto.getFullpage() != null ? dto.getFullpage() : false);
         meta.setTag(dto.getTag());

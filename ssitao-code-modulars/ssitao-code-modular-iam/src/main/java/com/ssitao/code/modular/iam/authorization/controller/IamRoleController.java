@@ -80,18 +80,100 @@ public class IamRoleController {
         return "redirect:/iam/role/page";
     }
 
-    @PostMapping("/create")
-    @Operation(summary = "创建角色", description = "创建一个新的角色")
+    /**
+     * 直接POST创建角色（支持FastAdmin）
+     */
+    @PostMapping(consumes = {"application/json"})
+    @Operation(summary = "创建角色(JSON)", description = "创建一个新的角色")
     @ResponseBody
-    public CommonResult<Long> createRole(@Valid @RequestBody IamRoleCreateCommand command) {
+    public CommonResult<Long> createRoleJson(@Valid @RequestBody IamRoleCreateCommand command) {
         Long roleId = roleAppService.createRole(command);
         return success(roleId);
     }
 
-    @PutMapping("/update")
-    @Operation(summary = "更新角色", description = "更新角色信息")
+    /**
+     * 直接POST创建角色（支持表单提交）
+     */
+    @PostMapping(consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "创建角色(表单)", description = "创建一个新的角色")
     @ResponseBody
-    public CommonResult<Void> updateRole(@Valid @RequestBody IamRoleUpdateCommand command) {
+    public CommonResult<Long> createRoleForm(
+            @RequestParam String roleCode,
+            @RequestParam String roleName,
+            @RequestParam(required = false, defaultValue = "CUSTOM") String roleType,
+            @RequestParam(required = false, defaultValue = "ALL") String dataScope,
+            @RequestParam(required = false, defaultValue = "0") Integer sortOrder,
+            @RequestParam(required = false) String remark,
+            @RequestParam(required = false, defaultValue = "true") Boolean status) {
+        
+        IamRoleCreateCommand command = new IamRoleCreateCommand();
+        command.setRoleCode(roleCode);
+        command.setRoleName(roleName);
+        command.setRoleType(roleType);
+        command.setDataScope(dataScope);
+        command.setSortOrder(sortOrder);
+        command.setRemark(remark);
+        command.setStatus(status);
+        
+        Long roleId = roleAppService.createRole(command);
+        return success(roleId);
+    }
+
+    // 保留原来的 /create 接口
+    @PostMapping("/create")
+    @Operation(summary = "创建角色(legacy)", description = "创建一个新的角色")
+    @ResponseBody
+    public CommonResult<Long> createRoleLegacy(@Valid @RequestBody IamRoleCreateCommand command) {
+        Long roleId = roleAppService.createRole(command);
+        return success(roleId);
+    }
+
+    /**
+     * 直接PUT更新角色（支持FastAdmin）
+     */
+    @PutMapping(consumes = {"application/json"})
+    @Operation(summary = "更新角色(JSON)", description = "更新角色信息")
+    @ResponseBody
+    public CommonResult<Void> updateRoleJson(@Valid @RequestBody IamRoleUpdateCommand command) {
+        roleAppService.updateRole(command);
+        return success();
+    }
+
+    /**
+     * 直接PUT更新角色（支持表单提交）
+     */
+    @PutMapping(consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "更新角色(表单)", description = "更新角色信息")
+    @ResponseBody
+    public CommonResult<Void> updateRoleForm(
+            @RequestParam String id,
+            @RequestParam(required = false) String roleCode,
+            @RequestParam(required = false) String roleName,
+            @RequestParam(required = false) String roleType,
+            @RequestParam(required = false) String dataScope,
+            @RequestParam(required = false) Integer sortOrder,
+            @RequestParam(required = false) String remark,
+            @RequestParam(required = false) Boolean status) {
+        
+        IamRoleUpdateCommand command = new IamRoleUpdateCommand();
+        command.setId(Long.parseLong(id));
+        command.setRoleCode(roleCode);
+        command.setRoleName(roleName);
+        command.setRoleType(roleType);
+        command.setDataScope(dataScope);
+        command.setSortOrder(sortOrder);
+        command.setRemark(remark);
+        command.setStatus(status);
+        
+        roleAppService.updateRole(command);
+        return success();
+    }
+
+    // 保留原来的 /update 接口
+    @PutMapping("/update")
+    @Operation(summary = "更新角色(legacy)", description = "更新角色信息")
+    @ResponseBody
+    public CommonResult<Void> updateRoleLegacy(@Valid @RequestBody IamRoleUpdateCommand command) {
         roleAppService.updateRole(command);
         return success();
     }

@@ -11,6 +11,7 @@ require.config({
         'lang': '/assets/js/lang',
         'form': '/assets/js/require-form',
         'table': '/assets/js/require-table',
+        'bootstrap-treegrid': '/assets/libs/bootstrap-table/dist/bootstrap-treegrid',
         'upload': '/assets/js/require-upload',
         'validator': '/assets/js/require-validator',
         'drag': '/assets/js/jquery.drag.min',
@@ -69,6 +70,10 @@ require.config({
         },
         'bootstrap-table-export': {
             deps: ['bootstrap-table', 'tableexport'],
+            exports: '$.fn.bootstrapTable.defaults'
+        },
+        'bootstrap-treegrid': {
+            deps: ['bootstrap-table'],
             exports: '$.fn.bootstrapTable.defaults'
         },
         'bootstrap-table-mobile': {

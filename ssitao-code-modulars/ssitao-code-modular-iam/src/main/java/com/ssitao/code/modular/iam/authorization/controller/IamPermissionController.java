@@ -74,18 +74,42 @@ public class IamPermissionController {
 
     // ==================== 权限CRUD接口 ====================
 
-    @PostMapping("/create")
-    @Operation(summary = "创建权限", description = "创建一个新的权限")
+    /**
+     * 直接POST创建权限（支持FastAdmin）
+     */
+    @PostMapping(consumes = {"application/json"})
+    @Operation(summary = "创建权限(JSON)", description = "创建一个新的权限")
     @ResponseBody
-    public CommonResult<Long> createPermission(@Valid @RequestBody IamPermissionCreateCommand command) {
+    public CommonResult<Long> createPermissionJson(@Valid @RequestBody IamPermissionCreateCommand command) {
         Long permissionId = permissionAppService.createPermission(command);
         return success(permissionId);
     }
 
-    @PutMapping("/update")
-    @Operation(summary = "更新权限", description = "更新权限信息")
+    // 保留原来的 /create 接口
+    @PostMapping("/create")
+    @Operation(summary = "创建权限(legacy)", description = "创建一个新的权限")
     @ResponseBody
-    public CommonResult<Void> updatePermission(@Valid @RequestBody IamPermissionUpdateCommand command) {
+    public CommonResult<Long> createPermissionLegacy(@Valid @RequestBody IamPermissionCreateCommand command) {
+        Long permissionId = permissionAppService.createPermission(command);
+        return success(permissionId);
+    }
+
+    /**
+     * 直接PUT更新权限（支持FastAdmin）
+     */
+    @PutMapping(consumes = {"application/json"})
+    @Operation(summary = "更新权限(JSON)", description = "更新权限信息")
+    @ResponseBody
+    public CommonResult<Void> updatePermissionJson(@Valid @RequestBody IamPermissionUpdateCommand command) {
+        permissionAppService.updatePermission(command);
+        return success();
+    }
+
+    // 保留原来的 /update 接口
+    @PutMapping("/update")
+    @Operation(summary = "更新权限(legacy)", description = "更新权限信息")
+    @ResponseBody
+    public CommonResult<Void> updatePermissionLegacy(@Valid @RequestBody IamPermissionUpdateCommand command) {
         permissionAppService.updatePermission(command);
         return success();
     }

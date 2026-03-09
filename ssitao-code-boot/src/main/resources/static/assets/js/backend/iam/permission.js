@@ -1,34 +1,29 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
 
     var Controller = {
         index: function () {
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/permission/page',
-                    list_url: '/iam/permission/list',
+                    index_url: '/iam/permission/tree',
                     add_url: '/iam/permission/add',
                     edit_url: '/iam/permission/edit',
                     del_url: '/iam/permission',
                     enable_url: '/iam/permission/enable',
                     disable_url: '/iam/permission/disable',
-                    tree_url: '/iam/permission/tree',
                     table: 'iam_permission',
                 },
                 // 配置响应数据处理
                 responseHandler: function (res) {
                     // 处理后端返回的数据格式
                     if (res.code === 200 && res.data) {
-                        // 如果返回的是数组（没有分页信息），转换为bootstrap-table格式
                         var data = res.data;
                         if (Array.isArray(data)) {
                             return { rows: data, total: data.length };
                         }
-                        // 处理分页对象 (rows: 数据列表, total: 总数)
                         if (data.rows) {
                             return { rows: data.rows, total: data.total };
                         }
-                        // 如果返回的是分页对象
                         if (data.records) {
                             return { rows: data.records, total: data.totalRow || data.records.length };
                         }
@@ -43,34 +38,34 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($
 
             var table = $("#table");
 
-            // 初始化表格
+            // 初始化表格 - 使用 bootstrap-treegrid 树形表格
             table.bootstrapTable({
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
-                sortName: 'sort_order',
-                treeShowField: 'permission_name',
-                parentIdField: 'parent_id',
-                sidePagination: 'server',
-                pagination: true,
-                pageSize: 10,
-                pageList: [10, 25, 50, 100],
-                queryParamsType: 'undefined',
-                queryParams: function (params) {
-                    return {
-                        page: params.pageNumber,
-                        size: params.pageSize,
-                        sort: params.sortName,
-                        order: params.sortOrder
-                    };
-                },
+                sortName: 'sortOrder',
+                // 树形表格配置
+                treeView: true,                        // 启用树形视图
+                treeId: 'id',                         // 定义关键字段来标识树节点
+                treeField: 'permName',                // 定义树节点字段
+                treeParentId: 'parentId',             // 定义父级ID字段
+                treeCollapseAll: false,                // 默认不折叠
+                cascadeCheck: false,                   // 不层叠选中状态
+                // 分页配置 - 禁用分页，因为树形数据不适合分页
+                sidePagination: 'client',
+                pagination: false,
+                // 搜索配置
+                search: true,
+                searchText: '',
+                // 排序配置
+                sortable: true,
                 columns: [
                     [
                         {field: 'state', checkbox: true},
                         {field: 'id', title: 'ID', sortable: true},
-                        {field: 'permission_name', title: '权限名称', operate: 'LIKE'},
-                        {field: 'permission_code', title: '权限编码', operate: 'LIKE'},
+                        {field: 'permName', title: '权限名称', operate: 'LIKE'},
+                        {field: 'permCode', title: '权限编码', operate: 'LIKE'},
                         {
-                            field: 'permission_type',
+                            field: 'permType',
                             title: '权限类型',
                             searchList: {"MENU": "菜单", "BUTTON": "按钮", "DATA": "数据"},
                             formatter: function (value, row, index) {
@@ -92,7 +87,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($
                         {field: 'icon', title: '图标', formatter: function (value, row, index) {
                             return value ? '<i class="' + value + '"></i>' : '-';
                         }},
-                        {field: 'sort_order', title: '排序', sortable: true},
+                        {field: 'sortOrder', title: '排序', sortable: true},
                         {
                             field: 'status',
                             title: '状态',
@@ -104,7 +99,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($
                             }
                         },
                         {
-                            field: 'create_time',
+                            field: 'createTime',
                             title: '创建时间',
                             operate: 'RANGE',
                             addclass: 'datetimerange',

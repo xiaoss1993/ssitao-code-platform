@@ -91,10 +91,67 @@ public class IamUserProfileController {
 
     // ==================== 用户档案 CRUD 接口 ====================
 
-    @PostMapping
-    @Operation(summary = "创建用户档案", description = "创建新用户档案（HR人员档案信息）")
+    /**
+     * JSON格式创建用户（支持前端AJAX JSON提交）
+     */
+    @PostMapping(consumes = {"application/json"})
+    @Operation(summary = "创建用户档案(JSON)", description = "创建新用户档案（JSON格式）")
     @ResponseBody
-    public CommonResult<String> createUserProfile(@Valid @RequestBody IamUserProfileCreateCommand command) {
+    public CommonResult<String> createUserProfileJson(@Valid @RequestBody IamUserProfileCreateCommand command) {
+        String userId = userProfileAppService.createUserProfile(command);
+        return success(userId);
+    }
+
+    /**
+     * 表单格式创建用户（支持FastAdmin表单提交）
+     */
+    @PostMapping(consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "创建用户档案(表单)", description = "创建新用户档案（表单格式）")
+    @ResponseBody
+    public CommonResult<String> createUserProfileForm(
+            @RequestParam String userCode,
+            @RequestParam String userName,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String realName,
+            @RequestParam(required = false) String userSexCode,
+            @RequestParam(required = false) String userPhone,
+            @RequestParam(required = false) String userMail,
+            @RequestParam(required = false) String userAvatar,
+            @RequestParam(required = false) String deptId,
+            @RequestParam(required = false) String deptName,
+            @RequestParam(required = false) String userPostCode,
+            @RequestParam(required = false) String userPostName,
+            @RequestParam(required = false) String userRoleId,
+            @RequestParam(required = false) String userRoleName,
+            @RequestParam(required = false) String userEntryDate,
+            @RequestParam(required = false) String userCardnum,
+            @RequestParam(required = false) String userEmployeeStatus,
+            @RequestParam(required = false) String userAddress,
+            @RequestParam(required = false) String userRemark,
+            @RequestParam(defaultValue = "1") String syTenantId) {
+        
+        IamUserProfileCreateCommand command = new IamUserProfileCreateCommand();
+        command.setUserCode(userCode);
+        command.setUserName(userName);
+        command.setNickname(nickname);
+        command.setRealName(realName);
+        command.setUserSexCode(userSexCode);
+        command.setUserPhone(userPhone);
+        command.setUserMail(userMail);
+        command.setUserAvatar(userAvatar);
+        command.setDeptId(deptId);
+        command.setDeptName(deptName);
+        command.setUserPostCode(userPostCode);
+        command.setUserPostName(userPostName);
+        command.setUserRoleId(userRoleId);
+        command.setUserRoleName(userRoleName);
+        command.setUserEntryDate(userEntryDate);
+        command.setUserCardnum(userCardnum);
+        command.setUserEmployeeStatus(userEmployeeStatus);
+        command.setUserAddress(userAddress);
+        command.setUserRemark(userRemark);
+        command.setSyTenantId(syTenantId);
+        
         String userId = userProfileAppService.createUserProfile(command);
         return success(userId);
     }
@@ -107,10 +164,61 @@ public class IamUserProfileController {
         return success(userIds);
     }
 
-    @PutMapping
-    @Operation(summary = "更新用户档案", description = "更新用户档案信息")
+    @PutMapping(consumes = {"application/json"})
+    @Operation(summary = "更新用户档案(JSON)", description = "更新用户档案信息（JSON格式）")
     @ResponseBody
-    public CommonResult<Void> updateUserProfile(@Valid @RequestBody IamUserProfileUpdateCommand command) {
+    public CommonResult<Void> updateUserProfileJson(@Valid @RequestBody IamUserProfileUpdateCommand command) {
+        userProfileAppService.updateUserProfile(command);
+        return success();
+    }
+
+    @PutMapping(consumes = {"application/x-www-form-urlencoded"})
+    @Operation(summary = "更新用户档案(表单)", description = "更新用户档案信息（表单格式）")
+    @ResponseBody
+    public CommonResult<Void> updateUserProfileForm(
+            @RequestParam String id,
+            @RequestParam(required = false) String userCode,
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) String nickname,
+            @RequestParam(required = false) String realName,
+            @RequestParam(required = false) String userSexCode,
+            @RequestParam(required = false) String userPhone,
+            @RequestParam(required = false) String userMail,
+            @RequestParam(required = false) String userAvatar,
+            @RequestParam(required = false) String deptId,
+            @RequestParam(required = false) String deptName,
+            @RequestParam(required = false) String userPostCode,
+            @RequestParam(required = false) String userPostName,
+            @RequestParam(required = false) String userRoleId,
+            @RequestParam(required = false) String userRoleName,
+            @RequestParam(required = false) String userEntryDate,
+            @RequestParam(required = false) String userCardnum,
+            @RequestParam(required = false) String userEmployeeStatus,
+            @RequestParam(required = false) String userAddress,
+            @RequestParam(required = false) String userRemark) {
+        
+        IamUserProfileUpdateCommand command = new IamUserProfileUpdateCommand();
+        command.setUserId(id);
+        command.setUserCode(userCode);
+        command.setUserName(userName);
+        command.setNickname(nickname);
+        command.setRealName(realName);
+        command.setUserSexCode(userSexCode);
+        command.setUserPhone(userPhone);
+        command.setUserMail(userMail);
+        command.setUserAvatar(userAvatar);
+        command.setDeptId(deptId);
+        command.setDeptName(deptName);
+        command.setUserPostCode(userPostCode);
+        command.setUserPostName(userPostName);
+        command.setUserRoleId(userRoleId);
+        command.setUserRoleName(userRoleName);
+        command.setUserEntryDate(userEntryDate);
+        command.setUserCardnum(userCardnum);
+        command.setUserEmployeeStatus(userEmployeeStatus);
+        command.setUserAddress(userAddress);
+        command.setUserRemark(userRemark);
+        
         userProfileAppService.updateUserProfile(command);
         return success();
     }

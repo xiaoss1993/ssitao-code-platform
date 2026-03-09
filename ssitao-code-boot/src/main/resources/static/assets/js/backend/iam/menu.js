@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree', 'utils'], function ($, undefined, Backend, Table, Form, Utils) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree', 'utils'], function ($, undefined, Backend, Table, Form, Ztree, Utils) {
 
     // 格式化树数据
     function formatTreeData(data) {
@@ -350,46 +350,66 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree', 'utils'], fu
                     success: function(res) {
                         if (res.code === 200 && res.data) {
                             var options = '<option value="0">顶级菜单</option>';
+                            var processedIds = {}; // 防止循环引用
                             var renderTree = function(nodes, level) {
+                                if (level > 10) return ''; // 防止无限递归
+                                var result = '';
                                 var indent = '';
                                 for (var i = 0; i < level; i++) {
                                     indent += '　';
                                 }
+                                if (!nodes || !Array.isArray(nodes)) return result;
                                 $.each(nodes, function(idx, node) {
-                                    var selected = selectedId && node.id == selectedId ? 'selected' : '';
+                                    if (!node || !node.id || processedIds[node.id]) return;
+                                    processedIds[node.id] = true;
+
+                                    var selected = selectedId && String(node.id) === String(selectedId) ? 'selected' : '';
                                     // 统一获取菜单名称
                                     var menuName = node.name || node.menu_name || node.menuName || '';
                                     // 排除自身和子节点，防止选择自己作为父级
-                                    if (!selectedId || (node.id != selectedId && !isChildNode(node, selectedId))) {
-                                        options += '<option value="' + node.id + '" ' + selected + '>' + indent + (level > 0 ? '├ ' : '') + menuName + '</option>';
+                                    if (!selectedId || (String(node.id) !== String(selectedId) && !isChildNode(node, selectedId))) {
+                                        result += '<option value="' + node.id + '" ' + selected + '>' + indent + (level > 0 ? '├ ' : '') + menuName + '</option>';
                                     }
                                     if (node.children && node.children.length > 0) {
-                                        options += renderTree(node.children, level + 1);
+                                        result += renderTree(node.children, level + 1);
                                     }
                                 });
-                                return options;
+                                return result;
                             };
-                            renderTree(res.data, 0);
+                            options += renderTree(res.data, 0);
                             $('#parentId').html(options).selectpicker('refresh');
                         }
                     }
                 });
             };
 
-            // 判断是否为子节点
+            // 判断是否为子节点（防止无限递归）
             var isChildNode = function(node, parentId) {
-                if (!node.children || node.children.length === 0) return false;
-                for (var i = 0; i < node.children.length; i++) {
-                    if (node.children[i].id == parentId) return true;
-                    if (isChildNode(node.children[i], parentId)) return true;
-                }
-                return false;
+                if (!node || !node.children || node.children.length === 0) return false;
+                var targetId = String(parentId);
+                var checkedIds = {};
+                var checkNode = function(n, depth) {
+                    if (depth > 10 || !n || !n.children) return false;
+                    for (var i = 0; i < n.children.length; i++) {
+                        var child = n.children[i];
+                        if (!child || !child.id) continue;
+                        if (String(child.id) === targetId) return true;
+                        if (!checkedIds[child.id] && child.children && child.children.length > 0) {
+                            checkedIds[child.id] = true;
+                            if (checkNode(child, depth + 1)) return true;
+                        }
+                    }
+                    return false;
+                };
+                return checkNode(node, 0);
             };
 
             // 初始化父级菜单树
             loadMenuTree(id || 0);
 
+            // 根据是否有ID判断是新增还是编辑模式
             if (id) {
+                // 编辑模式
                 // 编辑模式
                 $.ajax({
                     url: '/iam/menu/' + id,
@@ -419,6 +439,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'ztree', 'utils'], fu
                 });
                 $('#edit-form').attr('action', '/iam/menu');
                 $('#edit-form').attr('method', 'PUT');
+            } else {
+                // 新增模式
+                $('#edit-form').attr('action', '/iam/menu');
+                $('#edit-form').attr('method', 'POST');
             }
 
             // 菜单类型切换

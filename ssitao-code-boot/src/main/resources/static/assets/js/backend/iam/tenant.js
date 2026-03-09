@@ -5,7 +5,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils'], function ($
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/tenant/page',
+                    index_url: '/iam/tenant/list',
                     add_url: '/iam/tenant/add',
                     edit_url: '/iam/tenant/edit',
                     del_url: '/iam/tenant',

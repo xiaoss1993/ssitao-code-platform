@@ -200,6 +200,68 @@ public class MetaPageController {
         return "meta/dynamic";
     }
 
+    // ==================== 字典管理页面 ====================
+
+    /**
+     * 字典类型管理页面
+     */
+    @GetMapping("/dictionary")
+    @Operation(summary = "字典类型管理页面")
+    public String dictionaryPage(Model model) {
+        addCommonModel(model, "字典类型管理", "meta/dictionary");
+        return "meta/dictionary";
+    }
+
+    /**
+     * 字典类型添加页面
+     */
+    @GetMapping("/dictionary/add")
+    @Operation(summary = "字典类型添加页面")
+    public String dictionaryAddPage(Model model) {
+        addCommonModel(model, "添加字典类型", "meta/dictionary");
+        return "meta/dictionary-edit";
+    }
+
+    /**
+     * 字典类型编辑页面
+     */
+    @GetMapping("/dictionary/edit")
+    @Operation(summary = "字典类型编辑页面")
+    public String dictionaryEditPage(Model model) {
+        addCommonModel(model, "编辑字典类型", "meta/dictionary");
+        return "meta/dictionary-edit";
+    }
+
+    /**
+     * 字典数据管理页面
+     */
+    @GetMapping("/dictionary-item")
+    @Operation(summary = "字典数据管理页面")
+    public String dictionaryItemPage(Model model) {
+        addCommonModel(model, "字典数据管理", "meta/dictionary-item");
+        return "meta/dictionary-item";
+    }
+
+    /**
+     * 字典数据添加页面
+     */
+    @GetMapping("/dictionary-item/add")
+    @Operation(summary = "字典数据添加页面")
+    public String dictionaryItemAddPage(Model model) {
+        addCommonModel(model, "添加字典数据", "meta/dictionary-item");
+        return "meta/dictionary-item-edit";
+    }
+
+    /**
+     * 字典数据编辑页面
+     */
+    @GetMapping("/dictionary-item/edit")
+    @Operation(summary = "字典数据编辑页面")
+    public String dictionaryItemEditPage(Model model) {
+        addCommonModel(model, "编辑字典数据", "meta/dictionary-item");
+        return "meta/dictionary-item-edit";
+    }
+
     /**
      * 添加通用模板变量
      */

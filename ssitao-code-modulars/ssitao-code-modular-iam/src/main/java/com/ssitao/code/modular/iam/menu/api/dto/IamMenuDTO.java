@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.menu.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,6 +44,7 @@ public class IamMenuDTO implements Serializable {
     private String component;
 
     @JsonProperty("perms")
+    @JsonAlias("permission")
     @Schema(description = "权限标识")
     private String permission;
 

@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.organization.application.service;
 
+import com.ssitao.code.common.pojo.PageResult;
 import com.ssitao.code.modular.iam.organization.api.dto.IamCompanyDTO;
 import com.ssitao.code.modular.iam.organization.application.command.IamCompanyCreateCommand;
 import com.ssitao.code.modular.iam.organization.application.command.IamCompanyUpdateCommand;
@@ -9,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -236,6 +238,89 @@ public class IamCompanyAppService {
                         .status(company.getStatus())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 分页获取公司列表
+     */
+    public PageResult<IamCompanyDTO> listCompaniesPage(Integer page, Integer size, String tenantId, String sort, String order) {
+        List<IamCompany> companies = companyRepository.findAll(tenantId);
+
+        if (companies == null || companies.isEmpty()) {
+            return PageResult.of(new ArrayList<>(), 0);
+        }
+
+        // 排序
+        if (sort != null && !sort.isEmpty()) {
+            String finalSort = sort;
+            String finalOrder = order != null ? order.toLowerCase() : "asc";
+            companies.sort((a, b) -> {
+                int cmp = 0;
+                switch (finalSort) {
+                    case "companyName":
+                    case "company_name":
+                        cmp = (a.getCompanyName() != null ? a.getCompanyName() : "").compareTo(
+                              b.getCompanyName() != null ? b.getCompanyName() : "");
+                        break;
+                    case "createTime":
+                    case "create_time":
+                        cmp = (a.getCreateTime() != null ? a.getCreateTime().toString() : "").compareTo(
+                              b.getCreateTime() != null ? b.getCreateTime().toString() : "");
+                        break;
+                    default:
+                        cmp = (a.getCompanyName() != null ? a.getCompanyName() : "").compareTo(
+                              b.getCompanyName() != null ? b.getCompanyName() : "");
+                }
+                return "desc".equals(finalOrder) ? -cmp : cmp;
+            });
+        }
+
+        // 记录总数
+        int total = companies.size();
+
+        // 分页
+        int pageNum = page != null && page > 0 ? page : 1;
+        int pageSize = size != null && size > 0 ? size : 10;
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, companies.size());
+        if (start >= companies.size()) {
+            return PageResult.of(new ArrayList<>(), total);
+        }
+
+        List<IamCompany> pagedCompanies = companies.subList(start, end);
+
+        List<IamCompanyDTO> dtos = pagedCompanies.stream()
+                .map(company -> IamCompanyDTO.builder()
+                        .id(company.getId())
+                        .companyCode(company.getCompanyCode())
+                        .companyName(company.getCompanyName())
+                        .companyShortName(company.getCompanyShortName())
+                        .companyTypeCode(company.getCompanyTypeCode())
+                        .companyTypeName(company.getCompanyTypeName())
+                        .companyCreditCode(company.getCompanyCreditCode())
+                        .companyLegalPerson(company.getCompanyLegalPerson())
+                        .companyAddress(company.getCompanyAddress())
+                        .companyPhone(company.getCompanyPhone())
+                        .companyEmail(company.getCompanyEmail())
+                        .companyWebsite(company.getCompanyWebsite())
+                        .companyEstablishDate(company.getCompanyEstablishDate())
+                        .companyRegisteredCapital(company.getCompanyRegisteredCapital())
+                        .companyRemark(company.getCompanyRemark())
+                        .companyLogo(company.getCompanyLogo())
+                        .companyIndustryCode(company.getCompanyIndustryCode())
+                        .companyIndustryName(company.getCompanyIndustryName())
+                        .companyScaleCode(company.getCompanyScaleCode())
+                        .companyScaleName(company.getCompanyScaleName())
+                        .tenantId(company.getTenantId())
+                        .createTime(company.getCreateTime())
+                        .updateTime(company.getUpdateTime())
+                        .creator(company.getCreator())
+                        .updater(company.getUpdater())
+                        .status(company.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+
+        return PageResult.of(dtos, total);
     }
 
     /**
