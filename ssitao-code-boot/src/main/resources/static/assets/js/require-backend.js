@@ -5,12 +5,14 @@ require.config({
         main: 'moment'
     }],
     //在打包压缩时将会把include中的模块合并到主文件中
-    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage', 'utils'],
+    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'vue', 'vue-table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage', 'utils'],
     paths: {
         // lang 模块路径
         'lang': '/assets/js/lang',
         'form': '/assets/js/require-form',
         'table': '/assets/js/require-table',
+        'vue-table': '/assets/js/vue-table',
+        'vue': '/assets/libs/vue/vue',
         'bootstrap-treegrid': '/assets/libs/bootstrap-table/bootstrap-treegrid',
         'upload': '/assets/js/require-upload',
         'validator': '/assets/js/require-validator',
@@ -59,6 +61,10 @@ require.config({
     // shim依赖配置
     shim: {
         // 核心库
+        // layer 导出到 window.layer
+        'layer': {
+            exports: 'layer'
+        },
         'jquery': {exports: "$"},
         'jquery-ui': {
             deps: ['jquery'],

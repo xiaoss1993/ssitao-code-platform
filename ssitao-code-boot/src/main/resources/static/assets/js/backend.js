@@ -67,7 +67,8 @@ define(['fast', 'moment'], function (Fast, Moment) {
         init: function () {
             //公共代码
             //配置Toastr的参数
-            Toastr.options.positionClass = Config.controllername == 'index' ? "toast-top-right-index" : "toast-top-right";
+            var config = window.Config || Config || {controllername: 'index'};
+            Toastr.options.positionClass = config.controllername == 'index' ? "toast-top-right-index" : "toast-top-right";
             //点击包含.btn-dialog的元素时弹出dialog
             $(document).on('click', '.btn-dialog,.dialogit', function (e) {
                 e.preventDefault();
