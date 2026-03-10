@@ -62,6 +62,14 @@ public class MetaEntityController {
         return success(entity);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "获取元数据实体详情", description = "根据ID获取元数据实体详细信息(REST风格)")
+    public CommonResult<MetaEntityDTO> getByIdPath(@PathVariable String id,
+                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        MetaEntityDTO entity = metaEntityAppService.getById(id, tenantId);
+        return success(entity);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "获取元数据实体列表", description = "获取所有元数据实体列表")
     public CommonResult<List<MetaEntityDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {

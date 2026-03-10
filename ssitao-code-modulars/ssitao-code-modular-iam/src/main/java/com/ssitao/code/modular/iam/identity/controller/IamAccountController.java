@@ -72,13 +72,17 @@ public class IamAccountController {
     @Operation(summary = "账号编辑页面")
     public String accountEditPage(Model model,
                                   @RequestParam(required = false) String id,
+                                  @RequestParam(required = false) String ids,
                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑账号", "account");
 
+        // 兼容 ids 参数（FastAdmin标准）
+        String accountId = id != null ? id : ids;
+
         // 如果有 ID，获取数据并转换为 JSON
-        if (id != null && !id.isEmpty()) {
+        if (accountId != null && !accountId.isEmpty()) {
             try {
-                IamAccountDTO account = accountAppService.getAccount(id, tenantId);
+                IamAccountDTO account = accountAppService.getAccount(accountId, tenantId);
                 if (account != null) {
                     String jsonData = objectMapper.writeValueAsString(account);
                     model.addAttribute("rowData", jsonData);

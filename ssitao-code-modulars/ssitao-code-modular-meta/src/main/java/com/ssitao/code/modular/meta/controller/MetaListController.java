@@ -62,6 +62,14 @@ public class MetaListController {
         return success(list);
     }
 
+    @GetMapping("/{listId}")
+    @Operation(summary = "获取列表配置详情", description = "根据ID获取列表配置详细信息(REST风格)")
+    public CommonResult<MetaListDTO> getByIdPath(@PathVariable String listId,
+                                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        MetaListDTO list = metaListAppService.getById(listId, tenantId);
+        return success(list);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "获取列表配置列表", description = "获取指定实体的所有列表配置列表")
     public CommonResult<List<MetaListDTO>> listByEntityId(@RequestParam String entityId,

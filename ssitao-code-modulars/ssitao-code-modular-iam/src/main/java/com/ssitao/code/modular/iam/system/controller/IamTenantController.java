@@ -62,8 +62,28 @@ public class IamTenantController {
      */
     @GetMapping("/edit")
     @Operation(summary = "租户编辑页面")
-    public String tenantEditPage(Model model) {
+    public String tenantEditPage(Model model,
+                                  @RequestParam(required = false) String id,
+                                  @RequestParam(required = false) String ids,
+                                  @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑租户", "tenant");
+
+        // 兼容 ids 参数（FastAdmin标准）
+        String tenantIdVal = id != null ? id : ids;
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (tenantIdVal != null && !tenantIdVal.isEmpty()) {
+            try {
+                IamTenantDTO tenant = tenantAppService.getById(tenantIdVal);
+                if (tenant != null) {
+                    String jsonData = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(tenant);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (Exception e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/tenant-edit";
     }
 

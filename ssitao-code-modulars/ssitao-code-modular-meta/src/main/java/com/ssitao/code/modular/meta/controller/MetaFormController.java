@@ -63,6 +63,14 @@ public class MetaFormController {
         return success(form);
     }
 
+    @GetMapping("/{formId}")
+    @Operation(summary = "获取表单配置详情", description = "根据ID获取表单配置详细信息(REST风格)")
+    public CommonResult<MetaFormDTO> getByIdPath(@PathVariable String formId,
+                                                 @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        MetaFormDTO form = metaFormAppService.getById(formId, tenantId);
+        return success(form);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "获取表单配置列表", description = "获取指定实体的所有表单配置列表")
     public CommonResult<List<MetaFormDTO>> listByEntityId(@RequestParam String entityId,

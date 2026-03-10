@@ -62,6 +62,14 @@ public class MetaTableController {
         return success(table);
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "获取元数据表详情", description = "根据ID获取元数据表详细信息(REST风格)")
+    public CommonResult<MetaTableDTO> getByIdPath(@PathVariable String id,
+                                                   @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        MetaTableDTO table = metaTableAppService.getById(id, tenantId);
+        return success(table);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "获取元数据表列表", description = "获取所有元数据表列表")
     public CommonResult<List<MetaTableDTO>> list(@RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {

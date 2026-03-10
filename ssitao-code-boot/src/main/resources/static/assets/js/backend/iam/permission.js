@@ -5,34 +5,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
             // 初始化表格参数配置
             Table.api.init({
                 extend: {
-                    index_url: '/iam/permission/tree',
-                    add_url: '/iam/permission/add',
+                    index_url: '/iam/permission/list',
+                    add_url: '/iam/permission',
                     edit_url: '/iam/permission/edit',
                     del_url: '/iam/permission',
                     enable_url: '/iam/permission/enable',
                     disable_url: '/iam/permission/disable',
                     table: 'iam_permission',
-                },
-                // 配置响应数据处理
-                responseHandler: function (res) {
-                    // 处理后端返回的数据格式
-                    if (res.code === 200 && res.data) {
-                        var data = res.data;
-                        if (Array.isArray(data)) {
-                            return { rows: data, total: data.length };
-                        }
-                        if (data.rows) {
-                            return { rows: data.rows, total: data.total };
-                        }
-                        if (data.records) {
-                            return { rows: data.records, total: data.totalRow || data.records.length };
-                        }
-                        if (data.content) {
-                            return { rows: data.content, total: data.totalElements || data.content.length };
-                        }
-                        return { rows: data, total: data.length };
-                    }
-                    return { rows: [], total: 0 };
                 }
             });
 
@@ -43,13 +22,23 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
                 url: $.fn.bootstrapTable.defaults.extend.index_url,
                 pk: 'id',
                 sortName: 'sortOrder',
+                // 响应数据处理
+                responseHandler: function (res) {
+                    console.log('API Response:', res);
+                    if (res.code === 200 && res.data && Array.isArray(res.data)) {
+                        console.log('Processed data:', res.data);
+                        return res.data; // 直接返回数组
+                    }
+                    return [];
+                },
                 // 树形表格配置
-                treeView: true,                        // 启用树形视图
-                treeId: 'id',                         // 定义关键字段来标识树节点
-                treeField: 'permName',                // 定义树节点字段
-                treeParentId: 'parentId',             // 定义父级ID字段
-                treeCollapseAll: false,                // 默认不折叠
-                cascadeCheck: false,                   // 不层叠选中状态
+                treeView: true,
+                treeId: 'id',
+                treeField: 'permName',
+                treeParentId: 'parentId',
+                parentIdInit: 0,
+                treeRootLevel: 1,
+                uniqueId: 'id',
                 // 分页配置 - 禁用分页，因为树形数据不适合分页
                 sidePagination: 'client',
                 pagination: false,
@@ -61,12 +50,39 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
                 columns: [
                     [
                         {field: 'state', checkbox: true},
-                        {field: 'id', title: 'ID', sortable: true},
-                        {field: 'permName', title: '权限名称', operate: 'LIKE'},
-                        {field: 'permCode', title: '权限编码', operate: 'LIKE'},
+                        {field: 'id', title: 'ID', visible: false},
+                        {field: 'parentId', title: '父级ID', visible: false},
+                        {
+                            field: 'permName',
+                            title: '权限名称',
+                            operate: 'LIKE',
+                            formatter: function (value, row, index) {
+                                // 根据权限类型显示不同图标
+                                var iconMap = {
+                                    'MENU': 'fa fa-folder',
+                                    'BUTTON': 'fa fa-square-o',
+                                    'DATA': 'fa fa-database'
+                                };
+                                var icon = iconMap[row.permType] || 'fa fa-circle-o';
+                                // 如果有自定义图标，使用自定义图标
+                                if (row.icon) {
+                                    icon = row.icon;
+                                }
+                                return '<i class="' + icon + '"></i> ' + value;
+                            }
+                        },
+                        {
+                            field: 'permCode',
+                            title: '权限编码',
+                            operate: 'LIKE',
+                            formatter: function (value, row, index) {
+                                return value ? '<code>' + value + '</code>' : '-';
+                            }
+                        },
                         {
                             field: 'permType',
-                            title: '权限类型',
+                            title: '类型',
+                            width: 80,
                             searchList: {"MENU": "菜单", "BUTTON": "按钮", "DATA": "数据"},
                             formatter: function (value, row, index) {
                                 var colorMap = {
@@ -75,22 +91,25 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
                                     'DATA': 'warning'
                                 };
                                 var color = colorMap[value] || 'default';
-                                var labelMap = {
-                                    'MENU': '菜单',
-                                    'BUTTON': '按钮',
-                                    'DATA': '数据'
-                                };
-                                return '<span class="label label-' + color + '">' + (labelMap[value] || value) + '</span>';
+                                return '<span class="label label-' + color + '">' + value + '</span>';
                             }
                         },
-                        {field: 'path', title: '路由路径', operate: 'LIKE'},
-                        {field: 'icon', title: '图标', formatter: function (value, row, index) {
-                            return value ? '<i class="' + value + '"></i>' : '-';
-                        }},
-                        {field: 'sortOrder', title: '排序', sortable: true},
+                        {
+                            field: 'path',
+                            title: '路由',
+                            visible: false,
+                            operate: 'LIKE'
+                        },
+                        {
+                            field: 'sortOrder',
+                            title: '排序',
+                            width: 80,
+                            sortable: true
+                        },
                         {
                             field: 'status',
                             title: '状态',
+                            width: 80,
                             searchList: {"true": "启用", "false": "禁用"},
                             formatter: function (value, row, index) {
                                 return value === true
@@ -99,15 +118,9 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
                             }
                         },
                         {
-                            field: 'createTime',
-                            title: '创建时间',
-                            operate: 'RANGE',
-                            addclass: 'datetimerange',
-                            formatter: Table.api.formatter.datetime
-                        },
-                        {
                             field: 'operate',
                             title: '操作',
+                            width: 150,
                             table: table,
                             events: Table.api.events.operate,
                             formatter: Table.api.formatter.operate,
@@ -356,7 +369,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'bootstrap-treegrid',
                 return options;
             };
 
-            var id = Utils.getPkId('id');
+            var id = getQueryString('id');
 
             // 加载权限树
             loadPermissionTree(0);

@@ -2453,6 +2453,7 @@ CREATE TABLE `iam_permission` (
   `permission_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限编码',
   `permission_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限名称',
   `permission_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'BUTTON' COMMENT '权限类型: MENU-菜单, BUTTON-按钮, API-接口, DATA-数据',
+  `parent_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '父权限ID，用于树形结构',
   `permission_resource` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限资源',
   `permission_action` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'VIEW' COMMENT '权限操作: VIEW-查看, ADD-新增, EDIT-编辑, DELETE-删除, EXPORT-导出, IMPORT-导入',
   `permission_desc` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限描述',
@@ -2468,7 +2469,8 @@ CREATE TABLE `iam_permission` (
   PRIMARY KEY (`permission_id`),
   UNIQUE KEY `uk_permission_code` (`permission_code`,`tenant_id`,`is_deleted`),
   KEY `idx_permission_name` (`permission_name`),
-  KEY `idx_tenant_id` (`tenant_id`)
+  KEY `idx_tenant_id` (`tenant_id`),
+  KEY `idx_parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='权限表';
 
 -- ----------------------------

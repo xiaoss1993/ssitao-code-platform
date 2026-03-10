@@ -4,8 +4,9 @@
 @import url("../css/iconfont.css");
 @import url("../libs/font-awesome/css/font-awesome.min.css");
 @import url("../libs/toastr/toastr.min.css");
-@import url("../libs/layer/build/skin/default/layer.css");
-@import url("../libs/bootstrap-table/dist/bootstrap-table.min.css");
+/* layer CSS 已移除 - 文件不存在 */
+@import url("../libs/bootstrap-table/bootstrap-table.min.css");
+@import url("../libs/layer/skin/layer.css");
 @import url("../libs/datapicker/bootstrap-datetimepicker.css");
 @import url("../libs/nice-validator/dist/jquery.validator.css");
 @import url("../libs/selectpage/selectpage.css");
@@ -669,4 +670,45 @@ table.table-template {
   }
 }
 /*平板样式*/
+/* bootstrap-treegrid 树形表格样式 */
+.treegrid-indent {
+    width: 0px;
+    display: inline-block;
+}
+
+.treegrid-expander {
+    width: 15px;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 3px;
+}
+
+.treegrid-expander:before {
+    content: "\f105";
+    font-family: FontAwesome;
+    font-size: 14px;
+    color: #777;
+}
+
+.treegrid-expander-expanded:before {
+    content: "\f107";
+}
+
+.treegrid-expander:hover {
+    color: #337ab7;
+}
+
+/* 树形表格行样式 */
+.table.treegrid tbody tr.treegrid-expanded > td {
+    background-color: #f5f5f5;
+}
+
+.table.treegrid tbody tr.treegrid-collapsed > td {
+    background-color: #fff;
+}
+
+.table.treegrid tbody tr:hover > td {
+    background-color: #f5f5f5;
+}
+
 /*# sourceMappingURL=backend.css.map */

@@ -39,7 +39,7 @@ public interface IamPermissionConverter {
     @Mapping(source = "tenantId", target = "tenantId")
     @Mapping(source = "createTime", target = "createTime")
     @Mapping(source = "modifyTime", target = "updateTime")
-    @Mapping(target = "parentId", ignore = true)
+    @Mapping(source = "parentId", target = "parentId")
     @Mapping(target = "path", ignore = true)
     @Mapping(target = "component", ignore = true)
     @Mapping(target = "perms", ignore = true)
@@ -85,12 +85,14 @@ public interface IamPermissionConverter {
     @Mapping(source = "permissionDesc", target = "remark")
     @Mapping(source = "permissionStatus", target = "status", qualifiedByName = "integerToBoolean")
     @Mapping(source = "permissionSort", target = "sortOrder")
+    @Mapping(source = "parentId", target = "parentId")
     IamPermissionDTO toDTO(IamPermissionDO permissionDO);
 
     /**
      * 领域模型转DTO
      */
     @Mapping(source = "id", target = "id")
+    @Mapping(source = "parentId", target = "parentId")
     IamPermissionDTO toDTO(IamPermission domain);
 
     /**

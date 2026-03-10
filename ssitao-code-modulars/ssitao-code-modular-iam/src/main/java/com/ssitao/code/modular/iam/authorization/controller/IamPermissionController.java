@@ -67,8 +67,28 @@ public class IamPermissionController {
      */
     @GetMapping("/edit")
     @Operation(summary = "权限编辑页面")
-    public String permissionEditPage(Model model) {
+    public String permissionEditPage(Model model,
+                                      @RequestParam(required = false) String id,
+                                      @RequestParam(required = false) String ids,
+                                      @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑权限", "permission");
+
+        // 兼容 ids 参数（FastAdmin标准）
+        String permId = id != null ? id : ids;
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (permId != null && !permId.isEmpty()) {
+            try {
+                IamPermissionDTO permission = permissionAppService.getPermissionById(Long.parseLong(permId), tenantId);
+                if (permission != null) {
+                    String jsonData = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(permission);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (Exception e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/permission-edit";
     }
 

@@ -90,8 +90,28 @@ public class IamOrganizationController {
      */
     @GetMapping("/edit")
     @Operation(summary = "组织编辑页面")
-    public String orgEditPage(Model model) {
+    public String orgEditPage(Model model,
+                             @RequestParam(required = false) String id,
+                             @RequestParam(required = false) String ids,
+                             @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑组织", "org");
+
+        // 兼容 ids 参数（FastAdmin标准）
+        String orgId = id != null ? id : ids;
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (orgId != null && !orgId.isEmpty()) {
+            try {
+                IamGroupDTO group = groupAppService.getGroup(orgId);
+                if (group != null) {
+                    String jsonData = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(group);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (Exception e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/org-edit";
     }
 

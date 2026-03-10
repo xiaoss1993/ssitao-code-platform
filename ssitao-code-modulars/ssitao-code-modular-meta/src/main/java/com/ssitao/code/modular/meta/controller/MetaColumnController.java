@@ -71,6 +71,14 @@ public class MetaColumnController {
         return success(column);
     }
 
+    @GetMapping("/{columnId}")
+    @Operation(summary = "获取字段详情", description = "根据ID获取字段详细信息(REST风格)")
+    public CommonResult<MetaColumnDTO> getByIdPath(@PathVariable String columnId,
+                                                    @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
+        MetaColumnDTO column = metaColumnAppService.getById(columnId, tenantId);
+        return success(column);
+    }
+
     @GetMapping("/list")
     @Operation(summary = "获取字段列表", description = "获取指定表的所有字段列表")
     public CommonResult<List<MetaColumnDTO>> listByTableId(@RequestParam String tableId,

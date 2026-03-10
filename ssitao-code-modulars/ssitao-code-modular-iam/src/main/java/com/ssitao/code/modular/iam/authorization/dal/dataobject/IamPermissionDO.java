@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.authorization.dal.dataobject;
 
+import com.ssitao.code.frame.mybatisflex.annotation.Column;
 import com.ssitao.code.frame.mybatisflex.annotation.Id;
 import com.ssitao.code.frame.mybatisflex.annotation.Table;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,12 @@ public class IamPermissionDO {
      * 权限类型: MENU-菜单, BUTTON-按钮, API-接口, DATA-数据
      */
     private String permissionType;
+
+    /**
+     * 父权限ID（用于树形结构）
+     */
+    @Column("parent_id")
+    private String parentId;
 
     /**
      * 资源标识

@@ -64,8 +64,28 @@ public class IamRoleController {
      */
     @GetMapping("/edit")
     @Operation(summary = "角色编辑页面")
-    public String roleEditPage(Model model) {
+    public String roleEditPage(Model model,
+                                @RequestParam(required = false) String id,
+                                @RequestParam(required = false) String ids,
+                                @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑角色", "role");
+
+        // 兼容 ids 参数（FastAdmin标准）
+        String roleId = id != null ? id : ids;
+
+        // 如果有 ID，获取数据并转换为 JSON
+        if (roleId != null && !roleId.isEmpty()) {
+            try {
+                IamRoleDTO role = roleAppService.getRoleById(roleId, tenantId);
+                if (role != null) {
+                    String jsonData = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(role);
+                    model.addAttribute("rowData", jsonData);
+                }
+            } catch (Exception e) {
+                // 忽略转换错误
+            }
+        }
+
         return "iam/role-edit";
     }
 

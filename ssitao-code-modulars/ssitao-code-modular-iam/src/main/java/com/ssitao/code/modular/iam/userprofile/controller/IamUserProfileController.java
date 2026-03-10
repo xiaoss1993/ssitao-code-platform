@@ -70,13 +70,17 @@ public class IamUserProfileController {
     @Operation(summary = "用户档案编辑页面")
     public String userprofileEditPage(Model model,
                                        @RequestParam(required = false) String id,
+                                       @RequestParam(required = false) String ids,
                                        @RequestHeader(value = "tenantId", defaultValue = "1") String tenantId) {
         addCommonModel(model, "编辑用户档案", "userprofile");
 
+        // 兼容 ids 参数（FastAdmin标准）
+        String userId = id != null ? id : ids;
+
         // 如果有 ID，获取数据并转换为 JSON
-        if (id != null && !id.isEmpty()) {
+        if (userId != null && !userId.isEmpty()) {
             try {
-                IamUserProfileDTO userProfile = userProfileAppService.getUserProfileById(id, tenantId);
+                IamUserProfileDTO userProfile = userProfileAppService.getUserProfileById(userId, tenantId);
                 if (userProfile != null) {
                     String jsonData = objectMapper.writeValueAsString(userProfile);
                     model.addAttribute("rowData", jsonData);

@@ -136,7 +136,14 @@ public class IamPermissionAppServiceImpl implements IamPermissionAppService {
     @Override
     public List<IamPermissionDTO> getPermissionTree(String tenantId) {
         List<IamPermission> permissions = permissionRepository.findTree(tenantId);
-        return permissionConverter.toDTOList(permissions);
+        List<IamPermissionDTO> tree = permissionConverter.toDTOList(permissions);
+        // 只有 null 或空值的 parentId 才设置为 "0"，保留已有的正确值
+        for (IamPermissionDTO dto : tree) {
+            if (dto.getParentId() == null || dto.getParentId().isEmpty()) {
+                dto.setParentId("0");
+            }
+        }
+        return tree;
     }
 
     @Override

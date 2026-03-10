@@ -408,12 +408,19 @@ public class TestDataGeneratorServiceImpl implements TestDataGeneratorService {
     }
 
     private int generatePermissions(String tenantId, int count) {
-        List<IamPermissionDO> permissions = iamPermissionDataGenerator.generate(tenantId, count);
+        // 先删除旧数据
+        com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper deleteQuery =
+            com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper.create()
+                .eq("tenant_id", tenantId);
+        iamPermissionMapper.deleteByQuery(deleteQuery);
+
+        // 生成具有层级结构的新数据
+        List<IamPermissionDO> permissions = iamPermissionDataGenerator.generate(tenantId);
         for (IamPermissionDO permission : permissions) {
             iamPermissionMapper.insert(permission);
         }
-        log.info("生成权限数据: {} 条", count);
-        return count;
+        log.info("生成权限数据: {} 条（具有层级结构）", permissions.size());
+        return permissions.size();
     }
 
     private int generateMenus(String tenantId, int count) {
