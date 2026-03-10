@@ -18,7 +18,7 @@ public class IamRoleUpdateCommand {
      * 角色ID
      */
     @NotNull(message = "角色ID不能为空")
-    private Long id;
+    private String id;
 
     /**
      * 角色名称

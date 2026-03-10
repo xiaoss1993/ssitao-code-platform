@@ -62,7 +62,7 @@
                         </section>
                         <div class="content">
                             <div id="app" v-cloak>
-                                <form id="edit-form" class="form-horizontal" role="form">
+                                <form id="edit-form" class="form-horizontal" role="form" method="post" @submit.prevent="handleSubmit" novalidate>
                                     <!-- 隐藏字段 -->
                                     <input type="hidden" name="id" id="id" v-model="form.id" />
 
@@ -141,7 +141,7 @@
                                     <div class="form-group layer-footer">
                                         <label class="control-label col-xs-12 col-sm-2"></label>
                                         <div class="col-xs-12 col-sm-8">
-                                            <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                            <button type="button" class="btn btn-success btn-embossed" @click="handleSubmit">确定</button>
                                             <button type="button" class="btn btn-default btn-embossed" @click="handleCancel">取消</button>
                                         </div>
                                     </div>
@@ -154,6 +154,5 @@
         </div>
     </div>
     <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
-
 </body>
 </html>

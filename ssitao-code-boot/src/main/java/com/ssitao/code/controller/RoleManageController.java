@@ -99,7 +99,7 @@ public class RoleManageController {
      */
     @PutMapping("/{id}")
     @Operation(summary = "更新角色", description = "更新角色信息")
-    public CommonResult<Void> updateRole(@PathVariable Long id, @Valid @RequestBody IamRoleUpdateCommand command) {
+    public CommonResult<Void> updateRole(@PathVariable String id, @Valid @RequestBody IamRoleUpdateCommand command) {
         command.setId(id);
         command.setTenantId(getTenantId());
         roleAppService.updateRole(command);

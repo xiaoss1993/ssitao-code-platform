@@ -158,10 +158,10 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                     dataType: 'json',
                     success: function(res) {
                         if (res.code === 200) {
-                            Layer.msg('删除成功', {icon: 1});
+                            Backend.api.toastr.success('删除成功');
                             $("#table").bootstrapTable('refresh');
                         } else {
-                            Layer.msg(res.msg || '删除失败', {icon: 2});
+                            Backend.api.toastr.error(res.msg || '删除失败');
                         }
                     }
                 });
@@ -178,10 +178,10 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                     dataType: 'json',
                     success: function(res) {
                         if (res.code === 200) {
-                            Layer.msg('启用成功', {icon: 1});
+                            Backend.api.toastr.success('启用成功');
                             $("#table").bootstrapTable('refresh');
                         } else {
-                            Layer.msg(res.msg || '启用失败', {icon: 2});
+                            Backend.api.toastr.error(res.msg || '启用失败');
                         }
                     }
                 });
@@ -198,10 +198,10 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                     dataType: 'json',
                     success: function(res) {
                         if (res.code === 200) {
-                            Layer.msg('禁用成功', {icon: 1});
+                            Backend.api.toastr.success('禁用成功');
                             $("#table").bootstrapTable('refresh');
                         } else {
-                            Layer.msg(res.msg || '禁用失败', {icon: 2});
+                            Backend.api.toastr.error(res.msg || '禁用失败');
                         }
                     }
                 });
@@ -228,13 +228,16 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                         console.log('GET account response:', res);
                         if (res.code === 200 && res.data) {
                             Controller.api.initForm(res.data);
+                        } else if (res.data) {
+                            // 有些接口直接返回数据，没有 code
+                            Controller.api.initForm(res.data);
                         } else {
-                            Layer.msg(res.msg || '获取数据失败', {icon: 2});
+                            Backend.api.toastr.error(res.msg || '获取数据失败');
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error('GET account error:', error);
-                        Layer.msg('网络错误', {icon: 2});
+                        Backend.api.toastr.error('网络错误');
                     }
                 });
             } else {
@@ -262,16 +265,32 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                 var Vue = window.Vue;
                 if (!Vue) {
                     console.error('Vue is not loaded!');
+                    Backend.api.toastr.error('Vue 未加载');
                     return;
                 }
 
                 console.log('Initializing form with data:', data);
+                console.log('Vue version:', Vue.version);
+
+                // 字段名映射工具函数 - 支持后端返回的下划线命名和驼峰命名
+                var getField = function(data, underscoreName, camelCaseName) {
+                    // 尝试下划线命名
+                    if (data[underscoreName] !== undefined) {
+                        return data[underscoreName];
+                    }
+                    // 尝试驼峰命名
+                    if (data[camelCaseName] !== undefined) {
+                        return data[camelCaseName];
+                    }
+                    return '';
+                };
 
                 // 处理日期时间格式
+                var expireTimeVal = getField(data, 'expire_time', 'expireTime');
                 var expireTime = '';
-                if (data.expireTime) {
+                if (expireTimeVal) {
                     // 转换为 datetime-local 需要的格式
-                    var date = new Date(data.expireTime);
+                    var date = new Date(expireTimeVal);
                     var year = date.getFullYear();
                     var month = ('0' + (date.getMonth() + 1)).slice(-2);
                     var day = ('0' + date.getDate()).slice(-2);
@@ -280,21 +299,21 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                     expireTime = year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
                 }
 
-                var isEdit = !!data.id;
+                var isEdit = !!getField(data, 'id', 'id');
                 var vm = new Vue({
                     el: '#app',
                     data: {
                         isEdit: isEdit,
                         form: {
-                            id: data.id || '',
-                            accountCode: data.accountCode || '',
-                            accountName: data.accountName || '',
+                            id: getField(data, 'id', 'id'),
+                            accountCode: getField(data, 'account_code', 'accountCode'),
+                            accountName: getField(data, 'account_name', 'accountName'),
                             password: '',
-                            phone: data.phone || '',
-                            email: data.email || '',
-                            avatar: data.avatar || '',
+                            phone: getField(data, 'phone', 'phone'),
+                            email: getField(data, 'email', 'email'),
+                            avatar: getField(data, 'avatar', 'avatar'),
                             expireTime: expireTime,
-                            remark: data.remark || ''
+                            remark: getField(data, 'remark', 'remark')
                         }
                     },
                     methods: {
@@ -302,15 +321,15 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                             console.log('Submit form data:', this.form);
                             // 验证表单
                             if (!this.form.accountCode) {
-                                Layer.msg('请输入账号编码', {icon: 0});
+                                Backend.api.toastr.warning('请输入账号编码');
                                 return;
                             }
                             if (!this.form.accountName) {
-                                Layer.msg('请输入账号名称', {icon: 0});
+                                Backend.api.toastr.warning('请输入账号名称');
                                 return;
                             }
                             if (!isEdit && !this.form.password) {
-                                Layer.msg('请输入密码', {icon: 0});
+                                Backend.api.toastr.warning('请输入密码');
                                 return;
                             }
 
@@ -351,16 +370,16 @@ define(['jquery', 'bootstrap', 'backend', 'vue-table', 'form', 'layer'], functio
                                 success: function(res) {
                                     console.log('Submit response:', res);
                                     if (res.code === 200) {
-                                        Layer.msg('操作成功', {icon: 1});
+                                        Backend.api.toastr.success('操作成功');
                                         var index = parent.layer.getFrameIndex(window.name);
                                         parent.layer.close(index);
                                     } else {
-                                        Layer.msg(res.msg || '操作失败', {icon: 2});
+                                        Backend.api.toastr.error(res.msg || '操作失败');
                                     }
                                 },
                                 error: function(xhr, status, error) {
                                     console.error('Submit error:', error);
-                                    Layer.msg('网络错误', {icon: 2});
+                                    Backend.api.toastr.error('网络错误');
                                 }
                             });
                         },

@@ -7,6 +7,40 @@
 /* layer CSS 已移除 - 文件不存在 */
 @import url("../libs/bootstrap-table/bootstrap-table.min.css");
 @import url("../libs/layer/skin/layer.css");
+
+/* Layer msg 消息提示框自定义样式 */
+.layui-layer-msg {
+    border-radius: 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+.layui-layer-msg .layui-layer-content {
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+}
+/* 成功消息 */
+.top_msg.SUCCESS {
+    border-color: #5cb85c !important;
+    background-color: #f0f9f0 !important;
+}
+.top_msg.SUCCESS .layui-layer-content {
+    color: #3c763d !important;
+}
+/* 警告消息 */
+.top_msg.WARNING {
+    border-color: #f0ad4e !important;
+    background-color: #fcf8f2 !important;
+}
+.top_msg.WARNING .layui-layer-content {
+    color: #8a6d3b !important;
+}
+/* 错误/失败消息 */
+.top_msg.DANGER {
+    border-color: #d9534f !important;
+    background-color: #fdf7f7 !important;
+}
+.top_msg.DANGER .layui-layer-content {
+    color: #a94442 !important;
+}
 @import url("../libs/datapicker/bootstrap-datetimepicker.css");
 @import url("../libs/nice-validator/dist/jquery.validator.css");
 @import url("../libs/selectpage/selectpage.css");

@@ -125,7 +125,7 @@ public class IamRoleController {
             @RequestParam(required = false, defaultValue = "0") Integer sortOrder,
             @RequestParam(required = false) String remark,
             @RequestParam(required = false, defaultValue = "true") Boolean status) {
-        
+
         IamRoleCreateCommand command = new IamRoleCreateCommand();
         command.setRoleCode(roleCode);
         command.setRoleName(roleName);
@@ -134,7 +134,7 @@ public class IamRoleController {
         command.setSortOrder(sortOrder);
         command.setRemark(remark);
         command.setStatus(status);
-        
+
         Long roleId = roleAppService.createRole(command);
         return success(roleId);
     }
@@ -174,9 +174,9 @@ public class IamRoleController {
             @RequestParam(required = false) Integer sortOrder,
             @RequestParam(required = false) String remark,
             @RequestParam(required = false) Boolean status) {
-        
+
         IamRoleUpdateCommand command = new IamRoleUpdateCommand();
-        command.setId(Long.parseLong(id));
+        command.setId(id);
         command.setRoleCode(roleCode);
         command.setRoleName(roleName);
         command.setRoleType(roleType);
@@ -184,7 +184,7 @@ public class IamRoleController {
         command.setSortOrder(sortOrder);
         command.setRemark(remark);
         command.setStatus(status);
-        
+
         roleAppService.updateRole(command);
         return success();
     }
