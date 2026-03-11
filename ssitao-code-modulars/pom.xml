@@ -18,6 +18,7 @@
         <module>ssitao-code-modular-common</module>
         <module>ssitao-code-modular-meta</module>
         <module>ssitao-code-modular-devtools</module>
+        <module>ssitao-code-modular-hr</module>
     </modules>
 
     <dependencies>
