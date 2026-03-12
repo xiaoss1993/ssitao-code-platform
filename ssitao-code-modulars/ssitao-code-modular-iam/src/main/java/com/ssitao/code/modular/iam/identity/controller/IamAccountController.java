@@ -113,6 +113,16 @@ public class IamAccountController {
         return success();
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "更新账号", description = "根据ID更新账号信息")
+    @ResponseBody
+    public CommonResult<Void> updateAccountById(@PathVariable String id,
+                                                @Valid @RequestBody IamAccountUpdateCommand command) {
+        command.setId(id);
+        accountAppService.updateAccount(command);
+        return success();
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "删除账号", description = "删除指定账号")
     @ResponseBody

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 菜单领域模型
@@ -197,6 +198,7 @@ public class IamMenu {
     public static IamMenu create(String menuCode, String menuName, String menuType,
                                  String menuParentId, String tenantId) {
         IamMenu menu = new IamMenu();
+        menu.setId(UUID.randomUUID().toString().replace("-", ""));
         menu.setMenuCode(menuCode);
         menu.setMenuName(menuName);
         menu.setMenuType(menuType);

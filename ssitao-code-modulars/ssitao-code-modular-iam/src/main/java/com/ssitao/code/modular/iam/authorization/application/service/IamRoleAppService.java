@@ -22,7 +22,7 @@ public interface IamRoleAppService {
      * @param command 创建命令
      * @return 角色ID
      */
-    Long createRole(IamRoleCreateCommand command);
+    String createRole(IamRoleCreateCommand command);
 
     /**
      * 更新角色

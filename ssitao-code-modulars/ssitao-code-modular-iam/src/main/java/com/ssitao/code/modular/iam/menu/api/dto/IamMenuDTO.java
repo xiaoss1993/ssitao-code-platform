@@ -29,6 +29,10 @@ public class IamMenuDTO implements Serializable {
     @Schema(description = "父菜单ID")
     private String parentId;
 
+    @JsonProperty("menu_code")
+    @Schema(description = "菜单编码")
+    private String menuCode;
+
     @JsonProperty("menu_name")
     @Schema(description = "菜单名称")
     private String menuName;

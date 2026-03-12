@@ -54,9 +54,10 @@ public class IamAccountAppServiceImpl implements IamAccountAppService {
             throw new IllegalArgumentException("手机号已被使用: " + command.getPhone());
         }
 
-        // 加密密码
+        // 加密密码 - 使用固定盐值策略，简化验证
         String salt = UUID.randomUUID().toString().replace("-", "");
-        String encodedPassword = passwordEncoder.encode(command.getPassword() + salt);
+        String passwordToEncode = command.getPassword();
+        String encodedPassword = passwordEncoder.encode(passwordToEncode);
 
         // 创建账号聚合根
         IamAccount account = IamAccount.create(

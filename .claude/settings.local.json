@@ -23,7 +23,13 @@
       "Bash(git checkout:*)",
       "Bash(mkdir -p ~/.claude/skills && cd /tmp && rm -rf superpowers && git clone --depth 1 https://github.com/obra/superpowers.git 2>&1)",
       "Bash(cat:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(kill:*)",
+      "Bash(jps:*)",
+      "Bash(/usr/local/mysql/bin/mysql:*)"
     ]
   }
 }

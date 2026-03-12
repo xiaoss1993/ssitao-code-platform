@@ -106,8 +106,8 @@ public class IamRoleController {
     @PostMapping(consumes = {"application/json"})
     @Operation(summary = "创建角色(JSON)", description = "创建一个新的角色")
     @ResponseBody
-    public CommonResult<Long> createRoleJson(@Valid @RequestBody IamRoleCreateCommand command) {
-        Long roleId = roleAppService.createRole(command);
+    public CommonResult<String> createRoleJson(@Valid @RequestBody IamRoleCreateCommand command) {
+        String roleId = roleAppService.createRole(command);
         return success(roleId);
     }
 
@@ -117,7 +117,7 @@ public class IamRoleController {
     @PostMapping(consumes = {"application/x-www-form-urlencoded"})
     @Operation(summary = "创建角色(表单)", description = "创建一个新的角色")
     @ResponseBody
-    public CommonResult<Long> createRoleForm(
+    public CommonResult<String> createRoleForm(
             @RequestParam String roleCode,
             @RequestParam String roleName,
             @RequestParam(required = false, defaultValue = "CUSTOM") String roleType,
@@ -135,7 +135,7 @@ public class IamRoleController {
         command.setRemark(remark);
         command.setStatus(status);
 
-        Long roleId = roleAppService.createRole(command);
+        String roleId = roleAppService.createRole(command);
         return success(roleId);
     }
 
@@ -143,8 +143,8 @@ public class IamRoleController {
     @PostMapping("/create")
     @Operation(summary = "创建角色(legacy)", description = "创建一个新的角色")
     @ResponseBody
-    public CommonResult<Long> createRoleLegacy(@Valid @RequestBody IamRoleCreateCommand command) {
-        Long roleId = roleAppService.createRole(command);
+    public CommonResult<String> createRoleLegacy(@Valid @RequestBody IamRoleCreateCommand command) {
+        String roleId = roleAppService.createRole(command);
         return success(roleId);
     }
 

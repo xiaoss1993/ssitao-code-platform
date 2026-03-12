@@ -64,6 +64,12 @@ public class IamMenuRepositoryImpl implements IamMenuRepository {
     @Override
     public String save(IamMenu menu) {
         IamMenuDO menuDO = menuConverter.toDO(menu);
+
+        // 如果ID为空，生成UUID
+        if (menuDO.getMenuId() == null || menuDO.getMenuId().isEmpty()) {
+            menuDO.setMenuId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        }
+
         menuDO.setCreateTime(LocalDateTime.now());
         menuDO.setModifyTime(LocalDateTime.now());
         menuDO.setIsDeleted(0);

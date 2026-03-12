@@ -4,44 +4,9 @@
 @import url("../css/iconfont.css");
 @import url("../libs/font-awesome/css/font-awesome.min.css");
 @import url("../libs/toastr/toastr.min.css");
-/* layer CSS 已移除 - 文件不存在 */
-@import url("../libs/bootstrap-table/bootstrap-table.min.css");
-@import url("../libs/layer/skin/layer.css");
-
-/* Layer msg 消息提示框自定义样式 */
-.layui-layer-msg {
-    border-radius: 4px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-}
-.layui-layer-msg .layui-layer-content {
-    padding: 10px 20px !important;
-    font-size: 14px !important;
-}
-/* 成功消息 */
-.top_msg.SUCCESS {
-    border-color: #5cb85c !important;
-    background-color: #f0f9f0 !important;
-}
-.top_msg.SUCCESS .layui-layer-content {
-    color: #3c763d !important;
-}
-/* 警告消息 */
-.top_msg.WARNING {
-    border-color: #f0ad4e !important;
-    background-color: #fcf8f2 !important;
-}
-.top_msg.WARNING .layui-layer-content {
-    color: #8a6d3b !important;
-}
-/* 错误/失败消息 */
-.top_msg.DANGER {
-    border-color: #d9534f !important;
-    background-color: #fdf7f7 !important;
-}
-.top_msg.DANGER .layui-layer-content {
-    color: #a94442 !important;
-}
-@import url("../libs/datapicker/bootstrap-datetimepicker.css");
+@import url("../libs/layer/build/skin/default/layer.css");
+@import url("../libs/bootstrap-table/dist/bootstrap-table.min.css");
+@import url("../libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css");
 @import url("../libs/nice-validator/dist/jquery.validator.css");
 @import url("../libs/selectpage/selectpage.css");
 body {
@@ -704,45 +669,4 @@ table.table-template {
   }
 }
 /*平板样式*/
-/* bootstrap-treegrid 树形表格样式 */
-.treegrid-indent {
-    width: 0px;
-    display: inline-block;
-}
-
-.treegrid-expander {
-    width: 15px;
-    display: inline-block;
-    cursor: pointer;
-    margin-right: 3px;
-}
-
-.treegrid-expander:before {
-    content: "\f105";
-    font-family: FontAwesome;
-    font-size: 14px;
-    color: #777;
-}
-
-.treegrid-expander-expanded:before {
-    content: "\f107";
-}
-
-.treegrid-expander:hover {
-    color: #337ab7;
-}
-
-/* 树形表格行样式 */
-.table.treegrid tbody tr.treegrid-expanded > td {
-    background-color: #f5f5f5;
-}
-
-.table.treegrid tbody tr.treegrid-collapsed > td {
-    background-color: #fff;
-}
-
-.table.treegrid tbody tr:hover > td {
-    background-color: #f5f5f5;
-}
-
 /*# sourceMappingURL=backend.css.map */

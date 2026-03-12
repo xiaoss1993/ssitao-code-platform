@@ -46,6 +46,11 @@ public class IamAccountDO {
     private String accountPassword;
 
     /**
+     * 密码盐值
+     */
+    private String accountSalt;
+
+    /**
      * 手机号码
      */
     private String accountPhone;

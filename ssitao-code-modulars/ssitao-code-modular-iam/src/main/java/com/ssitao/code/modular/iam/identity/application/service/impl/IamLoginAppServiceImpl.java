@@ -118,13 +118,12 @@ public class IamLoginAppServiceImpl implements IamLoginAppService {
             // 数据库中存在账号，验证密码
             account = accountOpt.get();
 
-            // 验证密码 - 只支持 BCrypt 格式
+            // 验证密码 - 简化处理，直接用BCrypt验证
             if (account.getPassword() != null && account.getPassword().startsWith("$2")) {
-                // BCrypt 格式密码，使用 PasswordEncoder 验证
                 passwordMatch = passwordEncoder.matches(command.getPassword(), account.getPassword());
             } else {
                 // 不再支持明文或MD5密码
-                log.warn("用户[{}]的密码格式不正确，请使用BCrypt加密", command.getUsername());
+                log.warn("用户[{}]的密码格式不正确", command.getUsername());
                 passwordMatch = false;
             }
 

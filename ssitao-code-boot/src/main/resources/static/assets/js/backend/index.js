@@ -1,9 +1,6 @@
-define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, undefined, Backend, AdminLTE, Form) {
+define(['jquery', 'bootstrap', 'backend', 'addtabs', 'adminlte', 'form'], function ($, undefined, Backend, undefined, AdminLTE, Form) {
     var Controller = {
         index: function () {
-            // 加载菜单数据
-            Controller.loadMenus();
-
             //窗口大小改变,修正主窗体最小高度
             $(window).resize(function () {
                 $(".tab-addtabs").css("height", $(".content-wrapper").height() + "px");
@@ -30,7 +27,7 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
                 if (isAndroid) {
                     $.AdminLTE.options.sidebarSlimScroll = false;
                 }
-                if ($("a", searchResult).length > 0) {
+                if ($("a", searchResult).size() > 0) {
                     searchResult.removeClass("hide");
                 }
             }).on("keyup", "input[name=q]", function () {
@@ -60,21 +57,19 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
             });
 
             //切换左侧sidebar显示隐藏
-            // 注意：AdminLTE已在adminlte.js中绑定了treeview菜单的点击事件
-            // 此处只需要处理顶级菜单项的active状态切换，避免重复绑定导致冲突
-            $(document).on("click", ".sidebar-menu li > a", function (e) {
-                var $this = $(this);
-                var $parentLi = $this.parent();
-
-                // 如果是treeview菜单项（有子菜单），不需要手动处理
-                // 由AdminLTE.tree统一处理展开/折叠
-                if ($parentLi.hasClass('treeview')) {
-                    return;
+            $(document).on("click fa.event.toggleitem", ".sidebar-menu li > a", function (e) {
+                $(".sidebar-menu li").removeClass("active");
+                //当外部触发隐藏的a时,触发父辈a的事件
+                if (!$(this).closest("ul").is(":visible")) {
+                    //如果不需要左侧的菜单栏联动可以注释下面一行即可
+                    $(this).closest("ul").prev().trigger("click");
                 }
 
-                // 非treeview菜单项，处理active状态
-                $(".sidebar-menu li").removeClass("active");
-                $parentLi.addClass("active");
+                var visible = $(this).next("ul").is(":visible");
+                if (!visible) {
+                    $(this).parents("li").addClass("active");
+                } else {
+                }
                 e.stopPropagation();
             });
 
@@ -113,92 +108,31 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
                 }
             });
 
-            //已移除addtabs插件初始化，使用自定义tab处理逻辑
-            // $('.nav-addtabs').addtabs({iframeHeight: "100%"});
+            //绑定tabs事件
+            $('#nav').addtabs({iframeHeight: "100%"});
 
             //修复iOS下iframe无法滚动的BUG
             if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
                 $(".tab-addtabs").addClass("ios-iframe-fix");
             }
 
-            // 页面加载时手动创建默认的控制台tab
-            (function() {
-                var $nav = $(".nav-addtabs");
-                var $tab = $(".tab-addtabs");
-
-                // 创建默认控制台tab
-                var tabId = 'tab-dashboard';
-                var tabHtml = '<div class="tab-pane active" id="' + tabId + '">' +
-                    '<iframe src="/console" width="100%" height="100%" frameborder="0" style="min-height: 500px;"></iframe>' +
-                    '</div>';
-                $tab.append(tabHtml);
-
-                var navHtml = '<li role="presentation" class="active">' +
-                    '<a href="#' + tabId + '" aria-controls="' + tabId + '" role="tab" data-toggle="tab">' +
-                    '控制台 <i class="fa fa-close close-tab"></i></a>' +
-                    '</li>';
-                $nav.append(navHtml);
-
-                // 标记已初始化，防止重复创建
-                $nav.data("initialized", true);
-            })();
+            if ($("ul.sidebar-menu li.active a").size() > 0) {
+                $("ul.sidebar-menu li.active a").trigger("click");
+            } else {
+                $("ul.sidebar-menu li a[url!='javascript:;']:first").trigger("click");
+            }
 
             //保留最后一次点击的窗口
             $(document).on("click", "a[addtabs]", function (e) {
-                e.preventDefault();
-                var $this = $(this);
-                var url = $this.attr("url") || $this.attr("href");
-                var id = $this.attr("addtabs");
-                var title = $this.attr("title") || $this.find("span").text() || "新页面";
-
-                localStorage.setItem("lastpage", url);
-
-                // 直接调用 addtabs 插件方法
-                var $nav = top.window.$(".nav-addtabs");
-                var $tab = top.window.$(".tab-addtabs");
-
-                if ($nav.length === 0) {
-                    // 如果找不到 nav，尝试通过触发点击来添加
-                    $("body").append('<a href="' + url + '" addtabs="' + id + '" title="' + title + '" class="hide addtabs-trigger"></a>');
-                    top.window.$(".addtabs-trigger").trigger("click");
-                    top.window.$(".addtabs-trigger").remove();
-                } else {
-                    // 检查是否已存在（优先检查初始化标记）
-                    if ($nav.data("initialized") && id === "dashboard") {
-                        // dashboard已初始化，直接激活现有tab
-                        $nav.find('a[aria-controls="tab-dashboard"]').trigger("click");
-                        return;
-                    }
-                    var existingTab = $nav.find('a[aria-controls="tab-' + id + '"]');
-                    if (existingTab.length > 0) {
-                        existingTab.trigger("click");
-                    } else {
-                        // 添加新 tab
-                        var tabId = 'tab-' + id;
-                        var tabHtml = '<div class="tab-pane" id="' + tabId + '">' +
-                            '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" style="min-height: 500px;"></iframe>' +
-                            '</div>';
-                        $tab.append(tabHtml);
-
-                        var navHtml = '<li role="presentation">' +
-                            '<a href="#' + tabId + '" aria-controls="' + tabId + '" role="tab" data-toggle="tab">' +
-                            title + ' <i class="fa fa-close close-tab"></i></a>' +
-                            '</li>';
-                        $nav.append(navHtml);
-
-                        // 激活新 tab
-                        $nav.find('a[aria-controls="' + tabId + '"]').trigger("click");
-                    }
-                }
+                localStorage.setItem("lastpage", $(this).attr("url"));
             });
             
             //回到最后一次打开的页面
-            // 注意：这里不再自动调用addtabs，因为我们的初始化代码已经创建了控制台tab
-            // 如果需要恢复此功能，请确保lastpage是有效的菜单URL
-            // var lastpage = localStorage.getItem("lastpage");
-            // if (lastpage && lastpage !== 'dashboard' && lastpage.indexOf('console') === -1) {
-            //     Backend.api.addtabs(lastpage);
-            // }
+            var lastpage = localStorage.getItem("lastpage");
+            if (lastpage) {
+                //刷新页面后跳到到刷新前的页面
+                Backend.api.addtabs(lastpage);
+            }
 
             /**
              * List of all the available skins
@@ -398,148 +332,6 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
                 localStorage.setItem("lastlogin", JSON.stringify({id: data.id, username: data.username, avatar: data.avatar}));
                 location.href = Backend.api.fixurl(data.url);
             });
-        },
-
-        /**
-         * 加载菜单数据并渲染
-         */
-        loadMenus: function () {
-            var $menuContainer = $("#sidebar-menu");
-            if ($menuContainer.length === 0) {
-                return;
-            }
-
-            $.ajax({
-                url: "/api/menus",
-                type: "GET",
-                dataType: "json",
-                success: function (res) {
-                    if (res.code === 200 && res.data && res.data.length > 0) {
-                        var html = '<li class="header">站内导航</li>';
-                        html += Controller.renderMenus(res.data);
-                        $menuContainer.html(html);
-
-                        // 初始化 AdminLTE 树形菜单
-                        if ($.AdminLTE && $.AdminLTE.tree) {
-                            $.AdminLTE.tree('.sidebar');
-                        }
-                    } else {
-                        // 菜单为空，显示提示
-                        $menuContainer.html('<li class="header">站内导航</li><li class="text-center" style="padding:20px;">暂无菜单权限</li>');
-                    }
-                },
-                error: function () {
-                    $menuContainer.html('<li class="header">站内导航</li><li class="text-center text-danger" style="padding:20px;">加载菜单失败</li>');
-                }
-            });
-        },
-
-        /**
-         * 图标名称映射：Ant Design -> Font Awesome
-         */
-        mapIcon: function (antIcon) {
-            if (!antIcon || antIcon === '') {
-                return 'fa fa-circle-o';
-            }
-            var map = {
-                // 常用图标映射
-                'DashboardOutlined': 'fa fa-dashboard',
-                'SettingOutlined': 'fa fa-cog',
-                'ApartmentOutlined': 'fa fa-building',
-                'BuildOutlined': 'fa fa-wrench',
-                'MenuOutlined': 'fa fa-bars',
-                'BookOutlined': 'fa fa-book',
-                'HomeOutlined': 'fa fa-home',
-                'UserOutlined': 'fa fa-user',
-                'TeamOutlined': 'fa fa-users',
-                'FileOutlined': 'fa fa-file',
-                'FolderOutlined': 'fa fa-folder',
-                'AppstoreOutlined': 'fa fa-th-large',
-                'MailOutlined': 'fa fa-envelope',
-                'LockOutlined': 'fa fa-lock',
-                'SafetyOutlined': 'fa fa-shield',
-                'GlobalOutlined': 'fa fa-globe',
-                'CloudOutlined': 'fa fa-cloud',
-                'DesktopOutlined': 'fa fa-desktop',
-                'MobileOutlined': 'fa fa-mobile',
-                'TableOutlined': 'fa fa-table',
-                'FormOutlined': 'fa fa-list-alt',
-                'SearchOutlined': 'fa fa-search',
-                'BellOutlined': 'fa fa-bell',
-                'CalendarOutlined': 'fa fa-calendar',
-                'ClockCircleOutlined': 'fa fa-clock-o',
-                'MoneyCollectOutlined': 'fa fa-money',
-                'ShoppingCartOutlined': 'fa fa-shopping-cart',
-                'MessageOutlined': 'fa fa-comment',
-                'StarOutlined': 'fa fa-star',
-                'HeartOutlined': 'fa fa-heart',
-                'FlagOutlined': 'fa fa-flag',
-                'TagOutlined': 'fa fa-tag',
-                'ToolOutlined': 'fa fa-gavel',
-                'DatabaseOutlined': 'fa fa-database',
-                'CodeOutlined': 'fa fa-code',
-                'ApiOutlined': 'fa fa-plug',
-                'RobotOutlined': 'fa fa-robot',
-                'ExperimentOutlined': 'fa fa-flask',
-                'FireOutlined': 'fa fa-fire',
-                'ThunderboltOutlined': 'fa fa-bolt',
-                'KeyOutlined': 'fa fa-key',
-                'IdCardOutlined': 'fa fa-id-card',
-                'CreditCardOutlined': 'fa fa-credit-card',
-                'BankOutlined': 'fa fa-university',
-                'CarOutlined': 'fa fa-car',
-                'EnvironmentOutlined': 'fa fa-leaf',
-                'CoffeeOutlined': 'fa fa-coffee',
-                'FilmOutlined': 'fa fa-film',
-                'CameraOutlined': 'fa fa-camera',
-                'PictureOutlined': 'fa fa-picture-o',
-                'VideoCameraOutlined': 'fa fa-video-camera',
-                'CustomerServiceOutlined': 'fa fa-headphones',
-                'SoundOutlined': 'fa fa-volume-up',
-                'Html5Outlined': 'fa fa-html5',
-                'Css3Outlined': 'fa fa-css3',
-                'AndroidOutlined': 'fa fa-android',
-                'AppleOutlined': 'fa fa-apple',
-                'WindowsOutlined': 'fa fa-windows',
-                'LinuxOutlined': 'fa fa-linux'
-            };
-            return map[antIcon] || 'fa fa-circle-o';
-        },
-
-        /**
-         * 渲染菜单 HTML
-         */
-        renderMenus: function (menus) {
-            var html = '';
-            for (var i = 0; i < menus.length; i++) {
-                var menu = menus[i];
-                var hasChildren = menu.children && menu.children.length > 0;
-                var icon = Controller.mapIcon(menu.icon);
-
-                if (hasChildren) {
-                    // 有子菜单，渲染为树形菜单
-                    html += '<li class="treeview">';
-                    html += '<a href="javascript:;">';
-                    html += '<i class="' + icon + '"></i> ';
-                    html += '<span>' + (menu.menuName || '未命名') + '</span>';
-                    html += '<span class="pull-right-container"><i class="fa fa-angle-left"></i></span>';
-                    html += '</a>';
-                    html += '<ul class="treeview-menu">';
-                    html += Controller.renderMenus(menu.children);
-                    html += '</ul>';
-                    html += '</li>';
-                } else {
-                    // 没有子菜单，渲染为普通菜单
-                    var path = menu.path && menu.path !== '' ? menu.path : 'javascript:;';
-                    html += '<li>';
-                    html += '<a href="' + path + '" addtabs="' + menu.id + '" url="' + path + '">';
-                    html += '<i class="' + icon + '"></i> ';
-                    html += '<span>' + (menu.menuName || '未命名') + '</span>';
-                    html += '</a>';
-                    html += '</li>';
-                }
-            }
-            return html;
         }
     };
 

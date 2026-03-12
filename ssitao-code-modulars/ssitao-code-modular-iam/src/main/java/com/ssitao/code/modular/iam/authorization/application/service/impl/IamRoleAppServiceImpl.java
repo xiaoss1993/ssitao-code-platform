@@ -37,7 +37,7 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createRole(IamRoleCreateCommand command) {
+    public String createRole(IamRoleCreateCommand command) {
         // 检查角色编码是否已存在
         if (roleRepository.existsByRoleCode(command.getRoleCode(), command.getTenantId(), null)) {
             throw new IllegalArgumentException("角色编码已存在: " + command.getRoleCode());
@@ -65,7 +65,7 @@ public class IamRoleAppServiceImpl implements IamRoleAppService {
         role.setRoleDesc(command.getRemark());
 
         String id = roleRepository.save(role);
-        return id != null ? Long.valueOf(id) : null;
+        return id;
     }
 
     @Override

@@ -88,9 +88,9 @@ public class RoleManageController {
      */
     @PostMapping
     @Operation(summary = "创建角色", description = "创建新角色")
-    public CommonResult<Long> createRole(@Valid @RequestBody IamRoleCreateCommand command) {
+    public CommonResult<String> createRole(@Valid @RequestBody IamRoleCreateCommand command) {
         command.setTenantId(getTenantId());
-        Long roleId = roleAppService.createRole(command);
+        String roleId = roleAppService.createRole(command);
         return CommonResult.success(roleId);
     }
 

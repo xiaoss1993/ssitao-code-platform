@@ -188,6 +188,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils', 'layer'], fu
                     }
                 });
             });
+
+            Form.api.bindevent($("form[role=form]"));
         },
         edit: function () {
             // 获取URL参数
@@ -287,7 +289,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'utils', 'layer'], fu
                 });
             });
 
-            // 注意：不再调用 Form.api.bindevent，因为我们已经在 submit 事件中处理了表单提交
+            Form.api.bindevent($("form[role=form]"));
         },
 
         // 处理编辑

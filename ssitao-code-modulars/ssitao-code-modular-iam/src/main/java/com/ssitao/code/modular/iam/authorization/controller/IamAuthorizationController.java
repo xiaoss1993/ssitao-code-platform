@@ -54,8 +54,8 @@ public class IamAuthorizationController {
 
     @PostMapping("/role")
     @Operation(summary = "创建角色", description = "创建新的角色")
-    public CommonResult<Long> createRole(@Valid @RequestBody IamRoleCreateCommand command) {
-        Long roleId = roleAppService.createRole(command);
+    public CommonResult<String> createRole(@Valid @RequestBody IamRoleCreateCommand command) {
+        String roleId = roleAppService.createRole(command);
         return success(roleId);
     }
 

@@ -303,10 +303,16 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
     private IamMenu convertDtoToDomain(IamMenuDTO dto) {
         IamMenu menu = new IamMenu();
 
-        menu.setId(dto.getId());
+        // 如果没有ID，生成一个新的UUID
+        if (dto.getId() == null || dto.getId().isEmpty()) {
+            menu.setId(java.util.UUID.randomUUID().toString().replace("-", ""));
+        } else {
+            menu.setId(dto.getId());
+        }
         // 处理 parentId：空字符串转为 null
         String parentId = dto.getParentId();
         menu.setParentId(parentId != null && !parentId.isEmpty() ? parentId : null);
+        menu.setMenuCode(dto.getMenuCode());
         menu.setMenuName(dto.getMenuName());
         // 转换菜单类型：大写 DIRECTORY/MENU/BUTTON
         menu.setMenuType(convertMenuType(dto.getMenuType()));

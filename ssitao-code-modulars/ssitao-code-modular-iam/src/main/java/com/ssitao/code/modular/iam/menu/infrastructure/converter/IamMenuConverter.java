@@ -107,7 +107,7 @@ public interface IamMenuConverter {
      * 领域模型转DO
      */
     @Mappings({
-        @Mapping(source = "menuId", target = "menuId"),
+        @Mapping(source = "id", target = "menuId"),
         @Mapping(source = "menuCode", target = "menuCode"),
         @Mapping(source = "menuName", target = "menuName"),
         @Mapping(source = "menuType", target = "menuType"),

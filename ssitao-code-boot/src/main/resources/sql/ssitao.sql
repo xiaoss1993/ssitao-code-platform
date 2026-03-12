@@ -11,7 +11,7 @@
  Target Server Version : 80023 (8.0.23)
  File Encoding         : 65001
 
- Date: 09/03/2026 17:22:21
+ Date: 11/03/2026 22:46:22
 */
 
 SET NAMES utf8mb4;
@@ -41,6 +41,12 @@ CREATE TABLE `aggregate_event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='聚合框架-事件存储表';
 
 -- ----------------------------
+-- Records of aggregate_event
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for aggregate_event_publication
 -- ----------------------------
 DROP TABLE IF EXISTS `aggregate_event_publication`;
@@ -59,6 +65,12 @@ CREATE TABLE `aggregate_event_publication` (
   KEY `idx_subscription_id` (`subscription_id`),
   KEY `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='聚合框架-事件发布记录表';
+
+-- ----------------------------
+-- Records of aggregate_event_publication
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for aggregate_event_subscription
@@ -80,6 +92,12 @@ CREATE TABLE `aggregate_event_subscription` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='聚合框架-事件订阅表';
 
 -- ----------------------------
+-- Records of aggregate_event_subscription
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for aggregate_snapshot
 -- ----------------------------
 DROP TABLE IF EXISTS `aggregate_snapshot`;
@@ -96,6 +114,12 @@ CREATE TABLE `aggregate_snapshot` (
   KEY `idx_aggregate_type` (`aggregate_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='聚合框架-事件快照表';
+
+-- ----------------------------
+-- Records of aggregate_snapshot
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for aggregate_transaction_log
@@ -119,6 +143,12 @@ CREATE TABLE `aggregate_transaction_log` (
   KEY `idx_create_time` (`create_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='聚合框架-分布式事务日志表';
+
+-- ----------------------------
+-- Records of aggregate_transaction_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_association_field
@@ -147,6 +177,12 @@ CREATE TABLE `core_association_field` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='关联字段表';
 
 -- ----------------------------
+-- Records of core_association_field
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_code_sequence
 -- ----------------------------
 DROP TABLE IF EXISTS `core_code_sequence`;
@@ -171,6 +207,12 @@ CREATE TABLE `core_code_sequence` (
   UNIQUE KEY `uk_sequence_code` (`sequence_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='代码生成序列表';
+
+-- ----------------------------
+-- Records of core_code_sequence
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_comm_js
@@ -202,6 +244,12 @@ CREATE TABLE `core_comm_js` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='公共JS脚本表';
 
 -- ----------------------------
+-- Records of core_comm_js
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_config
 -- ----------------------------
 DROP TABLE IF EXISTS `core_config`;
@@ -230,6 +278,18 @@ CREATE TABLE `core_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统配置表';
 
 -- ----------------------------
+-- Records of core_config
+-- ----------------------------
+BEGIN;
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', 'system.name', '系统名称', '思涛低代码平台', 'STRING', 'system', 1, 1, '系统名称配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('10', 'security.password.salt', '密码盐值', 'ssitao2026', 'STRING', 'security', 1, 1, '密码加密盐值', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('11', 'security.password.minLength', '密码最小长度', '6', 'NUMBER', 'security', 1, 1, '密码最小长度要求', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('12', 'security.session.timeout', '会话超时时间', '7200', 'NUMBER', 'security', 1, 1, '会话超时时间(秒)', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', 'system.logo', '系统Logo', '/logo.png', 'STRING', 'system', 1, 1, '系统Logo路径', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_config` (`config_id`, `config_code`, `config_name`, `config_value`, `config_type`, `config_category`, `config_status`, `config_is_builtin`, `config_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', 'system.version', '系统版本', '2.0.0', 'STRING', 'system', 1, 1, '系统版本号', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_data_flow
 -- ----------------------------
 DROP TABLE IF EXISTS `core_data_flow`;
@@ -255,6 +315,12 @@ CREATE TABLE `core_data_flow` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据流转表';
 
 -- ----------------------------
+-- Records of core_data_flow
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_develop_log
 -- ----------------------------
 DROP TABLE IF EXISTS `core_develop_log`;
@@ -275,6 +341,12 @@ CREATE TABLE `core_develop_log` (
   KEY `idx_log_time` (`log_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='开发日志表';
+
+-- ----------------------------
+-- Records of core_develop_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_dictionary
@@ -305,6 +377,20 @@ CREATE TABLE `core_dictionary` (
   KEY `idx_dict_name` (`dict_name`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据字典表';
+
+-- ----------------------------
+-- Records of core_dictionary
+-- ----------------------------
+BEGIN;
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', 'user_status', '用户状态', 'SYSTEM', 'CUSTOM', NULL, NULL, NULL, 1, 1, 1, '用户账户状态字典', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', 'sex', '性别', 'SYSTEM', 'CUSTOM', NULL, NULL, NULL, 1, 1, 2, '性别字典', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('20', 'customer_level', '客户级别', 'BUSINESS', 'CUSTOM', NULL, NULL, NULL, 1, 0, 1, '客户级别ABC分类', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('21', 'customer_source', '客户来源', 'BUSINESS', 'CUSTOM', NULL, NULL, NULL, 1, 0, 2, '客户来源渠道', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('23', 'order_status', '订单状态', 'BUSINESS', 'CUSTOM', NULL, NULL, NULL, 1, 0, 4, '订单状态', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', 'yes_no', '是否', 'SYSTEM', 'CUSTOM', NULL, NULL, NULL, 1, 1, 3, '是否字典', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('4', 'status', '状态', 'SYSTEM', 'CUSTOM', NULL, NULL, NULL, 1, 1, 4, '通用状态字典', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `core_dictionary` (`dict_id`, `dict_code`, `dict_name`, `dict_type`, `dict_source`, `dict_sql`, `dict_api`, `dict_config`, `dict_status`, `dict_is_builtin`, `dict_sort`, `dict_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('5', 'menu_type', '菜单类型', 'SYSTEM', 'CUSTOM', NULL, NULL, NULL, 1, 1, 5, '菜单类型字典', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_dictionary_item
@@ -341,6 +427,26 @@ CREATE TABLE `core_dictionary_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据字典项表';
 
 -- ----------------------------
+-- Records of core_dictionary_item
+-- ----------------------------
+BEGIN;
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('1', '1', 'ENABLED', '启用', '1', NULL, 1, '/1', NULL, 'green', 'success', 1, 1, 1, '启用状态', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('2', '1', 'DISABLED', '禁用', '0', NULL, 1, '/2', NULL, 'red', 'danger', 1, 0, 2, '禁用状态', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('3', '2', 'MALE', '男', '1', NULL, 1, '/3', NULL, 'blue', 'primary', 1, 0, 1, '男性', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('4', '2', 'FEMALE', '女', '2', NULL, 1, '/4', NULL, 'pink', 'danger', 1, 0, 2, '女性', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('50', '20', 'A', 'A级客户', '1', NULL, 1, '/50', NULL, 'red', 'danger', 1, 0, 1, '重要客户', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('51', '20', 'B', 'B级客户', '2', NULL, 1, '/51', NULL, 'orange', 'warning', 1, 0, 2, '普通客户', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('52', '20', 'C', 'C级客户', '3', NULL, 1, '/52', NULL, 'green', 'success', 1, 0, 3, '潜在客户', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('6', '3', 'YES', '是', '1', NULL, 1, '/6', NULL, 'green', 'success', 1, 0, 1, '是', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('63', '23', 'PENDING', '待处理', '1', NULL, 1, '/63', NULL, 'orange', 'warning', 1, 0, 1, '待处理', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('64', '23', 'CONFIRMED', '已确认', '2', NULL, 1, '/64', NULL, 'blue', 'primary', 1, 0, 2, '已确认', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('65', '23', 'COMPLETED', '已完成', '5', NULL, 1, '/67', NULL, 'green', 'success', 1, 0, 5, '已完成', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('7', '3', 'NO', '否', '0', NULL, 1, '/7', NULL, 'red', 'danger', 1, 0, 2, '否', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('8', '4', 'ENABLED', '启用', '1', NULL, 1, '/8', NULL, 'green', 'success', 1, 1, 1, '启用', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+INSERT INTO `core_dictionary_item` (`item_id`, `dict_id`, `item_code`, `item_name`, `item_value`, `item_parent_id`, `item_level`, `item_path`, `item_icon`, `item_color`, `item_css_class`, `item_status`, `item_is_default`, `item_sort`, `item_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('9', '4', 'DISABLED', '禁用', '0', NULL, 1, '/9', NULL, 'red', 'danger', 1, 0, 2, '禁用', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_dictionary_log
 -- ----------------------------
 DROP TABLE IF EXISTS `core_dictionary_log`;
@@ -361,6 +467,12 @@ CREATE TABLE `core_dictionary_log` (
   KEY `idx_log_time` (`log_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据字典日志表';
+
+-- ----------------------------
+-- Records of core_dictionary_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_exception
@@ -386,6 +498,12 @@ CREATE TABLE `core_exception` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='异常表';
 
 -- ----------------------------
+-- Records of core_exception
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_exception_log
 -- ----------------------------
 DROP TABLE IF EXISTS `core_exception_log`;
@@ -407,6 +525,12 @@ CREATE TABLE `core_exception_log` (
   KEY `idx_log_time` (`log_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='异常日志表';
+
+-- ----------------------------
+-- Records of core_exception_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_execution_log
@@ -435,6 +559,12 @@ CREATE TABLE `core_execution_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='执行日志表';
 
 -- ----------------------------
+-- Records of core_execution_log
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_func_config
 -- ----------------------------
 DROP TABLE IF EXISTS `core_func_config`;
@@ -459,6 +589,12 @@ CREATE TABLE `core_func_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能配置表';
 
 -- ----------------------------
+-- Records of core_func_config
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_func_edit
 -- ----------------------------
 DROP TABLE IF EXISTS `core_func_edit`;
@@ -479,6 +615,12 @@ CREATE TABLE `core_func_edit` (
   UNIQUE KEY `uk_func_edit` (`func_id`,`edit_type`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能编辑表';
+
+-- ----------------------------
+-- Records of core_func_edit
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_func_info
@@ -512,6 +654,12 @@ CREATE TABLE `core_func_info` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能信息表';
 
 -- ----------------------------
+-- Records of core_func_info
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_func_perm
 -- ----------------------------
 DROP TABLE IF EXISTS `core_func_perm`;
@@ -537,6 +685,12 @@ CREATE TABLE `core_func_perm` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能权限表';
 
 -- ----------------------------
+-- Records of core_func_perm
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_func_perm_config
 -- ----------------------------
 DROP TABLE IF EXISTS `core_func_perm_config`;
@@ -555,6 +709,12 @@ CREATE TABLE `core_func_perm_config` (
   UNIQUE KEY `uk_func_config` (`func_id`,`config_key`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能权限配置表';
+
+-- ----------------------------
+-- Records of core_func_perm_config
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_func_relation
@@ -577,6 +737,12 @@ CREATE TABLE `core_func_relation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能关系表';
 
 -- ----------------------------
+-- Records of core_func_relation
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_func_relyon
 -- ----------------------------
 DROP TABLE IF EXISTS `core_func_relyon`;
@@ -594,6 +760,12 @@ CREATE TABLE `core_func_relyon` (
   KEY `idx_rely_func` (`rely_func_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='功能依赖表';
+
+-- ----------------------------
+-- Records of core_func_relyon
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_group_query
@@ -623,6 +795,12 @@ CREATE TABLE `core_group_query` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='分组查询表';
 
 -- ----------------------------
+-- Records of core_group_query
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_help_msg
 -- ----------------------------
 DROP TABLE IF EXISTS `core_help_msg`;
@@ -648,6 +826,12 @@ CREATE TABLE `core_help_msg` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='帮助信息表';
 
 -- ----------------------------
+-- Records of core_help_msg
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_java_js_library
 -- ----------------------------
 DROP TABLE IF EXISTS `core_java_js_library`;
@@ -669,6 +853,12 @@ CREATE TABLE `core_java_js_library` (
   UNIQUE KEY `uk_library_code` (`library_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Java JS库表';
+
+-- ----------------------------
+-- Records of core_java_js_library
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_je_api
@@ -696,6 +886,12 @@ CREATE TABLE `core_je_api` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='JE API表';
 
 -- ----------------------------
+-- Records of core_je_api
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_je_app_api
 -- ----------------------------
 DROP TABLE IF EXISTS `core_je_app_api`;
@@ -717,6 +913,12 @@ CREATE TABLE `core_je_app_api` (
   UNIQUE KEY `uk_app_api` (`app_id`,`api_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='JE应用API表';
+
+-- ----------------------------
+-- Records of core_je_app_api
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_kj_menu
@@ -743,6 +945,12 @@ CREATE TABLE `core_kj_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='快捷菜单表';
 
 -- ----------------------------
+-- Records of core_kj_menu
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_mark
 -- ----------------------------
 DROP TABLE IF EXISTS `core_mark`;
@@ -760,6 +968,12 @@ CREATE TABLE `core_mark` (
   KEY `idx_mark_user` (`mark_user_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='标记表';
+
+-- ----------------------------
+-- Records of core_mark
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_menu
@@ -791,6 +1005,12 @@ CREATE TABLE `core_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='核心菜单表';
 
 -- ----------------------------
+-- Records of core_menu
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_notice
 -- ----------------------------
 DROP TABLE IF EXISTS `core_notice`;
@@ -818,6 +1038,12 @@ CREATE TABLE `core_notice` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='通知表';
 
 -- ----------------------------
+-- Records of core_notice
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_page_nicked
 -- ----------------------------
 DROP TABLE IF EXISTS `core_page_nicked`;
@@ -833,6 +1059,12 @@ CREATE TABLE `core_page_nicked` (
   UNIQUE KEY `uk_page_user` (`page_path`,`nick_user_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='页面标记表';
+
+-- ----------------------------
+-- Records of core_page_nicked
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_qj_css
@@ -853,6 +1085,12 @@ CREATE TABLE `core_qj_css` (
   UNIQUE KEY `uk_css_code` (`css_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='区间CSS表';
+
+-- ----------------------------
+-- Records of core_qj_css
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_qj_jbk
@@ -876,6 +1114,12 @@ CREATE TABLE `core_qj_jbk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='区间背景表';
 
 -- ----------------------------
+-- Records of core_qj_jbk
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_qj_sql
 -- ----------------------------
 DROP TABLE IF EXISTS `core_qj_sql`;
@@ -896,6 +1140,12 @@ CREATE TABLE `core_qj_sql` (
   UNIQUE KEY `uk_sql_code` (`sql_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='区间SQL表';
+
+-- ----------------------------
+-- Records of core_qj_sql
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_query_strategy
@@ -922,6 +1172,12 @@ CREATE TABLE `core_query_strategy` (
   UNIQUE KEY `uk_func_strategy` (`func_id`,`strategy_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='查询策略表';
+
+-- ----------------------------
+-- Records of core_query_strategy
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_resource_button
@@ -953,6 +1209,12 @@ CREATE TABLE `core_resource_button` (
   KEY `idx_button_code` (`button_code`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源按钮表';
+
+-- ----------------------------
+-- Records of core_resource_button
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_resource_column
@@ -988,6 +1250,12 @@ CREATE TABLE `core_resource_column` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源列表表';
 
 -- ----------------------------
+-- Records of core_resource_column
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_resource_column_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `core_resource_column_plan`;
@@ -1008,6 +1276,12 @@ CREATE TABLE `core_resource_column_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源列计划表';
 
 -- ----------------------------
+-- Records of core_resource_column_plan
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_resource_column_print_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `core_resource_column_print_plan`;
@@ -1026,6 +1300,12 @@ CREATE TABLE `core_resource_column_print_plan` (
   UNIQUE KEY `uk_column_print_plan` (`column_id`,`plan_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源列打印计划表';
+
+-- ----------------------------
+-- Records of core_resource_column_print_plan
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_resource_field
@@ -1063,6 +1343,12 @@ CREATE TABLE `core_resource_field` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源字段表';
 
 -- ----------------------------
+-- Records of core_resource_field
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_resource_field_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `core_resource_field_plan`;
@@ -1083,6 +1369,12 @@ CREATE TABLE `core_resource_field_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源字段计划表';
 
 -- ----------------------------
+-- Records of core_resource_field_plan
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_resource_field_print_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `core_resource_field_print_plan`;
@@ -1101,6 +1393,12 @@ CREATE TABLE `core_resource_field_print_plan` (
   UNIQUE KEY `uk_field_print_plan` (`field_id`,`plan_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源字段打印计划表';
+
+-- ----------------------------
+-- Records of core_resource_field_print_plan
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_resource_table
@@ -1135,6 +1433,12 @@ CREATE TABLE `core_resource_table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='资源表表';
 
 -- ----------------------------
+-- Records of core_resource_table
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_set_plan
 -- ----------------------------
 DROP TABLE IF EXISTS `core_set_plan`;
@@ -1159,6 +1463,12 @@ CREATE TABLE `core_set_plan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设置计划表';
 
 -- ----------------------------
+-- Records of core_set_plan
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_setting
 -- ----------------------------
 DROP TABLE IF EXISTS `core_setting`;
@@ -1181,6 +1491,12 @@ CREATE TABLE `core_setting` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='设置表';
 
 -- ----------------------------
+-- Records of core_setting
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_slow_sql_log
 -- ----------------------------
 DROP TABLE IF EXISTS `core_slow_sql_log`;
@@ -1199,6 +1515,12 @@ CREATE TABLE `core_slow_sql_log` (
   KEY `idx_log_time` (`log_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='慢SQL日志表';
+
+-- ----------------------------
+-- Records of core_slow_sql_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_table_column
@@ -1229,6 +1551,12 @@ CREATE TABLE `core_table_column` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表列表';
 
 -- ----------------------------
+-- Records of core_table_column
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_table_display
 -- ----------------------------
 DROP TABLE IF EXISTS `core_table_display`;
@@ -1246,6 +1574,12 @@ CREATE TABLE `core_table_display` (
   UNIQUE KEY `uk_table_display` (`table_code`,`display_type`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表显示表';
+
+-- ----------------------------
+-- Records of core_table_display
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_table_index
@@ -1268,6 +1602,12 @@ CREATE TABLE `core_table_index` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表索引表';
 
 -- ----------------------------
+-- Records of core_table_index
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_table_key
 -- ----------------------------
 DROP TABLE IF EXISTS `core_table_key`;
@@ -1288,6 +1628,12 @@ CREATE TABLE `core_table_key` (
   UNIQUE KEY `uk_table_key` (`table_code`,`key_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表键表';
+
+-- ----------------------------
+-- Records of core_table_key
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_table_trace
@@ -1313,6 +1659,12 @@ CREATE TABLE `core_table_trace` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表跟踪表';
 
 -- ----------------------------
+-- Records of core_table_trace
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_table_view
 -- ----------------------------
 DROP TABLE IF EXISTS `core_table_view`;
@@ -1333,6 +1685,12 @@ CREATE TABLE `core_table_view` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='表视图表';
 
 -- ----------------------------
+-- Records of core_table_view
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_user_info
 -- ----------------------------
 DROP TABLE IF EXISTS `core_user_info`;
@@ -1350,6 +1708,12 @@ CREATE TABLE `core_user_info` (
   UNIQUE KEY `uk_user_info` (`user_id`,`info_type`,`info_key`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户信息表';
+
+-- ----------------------------
+-- Records of core_user_info
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_user_info_column
@@ -1372,6 +1736,12 @@ CREATE TABLE `core_user_info_column` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户信息列表';
 
 -- ----------------------------
+-- Records of core_user_info_column
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for core_view_cascade
 -- ----------------------------
 DROP TABLE IF EXISTS `core_view_cascade`;
@@ -1390,6 +1760,12 @@ CREATE TABLE `core_view_cascade` (
   KEY `idx_view_id` (`view_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='视图级联表';
+
+-- ----------------------------
+-- Records of core_view_cascade
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for core_view_events
@@ -1412,6 +1788,12 @@ CREATE TABLE `core_view_events` (
   KEY `idx_event_name` (`event_name`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='视图事件表';
+
+-- ----------------------------
+-- Records of core_view_events
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for credential
@@ -1443,6 +1825,12 @@ CREATE TABLE `credential` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='凭证表';
 
 -- ----------------------------
+-- Records of credential
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for framework_application_install
 -- ----------------------------
 DROP TABLE IF EXISTS `framework_application_install`;
@@ -1471,6 +1859,12 @@ CREATE TABLE `framework_application_install` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用安装表';
 
 -- ----------------------------
+-- Records of framework_application_install
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for framework_application_resource
 -- ----------------------------
 DROP TABLE IF EXISTS `framework_application_resource`;
@@ -1493,6 +1887,12 @@ CREATE TABLE `framework_application_resource` (
   KEY `idx_resource_type` (`resource_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='应用资源表';
+
+-- ----------------------------
+-- Records of framework_application_resource
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for framework_base_resource
@@ -1524,6 +1924,12 @@ CREATE TABLE `framework_base_resource` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='基础资源表';
 
 -- ----------------------------
+-- Records of framework_base_resource
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for framework_database_instance
 -- ----------------------------
 DROP TABLE IF EXISTS `framework_database_instance`;
@@ -1553,6 +1959,12 @@ CREATE TABLE `framework_database_instance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据库实例表';
 
 -- ----------------------------
+-- Records of framework_database_instance
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for framework_database_resource
 -- ----------------------------
 DROP TABLE IF EXISTS `framework_database_resource`;
@@ -1573,6 +1985,12 @@ CREATE TABLE `framework_database_resource` (
   KEY `idx_resource_type` (`resource_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='数据库资源表';
+
+-- ----------------------------
+-- Records of framework_database_resource
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for framework_manage
@@ -1596,6 +2014,12 @@ CREATE TABLE `framework_manage` (
   UNIQUE KEY `uk_manage_code` (`manage_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='框架管理表';
+
+-- ----------------------------
+-- Records of framework_manage
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for framework_server
@@ -1624,6 +2048,125 @@ CREATE TABLE `framework_server` (
   KEY `idx_server_type` (`server_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='服务器表';
+
+-- ----------------------------
+-- Records of framework_server
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for hr_department
+-- ----------------------------
+DROP TABLE IF EXISTS `hr_department`;
+CREATE TABLE `hr_department` (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门ID',
+  `dept_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门编码',
+  `dept_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门名称',
+  `parent_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '父部门ID',
+  `dept_level` int DEFAULT '1' COMMENT '部门层级',
+  `dept_path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门路径',
+  `dept_sort` int DEFAULT '0' COMMENT '排序',
+  `dept_leader` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '部门负责人',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '联系电话',
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '邮箱',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'NORMAL' COMMENT '状态: NORMAL-正常, DISABLED-停用',
+  `tenant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '租户ID',
+  `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除: 0-否, 1-是',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_dept_code` (`dept_code`,`tenant_id`,`deleted`),
+  KEY `idx_parent_id` (`parent_id`),
+  KEY `idx_tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门表';
+
+-- ----------------------------
+-- Records of hr_department
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for hr_employee
+-- ----------------------------
+DROP TABLE IF EXISTS `hr_employee`;
+CREATE TABLE `hr_employee` (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '主键ID',
+  `user_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户ID（关联iam_user）',
+  `employee_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '员工编号',
+  `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '所属部门ID',
+  `position_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '岗位ID',
+  `entry_date` date DEFAULT NULL COMMENT '入职日期',
+  `probation_months` int DEFAULT '3' COMMENT '试用期（月）',
+  `probation_end_date` date DEFAULT NULL COMMENT '试用期结束日期',
+  `regular_date` date DEFAULT NULL COMMENT '转正日期',
+  `employment_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'FULL_TIME' COMMENT '用工性质: FULL_TIME-全职, PART_TIME-兼职, INTERNSHIP-实习, LABOR-劳务派遣',
+  `employee_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'PROBATION' COMMENT '员工状态: PROBATION-试用期, REGULAR-正式, RESIGNED-已离职, TRANSFERRED-调岗中',
+  `bank_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '开户银行',
+  `bank_account` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '银行账号',
+  `social_security_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '社保账号',
+  `provident_fund_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '公积金账号',
+  `emergency_contact` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '紧急联系人',
+  `emergency_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '紧急联系电话',
+  `contract_start_date` date DEFAULT NULL COMMENT '合同开始日期',
+  `contract_end_date` date DEFAULT NULL COMMENT '合同结束日期',
+  `contract_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '合同编号',
+  `remark` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+  `tenant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '租户ID',
+  `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除: 0-否, 1-是',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_employee_code` (`employee_code`,`tenant_id`,`deleted`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_dept_id` (`dept_id`),
+  KEY `idx_position_id` (`position_id`),
+  KEY `idx_tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工档案表';
+
+-- ----------------------------
+-- Records of hr_employee
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for hr_position
+-- ----------------------------
+DROP TABLE IF EXISTS `hr_position`;
+CREATE TABLE `hr_position` (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位ID',
+  `position_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
+  `position_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
+  `dept_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '所属部门ID',
+  `position_level` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '职级: P1-P15',
+  `position_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '岗位类型: MANAGEMENT-管理岗, PROFESSIONAL-专业岗, OPERATIONS-操作岗',
+  `position_summary` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '岗位职责描述',
+  `position_requirement` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '任职要求',
+  `position_sort` int DEFAULT '0' COMMENT '排序',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'NORMAL' COMMENT '状态: NORMAL-正常, DISABLED-停用',
+  `tenant_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '租户ID',
+  `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '更新人',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除: 0-否, 1-是',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_position_code` (`position_code`,`tenant_id`,`deleted`),
+  KEY `idx_dept_id` (`dept_id`),
+  KEY `idx_tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岗位表';
+
+-- ----------------------------
+-- Records of hr_position
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for hrms_staff_archives
@@ -1672,6 +2215,12 @@ CREATE TABLE `hrms_staff_archives` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工档案表';
 
 -- ----------------------------
+-- Records of hrms_staff_archives
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for hrms_staff_certificate
 -- ----------------------------
 DROP TABLE IF EXISTS `hrms_staff_certificate`;
@@ -1696,6 +2245,12 @@ CREATE TABLE `hrms_staff_certificate` (
   KEY `idx_certificate_type` (`certificate_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工证书表';
+
+-- ----------------------------
+-- Records of hrms_staff_certificate
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for hrms_staff_contract
@@ -1730,6 +2285,12 @@ CREATE TABLE `hrms_staff_contract` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工合同表';
 
 -- ----------------------------
+-- Records of hrms_staff_contract
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for hrms_staff_education
 -- ----------------------------
 DROP TABLE IF EXISTS `hrms_staff_education`;
@@ -1755,6 +2316,12 @@ CREATE TABLE `hrms_staff_education` (
   KEY `idx_education_level` (`education_level`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工教育表';
+
+-- ----------------------------
+-- Records of hrms_staff_education
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for hrms_staff_family
@@ -1785,6 +2352,12 @@ CREATE TABLE `hrms_staff_family` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工家庭成员表';
 
 -- ----------------------------
+-- Records of hrms_staff_family
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for hrms_staff_job_resume
 -- ----------------------------
 DROP TABLE IF EXISTS `hrms_staff_job_resume`;
@@ -1810,6 +2383,12 @@ CREATE TABLE `hrms_staff_job_resume` (
   KEY `idx_resume_company` (`resume_company`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工工作简历表';
+
+-- ----------------------------
+-- Records of hrms_staff_job_resume
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for hrms_staff_language
@@ -1839,6 +2418,12 @@ CREATE TABLE `hrms_staff_language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工语言能力表';
 
 -- ----------------------------
+-- Records of hrms_staff_language
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for hrms_staff_reward_punish
 -- ----------------------------
 DROP TABLE IF EXISTS `hrms_staff_reward_punish`;
@@ -1866,6 +2451,12 @@ CREATE TABLE `hrms_staff_reward_punish` (
   KEY `idx_rp_date` (`rp_date`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='员工奖惩表';
+
+-- ----------------------------
+-- Records of hrms_staff_reward_punish
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_account
@@ -1900,12 +2491,31 @@ CREATE TABLE `iam_account` (
   `modify_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   `is_deleted` tinyint(1) DEFAULT '0' COMMENT '是否删除: 0-否, 1-是',
   `version` int DEFAULT '0' COMMENT '版本号',
+  `account_salt` varchar(64) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`account_id`),
   UNIQUE KEY `uk_account_code` (`account_code`,`tenant_id`,`is_deleted`),
   KEY `idx_account_name` (`account_name`),
   KEY `idx_tenant_id` (`tenant_id`),
   KEY `idx_status` (`account_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='账户表';
+
+-- ----------------------------
+-- Records of iam_account
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('7b87e90a9c48456b97a33a95fc3459dd', 'admin', '管理员', '$2a$10$4Al.1o/hibjQd28DYbZ16uZzDwRPneNW13jOU8HXR68KidtY0bLS.', '13800138000', 'admin@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 0, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 21:40:38', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278848', 'ACC2031691167267278849', '测试用户1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '15244992404', 'test1@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278850', 'ACC2031691167267278851', '测试用户2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '13979755768', 'test2@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278852', 'ACC2031691167267278853', '测试用户3', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '13834552240', 'test3@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278854', 'ACC2031691167267278855', '测试用户4', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '15230278542', 'test4@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278856', 'ACC2031691167267278857', '测试用户5', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '15155521232', 'test5@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278858', 'ACC2031691167267278859', '测试用户6', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '18840465724', 'test6@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278860', 'ACC2031691167267278861', '测试用户7', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '13920973658', 'test7@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278862', 'ACC2031691167267278863', '测试用户8', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '13809670125', 'test8@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278864', 'ACC2031691167267278865', '测试用户9', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '13974011676', 'test9@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('ACC2031691167267278866', 'ACC2031691167267278867', '测试用户10', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EH', '15189804599', 'test10@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 1, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 19:18:16', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+INSERT INTO `iam_account` (`account_id`, `account_code`, `account_name`, `account_password`, `account_phone`, `account_mail`, `account_avatar`, `account_type`, `account_source`, `account_status`, `account_is_admin`, `account_last_login_time`, `account_last_login_ip`, `account_init_password`, `account_init_password_reset_time`, `tenant_id`, `create_org_id`, `create_org_name`, `create_user_id`, `create_user_name`, `create_time`, `modify_org_id`, `modify_org_name`, `modify_user_id`, `modify_user_name`, `modify_time`, `is_deleted`, `version`, `account_salt`) VALUES ('da6830c9a1094396b46468ce88a83892', 'testuser', '测试用户', '$2a$10$aZdbzgEmLIkgaYBfWqnmeuJuNddXxShct0BU5gttMpDzCjR5ty8zO', '13900139000', 'test@test.com', NULL, 'SYSTEM', 'LOCAL', 1, 0, NULL, NULL, 0, NULL, '1', NULL, NULL, NULL, NULL, '2026-03-11 22:25:38', NULL, NULL, NULL, NULL, NULL, 0, 0, NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_account_bind
@@ -1930,6 +2540,12 @@ CREATE TABLE `iam_account_bind` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='账户绑定表';
 
 -- ----------------------------
+-- Records of iam_account_bind
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_account_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_account_dept`;
@@ -1948,6 +2564,21 @@ CREATE TABLE `iam_account_dept` (
   KEY `idx_dept_id` (`dept_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='账户部门关联表';
+
+-- ----------------------------
+-- Records of iam_account_dept
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('1', '1', '1', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('2', '2', '2', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('3', '3', '3', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('4', '4', '3', 1, 0, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('5', '5', '3', 1, 0, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('6', '6', '9', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('7', '7', '12', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('8', '8', '15', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_dept` (`id`, `account_id`, `dept_id`, `is_primary`, `is_leader`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('9', '9', '18', 1, 1, '1', '2026-03-08 00:48:02', '1', 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_account_onjob
@@ -1969,6 +2600,12 @@ CREATE TABLE `iam_account_onjob` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='在职账户表';
 
 -- ----------------------------
+-- Records of iam_account_onjob
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_account_role
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_account_role`;
@@ -1986,6 +2623,21 @@ CREATE TABLE `iam_account_role` (
   KEY `idx_role_id` (`role_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='账户角色关联表';
+
+-- ----------------------------
+-- Records of iam_account_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('1', '1', '1', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('2', '2', '2', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('3', '3', '4', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('4', '4', '5', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('5', '5', '5', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('6', '6', '8', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('7', '7', '10', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('8', '8', '11', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_account_role` (`id`, `account_id`, `role_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('9', '9', '12', 1, '1', '2026-03-08 00:48:02', '1', 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_bury_data
@@ -2009,6 +2661,12 @@ CREATE TABLE `iam_bury_data` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='埋点数据表';
 
 -- ----------------------------
+-- Records of iam_bury_data
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_captcha_log
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_captcha_log`;
@@ -2027,6 +2685,12 @@ CREATE TABLE `iam_captcha_log` (
   KEY `idx_create_time` (`create_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='验证码日志表';
+
+-- ----------------------------
+-- Records of iam_captcha_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_company
@@ -2068,6 +2732,17 @@ CREATE TABLE `iam_company` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='公司表';
 
 -- ----------------------------
+-- Records of iam_company
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_company` (`company_id`, `company_code`, `company_name`, `company_short_name`, `company_type`, `company_level`, `company_parent_id`, `company_address`, `company_phone`, `company_mail`, `company_website`, `company_logo`, `company_legal_rep`, `company_registration_no`, `company_tax_no`, `company_status`, `company_desc`, `company_sort`, `company_tree_path`, `company_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('CO359e4563', 'CO2031691167435051011', '小米科技4分公司', NULL, 'COMPANY', NULL, '0', '测试地址4', '400-6377867', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 30, '0,', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_company` (`company_id`, `company_code`, `company_name`, `company_short_name`, `company_type`, `company_level`, `company_parent_id`, `company_address`, `company_phone`, `company_mail`, `company_website`, `company_logo`, `company_legal_rep`, `company_registration_no`, `company_tax_no`, `company_status`, `company_desc`, `company_sort`, `company_tree_path`, `company_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('CO79a31edd', 'CO2031691167435051008', '美团点评1分公司', NULL, 'COMPANY', NULL, '0', '测试地址1', '400-0427934', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 0, '0,', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_company` (`company_id`, `company_code`, `company_name`, `company_short_name`, `company_type`, `company_level`, `company_parent_id`, `company_address`, `company_phone`, `company_mail`, `company_website`, `company_logo`, `company_legal_rep`, `company_registration_no`, `company_tax_no`, `company_status`, `company_desc`, `company_sort`, `company_tree_path`, `company_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('CO85930bcb', 'CO2031691167435051010', '京东集团3分公司', NULL, 'COMPANY', NULL, '0', '测试地址3', '400-3679137', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 20, '0,', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_company` (`company_id`, `company_code`, `company_name`, `company_short_name`, `company_type`, `company_level`, `company_parent_id`, `company_address`, `company_phone`, `company_mail`, `company_website`, `company_logo`, `company_legal_rep`, `company_registration_no`, `company_tax_no`, `company_status`, `company_desc`, `company_sort`, `company_tree_path`, `company_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('COd4df0863', 'CO2031691167435051012', '网易公司5分公司', NULL, 'COMPANY', NULL, '0', '测试地址5', '400-6085073', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 40, '0,', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_company` (`company_id`, `company_code`, `company_name`, `company_short_name`, `company_type`, `company_level`, `company_parent_id`, `company_address`, `company_phone`, `company_mail`, `company_website`, `company_logo`, `company_legal_rep`, `company_registration_no`, `company_tax_no`, `company_status`, `company_desc`, `company_sort`, `company_tree_path`, `company_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('COf4bcf0d8', 'CO2031691167435051009', '网易公司2分公司', NULL, 'COMPANY', NULL, '0', '测试地址2', '400-9611364', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, 10, '0,', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_company_dept
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_company_dept`;
@@ -2085,6 +2760,12 @@ CREATE TABLE `iam_company_dept` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='公司部门关联表';
 
 -- ----------------------------
+-- Records of iam_company_dept
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_company_user
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_company_user`;
@@ -2100,6 +2781,12 @@ CREATE TABLE `iam_company_user` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='公司用户关联表';
+
+-- ----------------------------
+-- Records of iam_company_user
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_department
@@ -2136,6 +2823,22 @@ CREATE TABLE `iam_department` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门表';
 
 -- ----------------------------
+-- Records of iam_department
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT067d690c', 'DEPT2031691167699292160', '财务部1', 'DEPARTMENT', 'DEPTa916a9d4', 'CO85930bcb', NULL, '400-5394141', NULL, 1, NULL, 0, '0,DEPTa916a9d4,DEPT067d690c', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT36885e56', 'DEPT2031691167699292166', '运营部2', 'DEPARTMENT', 'DEPT6fed566f', 'CO85930bcb', NULL, '400-6319048', NULL, 1, NULL, 10, '0,DEPT6fed566f,DEPT36885e56', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT5597c42e', 'DEPT2031691167699292162', '产品部3', 'DEPARTMENT', 'DEPTa916a9d4', 'CO85930bcb', NULL, '400-5609339', NULL, 1, NULL, 20, '0,DEPTa916a9d4,DEPT5597c42e', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT6fed566f', 'DEPT2031691167699292164', '运营部2', 'DEPARTMENT', '0', 'CO85930bcb', NULL, '400-3671520', NULL, 1, NULL, 10, '0,DEPT6fed566f', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT7d047b44', 'DEPT2031691167699292165', '设计部1', 'DEPARTMENT', 'DEPT6fed566f', 'CO85930bcb', NULL, '400-1080881', NULL, 1, NULL, 0, '0,DEPT6fed566f,DEPT7d047b44', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT9aac2642', 'DEPT2031691167699292168', '运营部4', 'DEPARTMENT', 'DEPT6fed566f', 'CO85930bcb', NULL, '400-2956785', NULL, 1, NULL, 30, '0,DEPT6fed566f,DEPT9aac2642', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPT9dbeecf2', 'DEPT2031691167699292163', '技术部4', 'DEPARTMENT', 'DEPTa916a9d4', 'CO85930bcb', NULL, '400-1426620', NULL, 1, NULL, 30, '0,DEPTa916a9d4,DEPT9dbeecf2', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPTa916a9d4', 'DEPT2031691167695097856', '技术部1', 'DEPARTMENT', '0', 'CO85930bcb', NULL, '400-3673492', NULL, 1, NULL, 0, '0,DEPTa916a9d4', 1, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPTbc4300e8', 'DEPT2031691167699292161', '财务部2', 'DEPARTMENT', 'DEPTa916a9d4', 'CO85930bcb', NULL, '400-6752613', NULL, 1, NULL, 10, '0,DEPTa916a9d4,DEPTbc4300e8', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_department` (`dept_id`, `dept_code`, `dept_name`, `dept_type`, `dept_parent_id`, `dept_company_id`, `dept_leader_id`, `dept_phone`, `dept_address`, `dept_status`, `dept_desc`, `dept_sort`, `dept_tree_path`, `dept_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('DEPTd60170e5', 'DEPT2031691167699292167', '财务部3', 'DEPARTMENT', 'DEPT6fed566f', 'CO85930bcb', NULL, '400-8692828', NULL, 1, NULL, 20, '0,DEPT6fed566f,DEPTd60170e5', 2, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_dept_user
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_dept_user`;
@@ -2152,6 +2855,12 @@ CREATE TABLE `iam_dept_user` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='部门用户关联表';
+
+-- ----------------------------
+-- Records of iam_dept_user
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_developer_org
@@ -2173,6 +2882,12 @@ CREATE TABLE `iam_developer_org` (
   UNIQUE KEY `uk_org_code` (`org_code`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='开发者组织表';
+
+-- ----------------------------
+-- Records of iam_developer_org
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_dingtalk_app
@@ -2200,6 +2915,12 @@ CREATE TABLE `iam_dingtalk_app` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='钉钉应用表';
 
 -- ----------------------------
+-- Records of iam_dingtalk_app
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_dingtalk_config
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_dingtalk_config`;
@@ -2214,6 +2935,12 @@ CREATE TABLE `iam_dingtalk_config` (
   PRIMARY KEY (`config_id`),
   UNIQUE KEY `uk_config_key` (`config_key`,`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='钉钉配置表';
+
+-- ----------------------------
+-- Records of iam_dingtalk_config
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_head_menu
@@ -2239,6 +2966,12 @@ CREATE TABLE `iam_head_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='顶部菜单表';
 
 -- ----------------------------
+-- Records of iam_head_menu
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_head_menu_relation
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_head_menu_relation`;
@@ -2255,6 +2988,12 @@ CREATE TABLE `iam_head_menu_relation` (
   KEY `idx_menu_id` (`menu_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='顶部菜单关联表';
+
+-- ----------------------------
+-- Records of iam_head_menu_relation
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_import_func
@@ -2278,6 +3017,12 @@ CREATE TABLE `iam_import_func` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='导入功能表';
 
 -- ----------------------------
+-- Records of iam_import_func
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_latest_user
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_latest_user`;
@@ -2293,6 +3038,12 @@ CREATE TABLE `iam_latest_user` (
   KEY `idx_latest_time` (`latest_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='最近用户表';
+
+-- ----------------------------
+-- Records of iam_latest_user
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_login_log
@@ -2320,6 +3071,35 @@ CREATE TABLE `iam_login_log` (
   KEY `idx_login_time` (`login_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='登录日志表';
+
+-- ----------------------------
+-- Records of iam_login_log
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('02fbcbdd771749a4b7e076a222189cdb', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-09 22:47:44', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('07a1ef78eb3d4b4f92a629eb579836da', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-09 11:52:30', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('1', '1', 'admin', '李思涛', 'PASSWORD', 'SUCCESS', NULL, '127.0.0.1', '本地', 'PC', 'Chrome 120.0', 'Windows 11', '2026-03-07 22:48:02', '2026-03-07 23:48:02', 3600, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('17fb62fa56f34d4a8c3a28b47c94efba', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-08 22:40:55', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('1991ca920b0a4e4e8d49c028c2cd75f5', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 01:11:32', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('2', '1', 'admin', '李思涛', 'PASSWORD', 'SUCCESS', NULL, '127.0.0.1', '本地', 'PC', 'Chrome 120.0', 'Windows 11', '2026-03-07 23:48:02', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('24af85906c634de589ba0e96d583c393', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 15:33:52', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('2dd7eae9ebad4d3c8846a64a3daaed6c', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 19:07:29', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('3', '2', 'zhangwei', '张伟', 'PASSWORD', 'SUCCESS', NULL, '192.168.1.100', '北京市海淀区', 'PC', 'Firefox 121.0', 'macOS 14', '2026-03-08 00:18:02', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('326b4e70352c4bd5a6969f5ed56e9b3e', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-08 17:35:49', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('3a2a126cd4cd4999a4c59bd6dbd3719b', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 17:11:50', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('4e83b6587cbb4aa18953f9129cd155e5', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 00:30:10', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('5aa661af5d38432da1a49cbaef407ca1', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-11 19:01:28', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('75a26925e94e4519ab36b828aea3d017', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-09 09:33:15', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('7d82c41057c242ae879684324f396871', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-09 15:51:09', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('849290c416924003b81d486dd981a9a0', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 20:52:32', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('98fc3984b29d4992aebd946a91414ccc', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 01:19:28', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('a945f7c1474c46b5ac08652a5e7f2ab5', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-09 10:36:18', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('ba31046af0f54114894fe8e3dad1b459', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-08 12:51:18', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('bcbbe7fb49f446759a374fd6e9f19579', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 18:57:31', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('cbb4089aa9994aa78bbd63e5105e79e0', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 10:24:45', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('f84e7c59ac614b9ea90b68cb4e921a91', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-08 10:57:01', NULL, NULL, '1');
+INSERT INTO `iam_login_log` (`log_id`, `account_id`, `account_code`, `account_name`, `login_type`, `login_status`, `login_fail_reason`, `login_ip`, `login_location`, `login_device`, `login_browser`, `login_os`, `login_time`, `logout_time`, `online_duration`, `tenant_id`) VALUES ('fd0fc253a89542c5b2b7cd6786b44aa5', '1', 'admin', NULL, 'PASSWORD', 'true', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-08 16:12:18', NULL, NULL, '1');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_menu
@@ -2360,6 +3140,17 @@ CREATE TABLE `iam_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单表';
 
 -- ----------------------------
+-- Records of iam_menu
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_menu` (`menu_id`, `menu_code`, `menu_name`, `menu_type`, `menu_parent_id`, `menu_path`, `menu_component`, `menu_icon`, `menu_sort`, `menu_is_visible`, `menu_is_cached`, `menu_is_affix`, `menu_permission`, `menu_redirect`, `menu_desc`, `menu_status`, `menu_is_builtin`, `menu_tree_path`, `menu_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('22b9918114cf4c099615f27d9d9dd846', 'hr_employee', '员工管理', 'MENU', '63e9ce39804b4943af5bb890de485bd2', '/hr/employee', 'hr/employee', NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '1', '2026-03-11 20:43:37', NULL, '2026-03-11 20:43:37', NULL, 0, NULL);
+INSERT INTO `iam_menu` (`menu_id`, `menu_code`, `menu_name`, `menu_type`, `menu_parent_id`, `menu_path`, `menu_component`, `menu_icon`, `menu_sort`, `menu_is_visible`, `menu_is_cached`, `menu_is_affix`, `menu_permission`, `menu_redirect`, `menu_desc`, `menu_status`, `menu_is_builtin`, `menu_tree_path`, `menu_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('4404824662574f37a9a78d0e0a5e4dcf', 'hr_department', '组织架构', 'MENU', '63e9ce39804b4943af5bb890de485bd2', '/hr/department', 'hr/department', NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '1', '2026-03-11 20:43:37', NULL, '2026-03-11 20:43:37', NULL, 0, NULL);
+INSERT INTO `iam_menu` (`menu_id`, `menu_code`, `menu_name`, `menu_type`, `menu_parent_id`, `menu_path`, `menu_component`, `menu_icon`, `menu_sort`, `menu_is_visible`, `menu_is_cached`, `menu_is_affix`, `menu_permission`, `menu_redirect`, `menu_desc`, `menu_status`, `menu_is_builtin`, `menu_tree_path`, `menu_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('4726dd98c4164c1a9cf875f4944d7565', 'system', '系统管理(已修改)', 'DIRECTORY', '0', NULL, NULL, NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '1', '2026-03-11 20:42:41', NULL, '2026-03-11 20:57:13', NULL, 0, NULL);
+INSERT INTO `iam_menu` (`menu_id`, `menu_code`, `menu_name`, `menu_type`, `menu_parent_id`, `menu_path`, `menu_component`, `menu_icon`, `menu_sort`, `menu_is_visible`, `menu_is_cached`, `menu_is_affix`, `menu_permission`, `menu_redirect`, `menu_desc`, `menu_status`, `menu_is_builtin`, `menu_tree_path`, `menu_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('63e9ce39804b4943af5bb890de485bd2', 'hr', '人力资源', 'DIRECTORY', '0', NULL, NULL, NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '1', '2026-03-11 20:43:06', NULL, '2026-03-11 20:43:06', NULL, 0, NULL);
+INSERT INTO `iam_menu` (`menu_id`, `menu_code`, `menu_name`, `menu_type`, `menu_parent_id`, `menu_path`, `menu_component`, `menu_icon`, `menu_sort`, `menu_is_visible`, `menu_is_cached`, `menu_is_affix`, `menu_permission`, `menu_redirect`, `menu_desc`, `menu_status`, `menu_is_builtin`, `menu_tree_path`, `menu_tree_level`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('c3e0ee7840bd40f7b9e729867ca7565e', 'hr_position', '岗位管理', 'MENU', '63e9ce39804b4943af5bb890de485bd2', '/hr/position', 'hr/position', NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, '1', '2026-03-11 20:43:37', NULL, '2026-03-11 20:43:37', NULL, 0, NULL);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_menu_history
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_menu_history`;
@@ -2378,6 +3169,12 @@ CREATE TABLE `iam_menu_history` (
   KEY `idx_visit_time` (`visit_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单历史表';
+
+-- ----------------------------
+-- Records of iam_menu_history
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_operate_log
@@ -2413,6 +3210,14 @@ CREATE TABLE `iam_operate_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='操作日志表';
 
 -- ----------------------------
+-- Records of iam_operate_log
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_operate_log` (`log_id`, `operate_type`, `module_name`, `business_type`, `business_id`, `method_name`, `request_url`, `request_method`, `request_params`, `response_result`, `operate_status`, `error_msg`, `execute_duration`, `operator_id`, `operator_name`, `operator_dept`, `operate_ip`, `operate_location`, `operate_time`, `tenant_id`) VALUES ('1', 'LOGIN', '认证模块', '用户登录', '1', 'login', '/api/auth/login', 'POST', '{\"username\":\"admin\"}', '{\"code\":200,\"message\":\"登录成功\"}', 'SUCCESS', NULL, 150, '1', '李思涛', '集团总部', '127.0.0.1', '本地', '2026-03-08 00:48:02', '1');
+INSERT INTO `iam_operate_log` (`log_id`, `operate_type`, `module_name`, `business_type`, `business_id`, `method_name`, `request_url`, `request_method`, `request_params`, `response_result`, `operate_status`, `error_msg`, `execute_duration`, `operator_id`, `operator_name`, `operator_dept`, `operate_ip`, `operate_location`, `operate_time`, `tenant_id`) VALUES ('2', 'CREATE', '用户管理', '新增用户', '2', 'createUser', '/api/system/user', 'POST', '{\"username\":\"zhangwei\"}', '{\"code\":200,\"message\":\"创建成功\"}', 'SUCCESS', NULL, 80, '1', '李思涛', '集团总部', '127.0.0.1', '本地', '2026-03-08 00:48:02', '1');
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_organization
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_organization`;
@@ -2445,6 +3250,12 @@ CREATE TABLE `iam_organization` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='组织表';
 
 -- ----------------------------
+-- Records of iam_organization
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_permission`;
@@ -2453,7 +3264,7 @@ CREATE TABLE `iam_permission` (
   `permission_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限编码',
   `permission_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '权限名称',
   `permission_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'BUTTON' COMMENT '权限类型: MENU-菜单, BUTTON-按钮, API-接口, DATA-数据',
-  `parent_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '父权限ID，用于树形结构',
+  `parent_id` varchar(50) COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '父权限ID，用于树形结构',
   `permission_resource` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限资源',
   `permission_action` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'VIEW' COMMENT '权限操作: VIEW-查看, ADD-新增, EDIT-编辑, DELETE-删除, EXPORT-导出, IMPORT-导入',
   `permission_desc` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '权限描述',
@@ -2472,6 +3283,67 @@ CREATE TABLE `iam_permission` (
   KEY `idx_tenant_id` (`tenant_id`),
   KEY `idx_parent_id` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='权限表';
+
+-- ----------------------------
+-- Records of iam_permission
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_DICT', 'operation:dict', '字典管理', 'MENU', 'PERM_OPERATION', 'operation:dict', 'VIEW', '字典管理菜单', 1, 0, 300, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_DICT_ADD', 'operation:dict:add', '新增字典', 'BUTTON', 'PERM_DICT', 'operation', 'add', '新增字典按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_DICT_DEL', 'operation:dict:del', '删除字典', 'BUTTON', 'PERM_DICT', 'operation', 'del', '删除字典按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_DICT_EDIT', 'operation:dict:edit', '编辑字典', 'BUTTON', 'PERM_DICT', 'operation', 'edit', '编辑字典按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ENTITY', 'meta:entity', '实体管理', 'MENU', 'PERM_META', 'meta:entity', 'VIEW', '实体管理菜单', 1, 0, 100, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ENTITY_ADD', 'meta:entity:add', '新增实体', 'BUTTON', 'PERM_ENTITY', 'meta', 'add', '新增实体按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ENTITY_DEL', 'meta:entity:del', '删除实体', 'BUTTON', 'PERM_ENTITY', 'meta', 'del', '删除实体按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ENTITY_EDIT', 'meta:entity:edit', '编辑实体', 'BUTTON', 'PERM_ENTITY', 'meta', 'edit', '编辑实体按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ENTITY_SYNC', 'meta:entity:sync', '同步实体', 'BUTTON', 'PERM_ENTITY', 'meta', 'sync', '同步实体按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_LOG', 'log', '日志管理', 'MENU', '0', 'log', 'VIEW', '日志管理菜单', 1, 0, 300, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_LOGIN_LOG', 'log:login', '登录日志', 'MENU', 'PERM_LOG', 'log:login', 'VIEW', '登录日志菜单', 1, 0, 200, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_LOGIN_LOG_DEL', 'log:login:del', '删除日志', 'BUTTON', 'PERM_LOGIN_LOG', 'log', 'del', '删除日志按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_LOGIN_LOG_VIEW', 'log:login:view', '查看日志', 'BUTTON', 'PERM_LOGIN_LOG', 'log', 'view', '查看日志按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_MENU', 'system:menu', '菜单管理', 'MENU', 'PERM_SYSTEM', 'system:menu', 'VIEW', '菜单管理菜单', 1, 0, 300, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_MENU_ADD', 'system:menu:add', '新增菜单', 'BUTTON', 'PERM_MENU', 'system', 'add', '新增菜单按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_MENU_DEL', 'system:menu:del', '删除菜单', 'BUTTON', 'PERM_MENU', 'system', 'del', '删除菜单按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_MENU_EDIT', 'system:menu:edit', '编辑菜单', 'BUTTON', 'PERM_MENU', 'system', 'edit', '编辑菜单按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_META', 'meta', '元数据管理', 'MENU', '0', 'meta', 'VIEW', '元数据管理菜单', 1, 0, 400, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_OPERATION', 'operation', '运营管理', 'MENU', '0', 'operation', 'VIEW', '运营管理菜单', 1, 0, 200, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_OPER_LOG', 'log:oper', '操作日志', 'MENU', 'PERM_LOG', 'log:oper', 'VIEW', '操作日志菜单', 1, 0, 100, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_OPER_LOG_DEL', 'log:oper:del', '删除日志', 'BUTTON', 'PERM_OPER_LOG', 'log', 'del', '删除日志按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_OPER_LOG_EXPORT', 'log:oper:export', '导出日志', 'BUTTON', 'PERM_OPER_LOG', 'log', 'export', '导出日志按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_OPER_LOG_VIEW', 'log:oper:view', '查看日志', 'BUTTON', 'PERM_OPER_LOG', 'log', 'view', '查看日志按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ORG', 'operation:org', '组织管理', 'MENU', 'PERM_OPERATION', 'operation:org', 'VIEW', '组织管理菜单', 1, 0, 100, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ORG_ADD', 'operation:org:add', '新增组织', 'BUTTON', 'PERM_ORG', 'operation', 'add', '新增组织按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ORG_DEL', 'operation:org:del', '删除组织', 'BUTTON', 'PERM_ORG', 'operation', 'del', '删除组织按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ORG_EDIT', 'operation:org:edit', '编辑组织', 'BUTTON', 'PERM_ORG', 'operation', 'edit', '编辑组织按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PAGE', 'meta:page', '页面管理', 'MENU', 'PERM_META', 'meta:page', 'VIEW', '页面管理菜单', 1, 0, 200, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PAGE_ADD', 'meta:page:add', '新增页面', 'BUTTON', 'PERM_PAGE', 'meta', 'add', '新增页面按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PAGE_DEL', 'meta:page:del', '删除页面', 'BUTTON', 'PERM_PAGE', 'meta', 'del', '删除页面按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PAGE_EDIT', 'meta:page:edit', '编辑页面', 'BUTTON', 'PERM_PAGE', 'meta', 'edit', '编辑页面按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PERM', 'system:permission', '权限管理', 'MENU', 'PERM_SYSTEM', 'system:permission', 'VIEW', '权限管理菜单', 1, 0, 400, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PERM_ADD', 'system:permission:add', '新增权限', 'BUTTON', 'PERM_PERM', 'system', 'add', '新增权限按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PERM_DEL', 'system:permission:del', '删除权限', 'BUTTON', 'PERM_PERM', 'system', 'del', '删除权限按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_PERM_EDIT', 'system:permission:edit', '编辑权限', 'BUTTON', 'PERM_PERM', 'system', 'edit', '编辑权限按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_POST', 'operation:post', '岗位管理', 'MENU', 'PERM_OPERATION', 'operation:post', 'VIEW', '岗位管理菜单', 1, 0, 200, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_POST_ADD', 'operation:post:add', '新增岗位', 'BUTTON', 'PERM_POST', 'operation', 'add', '新增岗位按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_POST_DEL', 'operation:post:del', '删除岗位', 'BUTTON', 'PERM_POST', 'operation', 'del', '删除岗位按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_POST_EDIT', 'operation:post:edit', '编辑岗位', 'BUTTON', 'PERM_POST', 'operation', 'edit', '编辑岗位按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ROLE', 'system:role', '角色管理', 'MENU', 'PERM_SYSTEM', 'system:role', 'VIEW', '角色管理菜单', 1, 0, 200, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ROLE_ADD', 'system:role:add', '新增角色', 'BUTTON', 'PERM_ROLE', 'system', 'add', '新增角色按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ROLE_AUTH', 'system:role:auth', '分配权限', 'BUTTON', 'PERM_ROLE', 'system', 'auth', '分配权限按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ROLE_DEL', 'system:role:del', '删除角色', 'BUTTON', 'PERM_ROLE', 'system', 'del', '删除角色按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_ROLE_EDIT', 'system:role:edit', '编辑角色', 'BUTTON', 'PERM_ROLE', 'system', 'edit', '编辑角色按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_SYSTEM', 'system', '系统管理', 'MENU', '0', 'system', 'VIEW', '系统管理菜单', 1, 0, 100, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_TENANT', 'system:tenant', '租户管理', 'MENU', 'PERM_SYSTEM', 'system:tenant', 'VIEW', '租户管理菜单', 1, 0, 500, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_TENANT_ADD', 'system:tenant:add', '新增租户', 'BUTTON', 'PERM_TENANT', 'system', 'add', '新增租户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_TENANT_DEL', 'system:tenant:del', '删除租户', 'BUTTON', 'PERM_TENANT', 'system', 'del', '删除租户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_TENANT_EDIT', 'system:tenant:edit', '编辑租户', 'BUTTON', 'PERM_TENANT', 'system', 'edit', '编辑租户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER', 'system:user', '用户管理', 'MENU', 'PERM_SYSTEM', 'system:user', 'VIEW', '用户管理菜单', 1, 0, 100, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER_ADD', 'system:user:add', '新增用户', 'BUTTON', 'PERM_USER', 'system', 'add', '新增用户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER_DEL', 'system:user:del', '删除用户', 'BUTTON', 'PERM_USER', 'system', 'del', '删除用户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER_EDIT', 'system:user:edit', '编辑用户', 'BUTTON', 'PERM_USER', 'system', 'edit', '编辑用户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER_EXPORT', 'system:user:export', '导出用户', 'BUTTON', 'PERM_USER', 'system', 'export', '导出用户按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+INSERT INTO `iam_permission` (`permission_id`, `permission_code`, `permission_name`, `permission_type`, `parent_id`, `permission_resource`, `permission_action`, `permission_desc`, `permission_status`, `permission_is_builtin`, `permission_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`) VALUES ('PERM_USER_RESET_PWD', 'system:user:resetPwd', '重置密码', 'BUTTON', 'PERM_USER', 'system', 'resetPwd', '重置密码按钮', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_permission_group
@@ -2495,6 +3367,12 @@ CREATE TABLE `iam_permission_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='权限组表';
 
 -- ----------------------------
+-- Records of iam_permission_group
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_permission_group_perm
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_permission_group_perm`;
@@ -2511,6 +3389,12 @@ CREATE TABLE `iam_permission_group_perm` (
   KEY `idx_permission_id` (`permission_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='权限组权限关联表';
+
+-- ----------------------------
+-- Records of iam_permission_group_perm
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_post
@@ -2537,6 +3421,17 @@ CREATE TABLE `iam_post` (
   KEY `idx_post_name` (`post_name`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='岗位表';
+
+-- ----------------------------
+-- Records of iam_post
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_post` (`post_id`, `post_code`, `post_name`, `post_level`, `post_type`, `post_status`, `post_desc`, `post_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('POST299cd9f4', 'POST2031691167850287106', '测试工程师3', NULL, 'TECHNICAL', 1, '测试岗位描述3', 20, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_post` (`post_id`, `post_code`, `post_name`, `post_level`, `post_type`, `post_status`, `post_desc`, `post_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('POST35d33a47', 'POST2031691167850287105', '算法工程师2', NULL, 'TECHNICAL', 1, '测试岗位描述2', 10, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_post` (`post_id`, `post_code`, `post_name`, `post_level`, `post_type`, `post_status`, `post_desc`, `post_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('POST4a4364fa', 'POST2031691167850287104', '测试工程师1', NULL, 'TECHNICAL', 1, '测试岗位描述1', 0, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_post` (`post_id`, `post_code`, `post_name`, `post_level`, `post_type`, `post_status`, `post_desc`, `post_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('POST71a5db09', 'POST2031691167850287107', '测试工程师4', NULL, 'TECHNICAL', 1, '测试岗位描述4', 30, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_post` (`post_id`, `post_code`, `post_name`, `post_level`, `post_type`, `post_status`, `post_desc`, `post_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('POST97c31d06', 'POST2031691167850287108', 'Python开发工程师5', NULL, 'TECHNICAL', 1, '测试岗位描述5', 40, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_role
@@ -2566,6 +3461,18 @@ CREATE TABLE `iam_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色表';
 
 -- ----------------------------
+-- Records of iam_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('da20f549a6e74093b34b02b637e147aa', 'TEST_ROLE_999', '测试角色999', 'CUSTOM', 0, NULL, 1, 0, 99, NULL, '2026-03-11 21:33:07', NULL, '2026-03-11 21:33:07', NULL, 0, 0);
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('ROLE2e725e7c', 'ROLE2031691167925784580', '测试人员5', 'BUSINESS', 6, '测试角色描述5', 0, 0, 40, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('ROLE4a8a2866', 'ROLE2031691167925784578', '项目经理3', 'BUSINESS', 4, '测试角色描述3', 1, 0, 20, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('ROLE62c6494a', 'ROLE2031691167925784576', '测试人员1-修改', 'SYSTEM', 2, '测试角色描述1', 1, 0, 0, '1', '2026-03-11 19:18:16', NULL, '2026-03-11 21:08:46', NULL, 0, 0);
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('ROLE8a6dffe8', 'ROLE2031691167925784579', '项目经理4', 'SYSTEM', 6, '测试角色描述4', 1, 0, 30, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+INSERT INTO `iam_role` (`role_id`, `role_code`, `role_name`, `role_type`, `role_level`, `role_desc`, `role_status`, `role_is_builtin`, `role_sort`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('ROLEbbb6904c', 'ROLE2031691167925784577', '开发人员2', 'SYSTEM', 9, '测试角色描述2', 0, 0, 10, '1', '2026-03-11 19:18:16', NULL, NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_role_permission`;
@@ -2583,6 +3490,26 @@ CREATE TABLE `iam_role_permission` (
   KEY `idx_permission_id` (`permission_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色权限关联表';
+
+-- ----------------------------
+-- Records of iam_role_permission
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('1', '1', '1', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('10', '1', '30', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('11', '1', '40', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('12', '1', '41', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('13', '1', '44', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('14', '1', '45', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('2', '1', '2', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('3', '1', '3', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('4', '1', '6', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('5', '1', '10', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('6', '1', '11', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('7', '1', '13', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('8', '1', '16', 1, '1', '2026-03-08 00:48:02', '1', 0);
+INSERT INTO `iam_role_permission` (`id`, `role_id`, `permission_id`, `is_valid`, `tenant_id`, `create_time`, `create_user_id`, `is_deleted`) VALUES ('9', '1', '20', 1, '1', '2026-03-08 00:48:02', '1', 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_supplier
@@ -2612,6 +3539,12 @@ CREATE TABLE `iam_supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='供应商表';
 
 -- ----------------------------
+-- Records of iam_supplier
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_sync_log
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_sync_log`;
@@ -2632,6 +3565,12 @@ CREATE TABLE `iam_sync_log` (
   KEY `idx_sync_status` (`sync_status`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='同步日志表';
+
+-- ----------------------------
+-- Records of iam_sync_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_tenant
@@ -2663,6 +3602,12 @@ CREATE TABLE `iam_tenant` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_tenant_code` (`tenant_code`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='租户表';
+
+-- ----------------------------
+-- Records of iam_tenant
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_user
@@ -2709,6 +3654,62 @@ CREATE TABLE `iam_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户表';
 
 -- ----------------------------
+-- Records of iam_user
+-- ----------------------------
+BEGIN;
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412480', 'U2031691169083412481', '黄明', '高杰', '吴涛', 'MALE', '1992-07-09', NULL, '13841028974', 'kjmp0b@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '党员', 'W2031691169083412482', '2023-11-11', NULL, 'OUTSOURCING', '高中', 'RESIGN', 1, 'DEPTbc4300e8', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412483', 'U2031691169083412484', '郭娜', '罗丽', '郭超', 'FEMALE', '2004-10-25', NULL, '18942010594', '6tofiv@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169083412485', '2024-03-11', NULL, 'OUTSOURCING', '高中', 'RESIGN', 1, 'DEPT5597c42e', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412486', 'U2031691169083412487', '罗涛', '高娜', '何强', 'UNKNOWN', '2001-12-28', NULL, '18820215743', 'y0hbdu@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169083412488', '2023-06-11', NULL, 'PART_TIME', '大专', 'ON_JOB', 1, 'DEPTa916a9d4', '1', 'DEPT7d047b44', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412489', 'U2031691169083412490', '郭平', '徐杰', '孙静', 'UNKNOWN', '1986-12-09', NULL, '18853668853', 'p5w1mz@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169083412491', '2023-12-11', NULL, 'OUTSOURCING', '高中', 'RESIGN', 1, 'DEPTa916a9d4', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412492', 'U2031691169083412493', '林艳', '陈军', '林娜', 'FEMALE', '1988-12-28', NULL, '13886276425', 's2c7w8@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169083412494', '2023-09-11', NULL, 'PART_TIME', '博士', 'ON_JOB', 1, 'DEPT9aac2642', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412495', 'U2031691169083412496', '刘平', '朱洋', '周秀兰', 'FEMALE', '1969-06-06', NULL, '15197216869', 'i8vi8z@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169083412497', '2024-05-11', NULL, 'OUTSOURCING', '高中', 'ON_JOB', 1, 'DEPT36885e56', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412498', 'U2031691169083412499', '黄勇', '高娜', '胡秀兰', 'MALE', '1969-05-10', NULL, '13932831911', '6fem4y@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169083412500', '2024-04-11', NULL, 'INTERNSHIP', '高中', 'RESIGN', 1, 'DEPTbc4300e8', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412501', 'U2031691169083412502', '何超', '胡丽', '罗秀兰', 'UNKNOWN', '1998-07-11', NULL, '15095383594', '3x8752@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169083412503', '2025-03-11', NULL, 'FULL_TIME', '大专', 'ON_JOB', 1, 'DEPT067d690c', '1', 'DEPT7d047b44', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412504', 'U2031691169083412505', '林秀兰', '杨强', '周勇', 'MALE', '2008-03-09', NULL, '15258418236', 's3gwpx@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169083412506', '2023-12-11', NULL, 'OUTSOURCING', '硕士', 'probation', 1, 'DEPTd60170e5', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412507', 'U2031691169083412508', '黄伟', '胡磊', '张杰', 'FEMALE', '1973-02-08', NULL, '13844079474', '5pz6ew@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169083412509', '2025-07-11', NULL, 'FULL_TIME', '初中', 'probation', 1, 'DEPT36885e56', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412510', 'U2031691169083412511', '杨涛', '吴超', '刘伟', 'FEMALE', '1990-10-30', NULL, '13873397002', 'za5x3f@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169083412512', '2024-01-11', NULL, 'PART_TIME', '初中', 'RESIGN', 1, 'DEPT5597c42e', '1', 'DEPTd60170e5', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169083412513', 'U2031691169083412514', '林静', '吴霞', '黄静', 'FEMALE', '1994-10-10', NULL, '13935684776', 'hfkdca@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606784', '2023-09-11', NULL, 'INTERNSHIP', '大专', 'RESIGN', 1, 'DEPT7d047b44', '1', 'DEPTd60170e5', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606785', 'U2031691169087606786', '罗涛', '罗军', '李芳', 'FEMALE', '1987-06-05', NULL, '15156948340', 'vi02cu@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606787', '2024-11-11', NULL, 'INTERNSHIP', '本科', 'ON_JOB', 1, 'DEPT7d047b44', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606788', 'U2031691169087606789', '刘艳', '刘霞', '胡霞', 'UNKNOWN', '1998-04-01', NULL, '15105506724', 'et7bzw@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606790', '2025-11-11', NULL, 'FULL_TIME', '本科', 'ON_JOB', 1, 'DEPT067d690c', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606791', 'U2031691169087606792', '郭霞', '高杰', '徐秀兰', 'UNKNOWN', '2001-03-18', NULL, '18887664124', 'd1ju70@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606793', '2023-06-11', NULL, 'FULL_TIME', '大专', 'RESIGN', 1, 'DEPT5597c42e', '1', 'DEPT7d047b44', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606794', 'U2031691169087606795', '何伟', '张平', '杨秀兰', 'MALE', '1982-12-05', NULL, '13836772499', '6wooxh@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606796', '2025-12-11', NULL, 'FULL_TIME', '博士', 'probation', 1, 'DEPTbc4300e8', '1', 'DEPTbc4300e8', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606797', 'U2031691169087606798', '郭艳', '陈军', '林强', 'UNKNOWN', '1991-02-16', NULL, '18906465159', 'o2gwnv@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606799', '2023-12-11', NULL, 'PART_TIME', '本科', 'ON_JOB', 1, 'DEPT9aac2642', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606800', 'U2031691169087606801', '马明', '高杰', '赵强', 'FEMALE', '2000-09-16', NULL, '18991307517', 'tl5om2@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169087606802', '2025-03-11', NULL, 'OUTSOURCING', '博士', 'ON_JOB', 1, 'DEPTbc4300e8', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606803', 'U2031691169087606804', '马伟', '高敏', '吴娜', 'UNKNOWN', '2001-06-09', NULL, '15123192670', '0ut92u@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606805', '2023-09-11', NULL, 'OUTSOURCING', '博士', 'probation', 1, 'DEPT9aac2642', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606806', 'U2031691169087606807', '吴秀英', '朱平', '陈杰', 'UNKNOWN', '1969-03-27', NULL, '18963302396', 'g4eujo@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606808', '2023-04-11', NULL, 'INTERNSHIP', '硕士', 'probation', 1, 'DEPT5597c42e', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606809', 'U2031691169087606810', '陈秀兰', '胡明', '王静', 'UNKNOWN', '1967-06-01', NULL, '13842215466', 'y00x3v@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '党员', 'W2031691169087606811', '2024-03-11', NULL, 'FULL_TIME', '高中', 'probation', 1, 'DEPTbc4300e8', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606812', 'U2031691169087606813', '黄洋', '赵伟', '何丽', 'UNKNOWN', '1983-03-10', NULL, '18993996532', 'pvb2w8@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606814', '2025-07-11', NULL, 'FULL_TIME', '初中', 'ON_JOB', 1, 'DEPT36885e56', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606815', 'U2031691169087606816', '刘勇', '李杰', '郭娜', 'FEMALE', '1978-09-23', NULL, '18887619127', 'dxipd8@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606817', '2024-11-11', NULL, 'PART_TIME', '博士', 'probation', 1, 'DEPTa916a9d4', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606818', 'U2031691169087606819', '赵磊', '胡洋', '林秀兰', 'UNKNOWN', '1975-04-05', NULL, '18911290195', '4ppfuj@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606820', '2023-12-11', NULL, 'INTERNSHIP', '博士', 'probation', 1, 'DEPT6fed566f', '1', 'DEPTbc4300e8', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606821', 'U2031691169087606822', '马涛', '朱涛', '孙平', 'FEMALE', '1984-07-19', NULL, '15116240937', 'r5avfy@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606823', '2025-02-11', NULL, 'OUTSOURCING', '大专', 'RESIGN', 1, 'DEPT067d690c', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606824', 'U2031691169087606825', '高涛', '郭伟', '徐强', 'UNKNOWN', '1967-04-15', NULL, '15146362354', 'qlrc9y@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169087606826', '2024-12-11', NULL, 'OUTSOURCING', '本科', 'probation', 1, 'DEPTa916a9d4', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606827', 'U2031691169087606828', '陈霞', '郭伟', '孙霞', 'FEMALE', '1967-01-26', NULL, '18841263449', '0ljoa2@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169087606829', '2025-06-11', NULL, 'PART_TIME', '高中', 'RESIGN', 1, 'DEPT9dbeecf2', '1', 'DEPTa916a9d4', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606830', 'U2031691169087606831', '张霞', '刘秀英', '杨秀兰', 'FEMALE', '1995-08-17', NULL, '13889016344', 'tnolnb@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '党员', 'W2031691169087606832', '2025-02-11', NULL, 'PART_TIME', '本科', 'ON_JOB', 1, 'DEPT36885e56', '1', 'DEPT9aac2642', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606833', 'U2031691169087606834', '朱霞', '何杰', '高磊', 'MALE', '1991-05-11', NULL, '15116208206', 'mhlshy@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606835', '2025-09-11', NULL, 'INTERNSHIP', '本科', 'probation', 1, 'DEPT9aac2642', '1', 'DEPTa916a9d4', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606836', 'U2031691169087606837', '吴涛', '马娜', '李超', 'FEMALE', '2006-06-08', NULL, '18851852356', '5vvl9c@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606838', '2025-08-11', NULL, 'FULL_TIME', '硕士', 'probation', 1, 'DEPT067d690c', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606839', 'U2031691169087606840', '郭平', '张明', '黄艳', 'UNKNOWN', '1993-03-03', NULL, '13931494719', 'aoxbeg@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606841', '2023-08-11', NULL, 'INTERNSHIP', '本科', 'RESIGN', 1, 'DEPTd60170e5', '1', 'DEPTa916a9d4', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606842', 'U2031691169087606843', '马明', '罗敏', '林勇', 'MALE', '2006-02-02', NULL, '15075372705', 'ulpd8x@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606844', '2024-12-11', NULL, 'INTERNSHIP', '硕士', 'probation', 1, 'DEPTbc4300e8', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606845', 'U2031691169087606846', '李超', '王敏', '胡敏', 'FEMALE', '1976-05-18', NULL, '13956651698', 'x05qdt@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606847', '2024-12-11', NULL, 'PART_TIME', '大专', 'probation', 1, 'DEPTa916a9d4', '1', 'DEPTbc4300e8', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606848', 'U2031691169087606849', '周涛', '王勇', '吴秀兰', 'FEMALE', '1983-03-29', NULL, '15161249178', 'uvgvhz@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169087606850', '2025-05-11', NULL, 'FULL_TIME', '博士', 'RESIGN', 1, 'DEPT067d690c', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606851', 'U2031691169087606852', '马勇', '林超', '林杰', 'FEMALE', '1972-10-31', NULL, '13805578434', 'xuae4r@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606853', '2024-03-11', NULL, 'FULL_TIME', '本科', 'ON_JOB', 1, 'DEPT067d690c', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606854', 'U2031691169087606855', '朱秀兰', '孙丽', '孙超', 'FEMALE', '2003-03-20', NULL, '13942341898', '4tuwbx@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606856', '2024-03-11', NULL, 'FULL_TIME', '大专', 'ON_JOB', 1, 'DEPT9aac2642', '1', 'DEPTa916a9d4', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606857', 'U2031691169087606858', '马秀兰', '徐涛', '朱静', 'FEMALE', '1994-10-28', NULL, '18922417267', 'hyztr9@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606859', '2025-03-11', NULL, 'FULL_TIME', '初中', 'RESIGN', 1, 'DEPTa916a9d4', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606860', 'U2031691169087606861', '吴丽', '马涛', '周勇', 'UNKNOWN', '1992-01-23', NULL, '15124232545', 'k22m9u@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606862', '2024-02-11', NULL, 'INTERNSHIP', '大专', 'RESIGN', 1, 'DEPT5597c42e', '1', 'DEPTd60170e5', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606863', 'U2031691169087606864', '李杰', '高芳', '吴秀兰', 'UNKNOWN', '1972-02-01', NULL, '13884225325', 'fp8bln@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606865', '2024-04-11', NULL, 'OUTSOURCING', '大专', 'ON_JOB', 1, 'DEPTbc4300e8', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606866', 'U2031691169087606867', '马超', '何杰', '高丽', 'UNKNOWN', '1976-09-08', NULL, '15246472628', 'dvjhqx@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606868', '2023-09-11', NULL, 'OUTSOURCING', '高中', 'probation', 1, 'DEPTbc4300e8', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606869', 'U2031691169087606870', '黄强', '高敏', '赵勇', 'MALE', '1978-02-16', NULL, '13861302796', 'tkqb21@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606871', '2024-06-11', NULL, 'INTERNSHIP', '硕士', 'probation', 1, 'DEPT9dbeecf2', '1', 'DEPTd60170e5', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606872', 'U2031691169087606873', '何芳', '马芳', '徐强', 'MALE', '1969-11-04', NULL, '15258773964', '5oekvq@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606874', '2025-12-11', NULL, 'INTERNSHIP', '大专', 'RESIGN', 1, 'DEPTa916a9d4', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606875', 'U2031691169087606876', '孙霞', '徐秀英', '赵磊', 'FEMALE', '1972-04-11', NULL, '13813724365', 'x6vpps@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606877', '2023-07-11', NULL, 'FULL_TIME', '硕士', 'RESIGN', 1, 'DEPT7d047b44', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606878', 'U2031691169087606879', '陈军', '杨杰', '张平', 'UNKNOWN', '1976-04-26', NULL, '15112530263', 'dmzxgu@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '党员', 'W2031691169087606880', '2024-10-11', NULL, 'PART_TIME', '本科', 'RESIGN', 1, 'DEPT9aac2642', '1', 'DEPT5597c42e', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606881', 'U2031691169087606882', '孙秀兰', '王娜', '马军', 'MALE', '1986-05-21', NULL, '18832392640', 'bktgao@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606883', '2025-11-11', NULL, 'OUTSOURCING', '本科', 'probation', 1, 'DEPT9dbeecf2', '1', 'DEPT9dbeecf2', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606884', 'U2031691169087606885', '林静', '刘秀兰', '赵秀兰', 'MALE', '1987-01-05', NULL, '18838113541', 'er1byl@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '团员', 'W2031691169087606886', '2024-05-11', NULL, 'PART_TIME', '初中', 'ON_JOB', 1, 'DEPT067d690c', '1', 'DEPTd60170e5', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606887', 'U2031691169087606888', '陈伟', '刘霞', '刘涛', 'FEMALE', '2004-07-27', NULL, '15079659248', 'kk7csx@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '群众', 'W2031691169087606889', '2025-09-11', NULL, 'INTERNSHIP', '高中', 'probation', 1, 'DEPTd60170e5', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606890', 'U2031691169087606891', '赵平', '孙勇', '赵霞', 'UNKNOWN', '1992-02-25', NULL, '13943036011', '2ulhn0@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606892', '2023-09-11', NULL, 'FULL_TIME', '本科', 'ON_JOB', 1, 'DEPT9dbeecf2', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606893', 'U2031691169087606894', '林敏', '李超', '李磊', 'UNKNOWN', '1978-05-15', NULL, '15167214298', 'bg3my2@test.com', NULL, NULL, NULL, '汉族', 'MARRIED', '团员', 'W2031691169087606895', '2026-03-11', NULL, 'OUTSOURCING', '大专', 'ON_JOB', 1, 'DEPT9dbeecf2', '1', 'DEPT36885e56', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+INSERT INTO `iam_user` (`user_id`, `user_code`, `user_name`, `nickname`, `real_name`, `user_sex`, `user_birthday`, `user_id_card`, `user_phone`, `user_mail`, `user_photo`, `user_address`, `user_native_place`, `user_nation`, `user_marital_status`, `user_political_status`, `user_work_number`, `user_entry_date`, `user_probation_end_date`, `user_employment_type`, `user_education`, `user_status`, `status`, `dept_id`, `tenant_id`, `create_org_id`, `create_user_id`, `create_time`, `modify_user_id`, `modify_time`, `is_deleted`, `version`) VALUES ('USER2031691169087606896', 'U2031691169087606897', '胡芳', '朱秀兰', '张娜', 'UNKNOWN', '2000-11-27', NULL, '15262592223', 'yhzqh0@test.com', NULL, NULL, NULL, '汉族', 'SINGLE', '群众', 'W2031691169087606898', '2026-03-11', NULL, 'INTERNSHIP', '初中', 'probation', 1, 'DEPT9aac2642', '1', 'DEPT6fed566f', NULL, '2026-03-11 19:18:16', NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_user_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_user_permission`;
@@ -2726,6 +3727,12 @@ CREATE TABLE `iam_user_permission` (
   KEY `idx_permission_id` (`permission_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户权限关联表';
+
+-- ----------------------------
+-- Records of iam_user_permission
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for iam_wechat_app
@@ -2752,6 +3759,12 @@ CREATE TABLE `iam_wechat_app` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='微信应用表';
 
 -- ----------------------------
+-- Records of iam_wechat_app
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for iam_wechat_config
 -- ----------------------------
 DROP TABLE IF EXISTS `iam_wechat_config`;
@@ -2766,6 +3779,12 @@ CREATE TABLE `iam_wechat_config` (
   PRIMARY KEY (`config_id`),
   UNIQUE KEY `uk_config_key` (`config_key`,`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='微信配置表';
+
+-- ----------------------------
+-- Records of iam_wechat_config
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_column
@@ -2805,6 +3824,27 @@ CREATE TABLE `meta_column` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='元数据表字段定义';
 
 -- ----------------------------
+-- Records of meta_column
+-- ----------------------------
+BEGIN;
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', '3', 'id', '客户ID', 'bigint', 'Long', 'id', 1, 1, 1, 0, 1, 1, 1, 1, 1, NULL, NULL, 0, '客户ID', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', '3', 'customer_name', '客户名称', 'varchar(128)', 'String', 'customerName', 0, 0, 1, 1, 2, 1, 1, 1, 1, NULL, NULL, 1, '客户名称', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('20', '4', 'id', '产品ID', 'bigint', 'Long', 'id', 1, 1, 1, 0, 1, 1, 1, 1, 1, NULL, NULL, 0, '产品ID', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('21', '4', 'product_name', '产品名称', 'varchar(128)', 'String', 'productName', 0, 0, 1, 1, 2, 1, 1, 1, 1, NULL, NULL, 1, '产品名称', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('22', '4', 'product_code', '产品编码', 'varchar(64)', 'String', 'productCode', 0, 0, 1, 1, 1, 1, 1, 1, 1, NULL, NULL, 2, '产品编码', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('23', '4', 'price', '价格', 'decimal(10,2)', 'BigDecimal', 'price', 0, 0, 1, 0, 1, 1, 1, 1, 1, NULL, NULL, 4, '产品单价', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', '3', 'customer_code', '客户编码', 'varchar(64)', 'String', 'customerCode', 0, 0, 1, 1, 1, 1, 1, 1, 1, NULL, NULL, 2, '客户编码', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('30', '5', 'id', '订单ID', 'bigint', 'Long', 'id', 1, 1, 1, 0, 1, 1, 1, 1, 1, NULL, NULL, 0, '订单ID', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('31', '5', 'order_no', '订单编号', 'varchar(64)', 'String', 'orderNo', 0, 0, 1, 1, 1, 1, 1, 1, 1, NULL, NULL, 1, '订单编号', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('32', '5', 'customer_id', '客户ID', 'bigint', 'Long', 'customerId', 0, 0, 1, 1, 1, 1, 1, 1, 1, NULL, NULL, 2, '关联客户', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('33', '5', 'order_status', '订单状态', 'varchar(20)', 'String', 'orderStatus', 0, 0, 0, 1, 1, 1, 1, 1, 3, 'order_status', NULL, 3, '订单状态', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('34', '5', 'total_amount', '订单金额', 'decimal(12,2)', 'BigDecimal', 'totalAmount', 0, 0, 1, 0, 1, 1, 1, 1, 1, NULL, NULL, 5, '订单总金额', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('4', '3', 'customer_level', '客户级别', 'varchar(20)', 'String', 'customerLevel', 0, 0, 0, 1, 1, 1, 1, 1, 3, 'customer_level', NULL, 3, '客户级别ABC', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('5', '3', 'phone', '联系电话', 'varchar(20)', 'String', 'phone', 0, 0, 0, 1, 1, 1, 1, 1, 1, NULL, NULL, 5, '联系电话', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_column` (`column_id`, `table_id`, `column_name`, `column_desc`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_query`, `query_type`, `is_display`, `is_list`, `is_form`, `form_type`, `dict_type`, `default_value`, `column_sort`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('6', '3', 'status', '状态', 'tinyint', 'Integer', 'status', 0, 0, 0, 1, 1, 1, 1, 1, 4, 'yes_no', '1', 10, '客户状态', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_entity
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_entity`;
@@ -2834,6 +3874,12 @@ CREATE TABLE `meta_entity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='元数据实体配置';
 
 -- ----------------------------
+-- Records of meta_entity
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_form
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_form`;
@@ -2860,6 +3906,15 @@ CREATE TABLE `meta_form` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='元数据表单配置';
 
 -- ----------------------------
+-- Records of meta_form
+-- ----------------------------
+BEGIN;
+INSERT INTO `meta_form` (`form_id`, `form_code`, `form_name`, `table_id`, `form_type`, `form_layout`, `form_config`, `form_status`, `form_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', 'customer_form', '客户信息表单', '3', 'NORMAL', 'single', '{\"columns\":1,\"labelWidth\":100}', 1, '客户信息表单配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_form` (`form_id`, `form_code`, `form_name`, `table_id`, `form_type`, `form_layout`, `form_config`, `form_status`, `form_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', 'product_form', '产品信息表单', '4', 'NORMAL', 'double', '{\"columns\":2,\"labelWidth\":80}', 1, '产品信息表单配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_form` (`form_id`, `form_code`, `form_name`, `table_id`, `form_type`, `form_layout`, `form_config`, `form_status`, `form_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', 'order_form', '订单信息表单', '5', 'NORMAL', 'single', '{\"columns\":1,\"labelWidth\":100}', 1, '订单信息表单配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_kftdgl
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_kftdgl`;
@@ -2882,6 +3937,12 @@ CREATE TABLE `meta_kftdgl` (
   KEY `idx_tool_type` (`tool_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='开发工具管理表';
+
+-- ----------------------------
+-- Records of meta_kftdgl
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_list
@@ -2909,6 +3970,15 @@ CREATE TABLE `meta_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='元数据列表配置';
 
 -- ----------------------------
+-- Records of meta_list
+-- ----------------------------
+BEGIN;
+INSERT INTO `meta_list` (`list_id`, `list_code`, `list_name`, `table_id`, `list_type`, `list_config`, `list_status`, `list_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', 'customer_list', '客户列表', '3', 'TABLE', '{\"showCheckbox\":true,\"showRowNumber\":true,\"pageSize\":10,\"showPagination\":true}', 1, '客户列表配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_list` (`list_id`, `list_code`, `list_name`, `table_id`, `list_type`, `list_config`, `list_status`, `list_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', 'product_list', '产品列表', '4', 'TABLE', '{\"showCheckbox\":true,\"showRowNumber\":true,\"pageSize\":10,\"showPagination\":true}', 1, '产品列表配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_list` (`list_id`, `list_code`, `list_name`, `table_id`, `list_type`, `list_config`, `list_status`, `list_desc`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', 'order_list', '订单列表', '5', 'TABLE', '{\"showCheckbox\":true,\"showRowNumber\":true,\"pageSize\":10,\"showPagination\":true}', 1, '订单列表配置', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_menu_func
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_menu_func`;
@@ -2930,6 +4000,12 @@ CREATE TABLE `meta_menu_func` (
   KEY `idx_func_code` (`func_code`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='菜单功能关联表';
+
+-- ----------------------------
+-- Records of meta_menu_func
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_microapp
@@ -2971,6 +4047,12 @@ CREATE TABLE `meta_microapp` (
   KEY `idx_app_type` (`app_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='微应用表';
+
+-- ----------------------------
+-- Records of meta_microapp
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_page_config
@@ -3021,6 +4103,12 @@ CREATE TABLE `meta_page_config` (
   KEY `idx_parent_id` (`parent_id`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='页面配置表';
+
+-- ----------------------------
+-- Records of meta_page_config
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_page_field
@@ -3085,6 +4173,12 @@ CREATE TABLE `meta_page_field` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='页面字段表';
 
 -- ----------------------------
+-- Records of meta_page_field
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_table
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_table`;
@@ -3114,6 +4208,17 @@ CREATE TABLE `meta_table` (
   UNIQUE KEY `uk_table_name` (`table_name`,`tenant_id`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='元数据表配置';
+
+-- ----------------------------
+-- Records of meta_table
+-- ----------------------------
+BEGIN;
+INSERT INTO `meta_table` (`table_id`, `table_name`, `table_desc`, `table_type`, `package_name`, `module_name`, `class_name`, `class_desc`, `entity_name`, `author`, `enabled`, `generated`, `gen_path`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('1', 'sys_user', '系统用户', 1, 'com.ssitao.code', 'system', 'SysUser', '系统用户', 'SysUser', 'ssitao-code', 1, 1, '/gen/java/com/ssitao/code/system', '系统用户表', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_table` (`table_id`, `table_name`, `table_desc`, `table_type`, `package_name`, `module_name`, `class_name`, `class_desc`, `entity_name`, `author`, `enabled`, `generated`, `gen_path`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('2', 'sys_role', '系统角色', 1, 'com.ssitao.code', 'system', 'SysRole', '系统角色', 'SysRole', 'ssitao-code', 1, 1, '/gen/java/com/ssitao/code/system', '系统角色表', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_table` (`table_id`, `table_name`, `table_desc`, `table_type`, `package_name`, `module_name`, `class_name`, `class_desc`, `entity_name`, `author`, `enabled`, `generated`, `gen_path`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('3', 'customer', '客户信息', 1, 'com.ssitao.code', 'crm', 'Customer', '客户信息', 'Customer', 'ssitao-code', 1, 0, NULL, '客户信息管理', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_table` (`table_id`, `table_name`, `table_desc`, `table_type`, `package_name`, `module_name`, `class_name`, `class_desc`, `entity_name`, `author`, `enabled`, `generated`, `gen_path`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('4', 'product', '产品信息', 1, 'com.ssitao.code', 'product', 'Product', '产品信息', 'Product', 'ssitao-code', 1, 0, NULL, '产品信息管理', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+INSERT INTO `meta_table` (`table_id`, `table_name`, `table_desc`, `table_type`, `package_name`, `module_name`, `class_name`, `class_desc`, `entity_name`, `author`, `enabled`, `generated`, `gen_path`, `remark`, `tenant_id`, `create_time`, `create_user_id`, `modify_time`, `modify_user_id`, `is_deleted`, `version`) VALUES ('5', 'order', '订单信息', 1, 'com.ssitao.code', 'order', 'Order', '订单信息', 'Order', 'ssitao-code', 1, 0, NULL, '订单信息管理', '1', '2026-03-08 00:48:02', '1', NULL, NULL, 0, 0);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_upgrade_install
@@ -3157,6 +4262,12 @@ CREATE TABLE `meta_upgrade_install` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='升级安装记录表';
 
 -- ----------------------------
+-- Records of meta_upgrade_install
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for meta_upgrade_log
 -- ----------------------------
 DROP TABLE IF EXISTS `meta_upgrade_log`;
@@ -3178,6 +4289,12 @@ CREATE TABLE `meta_upgrade_log` (
   KEY `idx_log_time` (`log_time`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='升级日志表';
+
+-- ----------------------------
+-- Records of meta_upgrade_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for meta_upgrade_package
@@ -3220,6 +4337,12 @@ CREATE TABLE `meta_upgrade_package` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='升级包表';
 
 -- ----------------------------
+-- Records of meta_upgrade_package
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for product_flow_log
 -- ----------------------------
 DROP TABLE IF EXISTS `product_flow_log`;
@@ -3245,6 +4368,12 @@ CREATE TABLE `product_flow_log` (
   KEY `idx_flow_status` (`flow_status`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='产品流程日志表';
+
+-- ----------------------------
+-- Records of product_flow_log
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for product_manage
@@ -3277,6 +4406,12 @@ CREATE TABLE `product_manage` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='产品管理表';
 
 -- ----------------------------
+-- Records of product_manage
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for product_resources
 -- ----------------------------
 DROP TABLE IF EXISTS `product_resources`;
@@ -3303,6 +4438,12 @@ CREATE TABLE `product_resources` (
   KEY `idx_resource_type` (`resource_type`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='产品资源表';
+
+-- ----------------------------
+-- Records of product_resources
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for product_server
@@ -3333,6 +4474,12 @@ CREATE TABLE `product_server` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='产品服务器表';
 
 -- ----------------------------
+-- Records of product_server
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for saas_func_perm
 -- ----------------------------
 DROP TABLE IF EXISTS `saas_func_perm`;
@@ -3357,6 +4504,12 @@ CREATE TABLE `saas_func_perm` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='SAAS功能权限表';
 
 -- ----------------------------
+-- Records of saas_func_perm
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for sys_calendar
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_calendar`;
@@ -3378,6 +4531,12 @@ CREATE TABLE `sys_calendar` (
   KEY `idx_calendar_month` (`calendar_month`),
   KEY `idx_calendar_type` (`calendar_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统日历表';
+
+-- ----------------------------
+-- Records of sys_calendar
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for sys_calendar_push
@@ -3404,6 +4563,12 @@ CREATE TABLE `sys_calendar_push` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统日历推送表';
 
 -- ----------------------------
+-- Records of sys_calendar_push
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for wps_view_fields
 -- ----------------------------
 DROP TABLE IF EXISTS `wps_view_fields`;
@@ -3426,5 +4591,11 @@ CREATE TABLE `wps_view_fields` (
   UNIQUE KEY `uk_view_field` (`view_code`,`field_code`,`is_deleted`),
   KEY `idx_tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='WPS视图字段表';
+
+-- ----------------------------
+-- Records of wps_view_fields
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

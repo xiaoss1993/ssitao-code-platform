@@ -11,7 +11,7 @@
 
     <!--[if lt IE 9]>
     <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
+    <script src="/assets/js/respond.js"></script>
     <![endif]-->
     <script type="text/javascript">
         var require = {
@@ -21,10 +21,7 @@
                     "cdnurl": "/",
                     "version": "2.0.0",
                     "timezone": "Asia/Shanghai",
-                    "languages": {
-                        "backend": "zh-cn",
-                        "frontend": "zh-cn"
-                    }
+                    "languages": {"backend": "zh-cn", "frontend": "zh-cn"}
                 },
                 "upload": {
                     "cdnurl": "/",
@@ -44,11 +41,6 @@
             }
         };
     </script>
-    <!-- 预先加载 Vue.js -->
-    <script src="/assets/libs/vue/vue.js"></script>
-    <style>
-        [v-cloak] { display: none; }
-    </style>
 </head>
 
 <body class="inside-header inside-aside is-dialog">
@@ -61,92 +53,85 @@
                             <h1>账号编辑</h1>
                         </section>
                         <div class="content">
-                            <div id="app" v-cloak>
-                                <form id="edit-form" class="form-horizontal" role="form" method="post" @submit.prevent="handleSubmit" novalidate>
-                                    <!-- 隐藏字段 -->
-                                    <input type="hidden" name="id" id="id" v-model="form.id" />
+                            <form id="edit-form" class="form-horizontal form-ajax" role="form" method="POST">
+                                <input type="hidden" name="id" id="id" value="" />
 
-                                    <div class="form-group">
-                                        <label for="accountCode" class="control-label col-xs-12 col-sm-2">账号编码 <span class="text-danger">*</span></label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="text" class="form-control" id="accountCode" name="accountCode"
-                                                   v-model="form.accountCode" placeholder="请输入账号编码"
-                                                   :readonly="isEdit" data-rule="required" />
-                                            <span class="help-block">只能包含字母、数字和下划线</span>
-                                        </div>
+                                <div class="form-group">
+                                    <label for="accountCode" class="control-label col-xs-12 col-sm-2">账号编码 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="accountCode" name="accountCode"
+                                               value="" placeholder="请输入账号编码" data-rule="required" />
+                                        <span class="help-block">只能包含字母、数字和下划线</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="accountName" class="control-label col-xs-12 col-sm-2">账号名称 <span class="text-danger">*</span></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="accountName" name="accountName"
+                                               value="" placeholder="请输入账号名称" data-rule="required" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="password-group">
+                                    <label for="password" class="control-label col-xs-12 col-sm-2">
+                                        密码 <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="password" class="form-control" id="password" name="password"
+                                               placeholder="请输入密码" data-rule="required;length(6~20)" />
+                                        <span class="help-block" id="password-hint">密码长度6-20位</span>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label for="accountName" class="control-label col-xs-12 col-sm-2">账号名称 <span class="text-danger">*</span></label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="text" class="form-control" id="accountName" name="accountName"
-                                                   v-model="form.accountName" placeholder="请输入账号名称" data-rule="required" />
-                                        </div>
+                                <div class="form-group">
+                                    <label for="phone" class="control-label col-xs-12 col-sm-2">手机号</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="phone" name="phone"
+                                               value="" placeholder="请输入手机号" />
                                     </div>
+                                </div>
 
-                                    <div class="form-group" id="password-group">
-                                        <label for="password" class="control-label col-xs-12 col-sm-2">
-                                            密码 <span class="text-danger" v-if="!isEdit">*</span>
-                                        </label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="password" class="form-control" id="password" name="password"
-                                                   v-model="form.password" :placeholder="isEdit ? '留空不修改密码' : '请输入密码'"
-                                                   :data-rule="isEdit ? '' : 'required;length(6~20)'" />
-                                            <span class="help-block" v-if="!isEdit">密码长度6-20位</span>
-                                            <span class="help-block" v-else>留空表示不修改密码</span>
-                                        </div>
+                                <div class="form-group">
+                                    <label for="email" class="control-label col-xs-12 col-sm-2">邮箱</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               value="" placeholder="请输入邮箱" />
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="phone" class="control-label col-xs-12 col-sm-2">手机号</label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="text" class="form-control" id="phone" name="phone"
-                                                   v-model="form.phone" placeholder="请输入手机号" />
-                                        </div>
+                                <div class="form-group">
+                                    <label for="avatar" class="control-label col-xs-12 col-sm-2">头像URL</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control" id="avatar" name="avatar"
+                                               value="" placeholder="请输入头像URL" />
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="email" class="control-label col-xs-12 col-sm-2">邮箱</label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="email" class="form-control" id="email" name="email"
-                                                   v-model="form.email" placeholder="请输入邮箱" />
-                                        </div>
+                                <div class="form-group">
+                                    <label for="expireTime" class="control-label col-xs-12 col-sm-2">过期时间</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <input type="text" class="form-control datetimepicker" id="expireTime" name="expireTime"
+                                               value="" placeholder="请选择过期时间" />
+                                        <span class="help-block">留空表示永久有效</span>
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="avatar" class="control-label col-xs-12 col-sm-2">头像URL</label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="text" class="form-control" id="avatar" name="avatar"
-                                                   v-model="form.avatar" placeholder="请输入头像URL" />
-                                        </div>
+                                <div class="form-group">
+                                    <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <textarea class="form-control" id="remark" name="remark"
+                                                  rows="3" placeholder="请输入备注"></textarea>
                                     </div>
+                                </div>
 
-                                    <div class="form-group">
-                                        <label for="expireTime" class="control-label col-xs-12 col-sm-2">过期时间</label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <input type="datetime-local" class="form-control" id="expireTime" name="expireTime"
-                                                   v-model="form.expireTime" placeholder="请选择过期时间" />
-                                            <span class="help-block">留空表示永久有效</span>
-                                        </div>
+                                <div class="form-group hidden layer-footer">
+                                    <label class="control-label col-xs-12 col-sm-2"></label>
+                                    <div class="col-xs-12 col-sm-8">
+                                        <button type="submit" class="btn btn-success btn-embossed">确定</button>
+                                        <button type="reset" class="btn btn-default btn-embossed">重置</button>
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="remark" class="control-label col-xs-12 col-sm-2">备注</label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <textarea class="form-control" id="remark" name="remark"
-                                                      v-model="form.remark" rows="3" placeholder="请输入备注"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group layer-footer">
-                                        <label class="control-label col-xs-12 col-sm-2"></label>
-                                        <div class="col-xs-12 col-sm-8">
-                                            <button type="button" class="btn btn-success btn-embossed" @click="handleSubmit">确定</button>
-                                            <button type="button" class="btn btn-default btn-embossed" @click="handleCancel">取消</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

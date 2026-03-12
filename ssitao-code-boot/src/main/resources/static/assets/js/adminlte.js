@@ -394,18 +394,11 @@ function _init() {
                     var $this = $(this);
                     var checkElement = $this.next();
 
-                    // 防止动画进行中重复点击
-                    if ($this.data('animating')) {
-                        return;
-                    }
-
                     //Check if the next element is a menu and is visible
                     if ((checkElement.is('.treeview-menu')) && (checkElement.is(':visible')) && (!$('body').hasClass('sidebar-collapse'))) {
                         //Close the menu
-                        $this.data('animating', true);
                         checkElement.slideUp(animationSpeed, function () {
                             checkElement.removeClass('menu-open');
-                            $this.data('animating', false);
                             //Fix the layout in case the sidebar stretches over the height of the window
                             //_this.layout.fix();
                         });
@@ -415,7 +408,7 @@ function _init() {
                     else if ((checkElement.is('.treeview-menu')) && (!checkElement.is(':visible'))) {
                         //Get the parent menu
                         var parent = $this.parents('ul').first();
-                        if ($(".show-submenu", menu).length == 0) {
+                        if ($(".show-submenu", menu).size() == 0) {
                             //Close all open menus within the parent
                             var ul = parent.find('ul:visible').slideUp(animationSpeed);
                             //Remove the menu-open class from the parent
@@ -425,11 +418,9 @@ function _init() {
                         var parent_li = $this.parent("li");
 
                         //Open the target menu and add the menu-open class
-                        $this.data('animating', true);
                         checkElement.slideDown(animationSpeed, function () {
                             //Add the class active to the parent li
                             checkElement.addClass('menu-open');
-                            $this.data('animating', false);
                             //parent.find('li.active').removeClass('active');
                             //parent_li.addClass('active');
                             //Fix the layout in case the sidebar stretches over the height of the window
@@ -439,20 +430,8 @@ function _init() {
                         if (!$this.parent().hasClass("active")) {
                             $this.parent().addClass("active");
                         }
-                        if ($(".show-submenu", menu).length == 0) {
-                            // 关闭其他打开的菜单时也添加防动画标记
-                            var $siblingsUl = $this.parent().siblings().find("ul.menu-open");
-                            if ($siblingsUl.length > 0) {
-                                $siblingsUl.each(function() {
-                                    var $ul = $(this);
-                                    var $trigger = $ul.prev('a');
-                                    $trigger.data('animating', true);
-                                    $ul.slideUp(animationSpeed, function () {
-                                        $trigger.data('animating', false);
-                                        $ul.removeClass('menu-open');
-                                    });
-                                });
-                            }
+                        if ($(".show-submenu", menu).size() == 0) {
+                            $this.parent().siblings().find("ul.menu-open").slideUp();
                         }
                     }
                     //if this isn't a link, prevent the page from being redirected

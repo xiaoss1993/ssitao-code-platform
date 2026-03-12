@@ -1,79 +1,62 @@
 require.config({
-    packages: [{
-        name: 'moment',
-        location: '/assets/libs/moment',
-        main: 'moment'
-    }],
+    urlArgs: "v=" + requirejs.s.contexts._.config.config.site.version,
     //在打包压缩时将会把include中的模块合并到主文件中
-    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'vue', 'vue-table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage', 'utils'],
+    include: ['css', 'layer', 'toastr', 'fast', 'backend', 'table', 'form', 'dragsort', 'drag', 'drop', 'addtabs', 'selectpage', 'utils'],
     paths: {
-        // lang 模块路径
-        'lang': '/assets/js/lang',
-        'form': '/assets/js/require-form',
-        'table': '/assets/js/require-table',
-        'vue-table': '/assets/js/vue-table',
-        'vue': '/assets/libs/vue/vue',
-        'bootstrap-treegrid': '/assets/libs/bootstrap-table/bootstrap-treegrid',
-        'upload': '/assets/js/require-upload',
-        'validator': '/assets/js/require-validator',
-        'drag': '/assets/js/jquery.drag.min',
-        'drop': '/assets/js/jquery.drop.min',
-        'dragsort': '/assets/libs/dragsort/jquery.dragsort',
-        'echarts': '/assets/js/echarts.min',
-        'echarts-theme': '/assets/js/echarts-theme',
-        'adminlte': '/assets/js/adminlte',
-        'bootstrap-table-commonsearch': '/assets/js/bootstrap-table-commonsearch',
-        'bootstrap-table-template': '/assets/js/bootstrap-table-template',
-        'jquery-ui': "/assets/libs/jquery-ui/jquery-ui.min",
+        'lang': "empty:",
+        'fast': 'fast',
+        'backend': 'backend',
+        'utils': 'backend/utils',
+        'form': 'require-form',
+        'table': 'require-table',
+        'moment': '/assets/libs/moment/min/moment.min',
+        'moment/locale': '/assets/libs/moment/locale',
+        'upload': 'require-upload',
+        'validator': 'require-validator',
+        'drag': 'jquery.drag.min',
+        'drop': 'jquery.drop.min',
+        'echarts': 'echarts.min',
+        'echarts-theme': 'echarts-theme',
+        'adminlte': 'adminlte',
+        'bootstrap-table-commonsearch': 'bootstrap-table-commonsearch',
+        'bootstrap-table-template': 'bootstrap-table-template',
         //
-        // 以下的包从libs目录加载（使用绝对路径）
+        // 以下的包从bower的libs目录加载
         'jquery': '/assets/libs/jquery/dist/jquery.min',
-        'bootstrap': '/assets/libs/bootstrap/js/bootstrap.min',
-        'bootstrap-datetimepicker': '/assets/libs/datapicker/bootstrap-datetimepicker.min',
+        'bootstrap': '/assets/libs/bootstrap/dist/js/bootstrap.min',
+        'bootstrap-datetimepicker': '/assets/libs/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         'bootstrap-select': '/assets/libs/bootstrap-select/dist/js/bootstrap-select.min',
         'bootstrap-select-lang': '/assets/libs/bootstrap-select/dist/js/i18n/defaults-zh_CN',
-        'bootstrap-table': '/assets/libs/bootstrap-table/bootstrap-table.min',
-        'bootstrap-table-export': '/assets/libs/bootstrap-table/extensions/export/bootstrap-table-export.min',
-        'bootstrap-table-mobile': '/assets/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min',
-        'bootstrap-table-lang': '/assets/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min',
+        'bootstrap-table': '/assets/libs/bootstrap-table/dist/bootstrap-table.min',
+        'bootstrap-table-export': '/assets/libs/bootstrap-table/dist/extensions/export/bootstrap-table-export.min',
+        'bootstrap-table-mobile': '/assets/libs/bootstrap-table/dist/extensions/mobile/bootstrap-table-mobile',
+        'bootstrap-table-lang': '/assets/libs/bootstrap-table/dist/locale/bootstrap-table-zh-CN',
         'tableexport': '/assets/libs/tableExport.jquery.plugin/tableExport.min',
+        'dragsort': '/assets/libs/dragsort/jquery.dragsort',
         'qrcode': '/assets/libs/jquery-qrcode/jquery.qrcode.min',
         'sortable': '/assets/libs/Sortable/Sortable.min',
         'addtabs': '/assets/libs/jquery-addtabs/jquery.addtabs',
         'slimscroll': '/assets/libs/jquery-slimscroll/jquery.slimscroll.min',
-        'summernote': '/assets/libs/summernote/lang/summernote-zh-CN.min',
-        'validator-core': '/assets/libs/nice-validator/jquery.validator.min',
-        'validator-lang': '/assets/libs/nice-validator/zh-CN',
+        'summernote': '/assets/libs/summernote/dist/lang/summernote-zh-CN.min',
+        'validator-core': '/assets/libs/nice-validator/dist/jquery.validator.min',
+        'validator-lang': '/assets/libs/nice-validator/dist/local/zh-CN',
         'plupload': '/assets/libs/plupload/js/plupload.min',
-        'plupload-moxie': '/assets/libs/plupload/js/moxie.min',
+        'moxie': '/assets/libs/plupload/js/moxie.min',
         'toastr': '/assets/libs/toastr/toastr.min',
-        'jstree': '/assets/libs/jstree/jstree.min',
-        'ztree': '/assets/libs/jquery-ztree/js/jquery.ztree.all-3.5',
-        'layer': '/assets/libs/layer/layer',
+        'jstree': '/assets/libs/jstree/dist/jstree.min',
+        'layer': '/assets/libs/layer/build/layer',
         'cookie': '/assets/libs/jquery.cookie/jquery.cookie',
         'cxselect': '/assets/libs/jquery-cxselect/js/jquery.cxselect',
-        'template': '/assets/libs/art-template/template-native',
+        'template': '/assets/libs/art-template/dist/template-native',
         'selectpage': '/assets/libs/selectpage/selectpage',
-        'css': '/assets/js/require-css.min',
-        // 公共工具模块
-        'utils': '/assets/js/backend/utils',
     },
     // shim依赖配置
     shim: {
-        // 核心库
-        // layer 导出到 window.layer
-        'layer': {
-            exports: 'layer'
-        },
-        'jquery': {exports: "$"},
-        'jquery-ui': {
-            deps: ['jquery'],
-            exports: '$.ui'
-        },
         'bootstrap': ['jquery'],
         'bootstrap-table': {
             deps: [
                 'bootstrap',
+//                'css!/assets/libs/bootstrap-table/dist/bootstrap-table.min.css'
             ],
             exports: '$.fn.bootstrapTable'
         },
@@ -83,10 +66,6 @@ require.config({
         },
         'bootstrap-table-export': {
             deps: ['bootstrap-table', 'tableexport'],
-            exports: '$.fn.bootstrapTable.defaults'
-        },
-        'bootstrap-treegrid': {
-            deps: ['bootstrap-table'],
             exports: '$.fn.bootstrapTable.defaults'
         },
         'bootstrap-table-mobile': {
@@ -111,31 +90,43 @@ require.config({
         },
         'slimscroll': {
             deps: ['jquery'],
-            exports: '$.fn.slimscroll'
+            exports: '$.fn.extend'
         },
         'adminlte': {
             deps: ['bootstrap', 'slimscroll'],
             exports: '$.AdminLTE'
         },
         'bootstrap-datetimepicker': [
-            'css!/assets/libs/datapicker/bootstrap-datetimepicker.min.css'
+            'moment/locale/zh-cn',
+//            'css!/assets/libs/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         ],
-        'bootstrap-select': ['css!/assets/libs/bootstrap-select/dist/css/bootstrap-select.css'],
+        'bootstrap-select': ['css!/assets/libs/bootstrap-select/dist/css/bootstrap-select.min.css', ],
         'bootstrap-select-lang': ['bootstrap-select'],
-        'summernote': ['/assets/libs/summernote/summernote.min', 'css!/assets/libs/summernote/summernote.css'],
-        // jstree CSS 已移除 - 文件不存在
-        'ztree': ['css!/assets/libs/jquery-ztree/css/default/zTreeStyle.css'],
+        'summernote': ['/assets/libs/summernote/dist/summernote.min', 'css!/assets/libs/summernote/dist/summernote.css'],
+//        'toastr': ['css!/assets/libs/toastr/toastr.min.css'],
+        'jstree': ['css!/assets/libs/jstree/dist/themes/default/style.css', ],
         'plupload': {
-            deps: ['plupload-moxie'],
+            deps: ['moxie'],
             exports: "plupload"
         },
+//        'layer': ['css!/assets/libs/layer/build/skin/default/layer.css'],
+//        'validator-core': ['css!/assets/libs/nice-validator/dist/jquery.validator.css'],
         'validator-lang': ['validator-core'],
+//        'selectpage': ['css!/assets/libs/selectpage/selectpage.css'],
     },
-    baseUrl: '/assets/js/', //资源基础路径
-    // 别名配置（用于 css! 插件）
+    baseUrl: (function() {
+        var cdnurl = requirejs.s.contexts._.config.config.site.cdnurl;
+        // 处理 cdnurl: 移除 ./ 或 / 结尾，统一添加 /assets/js/
+        if (!cdnurl || cdnurl === './' || cdnurl === '.') {
+            return '/assets/js/';
+        }
+        // 移除结尾的 /
+        cdnurl = cdnurl.replace(/\/$/, '');
+        return cdnurl + '/assets/js/';
+    })(), //资源基础路径
     map: {
         '*': {
-            'css': 'css'
+            'css': '/assets/libs/require-css/css.min'
         }
     },
     waitSeconds: 30,
@@ -147,8 +138,9 @@ require(['jquery', 'bootstrap'], function ($, undefined) {
     var Config = requirejs.s.contexts._.config.config;
     //将Config渲染到全局
     window.Config = Config;
-    // 配置语言包的路径（lang 模块已在页面中预先定义）
+    // 配置语言包的路径
     var paths = {};
+    paths['lang'] = 'lang';
     //如果语言包想要动态加载，则使用下面一行
     //paths['lang'] = Config.moduleurl + 'lang?callback=define&controllername=' + Config.controllername;
     // 避免目录冲突

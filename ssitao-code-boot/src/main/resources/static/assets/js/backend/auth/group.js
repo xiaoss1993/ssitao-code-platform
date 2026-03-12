@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'jstree'], function ($, undefined, Backend, Table, Form, undefined) {
     //读取选中的条目
     $.jstree.core.prototype.get_all_checked = function (full) {
         var obj = this.get_selected(), i, j;
@@ -68,7 +68,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         },
         api: {
             refreshrules: function () {
-                if ($("#treeview").length > 0) {
+                if ($("#treeview").size() > 0) {
                     var r = $("#treeview").jstree("get_all_checked");
                     $("input[name='row[rules]']").val(r.join(','));
                 }
