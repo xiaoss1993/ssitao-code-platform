@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>字典类型编辑</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai"
+                },
+                "modulename": "meta",
+                "controllername": "dictionary",
+                "actionname": "edit",
+                "jsname": "backend/meta/dictionary",
+                "moduleurl": "/"
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside" style="background-color: #fff;">
+    <form id="edit-form" class="form-horizontal" role="form" method="POST">
+        <input type="hidden" name="id" id="id" value="">
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">字典类型编码:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input type="text" class="form-control" name="dictTypeCode" id="dictTypeCode" placeholder="请输入字典类型编码" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">字典类型名称:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input type="text" class="form-control" name="dictTypeName" id="dictTypeName" placeholder="请输入字典类型名称" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">字典类型描述:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea class="form-control" name="dictTypeDesc" id="dictTypeDesc" rows="3" placeholder="请输入字典类型描述"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">状态:</label>
+            <div class="col-xs-12 col-sm-8">
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="1" checked> 启用
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="status" value="0"> 禁用
+                </label>
+            </div>
+        </div>
+        <div class="form-group layer-footer">
+            <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                <button type="submit" class="btn btn-success btn-embossed">提交</button>
+                <button type="reset" class="btn btn-default btn-embossed">重置</button>
+            </div>
+        </div>
+    </form>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+    <script type="text/javascript">
+        require(['backend/meta/dictionary'], function (Controller) {
+            Controller.edit();
+        });
+    </script>
+</body>
+</html>

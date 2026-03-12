@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>部门管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link href="/assets/css/backend.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/libs/zTree/css/zTreeStyle/zTreeStyle.css">
+
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+        var require = {
+            "config": {
+                "site": {
+                    "name": "SSITAO Code Platform",
+                    "cdnurl": "/",
+                    "version": "2.0.0",
+                    "timezone": "Asia/Shanghai"
+                },
+                "modulename": "hr",
+                "controllername": "department",
+                "actionname": "index",
+                "jsname": "backend/hr/department",
+                "moduleurl": "/",
+                "language": "zh-cn"
+            }
+        };
+    </script>
+</head>
+
+<body class="inside-header inside-aside">
+    <div id="main" role="main">
+        <div class="tab-content tab-addtabs">
+            <div id="content">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <section class="content-header hide">
+                            <h1>部门管理</h1>
+                        </section>
+                        <div id="ribbon">
+                            <ol class="breadcrumb pull-left">
+                                <li><a href="/console" class="addtabsit"><i class="fa fa-dashboard"></i> 控制台</a></li>
+                                <li><a href="javascript:;" data-url="hr">人力资源</a></li>
+                                <li><a href="javascript:;" data-url="hr/department">部门管理</a></li>
+                            </ol>
+                        </div>
+                        <div class="content">
+                            <div class="panel panel-default panel-intro">
+                                <div class="panel-body">
+                                    <div id="myTabContent" class="tab-content">
+                                        <div class="tab-pane fade active in" id="one">
+                                            <div class="widget-body no-padding">
+                                                <div id="toolbar" class="toolbar">
+                                                    <a href="javascript:;" class="btn btn-success btn-add" title="添加">
+                                                        <i class="fa fa-plus"></i> 添加
+                                                    </a>
+                                                    <a href="javascript:;" class="btn btn-primary btn-refresh" title="刷新">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-6">
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading">
+                                                                <i class="fa fa-sitemap"></i> 部门组织架构
+                                                            </div>
+                                                            <div class="panel-body" style="padding: 10px;">
+                                                                <ul id="departmentTree" class="ztree" style="height: 400px; overflow: auto;"></ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+</body>
+</html>
