@@ -1,4 +1,4 @@
-package com.ssitao.code.controller;
+package com.ssitao.code.modular.iam.authorization.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.ssitao.code.common.pojo.CommonResult;
@@ -28,7 +28,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class IamAuthController {
 
     private final IamLoginAppService loginAppService;
 

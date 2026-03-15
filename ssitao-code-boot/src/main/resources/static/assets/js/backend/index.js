@@ -1,4 +1,4 @@
-define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, undefined, Backend, AdminLTE, Form) {
+define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form', 'backend/menu'], function ($, undefined, Backend, AdminLTE, Form, MenuRenderer) {
     var Controller = {
         index: function () {
             //窗口大小改变,修正主窗体最小高度
@@ -395,12 +395,6 @@ define(['jquery', 'bootstrap', 'backend', 'adminlte', 'form'], function ($, unde
             });
         }
     };
-
-    //此处为FastAdmin的统计代码,正式使用请移除
-    var s = document.createElement("script");
-    s.type = "text/javascript";
-    s.src = "https://hm.baidu.com/hm.js?411498eda891dfe8091c301a03afe493";
-    $("head").append(s);
 
     return Controller;
 });

@@ -7,6 +7,8 @@ import com.ssitao.code.modular.iam.identity.application.command.IamLoginCommand;
 import com.ssitao.code.modular.iam.identity.application.command.IamLogoutCommand;
 import com.ssitao.code.modular.iam.identity.application.service.IamLoginAppService;
 import com.ssitao.code.modular.iam.identity.application.service.impl.IamLoginAppServiceImpl;
+import com.ssitao.code.modular.iam.menu.application.service.IamMenuAppService;
+import com.ssitao.code.modular.iam.menu.api.dto.IamMenuDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +41,7 @@ import java.util.Map;
 public class IndexController {
 
     private final IamLoginAppService loginAppService;
+    private final IamMenuAppService menuAppService;
 
     /**
      * 登录页面
@@ -138,74 +143,66 @@ public class IndexController {
     }
 
     /**
-     * 通用页面跳转
-     * 根据页面名称跳转到对应的模板
-     */
-    @GetMapping("/page/{page}")
-    @Operation(summary = "通用页面跳转", description = "根据页面名称跳转到对应模板")
-    public String page(@RequestParam String page, Model model) {
-        if (!StpUtil.isLogin()) {
-            return "redirect:/login";
-        }
-        return page;
-    }
-
-    /**
      * 获取当前用户菜单
      */
     @GetMapping("/api/menus")
+    @ResponseBody
     @Operation(summary = "获取菜单", description = "获取当前用户的菜单列表")
-    public String getMenus(Model model) {
+    public Map<String, Object> getMenus() {
+        Map<String, Object> result = new HashMap<>();
+
         if (!StpUtil.isLogin()) {
-            return "redirect:/login";
+            result.put("code", 401);
+            result.put("msg", "未登录");
+            return result;
         }
 
-        // 获取用户权限
-        Object permissions = loginAppService.getCurrentUserPermissions(StpUtil.getTokenValue());
+        // 从数据库获取菜单数据
+        List<IamMenuDTO> menuList = menuAppService.getMyMenus();
 
-        // 构建菜单数据
-        List<Map<String, Object>> menus = buildMenus();
-        model.addAttribute("menus", menus);
+        // 转换为前端需要的格式
+        List<Map<String, Object>> menus = convertMenusForFrontend(menuList);
 
-        return "fragments/menu :: sidebar";
+        result.put("code", 200);
+        result.put("msg", "success");
+        result.put("data", menus);
+
+        return result;
     }
 
     /**
-     * 构建菜单数据
+     * 将菜单DTO转换为前端需要的格式
      */
-    private List<Map<String, Object>> buildMenus() {
-        // TODO: 从数据库获取菜单
-        return Arrays.asList(
-                createMenu("dashboard", "控制台", "fa fa-dashboard", "/dashboard", true),
-                createMenu("general", "常规管理", "fa fa-cogs", null, false,
-                        createSubMenu("config", "系统配置", "fa fa-cog", "/page/config"),
-                        createSubMenu("attachment", "附件管理", "fa fa-file-image-o", "/page/attachment"),
-                        createSubMenu("profile", "个人配置", "fa fa-user", "/page/profile")
-                ),
-                createMenu("auth", "权限管理", "fa fa-group", null, false,
-                        createSubMenu("admin", "管理员管理", "fa fa-user", "/page/admin"),
-                        createSubMenu("adminlog", "管理员日志", "fa fa-list-alt", "/page/adminlog"),
-                        createSubMenu("group", "角色组", "fa fa-group", "/page/group"),
-                        createSubMenu("rule", "规则管理", "fa fa-bars", "/page/rule")
-                ),
-                createMenu("content", "内容管理", "fa fa-tags", null, false,
-                        createSubMenu("page", "单页管理", "fa fa-tags", "/page/page"),
-                        createSubMenu("category", "分类管理", "fa fa-list", "/page/category")
-                )
-        );
-    }
-
-    private Map<String, Object> createMenu(String id, String name, String icon, String url, boolean isActive, Map<String, Object>... children) {
-        Map<String, Object> menu = new HashMap<>();
-        menu.put("id", id);
-        menu.put("name", name);
-        menu.put("icon", icon);
-        menu.put("url", url);
-        menu.put("isActive", isActive);
-        if (children.length > 0) {
-            menu.put("children", Arrays.asList(children));
+    private List<Map<String, Object>> convertMenusForFrontend(List<IamMenuDTO> menuList) {
+        if (menuList == null || menuList.isEmpty()) {
+            return new java.util.ArrayList<>();
         }
-        return menu;
+
+        List<Map<String, Object>> result = new java.util.ArrayList<>();
+        for (IamMenuDTO dto : menuList) {
+            Map<String, Object> menu = new HashMap<>();
+            menu.put("id", dto.getId());
+            menu.put("name", dto.getMenuName());
+            menu.put("icon", dto.getIcon() != null ? dto.getIcon() : "fa fa-circle-o");
+            // 路径添加 /iam 前缀
+            String path = dto.getPath();
+            if (path != null && !path.startsWith("/") && !path.startsWith("http")) {
+                path = "/iam/" + path;
+            } else if (path != null && path.startsWith("/") && !path.startsWith("/iam") && !path.startsWith("/api") && !path.startsWith("/console")) {
+                path = "/iam" + path;
+            }
+            menu.put("url", path);
+            menu.put("addtabs", dto.getId());
+            menu.put("isHeader", "directory".equals(dto.getMenuType()));
+
+            // 递归处理子菜单
+            if (dto.getChildren() != null && !dto.getChildren().isEmpty()) {
+                menu.put("children", convertMenusForFrontend(dto.getChildren()));
+            }
+
+            result.add(menu);
+        }
+        return result;
     }
 
     private Map<String, Object> createSubMenu(String id, String name, String icon, String url) {
