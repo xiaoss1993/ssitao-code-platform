@@ -59,11 +59,15 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 "/api/auth/captcha",
                 "/api/auth/logout",
 
+                // 菜单接口（允许匿名访问）
+                "/api/menus",
+
                 // 页面路由（需要登录后才能访问，但在登录页不拦截）
                 "/",
                 "/index",
                 "/dashboard",
                 "/console",
+                "/admin/**",
 
                 // 静态资源
                 "/assets/**",

@@ -20,13 +20,22 @@ public interface IamMenuAppService {
     List<IamMenuDTO> getMyMenus();
 
     /**
-     * 获取菜单列表
+     * 获取菜单列表（扁平结构，用于表格展示）
      *
      * @param menuType 菜单类型
      * @param status   状态
-     * @return 菜单列表
+     * @return 菜单列表（扁平结构）
      */
     List<IamMenuDTO> listMenus(String menuType, Integer status);
+
+    /**
+     * 获取菜单列表（树形结构）
+     *
+     * @param menuType 菜单类型
+     * @param status   状态
+     * @return 菜单树
+     */
+    List<IamMenuDTO> listMenusTree(String menuType, Integer status);
 
     /**
      * 获取菜单树

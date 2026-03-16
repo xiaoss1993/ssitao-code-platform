@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +52,101 @@ public class IamMenuAppServiceImpl implements IamMenuAppService {
 
     @Override
     public List<IamMenuDTO> listMenus(String menuType, Integer status) {
+        String tenantId = TenantUtils.getTenantId();
+        List<IamMenu> menus;
+
+        if (menuType != null && !menuType.isEmpty()) {
+            menus = menuRepository.findByMenuType(menuType, tenantId);
+        } else if (status != null) {
+            menus = menuRepository.findByStatus(status, tenantId);
+        } else {
+            menus = menuRepository.findAll(tenantId);
+        }
+
+        if (menus == null || menus.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 转换为DTO并设置前端兼容字段（扁平结构，用于表格展示）
+        List<IamMenuDTO> dtoList = menuConverter.toDTOList(menus);
+        dtoList.forEach(this::populateFrontendFields);
+
+        // 规范化 parent_id：根节点设置为 null（tree-column 扩展需要）
+        normalizeParentIds(dtoList);
+
+        // 计算层级用于前端显示缩进
+        calculateLevels(dtoList);
+
+        return dtoList;
+    }
+
+    /**
+     * 规范化 parent_id：根节点的 parent_id 设置为 null
+     * tree-column 扩展需要 parent_id 为 null/undefined/空字符串才能识别根节点
+     */
+    private void normalizeParentIds(List<IamMenuDTO> menus) {
+        if (menus == null || menus.isEmpty()) {
+            return;
+        }
+        for (IamMenuDTO menu : menus) {
+            String parentId = menu.getParentId();
+            if (parentId == null || "0".equals(parentId) || "".equals(parentId)) {
+                menu.setParentId(null);
+            }
+        }
+    }
+
+    /**
+     * 计算菜单层级
+     */
+    private void calculateLevels(List<IamMenuDTO> menus) {
+        if (menus == null || menus.isEmpty()) {
+            return;
+        }
+
+        // 构建ID到菜单的映射
+        Map<String, IamMenuDTO> menuMap = new HashMap<>();
+        for (IamMenuDTO menu : menus) {
+            if (menu.getId() != null) {
+                menuMap.put(menu.getId(), menu);
+            }
+        }
+
+        // 计算每个菜单的层级
+        for (IamMenuDTO menu : menus) {
+            int level = calculateMenuLevel(menu, menuMap, 0);
+            menu.setLevel(level);
+        }
+    }
+
+    /**
+     * 递归计算菜单层级
+     */
+    private int calculateMenuLevel(IamMenuDTO menu, Map<String, IamMenuDTO> menuMap, int currentLevel) {
+        String parentId = menu.getParentId();
+
+        // 根节点
+        if (parentId == null || "0".equals(parentId) || "".equals(parentId)) {
+            return currentLevel;
+        }
+
+        // 查找父节点
+        IamMenuDTO parent = menuMap.get(parentId);
+        if (parent == null) {
+            return currentLevel;
+        }
+
+        // 如果父节点已经有层级，直接使用
+        if (parent.getLevel() != null) {
+            return parent.getLevel() + 1;
+        }
+
+        // 递归计算父节点层级
+        return calculateMenuLevel(parent, menuMap, currentLevel + 1);
+    }
+
+    @Override
+    public List<IamMenuDTO> listMenusTree(String menuType, Integer status) {
         String tenantId = TenantUtils.getTenantId();
         List<IamMenu> menus;
 

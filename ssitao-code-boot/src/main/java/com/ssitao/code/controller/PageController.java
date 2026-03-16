@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -19,6 +20,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "页面控制器", description = "管理后台页面跳转")
 @Controller
 public class PageController {
+
+    /**
+     * 通用页面路由 - 支持 /admin/xxx 格式
+     * 返回通用管理页面模板
+     */
+    @GetMapping("/admin/{page}")
+    @Operation(summary = "通用页面路由")
+    public String adminPage(@PathVariable String page, Model model) {
+        addCommonModel(model, getPageTitle(page), page);
+        return "admin/" + page;
+    }
+
+    /**
+     * 获取页面标题
+     */
+    private String getPageTitle(String page) {
+        switch (page) {
+            case "index": return "系统首页";
+            case "account": return "账号管理";
+            case "role": return "角色管理";
+            case "permission": return "权限管理";
+            case "menu": return "菜单管理";
+            case "user": return "用户管理";
+            case "dept": return "部门管理";
+            case "post": return "岗位管理";
+            case "dict": return "字典管理";
+            case "config": return "系统配置";
+            default: return "管理页面";
+        }
+    }
+
+    /**
+     * 通用API路由 - 支持 /api/admin/xxx 格式
+     * 将 /api/admin/xxx 映射到 /iam/xxx
+     */
+    @GetMapping("/api/admin/{page}")
+    @Operation(summary = "通用API路由")
+    public String apiAdminPage(@PathVariable String page, Model model) {
+        return "redirect:/api/iam/" + page;
+    }
 
     // ==================== 内容管理 ====================
 

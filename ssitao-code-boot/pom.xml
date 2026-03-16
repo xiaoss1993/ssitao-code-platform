@@ -28,10 +28,6 @@
             <groupId>com.ssitao.code</groupId>
             <artifactId>ssitao-code-modular-meta</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-modular-devtools</artifactId>
-        </dependency>
 
         <!-- Spring Boot Application -->
         <dependency>

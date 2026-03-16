@@ -1,242 +1,259 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>SSITAO Code Platform</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSITAO Code Platform - 管理后台</title>
     <meta name="renderer" content="webkit">
-
-    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-    <link href="/assets/css/backend.css" rel="stylesheet">
-
-    <!--[if lt IE 9]>
-    <script src="/assets/js/html5shiv.js"></script>
-    <script src="/assets/js/respond.min.js"></script>
-    <![endif]-->
-
-    <script>
-        var require = {
-            "config": {
-                "site": {
-                    "name": "SSITAO Code Platform",
-                    "cdnurl": "/",
-                    "version": "2.0.0",
-                    "timezone": "Asia/Shanghai",
-                    "languages": {
-                        "backend": "zh-cn",
-                        "frontend": "zh-cn"
-                    }
-                },
-                "upload": {
-                    "cdnurl": "/",
-                    "uploadurl": "/api/upload",
-                    "bucket": "yourbucketname",
-                    "maxsize": "10mb",
-                    "mimetype": "*",
-                    "multiple": false
-                },
-                "modulename": "admin",
-                "controllername": "index",
-                "actionname": "index",
-                "jsname": "backend/index",
-                "moduleurl": "/",
-                "language": "zh-cn",
-                "referer": null
-            }
-        };
-    </script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}">
 </head>
-<body class="hold-transition skin-green sidebar-mini fixed" id="tabs">
-
-    <div class="wrapper">
-
-        <header id="header" class="main-header">
-            <!-- Logo -->
-            <a href="common" class="logo">
-                <span class="logo-mini">SSITAO</span>
-                <span class="logo-lg"><b>SSITAO</b> Platform</span>
-            </a>
-            <!-- 顶部通栏样式 -->
-            <nav class="navbar navbar-static-top">
-                <!-- 边栏切换按钮-->
-                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-                    <span class="sr-only">Toggle navigation</span>
-                </a>
-
-                <div id="nav" class="pull-left">
-                    <ul class="nav nav-tabs nav-addtabs disable-top-badge" role="tablist">
-                    </ul>
-                </div>
-
-                <div class="navbar-custom-menu">
-                    <ul class="nav navbar-nav">
-
-                        <li>
-                            <a href="/" target="_blank">
-                                <i class="fa fa-home" style="font-size:14px;"></i>
-                            </a>
-                        </li>
-
-                        <li class="dropdown notifications-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">0</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">暂无新消息</li>
-                                <li class="footer"><a href="#" target="_blank">查看全部</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="javascript:;" data-toggle="wipecache" title="清空缓存">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </li>
-
-                        <li class="hidden-xs">
-                            <a href="#" data-toggle="fullscreen"><i class="fa fa-arrows-alt"></i></a>
-                        </li>
-
-                        <!-- 账号信息下拉框 -->
-                        <li class="dropdown user user-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/assets/img/avatar.png" class="user-image" alt="Admin">
-                                <span class="hidden-xs">Admin</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <!-- User image -->
-                                <li class="user-header">
-                                    <img src="/assets/img/avatar.png" class="img-circle" alt="">
-                                    <p>
-                                        <span>Admin</span>
-                                    </p>
-                                </li>
-                                <!-- Menu Body -->
-                                <li class="user-body">
-                                    <div class="row">
-                                        <div class="col-xs-4 text-center">
-                                            <a href="/admin/profile">个人资料</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="/admin/config">系统设置</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="javascript:;">帮助</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <!-- Menu Footer-->
-                                <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/admin/profile" class="btn btn-default btn-flat">个人资料</a>
-                                    </div>
-                                    <div class="pull-right">
-                                        <a href="/logout" class="btn btn-default btn-flat">注销</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- 控制栏切换按钮 -->
-                        <li>
-                            <a href="javascript:;" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <!-- Left side column. contains the logo and sidebar -->
-        <aside class="main-sidebar">
-            <!-- sidebar: style can be found in sidebar.less -->
-            <section class="sidebar">
-                <!-- Sidebar user panel -->
-                <div class="user-panel hidden-xs">
-                    <div class="pull-left image">
-                        <a href="/admin/profile"><img src="/assets/img/avatar.png" class="img-circle" /></a>
-                    </div>
-                    <div class="pull-left info">
-                        <p>Admin</p>
-                        <i class="fa fa-circle text-success"></i> 在线
-                    </div>
-                </div>
-
-                <!-- search form -->
-                <form action="" method="get" class="sidebar-form" onsubmit="return false;">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="搜索菜单">
-                        <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </span>
-                        <div class="menuresult list-group sidebar-form hide">
-                        </div>
-                    </div>
-                </form>
-                <!-- /.search form -->
-
-                <!-- sidebar menu: 动态加载菜单 -->
-                <ul class="sidebar-menu" id="sidebar-menu">
-                    <!-- 菜单将由 JS 动态加载 -->
-                </ul>
-            </section>
-            <!-- /.sidebar -->
-        </aside>
-
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper tab-content tab-addtabs">
-            <!-- 默认显示控制台 - 由JavaScript动态创建 -->
-        </div>
-        <!-- /.content-wrapper -->
-
-        <footer class="main-footer hide">
-            <div class="pull-right hidden-xs">
+<body class="layui-layout-body">
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin" id="layoutAdmin">
+        <!-- 头部区域 -->
+        <div class="layui-header">
+            <div class="layui-logo">
+                <span>SSITAO Code</span>
             </div>
-            <strong>Copyright &copy; 2024-2025 <a href="javascript:;">SSITAO Code Platform</a>.</strong> All rights reserved.
-        </footer>
 
-        <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
-        <div class="control-sidebar-bg"></div>
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li class="active"><a href="#control-sidebar-setting-tab" data-toggle="tab"><i class="fa fa-wrench"></i></a></li>
-                <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" id="flexibleBtn" title="侧边伸缩">
+                        <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" id="refreshBtn" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
             </ul>
-            <div class="tab-content">
-                <div class="tab-pane active" id="control-sidebar-setting-tab">
-                    <h4 class="control-sidebar-heading">布局设定</h4>
-                    <div class="form-group">
-                        <label class="control-sidebar-subheading">
-                            <input type="checkbox" data-layout="fixed" class="pull-right"> 固定布局
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-sidebar-subheading">
-                            <input type="checkbox" data-layout="sidebar-collapse" class="pull-right"> 折叠菜单栏
-                        </label>
-                    </div>
 
-                    <h4 class="control-sidebar-heading">皮肤</h4>
-                    <ul class="list-unstyled clearfix skin-list">
-                        <li><a href="javascript:;" data-skin="skin-blue"><p class="text-center no-margin">Blue</p></a></li>
-                        <li><a href="javascript:;" data-skin="skin-green" class="clearfix full-opacity-hover"><p class="text-center no-margin">Green</p></a></li>
-                        <li><a href="javascript:;" data-skin="skin-purple"><p class="text-center no-margin">Purple</p></a></li>
-                        <li><a href="javascript:;" data-skin="skin-red"><p class="text-center no-margin">Red</p></a></li>
-                        <li><a href="javascript:;" data-skin="skin-yellow"><p class="text-center no-margin">Yellow</p></a></li>
-                    </ul>
+            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;">
+                        <div class="user-info">
+                            <span class="user-avatar" id="userAvatar">U</span>
+                            <span id="userName">用户</span>
+                        </div>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" id="profileBtn">基本资料</a></dd>
+                        <dd><a href="javascript:;" id="passwordBtn">修改密码</a></dd>
+                        <hr>
+                        <dd><a href="/logout" style="text-align: center;">退出</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" id="aboutBtn"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 侧边菜单 -->
+        <div class="layui-side layui-side-menu">
+            <div class="layui-side-scroll">
+                <div class="layui-logo">
+                    <span>SSITAO Code</span>
                 </div>
-                <div class="tab-pane" id="control-sidebar-home-tab">
-                    <h3 class="control-sidebar-heading">最近活动</h3>
-                    <p class="text-muted">暂无活动记录</p>
+                <ul class="layui-nav layui-nav-tree" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                    <!-- 菜单将通过JS动态加载 -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- 内容主体 -->
+        <div class="layui-body" id="LAY_app_body">
+            <!-- Tab 标签 -->
+            <div class="layui-tab" lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                <ul class="layui-tab-title" id="tabTitle">
+                    <li class="layui-this" lay-id="/console" onclick="openTab('/console', '控制台', this)">控制台</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe src="/console" frameborder="0" class="layui-admin-iframe"></iframe>
+                    </div>
                 </div>
             </div>
-        </aside>
-        <!-- /.control-sidebar -->
+        </div>
     </div>
+</div>
 
-    <!-- 预先定义 lang 模块，避免加载不存在的 lang.js -->
-    <script src="/assets/js/require.js" data-main="/assets/js/require-backend.js"></script>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+layui.config({
+    base: '/'
+}).use(['element'], function(){
+    var $ = layui.$
+    ,element = layui.element;
+
+    // 初始化
+    init();
+
+    // 加载用户信息
+    loadUserInfo();
+
+    // 加载菜单
+    loadMenus();
+
+    // 侧边栏伸缩
+    $('#flexibleBtn').on('click', function(){
+        var isFlex = $('#layoutAdmin').hasClass('admin-flexible');
+        if (isFlex) {
+            $('#layoutAdmin').removeClass('admin-flexible');
+            $('#LAY_app_flexible').removeClass('layui-icon-spread-left');
+            $('#LAY_app_flexible').addClass('layui-icon-shrink-right');
+        } else {
+            $('#layoutAdmin').addClass('admin-flexible');
+            $('#LAY_app_flexible').removeClass('layui-icon-shrink-right');
+            $('#LAY_app_flexible').addClass('layui-icon-spread-left');
+        }
+    });
+
+    // 刷新
+    $('#refreshBtn').on('click', function(){
+        var icon = $(this).find('i');
+        icon.addClass('refreshing');
+        setTimeout(function(){
+            location.reload();
+        }, 1000);
+    });
+
+    // 加载用户信息
+    function loadUserInfo() {
+        $.ajax({
+            url: '/api/auth/userinfo',
+            type: 'GET',
+            success: function(res) {
+                if (res.code === 200 && res.data) {
+                    var userName = res.data.userName || '用户';
+                    $('#userName').text(userName);
+                    $('#userAvatar').text(userName.charAt(0).toUpperCase());
+                }
+            }
+        });
+    }
+
+    // 加载菜单
+    function loadMenus() {
+        $.ajax({
+            url: '/api/menus',
+            type: 'GET',
+            success: function(res) {
+                if (res.code === 200) {
+                    renderMenus(res.data || []);
+                }
+            },
+            error: function() {
+                // 加载默认菜单
+                renderMenus(getDefaultMenus());
+            }
+        });
+    }
+
+    // 渲染菜单
+    function renderMenus(menus) {
+        var html = '';
+        for (var i = 0; i < menus.length; i++) {
+            var menu = menus[i];
+            var hasChildren = menu.children && menu.children.length > 0;
+            var isHeader = menu.isHeader;
+
+            if (isHeader) {
+                // 目录
+                html += '<li class="layui-nav-item">' +
+                        '<a href="javascript:;" lay-tips="' + menu.name + '" lay-direction="2">' +
+                        '<i class="layui-icon ' + (menu.icon || 'layui-icon-app') + '"></i>' +
+                        '<cite>' + menu.name + '</cite>' +
+                        '</a>';
+                if (hasChildren) {
+                    html += '<dl class="layui-nav-child">';
+                    for (var j = 0; j < menu.children.length; j++) {
+                        var child = menu.children[j];
+                        html += '<dd>' +
+                                '<a href="javascript:;" onclick="openTab(\'' + child.url + '\', \'' + child.name + '\', this)">' +
+                                '<i class="layui-icon ' + (child.icon || 'layui-icon-right') + '"></i>' +
+                                '<cite>' + child.name + '</cite>' +
+                                '</a>' +
+                                '</dd>';
+                    }
+                    html += '</dl>';
+                }
+                html += '</li>';
+            } else {
+                // 菜单
+                html += '<li class="layui-nav-item">' +
+                        '<a href="javascript:;" lay-tips="' + menu.name + '" lay-direction="2" onclick="openTab(\'' + menu.url + '\', \'' + menu.name + '\', this)">' +
+                        '<i class="layui-icon ' + (menu.icon || 'layui-icon-app') + '"></i>' +
+                        '<cite>' + menu.name + '</cite>' +
+                        '</a>' +
+                        '</li>';
+            }
+        }
+        $('#LAY-system-side-menu').html(html);
+        element.render('nav');
+    }
+
+    // 默认菜单
+    function getDefaultMenus() {
+        return [
+            {
+                id: '1',
+                name: '控制台',
+                icon: 'layui-icon-home',
+                url: '/console',
+                isHeader: false
+            },
+            {
+                id: '2',
+                name: '系统管理',
+                icon: 'layui-icon-set',
+                isHeader: true,
+                children: [
+                    { id: '2-1', name: '账号管理', icon: 'layui-icon-user', url: '/iam/account' },
+                    { id: '2-2', name: '角色管理', icon: 'layui-icon-group', url: '/iam/role' },
+                    { id: '2-3', name: '权限管理', icon: 'layui-icon-auz', url: '/iam/permission' },
+                    { id: '2-4', name: '菜单管理', icon: 'layui-icon-menu', url: '/iam/menu' }
+                ]
+            },
+            {
+                id: '3',
+                name: '用户管理',
+                icon: 'layui-icon-user',
+                isHeader: true,
+                children: [
+                    { id: '3-1', name: '用户列表', icon: 'layui-icon-user', url: '/iam/userprofile' },
+                    { id: '3-2', name: '组织架构', icon: 'layui-icon-tree', url: '/iam/org' },
+                    { id: '3-3', name: '租户管理', icon: 'layui-icon-home', url: '/iam/tenant' }
+                ]
+            }
+        ];
+    }
+
+    // 打开Tab
+    window.openTab = function(url, title, elem) {
+        // 查找是否已存在
+        var exists = false;
+        $('#tabTitle li').each(function(){
+            if ($(this).attr('lay-id') === url) {
+                exists = true;
+                element.tabChange('layadmin-layout-tabs', url);
+                return false;
+            }
+        });
+
+        if (!exists) {
+            element.tabAdd('layadmin-layout-tabs', {
+                title: title,
+                content: '<iframe src="' + url + '" frameborder="0" class="layui-admin-iframe"></iframe>',
+                id: url
+            });
+            element.tabChange('layadmin-layout-tabs', url);
+        }
+    };
+});
+</script>
 </body>
 </html>

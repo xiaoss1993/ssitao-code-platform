@@ -25,6 +25,7 @@ public class IamMenuDTO implements Serializable {
     private String id;
 
     @JsonProperty("parent_id")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @Schema(description = "父菜单ID")
     private String parentId;
 
@@ -63,6 +64,9 @@ public class IamMenuDTO implements Serializable {
     @JsonProperty("create_time")
     @Schema(description = "创建时间")
     private String createTime;
+
+    @Schema(description = "菜单层级（用于表格缩进显示）")
+    private Integer level;
 
     @Schema(description = "子菜单列表")
     private List<IamMenuDTO> children;

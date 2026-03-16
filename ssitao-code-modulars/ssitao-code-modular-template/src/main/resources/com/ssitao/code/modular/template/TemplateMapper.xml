@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssitao.code.modular.template.dao.TemplateDao">
+    <resultMap id="TemplateResultMap" type="com.ssitao.code.modular.template.entity.TemplateEntity">
+        <id property="id" column="u_id" javaType="string" jdbcType="VARCHAR"/>
+        <result property="name" column="name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="type" column="type" javaType="String" jdbcType="VARCHAR"/>
+        <result property="template" column="template" javaType="String" jdbcType="CLOB"/>
+        <result property="config" column="config" javaType="String" jdbcType="CLOB"/>
+        <result property="version" column="version" javaType="Long" jdbcType="DECIMAL"/>
+        <result property="classified" column="classified" javaType="String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--用于动态生成sql所需的配置-->
+    <sql id="config">
+        <bind name="resultMapId" value="'TemplateResultMap'"/>
+        <bind name="tableName" value="'s_template'"/>
+    </sql>
+
+    <insert id="insert" parameterType="com.ssitao.code.modular.template.entity.TemplateEntity">
+        <include refid="config"/>
+        <include refid="BasicMapper.buildInsertSql"/>
+    </insert>
+
+    <delete id="deleteByPk" parameterType="String">
+        <include refid="config"/> <include refid="BasicMapper.switcher"/>
+        delete from ${_fullTableName} where u_id =#{id}
+    </delete>
+
+    <delete id="delete" parameterType="com.tweb.commons.entity.Entity">
+        <include refid="config"/>
+        <include refid="BasicMapper.buildDeleteSql"/>
+    </delete>
+
+    <update id="update" parameterType="com.tweb.commons.entity.Entity">
+        <include refid="config"/>
+        <include refid="BasicMapper.buildUpdateSql"/>
+    </update>
+
+    <select id="query" parameterType="com.tweb.commons.entity.Entity" resultMap="TemplateResultMap">
+        <include refid="config"/>
+        <include refid="BasicMapper.buildSelectSql"/>
+    </select>
+
+    <select id="count" parameterType="com.tweb.commons.entity.Entity" resultType="int">
+        <include refid="config"/>
+        <include refid="BasicMapper.buildTotalSql"/>
+    </select>
+</mapper>

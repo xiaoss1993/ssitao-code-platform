@@ -1,0 +1,364 @@
+/**
+ * 后台管理主框架样式
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.layui-layout-body {
+    overflow: hidden;
+}
+
+/* 头部样式 */
+.layui-layout-admin .layui-header {
+    background-color: #23262e;
+    height: 50px;
+    line-height: 50px;
+}
+
+.layui-layout-admin .layui-header .layui-nav {
+    background: transparent;
+}
+
+.layui-layout-admin .layui-header .layui-nav .layui-nav-item a {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.layui-layout-admin .layui-header .layui-nav .layui-nav-item a:hover {
+    color: #fff;
+}
+
+.layui-layout-admin .layui-header .layui-nav .layui-this a {
+    color: #fff;
+}
+
+.layui-layout-admin .layui-header .layui-logo {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 0 15px;
+}
+
+/* 侧边栏 */
+.layui-layout-admin .layui-side {
+    top: 50px;
+    width: 200px;
+    background-color: #20222e;
+}
+
+.layui-layout-admin .layui-side .layui-logo {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: #1e1f26;
+    color: #fff;
+    font-size: 16px;
+}
+
+.layui-layout-admin .layui-side .layui-nav {
+    background-color: #20222e;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-item a {
+    color: rgba(255, 255, 255, 0.7);
+    height: 44px;
+    line-height: 44px;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-item a:hover {
+    background-color: #283142;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-this a {
+    background-color: #009688;
+    color: #fff;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-bar {
+    display: none;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-item .layui-nav-more {
+    border-color: rgba(255, 255, 255, 0.7) transparent transparent;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-item .layui-nav-mored {
+    border-color: transparent transparent rgba(255, 255, 255, 0.7);
+}
+
+/* 子菜单 */
+.layui-layout-admin .layui-side .layui-nav .layui-nav-child {
+    background-color: #181c25;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-child a {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.layui-layout-admin .layui-side .layui-nav .layui-nav-child a:hover {
+    color: #fff !important;
+}
+
+/* 内容区域 */
+.layui-layout-admin .layui-body {
+    top: 50px;
+    bottom: 0;
+    left: 200px;
+}
+
+.layui-layout-admin .layui-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Tab 标签 */
+.layui-layout-admin .layui-body .layui-tab {
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title {
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    height: 40px;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title li {
+    line-height: 40px;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title .layui-this {
+    background-color: #f4f4f4;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-title .layui-this::after {
+    border-bottom-color: #009688;
+}
+
+.layui-layout-admin .layui-body .layui-tab .layui-tab-content {
+    padding: 0;
+    height: calc(100% - 40px);
+}
+
+/* 页面容器 */
+.layui-fluid {
+    padding: 15px;
+}
+
+/* 卡片样式 */
+.layui-card {
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.layui-card-header {
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 500;
+}
+
+.layui-card-body {
+    padding: 15px;
+}
+
+/* 统计卡片 */
+.admin-stat-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+}
+
+.admin-stat-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.admin-stat-card .stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+}
+
+.admin-stat-card .stat-icon.blue {
+    background: rgba(0, 150, 136, 0.1);
+    color: #009688;
+}
+
+.admin-stat-card .stat-icon.green {
+    background: rgba(0, 150, 136, 0.1);
+    color: #009688;
+}
+
+.admin-stat-card .stat-icon.orange {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+}
+
+.admin-stat-card .stat-icon.red {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+}
+
+.admin-stat-card .stat-content {
+    flex: 1;
+}
+
+.admin-stat-card .stat-title {
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 8px;
+}
+
+.admin-stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+}
+
+.admin-stat-card .stat-desc {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+/* 快捷入口 */
+.shortcut-icons {
+    display: flex;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.shortcut-icons .shortcut-item {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.shortcut-icons .shortcut-item:hover {
+    background-color: #f8f8f8;
+}
+
+.shortcut-icons .shortcut-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.shortcut-icons .shortcut-icon.blue {
+    background: rgba(24, 144, 255, 0.1);
+    color: #1890ff;
+}
+
+.shortcut-icons .shortcut-icon.green {
+    background: rgba(82, 196, 26, 0.1);
+    color: #52c41a;
+}
+
+.shortcut-icons .shortcut-icon.orange {
+    background: rgba(250, 173, 20, 0.1);
+    color: #faad14;
+}
+
+.shortcut-icons .shortcut-icon.purple {
+    background: rgba(114, 46, 209, 0.1);
+    color: #722ed1;
+}
+
+.shortcut-icons .shortcut-label {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 用户信息 */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #009688;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+/* 响应式 */
+@media screen and (max-width: 768px) {
+    .layui-layout-admin .layui-side {
+        width: 180px;
+    }
+
+    .layui-layout-admin .layui-body {
+        left: 180px;
+    }
+
+    .layui-hide-xs {
+        display: none !important;
+    }
+}
+
+/* 折叠状态 */
+.layui-layout-admin.admin-flexible .layui-side {
+    width: 60px;
+}
+
+.layui-layout-admin.admin-flexible .layui-body {
+    left: 60px;
+}
+
+.layui-layout-admin.admin-flexible .layui-logo span {
+    display: none;
+}
+
+/* 消息角标 */
+.layui-badge-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #ff5722;
+}
+
+/* 刷新按钮动画 */
+.layui-icon-refresh-3 {
+    transition: transform 0.3s;
+}
+
+.layui-icon-refresh-3.refreshing {
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

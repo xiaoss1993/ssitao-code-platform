@@ -39,10 +39,10 @@ public class IamMenuController {
     }
 
     /**
-     * 获取菜单列表
+     * 获取菜单列表（扁平结构，用于表格）
      */
     @GetMapping("/list")
-    @Operation(summary = "获取菜单列表", description = "获取所有菜单列表")
+    @Operation(summary = "获取菜单列表", description = "获取所有菜单列表（扁平结构）")
     public CommonResult<List<IamMenuDTO>> listMenus(
             @RequestParam(required = false) String menuType,
             @RequestParam(required = false) Integer status) {
@@ -51,12 +51,14 @@ public class IamMenuController {
     }
 
     /**
-     * 获取菜单树
+     * 获取菜单树（树形结构）
      */
     @GetMapping("/tree")
     @Operation(summary = "获取菜单树", description = "获取菜单树形结构")
-    public CommonResult<List<IamMenuDTO>> getMenuTree() {
-        List<IamMenuDTO> tree = menuAppService.getMenuTree();
+    public CommonResult<List<IamMenuDTO>> getMenuTree(
+            @RequestParam(required = false) String menuType,
+            @RequestParam(required = false) Integer status) {
+        List<IamMenuDTO> tree = menuAppService.listMenusTree(menuType, status);
         return success(tree);
     }
 

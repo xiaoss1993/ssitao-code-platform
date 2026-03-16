@@ -152,8 +152,10 @@ public class IndexController {
         Map<String, Object> result = new HashMap<>();
 
         if (!StpUtil.isLogin()) {
-            result.put("code", 401);
-            result.put("msg", "未登录");
+            // 未登录时返回空菜单
+            result.put("code", 200);
+            result.put("msg", "success");
+            result.put("data", new ArrayList<>());
             return result;
         }
 
