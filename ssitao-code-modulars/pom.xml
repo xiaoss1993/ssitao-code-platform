@@ -15,17 +15,7 @@
     <description>模块化组件：包含可插拔的业务模块、功能组件</description>
     <modules>
         <module>ssitao-code-modular-iam</module>
-        <module>ssitao-code-modular-common</module>
         <module>ssitao-code-modular-meta</module>
-        <!-- 从 tweb-platform 迁移的业务模块 -->
-        <module>ssitao-code-modular-dynamic-form</module>
-        <module>ssitao-code-modular-workflow</module>
-        <module>ssitao-code-modular-organization</module>
-        <module>ssitao-code-modular-dictionary</module>
-        <module>ssitao-code-modular-file</module>
-        <module>ssitao-code-modular-schedule</module>
-        <module>ssitao-code-modular-dashboard</module>
-        <module>ssitao-code-modular-config</module>
     </modules>
 
     <dependencies>

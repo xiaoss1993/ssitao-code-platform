@@ -1,3 +1,0 @@
-# Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.ssitao.code.modular.database.starter.DataBaseManagerAutoConfiguration

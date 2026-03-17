@@ -1,3 +1,0 @@
-# Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.ssitao.code.modular.oauth2.server.starter.OAuth2GranterAutoConfiguration
