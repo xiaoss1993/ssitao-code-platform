@@ -1,8 +1,8 @@
 
 package com.ssitao.code.frame.mybatisflex.core.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -40,8 +40,8 @@ public class FastjsonTypeHandler extends BaseJsonTypeHandler<Object> {
 
     @Override
     protected String toJson(Object object) {
-        return JSON.toJSONString(object, SerializerFeature.WriteMapNullValue,
-            SerializerFeature.WriteNullListAsEmpty, SerializerFeature.WriteNullStringAsEmpty);
+        return JSON.toJSONString(object, JSONWriter.Feature.WriteMapNullValue,
+            JSONWriter.Feature.WriteNullListAsEmpty, JSONWriter.Feature.WriteNullStringAsEmpty);
     }
 
 

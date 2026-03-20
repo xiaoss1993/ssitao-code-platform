@@ -3,9 +3,9 @@ package com.ssitao.code.frame.log.operation.core;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.alibaba.fastjson2.JSON;
 import com.ssitao.code.frame.log.operation.annotation.AuditLog;
-import com.ssitao.code.frame.satoken.api.LoginUser;
-import com.ssitao.code.frame.satoken.core.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -72,12 +72,7 @@ public class AuditLogAspect {
             HttpServletRequest request = attributes != null ? attributes.getRequest() : null;
 
             // 获取登录用户信息
-            LoginUser loginUser = null;
-            try {
-                loginUser = SecurityUtil.getLoginUser();
-            } catch (Exception ignored) {
-                // 未登录或获取失败
-            }
+            Subject subject = SecurityUtils.getSubject();
 
             // 构建日志信息
             Map<String, Object> logInfo = new HashMap<>();
@@ -89,10 +84,11 @@ public class AuditLogAspect {
             logInfo.put("status", exception == null ? "SUCCESS" : "ERROR");
 
             // 用户信息
-            if (loginUser != null) {
-                logInfo.put("userId", loginUser.getId());
-                logInfo.put("username", loginUser.getUsername());
-                logInfo.put("tenantId", loginUser.getTenantId());
+            if (subject != null && subject.isAuthenticated()) {
+                Object principal = subject.getPrincipal();
+                if (principal != null) {
+                    logInfo.put("username", principal.toString());
+                }
             }
 
             // 请求信息

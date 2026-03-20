@@ -23,7 +23,16 @@
       "Bash(git checkout:*)",
       "Bash(mkdir -p ~/.claude/skills && cd /tmp && rm -rf superpowers && git clone --depth 1 https://github.com/obra/superpowers.git 2>&1)",
       "Bash(cat:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(kill 62829 2>/dev/null; sleep 2; lsof -i :8080 2>/dev/null | head -3)",
+      "WebSearch",
+      "WebFetch(domain:repo1.maven.org)",
+      "Bash(echo \"=== aggregate-framework-core ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-core/src/main/java/com/ssitao/code/frame/aggregate/\n\necho \"\"\necho \"=== aggregate-framework-dashboard ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-dashboard/src/main/java/com/ssitao/code/frame/aggregate/\n\necho \"\"\necho \"=== aggregate-framework-server ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-server/src/main/java/com/ssitao/code/frame/aggregate/\n\necho \"\"\necho \"=== aggregate-framework-sample ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-sample/src/main/java/com/ssitao/code/frame/aggregate/\n\necho \"\"\necho \"=== aggregate-framework-sample test ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-sample/src/test/java/com/ssitao/code/frame/aggregate/\n\necho \"\"\necho \"=== aggregate-framework-basic-usage ===\" && ls /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-basic-usage/src/main/java/com/ssitao/code/frame/aggregate/)",
+      "Bash(find /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform -name \"pom.xml\" -exec grep -l \"ssitao-code-frame-aggregate\" {} \\\\; 2>/dev/null | head -5)",
+      "Bash(cd /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-boot && java -jar target/ssitao-code-boot.jar 2>&1 | head -100)",
+      "Bash(cd /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-boot && java -jar target/ssitao-code-boot.jar 2>&1 | head -150)",
+      "Bash(java -jar target/ssitao-code-boot-1.1.1.jar 2>&1 | head -150)",
+      "Bash(cd /Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform && rm -rf ssitao-code-modulars/ssitao-code-modular-iam/target ssitao-code-boot/target && mvn clean compile -q -pl ssitao-code-modulars/ssitao-code-modular-iam -am 2>&1)"
     ]
   }
 }

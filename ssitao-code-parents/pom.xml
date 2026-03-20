@@ -132,28 +132,6 @@
                 <artifactId>ssitao-code-modular-devtools</artifactId>
                 <version>${revision}</version>
             </dependency>
-            <!-- ==================== ssitao-code-frame-satoken 子模块 ==================== -->
-            <dependency>
-                <groupId>com.ssitao.code</groupId>
-                <artifactId>ssitao-code-frame-satoken</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ssitao.code</groupId>
-                <artifactId>ssitao-code-satoken-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ssitao.code</groupId>
-                <artifactId>ssitao-code-satoken-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ssitao.code</groupId>
-                <artifactId>ssitao-code-satoken-spring-boot-starter</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- ==================== ssitao-code-frame-security 子模块 ==================== -->
             <dependency>
                 <groupId>com.ssitao.code</groupId>

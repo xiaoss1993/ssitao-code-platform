@@ -22,22 +22,12 @@
             <artifactId>ssitao-code-commons</artifactId>
         </dependency>
 
-        <!-- 安全框架：多租户 -->
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-security-tenant</artifactId>
-        </dependency>
-
-        <!-- Sa-Token API -->
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-satoken-api</artifactId>
-        </dependency>
 
         <!-- Aggregate-Framework DDD框架 -->
         <dependency>
             <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-frame-aggregate</artifactId>
+            <artifactId>aggregate-framework-core</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <!-- Spring Boot Web -->
@@ -68,12 +58,16 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- Spring Security Crypto -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-crypto</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Spring Boot Redis -->

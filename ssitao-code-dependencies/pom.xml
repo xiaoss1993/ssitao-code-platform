@@ -39,8 +39,8 @@
 
         <!-- ==================== Spring 相关 ==================== -->
         <spring-authorization-server.version>0.4.5</spring-authorization-server.version>
-        <springdoc.version>1.8.0</springdoc.version>
-        <knife4j.version>4.5.0</knife4j.version>
+        <!-- Knife4j OpenAPI 2 (Swagger 2) -->
+        <knife4j.version>4.4.0</knife4j.version>
 
         <!-- ==================== 工具类库 ==================== -->
         <guava.version>33.5.0-jre</guava.version>
@@ -56,20 +56,21 @@
         <fastjson.version>2.0.52</fastjson.version>
         <fastjson2.version>2.0.52</fastjson2.version>
 
+        <!-- ==================== Servlet API ==================== -->
+        <!-- Servlet 4.0 与 Spring Boot 2.7.x 自带的 Tomcat 9 兼容 -->
+        <servlet-api.version>4.0.1</servlet-api.version>
+
         <!-- ==================== 数据库 ==================== -->
         <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
         <druid.version>1.2.27</druid.version>
+        <pagehelper.version>6.1.0</pagehelper.version>
         <mybatis.version>3.5.19</mybatis.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
-        <mybatis-plus.version>3.5.15</mybatis-plus.version>
-        <mybatis-plus-join.version>1.5.5</mybatis-plus-join.version>
-        <dynamic-datasource.version>4.5.0</dynamic-datasource.version>
         <jsqlparser.version>4.7</jsqlparser.version>
 
         <!-- ==================== 文档处理 ==================== -->
         <poi.version>5.2.5</poi.version>
-
 
         <!-- ==================== HTTP 客户端 ==================== -->
         <httpclient.version>4.5.14</httpclient.version>
@@ -88,8 +89,8 @@
         <!-- commons-collections 3.2.2: 阿里云仓库可用版本，Spring Boot 管理安全 -->
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-logging.version>1.3.6</commons-logging.version>
-        <!-- commons-fileupload 1.5 存在 CVE-2024-56073 漏洞，升级到 1.6 -->
-        <commons-fileupload.version>1.6</commons-fileupload.version>
+        <!-- commons-fileupload 1.5 存在 CVE-2024-56073 漏洞，升级到 1.5.1 -->
+        <commons-fileupload.version>1.4</commons-fileupload.version>
         <commons-io.version>2.20.0</commons-io.version>
         <commons-compress.version>1.28.0</commons-compress.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
@@ -97,6 +98,15 @@
         <commons-codec.version>1.19.0</commons-codec.version>
 
         <!-- ==================== 其他工具 ==================== -->
+        <!-- Apache Shiro 安全框架 -->
+        <shiro.version>1.13.0</shiro.version>
+        <!-- 验证码 -->
+        <kaptcha.version>2.3.3</kaptcha.version>
+        <!-- 系统信息获取 -->
+        <oshi.version>6.4.5</oshi.version>
+        <!-- thymeleaf shiro 整合 -->
+        <thymeleaf-extras-shiro.version>2.1.0</thymeleaf-extras-shiro.version>
+        <ehcache.version>3.10.8</ehcache.version>
         <jsoup.version>1.21.2</jsoup.version>
         <ip2region.version>2.7.0</ip2region.version>
         <useragent.version>1.21</useragent.version>
@@ -122,10 +132,6 @@
         <validation-api.version>2.0.1.Final</validation-api.version>
         <jwt.version>4.5.0</jwt.version>
         <jjwt.version>0.12.3</jjwt.version>
-        <sa-token.version>1.37.0</sa-token.version>
-
-        <!-- ==================== Aggregate-Framework DDD框架 ==================== -->
-        <aggregate-framework.version>4.0.0-SNAPSHOT</aggregate-framework.version>
 
         <!-- ==================== Redis 与缓存 ==================== -->
         <redisson.version>3.52.0</redisson.version>
@@ -183,6 +189,33 @@
         <!-- logback 1.2.13 存在 CVE-2023-63750 漏洞，升级到 1.2.14 -->
         <logback.version>1.2.14</logback.version>
 
+        <!-- ==================== Aggregate-Framework DDD框架特有依赖 ==================== -->
+        <log4j2.version>2.17.1</log4j2.version>
+        <dubbo.version>2.7.6</dubbo.version>
+        <curator.version>2.11.1</curator.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
+        <hadoop.version>3.2.1</hadoop.version>
+        <hive.version>3.1.2</hive.version>
+        <sitemesh.version>3.0.1</sitemesh.version>
+        <rocksdbjni.version>6.4.6</rocksdbjni.version>
+        <jodis.version>0.5.1</jodis.version>
+        <nacos-client.version>1.4.1</nacos-client.version>
+        <spring-cloud-alibaba-nacos.version>2.2.5.RELEASE</spring-cloud-alibaba-nacos.version>
+        <spring-cloud-netflix-ribbon.version>2.2.8.RELEASE</spring-cloud-netflix-ribbon.version>
+        <spring-cloud-zookeeper.version>2.2.5.RELEASE</spring-cloud-zookeeper.version>
+        <spring-cloud-openfeign.version>2.2.5.RELEASE</spring-cloud-openfeign.version>
+        <uid-generator.version>0.0.4-RELEASE</uid-generator.version>
+        <dledger-proxy.version>0.3.2</dledger-proxy.version>
+        <nacos-config-spring-boot-starter.version>0.2.10</nacos-config-spring-boot-starter.version>
+        <c3p0.version>0.9.5.4</c3p0.version>
+        <groovy.version>2.4.7</groovy.version>
+        <kryo.version>5.2.0</kryo.version>
+        <hystrix.version>1.5.18</hystrix.version>
+        <hdrhistogram.version>2.1.11</hdrhistogram.version>
+        <disruptor.version>3.4.2</disruptor.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <commons-collections4.version>4.0</commons-collections4.version>
+
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -225,7 +258,53 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- Hutool 工具类 -->
+            <!-- Apache Shiro 安全框架 -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-ehcache</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-web</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>${ehcache.version}</version>
+                <type>pom</type>
+                <scope>runtime</scope>
+            </dependency>
+            <!-- 验证码 -->
+            <dependency>
+                <groupId>pro.fessional</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+            <!-- 系统信息获取 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+            <!-- thymeleaf shiro 整合 -->
+            <dependency>
+                <groupId>com.github.theborakompanioni</groupId>
+                <artifactId>thymeleaf-extras-shiro</artifactId>
+                <version>${thymeleaf-extras-shiro.version}</version>
+            </dependency>
+                        <!-- Hutool 工具类 -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-bom</artifactId>
@@ -244,6 +323,27 @@
                 <artifactId>fastjson2-extension</artifactId>
                 <version>${fastjson2.version}</version>
             </dependency>
+
+            <!-- ==================== Servlet API ==================== -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- ==================== 文档处理 ==================== -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
             <!-- ==================== 数据库 ==================== -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -266,6 +366,11 @@
                 <version>${mybatis-spring-boot-starter.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mybatis</groupId>
                 <artifactId>mybatis-spring</artifactId>
                 <version>${mybatis-spring.version}</version>
@@ -275,32 +380,6 @@
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-generator</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-                <version>${dynamic-datasource.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.yulichang</groupId>
-                <artifactId>mybatis-plus-join-boot-starter</artifactId>
-                <version>${mybatis-plus-join.version}</version>
-            </dependency>
-
             <!-- ==================== MyBatis 相关扩展 ==================== -->
             <dependency>
                 <groupId>org.mybatis.scripting</groupId>
@@ -379,6 +458,12 @@
                 <artifactId>taos-jdbcdriver</artifactId>
                 <version>${taos.version}</version>
             </dependency>
+            <!-- MySQL驱动 (旧groupId: mysql) -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-j.version}</version>
+            </dependency>
 
             <!-- ==================== 工具类库 ==================== -->
             <dependency>
@@ -388,6 +473,11 @@
             </dependency>
 
             <!-- ==================== Redis 与缓存 ==================== -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
@@ -568,11 +658,7 @@
             </dependency>
 
             <!-- ==================== 文档与 API ==================== -->
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
+            <!-- Knife4j OpenAPI 2 不需要 springdoc -->
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
@@ -691,48 +777,11 @@
                 <version>${jjwt.version}</version>
                 <scope>runtime</scope>
             </dependency>
-
-            <!-- ==================== Sa-Token 认证授权 ==================== -->
-            <!-- Sa-Token 核心 -->
+            <!-- JJWT 完整的依赖 (包含 api, impl, jackson) -->
             <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-core</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-            <!-- Sa-Token 整合 Redis (使用jackson序列化) -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-redis-jackson</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-            <!-- Sa-Token 整合 JWT -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-jwt</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-            <!-- Sa-Token Spring Boot Starter -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot-starter</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
-
-            <!-- ==================== Aggregate-Framework DDD框架 ==================== -->
-            <dependency>
-                <groupId>org.aggregateframework</groupId>
-                <artifactId>aggregate-framework-spring-boot-starter</artifactId>
-                <version>${aggregate-framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aggregateframework</groupId>
-                <artifactId>aggregate-framework-core</artifactId>
-                <version>${aggregate-framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.aggregateframework</groupId>
-                <artifactId>aggregate-framework-spring</artifactId>
-                <version>${aggregate-framework.version}</version>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
 
             <!-- ==================== XML 解析 ==================== -->
@@ -748,8 +797,8 @@
             </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
+                <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+                <version>4.4.0</version>
             </dependency>
 
             <!-- ==================== 网络与通信 ==================== -->
@@ -881,6 +930,257 @@
                 <groupId>uk.co.jemos.podam</groupId>
                 <artifactId>podam</artifactId>
                 <version>${podam.version}</version>
+            </dependency>
+            <!-- JUnit 测试框架 -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+            </dependency>
+            <!-- Thymeleaf LEGACYHTML5 模式需要 nekohtml -->
+            <dependency>
+                <groupId>net.sourceforge.nekohtml</groupId>
+                <artifactId>nekohtml</artifactId>
+                <version>1.9.22</version>
+            </dependency>
+
+            <!-- ==================== Aggregate-Framework DDD框架特有依赖 ==================== -->
+            <!-- Log4j2 BOM -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>${log4j2.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Apache Curator BOM -->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>apache-curator</artifactId>
+                <version>${curator.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <!-- Disruptor -->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
+            </dependency>
+
+            <!-- Kryo -->
+            <dependency>
+                <groupId>com.esotericsoftware</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.version}</version>
+            </dependency>
+
+            <!-- Hystrix -->
+            <dependency>
+                <groupId>com.netflix.hystrix</groupId>
+                <artifactId>hystrix-core</artifactId>
+                <version>${hystrix.version}</version>
+            </dependency>
+
+            <!-- HdrHistogram -->
+            <dependency>
+                <groupId>org.hdrhistogram</groupId>
+                <artifactId>HdrHistogram</artifactId>
+                <version>${hdrhistogram.version}</version>
+            </dependency>
+
+            <!-- Zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Commons -->
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
+            </dependency>
+
+            <!-- Hadoop -->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Hive -->
+            <dependency>
+                <groupId>org.apache.hive</groupId>
+                <artifactId>hive-jdbc</artifactId>
+                <version>${hive.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-1.2-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Sitemesh -->
+            <dependency>
+                <groupId>org.sitemesh</groupId>
+                <artifactId>sitemesh</artifactId>
+                <version>${sitemesh.version}</version>
+            </dependency>
+
+            <!-- RocksDB -->
+            <dependency>
+                <groupId>org.rocksdb</groupId>
+                <artifactId>rocksdbjni</artifactId>
+                <version>${rocksdbjni.version}</version>
+            </dependency>
+
+            <!-- Jodis -->
+            <dependency>
+                <groupId>io.codis.jodis</groupId>
+                <artifactId>jodis</artifactId>
+                <version>${jodis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>netty</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Nacos -->
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${spring-cloud-alibaba-nacos.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>nacos-client</artifactId>
+                        <groupId>com.alibaba.nacos</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.boot</groupId>
+                <artifactId>nacos-config-spring-boot-starter</artifactId>
+                <version>${nacos-config-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- Spring Cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+                <version>${spring-cloud-netflix-ribbon.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+                <version>${spring-cloud-zookeeper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring-cloud-openfeign.version}</version>
+            </dependency>
+
+            <!-- UID Generator -->
+            <dependency>
+                <groupId>com.xfvape.uid</groupId>
+                <artifactId>uid-generator</artifactId>
+                <version>${uid-generator.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>log4j-over-slf4j</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>logback-classic</artifactId>
+                        <groupId>ch.qos.logback</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- DLedger Proxy -->
+            <dependency>
+                <groupId>io.openmessaging.storage</groupId>
+                <artifactId>dledger-proxy</artifactId>
+                <version>${dledger-proxy.version}</version>
+            </dependency>
+
+            <!-- C3P0 -->
+            <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

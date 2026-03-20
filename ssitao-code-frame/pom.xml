@@ -16,7 +16,6 @@
     <modules>
         <module>ssitao-code-frame-mybatis-flex</module>
         <module>ssitao-code-frame-aggregate</module>
-        <module>ssitao-code-frame-satoken</module>
         <module>ssitao-code-frame-security</module>
         <module>ssitao-code-frame-log</module>
         <module>ssitao-code-frame-extra</module>
@@ -58,6 +57,16 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- JWT令牌 -->

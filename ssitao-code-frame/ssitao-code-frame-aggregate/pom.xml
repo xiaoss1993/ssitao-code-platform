@@ -8,58 +8,22 @@
     </parent>
 
     <artifactId>ssitao-code-frame-aggregate</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>ssitao-code-frame-aggregate</name>
-    <url>http://maven.apache.org</url>
+    <description>Aggregate Framework 模块 - 聚合框架</description>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <dependencies>
-        <!-- Spring Boot Starter -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- Spring Context -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <!-- Spring TX -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-
-        <!-- Lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- FastJSON -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-
-        <!-- SLF4J -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <!-- JUnit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>aggregate-framework-parent</module>
+        <module>aggregate-framework-dependencies</module>
+        <module>aggregate-framework-bom</module>
+        <module>aggregate-framework-core</module>
+        <module>aggregate-framework-spring</module>
+        <module>aggregate-framework-spring-boot-starter</module>
+<!--        <module>aggregate-framework-admin-web</module>-->
+        <module>aggregate-framework-dashboard</module>
+        <module>aggregate-framework-server</module>
+        <module>aggregate-framework-distribution</module>
+        <module>aggregate-framework-tutorial-sample</module>
+    </modules>
 </project>

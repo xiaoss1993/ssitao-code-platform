@@ -15,6 +15,18 @@
     <name>ssitao-code-security-core</name>
     <description>安全框架核心模块</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-dependencies</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- Lombok -->
         <dependency>
@@ -28,6 +40,46 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- 公共模块 -->
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-commons</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-modular-iam</artifactId>
+        </dependency>
+
+        <!-- SpringBoot Web容器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- SpringBoot 拦截器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- 阿里数据库连接池 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
 </project>

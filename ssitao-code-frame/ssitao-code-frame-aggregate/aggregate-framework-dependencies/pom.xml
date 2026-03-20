@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ssitao.code</groupId>
+        <artifactId>ssitao-code-frame-aggregate</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>aggregate-framework-dependencies</artifactId>
+    <packaging>pom</packaging>
+
+    <description>Aggregate-Framework 依赖管理，继承 ssitao-code-dependencies</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 导入 ssitao-code-dependencies 获取统一版本 -->
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-dependencies</artifactId>
+                <version>${revision}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

@@ -16,6 +16,7 @@
     <modules>
         <module>ssitao-code-modular-iam</module>
         <module>ssitao-code-modular-meta</module>
+        <module>ssitao-code-modular-codegen</module>
     </modules>
 
     <dependencies>

@@ -1,0 +1,43 @@
+package com.ssitao.code.frame.aggregate.sample.hierarchicalmodel.command.domain.entity;
+
+import com.ssitao.code.frame.aggregate.entity.AbstractSimpleAggregateRoot;
+
+/**
+ * Created by changming.xie on 3/30/16.
+ */
+public class HierarchicalOrder extends AbstractSimpleAggregateRoot<Integer> {
+
+    private static final long serialVersionUID = 2788858215657724845L;
+    private String dtype;
+
+    private String content;
+
+    private OrderInfo orderInfo;
+    private Integer id;
+
+    public OrderInfo getOrderInfo() {
+        return orderInfo;
+    }
+
+    public void setOrderInfo(OrderInfo orderInfo) {
+        this.orderInfo = orderInfo;
+    }
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
+    }
+}

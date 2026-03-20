@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:agg="http://www.aggregateframework.org/schema/agg"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd     http://www.aggregateframework.org/schema/agg http://www.aggregateframework.org/schema/agg.xsd">
+
+    <!--<agg:integration client-config="clientConfig"/>-->
+
+    <!--<bean class="org.aggregateframework.ClientConfig" id="clientConfig">-->
+    <!--    <property name="clientRegistryConfig">-->
+    <!--        <bean class="org.aggregateframework.properties.registry.ClientRegistryProperties">-->
+    <!--            &lt;!&ndash;<property name="direct">&ndash;&gt;-->
+    <!--            &lt;!&ndash;    <bean class="org.aggregateframework.discovery.registry.direct.DirectRegistryProperties">&ndash;&gt;-->
+    <!--            &lt;!&ndash;        <property name="serverAddresses" value="127.0.0.1:2332"/>&ndash;&gt;-->
+    <!--            &lt;!&ndash;    </bean>&ndash;&gt;-->
+    <!--            &lt;!&ndash;</property>&ndash;&gt;-->
+    <!--            <property name="nacos">-->
+    <!--                <bean class="org.aggregateframework.discovery.registry.nacos.NacosRegistryProperties"/>-->
+    <!--            </property>-->
+    <!--            <property name="registryType" value="nacos"/>-->
+    <!--        </bean>-->
+    <!--    </property>-->
+    <!--    <property name="storeConfig">-->
+    <!--        <bean class="org.aggregateframework.properties.store.StoreProperties">-->
+    <!--            <property name="domain" value="AGG:UT"/>-->
+    <!--            <property name="storageType" value="REMOTING"/>-->
+    <!--        </bean>-->
+    <!--    </property>-->
+    <!--</bean>-->
+
+
+
+</beans>

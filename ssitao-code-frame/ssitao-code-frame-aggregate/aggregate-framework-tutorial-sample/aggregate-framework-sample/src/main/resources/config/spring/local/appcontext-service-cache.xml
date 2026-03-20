@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <util:properties id="redis" location="classpath:redis.properties"/>
+    <util:properties id="zk" location="classpath:zk.properties"/>
+
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="#{redis['redis.pool.maxTotal']}"/>
+        <property name="maxIdle" value="#{redis['redis.pool.maxIdle']}"/>
+        <property name="minIdle" value="#{redis['redis.pool.minIdle']}"/>
+        <property name="maxWaitMillis" value="#{redis['redis.pool.maxWaitMillis']}"/>
+    </bean>
+
+    <bean id="paymentL2Cache" class="org.aggregateframework.cache.CaffeineL2Cache">
+        <property name="expireTimeInSecond" value="10"/>
+        <property name="maximumSize" value="10000"/>
+    </bean>
+
+    <bean id="pricedOrderLocalL2Cache" class="org.aggregateframework.cache.CaffeineL2Cache">
+        <property name="expireTimeInSecond" value="2"/>
+        <property name="maximumSize" value="10000"/>
+    </bean>
+
+    <bean id="pricedOrderMultiLevelL2Cache" class="org.aggregateframework.cache.MultiLevelL2Cache">
+        <property name="cachingProviders">
+            <list>
+                <ref bean="pricedOrderLocalL2Cache"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
