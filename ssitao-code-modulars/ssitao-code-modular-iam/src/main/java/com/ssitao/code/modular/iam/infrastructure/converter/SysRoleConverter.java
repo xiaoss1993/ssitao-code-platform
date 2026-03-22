@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
+import com.ssitao.code.common.core.domain.entity.SysRole;
 import com.ssitao.code.modular.iam.api.dto.SysRoleDTO;
 import com.ssitao.code.modular.iam.application.command.CreateRoleCommand;
 import com.ssitao.code.modular.iam.application.command.UpdateRoleCommand;
@@ -23,6 +24,11 @@ public interface SysRoleConverter {
     SysRoleDTO toDTO(SysRoleAggregate aggregate);
 
     /**
+     * 实体 -> DTO
+     */
+    SysRoleDTO toDTO(SysRole role);
+
+    /**
      * DTO -> 聚合根
      */
     SysRoleAggregate toAggregate(SysRoleDTO dto);
@@ -41,4 +47,9 @@ public interface SysRoleConverter {
      * 聚合根列表 -> DTO列表
      */
     List<SysRoleDTO> toDTOList(List<SysRoleAggregate> aggregates);
+
+    /**
+     * 实体列表 -> DTO列表
+     */
+    List<SysRoleDTO> toDTOListFromRole(List<SysRole> roles);
 }

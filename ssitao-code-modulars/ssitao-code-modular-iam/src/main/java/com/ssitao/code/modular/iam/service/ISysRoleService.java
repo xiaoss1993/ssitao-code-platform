@@ -158,10 +158,52 @@ public interface ISysRoleService
 
     /**
      * 批量选择授权用户角色
-     * 
+     *
      * @param roleId 角色ID
      * @param userIds 需要删除的用户数据ID
      * @return 结果
      */
     public int insertAuthUsers(Long roleId, String userIds);
+
+    /**
+     * 新增角色（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    public int createRole(SysRole role);
+
+    /**
+     * 修改角色（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    public int createOrUpdateRole(SysRole role);
+
+    /**
+     * 角色数据权限修改（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    public int createOrUpdateDataScope(SysRole role);
+
+    /**
+     * 角色状态修改（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    public int createOrChangeStatus(SysRole role);
+
+    /**
+     * 导入角色数据
+     *
+     * @param roleList 角色列表
+     * @param updateSupport 是否支持更新
+     * @param operName 操作人
+     * @return 结果
+     */
+    public String importRole(List<SysRole> roleList, boolean updateSupport, String operName);
 }

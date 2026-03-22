@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
+import com.ssitao.code.common.core.domain.entity.SysDept;
 import com.ssitao.code.modular.iam.api.dto.SysDeptDTO;
 import com.ssitao.code.modular.iam.application.command.CreateDeptCommand;
 import com.ssitao.code.modular.iam.application.command.UpdateDeptCommand;
@@ -23,6 +24,11 @@ public interface SysDeptConverter {
     SysDeptDTO toDTO(SysDeptAggregate aggregate);
 
     /**
+     * 实体 -> DTO
+     */
+    SysDeptDTO toDTO(SysDept dept);
+
+    /**
      * DTO -> 聚合根
      */
     SysDeptAggregate toAggregate(SysDeptDTO dto);
@@ -41,4 +47,9 @@ public interface SysDeptConverter {
      * 聚合根列表 -> DTO列表
      */
     List<SysDeptDTO> toDTOList(List<SysDeptAggregate> aggregates);
+
+    /**
+     * 实体列表 -> DTO列表
+     */
+    List<SysDeptDTO> toDTOListFromDept(List<SysDept> depts);
 }

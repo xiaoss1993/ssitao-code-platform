@@ -115,7 +115,8 @@
 
 		function queryUserList() {
 		    var options = {
-		        url: prefix + "/list",
+		        url: "/api/iam/user/list",
+				method: "GET",
 		        viewUrl: prefix + "/view/{id}",
 		        createUrl: prefix + "/add",
 		        updateUrl: prefix + "/edit/{id}",

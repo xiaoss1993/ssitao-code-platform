@@ -8,6 +8,7 @@ import com.ssitao.code.common.core.text.Convert;
 import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ExceptionUtil;
 import com.ssitao.code.common.utils.ShiroUtils;
+import com.ssitao.code.common.utils.DateUtils;
 import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.common.utils.bean.BeanValidators;
 import com.ssitao.code.common.utils.html.EscapeUtil;
@@ -19,6 +20,8 @@ import com.ssitao.code.modular.iam.domain.SysUserRole;
 import com.ssitao.code.modular.iam.mapper.*;
 import com.ssitao.code.modular.iam.service.ISysConfigService;
 import com.ssitao.code.modular.iam.service.ISysDeptService;
+import com.ssitao.code.modular.iam.service.ISysPasswordService;
+import com.ssitao.code.modular.iam.service.ISysRoleService;
 import com.ssitao.code.modular.iam.service.ISysUserService;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
@@ -67,6 +70,12 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     protected Validator validator;
+
+    @Autowired
+    private ISysPasswordService passwordService;
+
+    @Autowired
+    private ISysRoleService roleService;
 
     /**
      * 根据条件分页查询用户列表
@@ -580,7 +589,7 @@ public class SysUserServiceImpl implements ISysUserService
 
     /**
      * 用户状态修改
-     * 
+     *
      * @param user 用户信息
      * @return 结果
      */
@@ -588,5 +597,128 @@ public class SysUserServiceImpl implements ISysUserService
     public int changeStatus(SysUser user)
     {
         return userMapper.updateUserStatus(user.getUserId(), user.getStatus());
+    }
+
+    /**
+     * 新增用户（封装业务校验和密码加密）
+     *
+     * @param user 用户信息（需设置loginName, password, deptId, roleIds等）
+     * @param rawPassword 原始密码
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int createUser(SysUser user, String rawPassword)
+    {
+        // 校验部门数据权限
+        deptService.checkDeptDataScope(user.getDeptId());
+        // 校验角色数据权限
+        roleService.checkRoleDataScope(user.getRoleIds());
+        // 校验登录名唯一性
+        if (!checkLoginNameUnique(user))
+        {
+            throw new ServiceException("新增用户'" + user.getLoginName() + "'失败，登录账号已存在");
+        }
+        // 校验手机号唯一性
+        if (StringUtils.isNotEmpty(user.getPhonenumber()) && !checkPhoneUnique(user))
+        {
+            throw new ServiceException("新增用户'" + user.getLoginName() + "'失败，手机号码已存在");
+        }
+        // 校验邮箱唯一性
+        if (StringUtils.isNotEmpty(user.getEmail()) && !checkEmailUnique(user))
+        {
+            throw new ServiceException("新增用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
+        }
+        // 密码加密
+        user.setSalt(ShiroUtils.randomSalt());
+        user.setPassword(passwordService.encryptPassword(user.getLoginName(), rawPassword, user.getSalt()));
+        user.setPwdUpdateDate(DateUtils.getNowDate());
+        // 新增用户信息
+        int rows = userMapper.insertUser(user);
+        // 新增用户岗位关联
+        insertUserPost(user);
+        // 新增用户与角色管理
+        insertUserRole(user.getUserId(), user.getRoleIds());
+        return rows;
+    }
+
+    /**
+     * 修改用户（封装业务校验）
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int createOrUpdateUser(SysUser user)
+    {
+        // 校验用户是否允许操作
+        checkUserAllowed(user);
+        // 校验用户数据权限
+        checkUserDataScope(user.getUserId());
+        // 校验部门数据权限
+        deptService.checkDeptDataScope(user.getDeptId());
+        // 校验角色数据权限
+        roleService.checkRoleDataScope(user.getRoleIds());
+        // 校验登录名唯一性
+        if (!checkLoginNameUnique(user))
+        {
+            throw new ServiceException("修改用户'" + user.getLoginName() + "'失败，登录账号已存在");
+        }
+        // 校验手机号唯一性
+        if (StringUtils.isNotEmpty(user.getPhonenumber()) && !checkPhoneUnique(user))
+        {
+            throw new ServiceException("修改用户'" + user.getLoginName() + "'失败，手机号码已存在");
+        }
+        // 校验邮箱唯一性
+        if (StringUtils.isNotEmpty(user.getEmail()) && !checkEmailUnique(user))
+        {
+            throw new ServiceException("修改用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
+        }
+        // 删除用户与角色关联
+        userRoleMapper.deleteUserRoleByUserId(user.getUserId());
+        // 新增用户与角色管理
+        insertUserRole(user.getUserId(), user.getRoleIds());
+        // 删除用户与岗位关联
+        userPostMapper.deleteUserPostByUserId(user.getUserId());
+        // 新增用户与岗位管理
+        insertUserPost(user);
+        return userMapper.updateUser(user);
+    }
+
+    /**
+     * 重置用户密码（封装业务校验和密码加密）
+     *
+     * @param user 用户信息
+     * @param rawPassword 原始密码
+     * @return 结果
+     */
+    @Override
+    public int createOrResetUserPwd(SysUser user, String rawPassword)
+    {
+        // 校验用户是否允许操作
+        checkUserAllowed(user);
+        // 校验用户数据权限
+        checkUserDataScope(user.getUserId());
+        // 密码加密
+        user.setSalt(ShiroUtils.randomSalt());
+        user.setPassword(passwordService.encryptPassword(user.getLoginName(), rawPassword, user.getSalt()));
+        return resetUserPwd(user);
+    }
+
+    /**
+     * 修改用户状态（封装业务校验）
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    public int changeUserStatus(SysUser user)
+    {
+        // 校验用户是否允许操作
+        checkUserAllowed(user);
+        // 校验用户数据权限
+        checkUserDataScope(user.getUserId());
+        return changeStatus(user);
     }
 }

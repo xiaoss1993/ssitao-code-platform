@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.application.service;
 
+import com.ssitao.code.common.core.domain.entity.SysDept;
 import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ShiroUtils;
 import com.ssitao.code.common.utils.StringUtils;
@@ -11,6 +12,7 @@ import com.ssitao.code.modular.iam.application.command.UpdateDeptCommand;
 import com.ssitao.code.modular.iam.domain.model.SysDeptAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysDeptRepository;
 import com.ssitao.code.modular.iam.infrastructure.converter.SysDeptConverter;
+import com.ssitao.code.modular.iam.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,13 +30,21 @@ public class SysDeptApplicationService {
 
     private final SysDeptRepository deptRepository;
     private final SysDeptConverter deptConverter;
+    private final ISysDeptService deptService;
 
     /**
      * 查询部门列表
      */
     public List<SysDeptDTO> listDepts(SysDeptDTO query) {
-        // TODO: 实现查询逻辑
-        return null;
+        SysDept dept = new SysDept();
+        if (query != null && StringUtils.isNotEmpty(query.getDeptName())) {
+            dept.setDeptName(query.getDeptName());
+        }
+        if (query != null && StringUtils.isNotEmpty(query.getStatus())) {
+            dept.setStatus(query.getStatus());
+        }
+        List<SysDept> list = deptService.selectDeptList(dept);
+        return deptConverter.toDTOListFromDept(list);
     }
 
     /**

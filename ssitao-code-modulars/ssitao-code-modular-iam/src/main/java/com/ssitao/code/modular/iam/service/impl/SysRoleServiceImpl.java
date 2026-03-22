@@ -16,6 +16,7 @@ import com.ssitao.code.modular.iam.mapper.SysRoleMapper;
 import com.ssitao.code.modular.iam.mapper.SysRoleMenuMapper;
 import com.ssitao.code.modular.iam.mapper.SysUserRoleMapper;
 import com.ssitao.code.modular.iam.service.ISysRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import java.util.*;
  * @author ruoyi
  */
 @Service
+@Slf4j
 public class SysRoleServiceImpl implements ISysRoleService
 {
     @Autowired
@@ -391,7 +393,7 @@ public class SysRoleServiceImpl implements ISysRoleService
 
     /**
      * 批量选择授权用户角色
-     * 
+     *
      * @param roleId 角色ID
      * @param userIds 需要授权的用户数据ID
      * @return 结果
@@ -410,5 +412,154 @@ public class SysRoleServiceImpl implements ISysRoleService
             list.add(ur);
         }
         return userRoleMapper.batchUserRole(list);
+    }
+
+    /**
+     * 新增角色（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int createRole(SysRole role)
+    {
+        // 校验角色名称唯一性
+        if (!checkRoleNameUnique(role))
+        {
+            throw new ServiceException("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
+        }
+        // 校验角色权限唯一性
+        else if (!checkRoleKeyUnique(role))
+        {
+            throw new ServiceException("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
+        }
+        return insertRole(role);
+    }
+
+    /**
+     * 修改角色（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int createOrUpdateRole(SysRole role)
+    {
+        // 校验角色是否允许操作
+        checkRoleAllowed(role);
+        // 校验数据权限
+        checkRoleDataScope(role.getRoleId());
+        // 校验角色名称唯一性
+        if (!checkRoleNameUnique(role))
+        {
+            throw new ServiceException("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
+        }
+        // 校验角色权限唯一性
+        else if (!checkRoleKeyUnique(role))
+        {
+            throw new ServiceException("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
+        }
+        return updateRole(role);
+    }
+
+    /**
+     * 角色数据权限修改（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int createOrUpdateDataScope(SysRole role)
+    {
+        // 校验角色是否允许操作
+        checkRoleAllowed(role);
+        // 校验数据权限
+        checkRoleDataScope(role.getRoleId());
+        return authDataScope(role);
+    }
+
+    /**
+     * 角色状态修改（封装业务校验）
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    public int createOrChangeStatus(SysRole role)
+    {
+        // 校验角色是否允许操作
+        checkRoleAllowed(role);
+        // 校验数据权限
+        checkRoleDataScope(role.getRoleId());
+        return changeStatus(role);
+    }
+
+    /**
+     * 导入角色数据
+     *
+     * @param roleList 角色列表
+     * @param updateSupport 是否支持更新
+     * @param operName 操作人
+     * @return 结果
+     */
+    @Override
+    public String importRole(List<SysRole> roleList, boolean updateSupport, String operName)
+    {
+        if (StringUtils.isNull(roleList) || roleList.size() == 0)
+        {
+            throw new ServiceException("导入角色数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        for (SysRole role : roleList)
+        {
+            try
+            {
+                // 验证是否存在这个角色
+                SysRole r = roleMapper.checkRoleKeyUnique(role.getRoleKey());
+                if (StringUtils.isNull(r))
+                {
+                    role.setCreateBy(operName);
+                    roleMapper.insertRole(role);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、角色 " + role.getRoleName() + " 导入成功");
+                }
+                else if (updateSupport)
+                {
+                    role.setRoleId(r.getRoleId());
+                    role.setUpdateBy(operName);
+                    roleMapper.updateRole(role);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、角色 " + role.getRoleName() + " 更新成功");
+                }
+                else
+                {
+                    failureNum++;
+                    failureMsg.append("<br/>" + failureNum + "、角色 " + role.getRoleName() + " 已存在");
+                }
+            }
+            catch (Exception e)
+            {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、角色 " + role.getRoleName() + " 导入失败：" + e.getMessage();
+                failureMsg.append(msg);
+                log.error(msg, e);
+            }
+        }
+        if (failureNum > 0)
+        {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new ServiceException(failureMsg.toString());
+        }
+        else
+        {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+        }
+        return successMsg.toString();
     }
 }

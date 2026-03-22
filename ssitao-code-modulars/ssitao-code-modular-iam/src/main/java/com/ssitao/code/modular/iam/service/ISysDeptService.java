@@ -111,8 +111,32 @@ public interface ISysDeptService
 
     /**
      * 校验部门是否有数据权限
-     * 
+     *
      * @param deptId 部门id
      */
     public void checkDeptDataScope(Long deptId);
+
+    /**
+     * 新增部门（封装业务校验）
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    public int createDept(SysDept dept);
+
+    /**
+     * 修改部门（封装业务校验）
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    public int createOrUpdateDept(SysDept dept);
+
+    /**
+     * 删除部门（封装业务校验）
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    public int createOrDeleteDept(Long deptId);
 }

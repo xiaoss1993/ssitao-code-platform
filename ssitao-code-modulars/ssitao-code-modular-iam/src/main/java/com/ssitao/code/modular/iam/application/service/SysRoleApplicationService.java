@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.application.service;
 
+import com.ssitao.code.common.core.domain.entity.SysRole;
 import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ShiroUtils;
 import com.ssitao.code.common.utils.StringUtils;
@@ -11,6 +12,7 @@ import com.ssitao.code.modular.iam.application.command.UpdateRoleCommand;
 import com.ssitao.code.modular.iam.domain.model.SysRoleAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysRoleRepository;
 import com.ssitao.code.modular.iam.infrastructure.converter.SysRoleConverter;
+import com.ssitao.code.modular.iam.service.ISysRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,13 +30,24 @@ public class SysRoleApplicationService {
 
     private final SysRoleRepository roleRepository;
     private final SysRoleConverter roleConverter;
+    private final ISysRoleService roleService;
 
     /**
      * 查询角色列表
      */
     public List<SysRoleDTO> listRoles(SysRoleDTO query) {
-        // TODO: 实现查询逻辑
-        return null;
+        SysRole role = new SysRole();
+        if (query != null && StringUtils.isNotEmpty(query.getRoleName())) {
+            role.setRoleName(query.getRoleName());
+        }
+        if (query != null && StringUtils.isNotEmpty(query.getRoleKey())) {
+            role.setRoleKey(query.getRoleKey());
+        }
+        if (query != null && StringUtils.isNotEmpty(query.getStatus())) {
+            role.setStatus(query.getStatus());
+        }
+        List<SysRole> list = roleService.selectRoleList(role);
+        return roleConverter.toDTOListFromRole(list);
     }
 
     /**

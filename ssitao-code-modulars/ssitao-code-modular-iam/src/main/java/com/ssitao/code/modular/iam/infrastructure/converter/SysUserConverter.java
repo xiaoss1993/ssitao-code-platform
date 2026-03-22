@@ -1,5 +1,6 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
+import com.ssitao.code.common.core.domain.entity.SysUser;
 import com.ssitao.code.modular.iam.api.dto.SysUserDTO;
 import com.ssitao.code.modular.iam.application.command.ChangePasswordCommand;
 import com.ssitao.code.modular.iam.application.command.CreateUserCommand;
@@ -24,6 +25,11 @@ public interface SysUserConverter {
     SysUserDTO toDTO(SysUserAggregate aggregate);
 
     /**
+     * 实体 -> DTO
+     */
+    SysUserDTO toDTO(SysUser user);
+
+    /**
      * DTO -> 聚合根
      */
     SysUserAggregate toAggregate(SysUserDTO dto);
@@ -42,6 +48,11 @@ public interface SysUserConverter {
      * 聚合根列表 -> DTO列表
      */
     List<SysUserDTO> toDTOList(List<SysUserAggregate> aggregates);
+
+    /**
+     * 实体列表 -> DTO列表
+     */
+    List<SysUserDTO> toDTOListFromUser(List<SysUser> users);
 
     /**
      * DTO更新聚合根（用于更新操作）

@@ -1,6 +1,7 @@
 package com.ssitao.code.modular.iam.application.service;
 
 import com.ssitao.code.common.core.domain.AjaxResult;
+import com.ssitao.code.common.core.domain.entity.SysUser;
 import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ShiroUtils;
 import com.ssitao.code.common.utils.StringUtils;
@@ -13,6 +14,7 @@ import com.ssitao.code.modular.iam.application.command.UpdateUserCommand;
 import com.ssitao.code.modular.iam.domain.model.SysUserAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysUserRepository;
 import com.ssitao.code.modular.iam.infrastructure.converter.SysUserConverter;
+import com.ssitao.code.modular.iam.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,13 +32,29 @@ public class SysUserApplicationService {
 
     private final SysUserRepository userRepository;
     private final SysUserConverter userConverter;
+    private final ISysUserService userService;
 
     /**
      * 查询用户列表
      */
     public List<SysUserDTO> listUsers(SysUserDTO query) {
-        // TODO: 实现查询逻辑
-        return null;
+        SysUser user = new SysUser();
+        if (query != null) {
+            if (StringUtils.isNotEmpty(query.getLoginName())) {
+                user.setLoginName(query.getLoginName());
+            }
+            if (StringUtils.isNotEmpty(query.getUserName())) {
+                user.setUserName(query.getUserName());
+            }
+            if (StringUtils.isNotEmpty(query.getPhonenumber())) {
+                user.setPhonenumber(query.getPhonenumber());
+            }
+            if (StringUtils.isNotEmpty(query.getStatus())) {
+                user.setStatus(query.getStatus());
+            }
+        }
+        List<SysUser> list = userService.selectUserList(user);
+        return userConverter.toDTOListFromUser(list);
     }
 
     /**

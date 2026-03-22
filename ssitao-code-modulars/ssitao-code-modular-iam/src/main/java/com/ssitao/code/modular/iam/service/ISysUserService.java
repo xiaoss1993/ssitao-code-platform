@@ -227,9 +227,43 @@ public interface ISysUserService
 
     /**
      * 用户状态修改
-     * 
+     *
      * @param user 用户信息
      * @return 结果
      */
     public int changeStatus(SysUser user);
+
+    /**
+     * 新增用户（封装业务校验和密码加密）
+     *
+     * @param user 用户信息（需设置loginName, password, deptId, roleIds等）
+     * @param rawPassword 原始密码
+     * @return 结果
+     */
+    public int createUser(SysUser user, String rawPassword);
+
+    /**
+     * 修改用户（封装业务校验）
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    public int createOrUpdateUser(SysUser user);
+
+    /**
+     * 重置用户密码（封装业务校验和密码加密）
+     *
+     * @param user 用户信息
+     * @param rawPassword 原始密码
+     * @return 结果
+     */
+    public int createOrResetUserPwd(SysUser user, String rawPassword);
+
+    /**
+     * 修改用户状态（封装业务校验）
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    public int changeUserStatus(SysUser user);
 }
