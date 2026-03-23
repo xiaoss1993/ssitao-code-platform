@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
 import com.ssitao.code.common.core.domain.entity.SysDept;
-import com.ssitao.code.modular.iam.api.dto.SysDeptDTO;
+import com.ssitao.code.modular.iam.application.dto.SysDeptDTO;
 import com.ssitao.code.modular.iam.application.command.CreateDeptCommand;
 import com.ssitao.code.modular.iam.application.command.UpdateDeptCommand;
 import com.ssitao.code.modular.iam.domain.model.SysDeptAggregate;

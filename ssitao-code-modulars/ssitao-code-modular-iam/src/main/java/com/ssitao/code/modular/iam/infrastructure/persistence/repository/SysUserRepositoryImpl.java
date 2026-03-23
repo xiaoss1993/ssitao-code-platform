@@ -3,7 +3,7 @@ package com.ssitao.code.modular.iam.infrastructure.persistence.repository;
 import com.ssitao.code.frame.aggregate.repository.AbstractAggregateRepository;
 import com.ssitao.code.modular.iam.domain.model.SysUserAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysUserRepository;
-import com.ssitao.code.modular.iam.mapper.SysUserMapper;
+import com.ssitao.code.modular.iam.infrastructure.persistence.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

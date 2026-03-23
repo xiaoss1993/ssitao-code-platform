@@ -16,7 +16,7 @@ import com.ssitao.code.common.core.page.TableDataInfo;
 import com.ssitao.code.common.enums.BusinessType;
 import com.ssitao.code.common.utils.poi.ExcelUtil;
 import com.ssitao.code.modular.iam.domain.SysLogininfor;
-import com.ssitao.code.modular.iam.service.ISysLogininforService;
+import com.ssitao.code.modular.iam.application.service.ISysLogininforService;
 
 /**
  * 系统访问记录

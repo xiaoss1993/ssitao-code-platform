@@ -6,8 +6,14 @@ import com.ssitao.code.common.core.domain.AjaxResult;
 import com.ssitao.code.common.core.domain.entity.SysDictData;
 import com.ssitao.code.common.core.page.TableDataInfo;
 import com.ssitao.code.common.enums.BusinessType;
+import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.poi.ExcelUtil;
-import com.ssitao.code.modular.iam.service.ISysDictDataService;
+import com.ssitao.code.modular.iam.application.dto.SysDictDataDTO;
+import com.ssitao.code.modular.iam.application.command.CreateDictDataCommand;
+import com.ssitao.code.modular.iam.application.command.DeleteDictDataCommand;
+import com.ssitao.code.modular.iam.application.command.UpdateDictDataCommand;
+import com.ssitao.code.modular.iam.application.service.SysDictDataApplicationService;
+import com.ssitao.code.modular.iam.application.service.ISysDictDataService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -30,6 +37,9 @@ public class SysDictDataController extends BaseController
 
     @Autowired
     private ISysDictDataService dictDataService;
+
+    @Autowired
+    private SysDictDataApplicationService dictDataApplicationService;
 
     @RequiresPermissions("system:dict:view")
     @GetMapping()
@@ -115,5 +125,95 @@ public class SysDictDataController extends BaseController
     {
         dictDataService.deleteDictDataByIds(ids);
         return success();
+    }
+
+    // ==================== REST API 接口 (DDD风格) ====================
+
+    @RequiresPermissions("system:dict:list")
+    @GetMapping("/api/iam/dict/data/list")
+    @ResponseBody
+    public TableDataInfo apiList(SysDictDataDTO query) {
+        startPage();
+        List<SysDictDataDTO> list = dictDataApplicationService.listDictDatas(query);
+        return getDataTable(list);
+    }
+
+    @Log(title = "字典数据", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("system:dict:export")
+    @PostMapping("/api/iam/dict/data/export")
+    @ResponseBody
+    public void apiExport(SysDictDataDTO query, HttpServletResponse response) {
+        List<SysDictDataDTO> list = dictDataApplicationService.listDictDatas(query);
+        ExcelUtil<SysDictDataDTO> util = new ExcelUtil<>(SysDictDataDTO.class);
+        util.exportExcel(response, list, "字典数据");
+    }
+
+    @RequiresPermissions("system:dict:list")
+    @GetMapping("/api/iam/dict/data/{dictCode}")
+    @ResponseBody
+    public AjaxResult apiGetInfo(@PathVariable("dictCode") Long dictCode) {
+        SysDictDataDTO dictData = dictDataApplicationService.getDictDataById(dictCode);
+        return success(dictData);
+    }
+
+    @GetMapping("/api/iam/dict/data/type/{dictType}")
+    @ResponseBody
+    public AjaxResult apiGetByType(@PathVariable("dictType") String dictType) {
+        List<SysDictDataDTO> list = dictDataApplicationService.listDictDatasByType(dictType);
+        return success(list);
+    }
+
+    @Log(title = "字典数据", businessType = BusinessType.INSERT)
+    @RequiresPermissions("system:dict:add")
+    @PostMapping("/api/iam/dict/data")
+    @ResponseBody
+    public AjaxResult apiAdd(@Validated @RequestBody CreateDictDataCommand command) {
+        try {
+            Long dictCode = dictDataApplicationService.createDictData(command);
+            return success(dictCode);
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "字典数据", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("system:dict:edit")
+    @PutMapping("/api/iam/dict/data")
+    @ResponseBody
+    public AjaxResult apiEdit(@Validated @RequestBody UpdateDictDataCommand command) {
+        try {
+            dictDataApplicationService.updateDictData(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "字典数据", businessType = BusinessType.DELETE)
+    @RequiresPermissions("system:dict:remove")
+    @DeleteMapping("/api/iam/dict/data/{dictCodes}")
+    @ResponseBody
+    public AjaxResult apiRemove(@PathVariable Long[] dictCodes) {
+        DeleteDictDataCommand command = new DeleteDictDataCommand();
+        command.setDictCodes(dictCodes);
+        try {
+            dictDataApplicationService.deleteDictDatas(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "字典数据", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("system:dict:edit")
+    @PutMapping("/api/iam/dict/data/status")
+    @ResponseBody
+    public AjaxResult apiChangeStatus(@RequestParam Long dictCode, @RequestParam String status) {
+        try {
+            dictDataApplicationService.changeStatus(dictCode, status);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
     }
 }

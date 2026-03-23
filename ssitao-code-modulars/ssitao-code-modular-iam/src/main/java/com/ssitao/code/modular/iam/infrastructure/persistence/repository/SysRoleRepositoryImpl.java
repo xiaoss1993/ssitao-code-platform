@@ -3,7 +3,7 @@ package com.ssitao.code.modular.iam.infrastructure.persistence.repository;
 import com.ssitao.code.frame.aggregate.repository.AbstractAggregateRepository;
 import com.ssitao.code.modular.iam.domain.model.SysRoleAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysRoleRepository;
-import com.ssitao.code.modular.iam.mapper.SysRoleMapper;
+import com.ssitao.code.modular.iam.infrastructure.persistence.mapper.SysRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

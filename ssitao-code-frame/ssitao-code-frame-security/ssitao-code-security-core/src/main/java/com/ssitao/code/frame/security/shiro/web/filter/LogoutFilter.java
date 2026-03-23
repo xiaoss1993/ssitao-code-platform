@@ -8,7 +8,7 @@ import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.common.utils.spring.SpringUtils;
 import com.ssitao.code.frame.security.manager.AsyncManager;
 import com.ssitao.code.frame.security.manager.factory.AsyncFactory;
-import com.ssitao.code.modular.iam.service.ISysUserOnlineService;
+import com.ssitao.code.modular.iam.application.service.ISysUserOnlineService;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;

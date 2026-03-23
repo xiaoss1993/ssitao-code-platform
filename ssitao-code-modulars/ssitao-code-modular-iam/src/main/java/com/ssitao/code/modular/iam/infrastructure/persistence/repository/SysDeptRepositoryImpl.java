@@ -3,7 +3,7 @@ package com.ssitao.code.modular.iam.infrastructure.persistence.repository;
 import com.ssitao.code.frame.aggregate.repository.AbstractAggregateRepository;
 import com.ssitao.code.modular.iam.domain.model.SysDeptAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysDeptRepository;
-import com.ssitao.code.modular.iam.mapper.SysDeptMapper;
+import com.ssitao.code.modular.iam.infrastructure.persistence.mapper.SysDeptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

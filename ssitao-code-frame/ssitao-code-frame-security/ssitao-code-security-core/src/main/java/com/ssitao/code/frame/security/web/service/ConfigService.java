@@ -1,6 +1,6 @@
 package com.ssitao.code.frame.security.web.service;
 
-import com.ssitao.code.modular.iam.service.ISysConfigService;
+import com.ssitao.code.modular.iam.application.service.ISysConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

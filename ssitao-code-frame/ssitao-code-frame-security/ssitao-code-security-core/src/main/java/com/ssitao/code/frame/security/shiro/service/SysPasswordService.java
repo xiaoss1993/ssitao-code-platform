@@ -9,7 +9,7 @@ import com.ssitao.code.common.utils.MessageUtils;
 import com.ssitao.code.common.utils.security.Md5Utils;
 import com.ssitao.code.frame.security.manager.AsyncManager;
 import com.ssitao.code.frame.security.manager.factory.AsyncFactory;
-import com.ssitao.code.modular.iam.service.ISysPasswordService;
+import com.ssitao.code.modular.iam.application.service.ISysPasswordService;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,9 +8,9 @@ import com.ssitao.code.frame.security.shiro.session.OnlineSession;
 import com.ssitao.code.modular.iam.domain.SysLogininfor;
 import com.ssitao.code.modular.iam.domain.SysOperLog;
 import com.ssitao.code.modular.iam.domain.SysUserOnline;
-import com.ssitao.code.modular.iam.service.ISysOperLogService;
-import com.ssitao.code.modular.iam.service.ISysUserOnlineService;
-import com.ssitao.code.modular.iam.service.impl.SysLogininforServiceImpl;
+import com.ssitao.code.modular.iam.application.service.ISysOperLogService;
+import com.ssitao.code.modular.iam.application.service.ISysUserOnlineService;
+import com.ssitao.code.modular.iam.application.service.impl.SysLogininforServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

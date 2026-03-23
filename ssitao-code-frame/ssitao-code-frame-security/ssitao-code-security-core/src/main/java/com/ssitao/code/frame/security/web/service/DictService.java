@@ -1,8 +1,8 @@
 package com.ssitao.code.frame.security.web.service;
 
 import com.ssitao.code.common.core.domain.entity.SysDictData;
-import com.ssitao.code.modular.iam.service.ISysDictDataService;
-import com.ssitao.code.modular.iam.service.ISysDictTypeService;
+import com.ssitao.code.modular.iam.application.service.ISysDictDataService;
+import com.ssitao.code.modular.iam.application.service.ISysDictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -10,9 +10,9 @@ import com.ssitao.code.common.exception.user.*;
 import com.ssitao.code.common.utils.*;
 import com.ssitao.code.frame.security.manager.AsyncManager;
 import com.ssitao.code.frame.security.manager.factory.AsyncFactory;
-import com.ssitao.code.modular.iam.service.ISysConfigService;
-import com.ssitao.code.modular.iam.service.ISysMenuService;
-import com.ssitao.code.modular.iam.service.ISysUserService;
+import com.ssitao.code.modular.iam.application.service.ISysConfigService;
+import com.ssitao.code.modular.iam.application.service.ISysMenuService;
+import com.ssitao.code.modular.iam.application.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

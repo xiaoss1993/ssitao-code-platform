@@ -20,7 +20,7 @@ import com.ssitao.code.common.utils.ShiroUtils;
 import com.ssitao.code.frame.security.shiro.session.OnlineSession;
 import com.ssitao.code.frame.security.shiro.session.OnlineSessionDAO;
 import com.ssitao.code.modular.iam.domain.SysUserOnline;
-import com.ssitao.code.modular.iam.service.ISysUserOnlineService;
+import com.ssitao.code.modular.iam.application.service.ISysUserOnlineService;
 
 /**
  * 在线用户监控

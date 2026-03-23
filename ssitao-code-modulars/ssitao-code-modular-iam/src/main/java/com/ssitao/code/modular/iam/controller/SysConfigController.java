@@ -5,9 +5,15 @@ import com.ssitao.code.common.core.controller.BaseController;
 import com.ssitao.code.common.core.domain.AjaxResult;
 import com.ssitao.code.common.core.page.TableDataInfo;
 import com.ssitao.code.common.enums.BusinessType;
+import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.poi.ExcelUtil;
+import com.ssitao.code.modular.iam.application.dto.SysConfigDTO;
+import com.ssitao.code.modular.iam.application.command.CreateConfigCommand;
+import com.ssitao.code.modular.iam.application.command.DeleteConfigCommand;
+import com.ssitao.code.modular.iam.application.command.UpdateConfigCommand;
+import com.ssitao.code.modular.iam.application.service.SysConfigApplicationService;
 import com.ssitao.code.modular.iam.domain.SysConfig;
-import com.ssitao.code.modular.iam.service.ISysConfigService;
+import com.ssitao.code.modular.iam.application.service.ISysConfigService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -30,6 +37,9 @@ public class SysConfigController extends BaseController
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private SysConfigApplicationService configApplicationService;
 
     @RequiresPermissions("system:config:view")
     @GetMapping()
@@ -151,5 +161,95 @@ public class SysConfigController extends BaseController
     public boolean checkConfigKeyUnique(SysConfig config)
     {
         return configService.checkConfigKeyUnique(config);
+    }
+
+    // ==================== REST API 接口 (DDD风格) ====================
+
+    @RequiresPermissions("system:config:list")
+    @GetMapping("/api/iam/config/list")
+    @ResponseBody
+    public TableDataInfo apiList(SysConfigDTO query) {
+        startPage();
+        List<SysConfigDTO> list = configApplicationService.listConfigs(query);
+        return getDataTable(list);
+    }
+
+    @Log(title = "参数管理", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("system:config:export")
+    @PostMapping("/api/iam/config/export")
+    @ResponseBody
+    public void apiExport(SysConfigDTO query, HttpServletResponse response) {
+        List<SysConfigDTO> list = configApplicationService.listConfigs(query);
+        ExcelUtil<SysConfigDTO> util = new ExcelUtil<>(SysConfigDTO.class);
+        util.exportExcel(response, list, "参数数据");
+    }
+
+    @RequiresPermissions("system:config:list")
+    @GetMapping("/api/iam/config/{configId}")
+    @ResponseBody
+    public AjaxResult apiGetInfo(@PathVariable("configId") Long configId) {
+        SysConfigDTO config = configApplicationService.getConfigById(configId);
+        return success(config);
+    }
+
+    @GetMapping("/api/iam/config/key/{configKey}")
+    @ResponseBody
+    public AjaxResult apiGetByKey(@PathVariable("configKey") String configKey) {
+        SysConfigDTO config = configApplicationService.getConfigByKey(configKey);
+        return success(config);
+    }
+
+    @Log(title = "参数管理", businessType = BusinessType.INSERT)
+    @RequiresPermissions("system:config:add")
+    @PostMapping("/api/iam/config")
+    @ResponseBody
+    public AjaxResult apiAdd(@Validated @RequestBody CreateConfigCommand command) {
+        try {
+            Long configId = configApplicationService.createConfig(command);
+            return success(configId);
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "参数管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("system:config:edit")
+    @PutMapping("/api/iam/config")
+    @ResponseBody
+    public AjaxResult apiEdit(@Validated @RequestBody UpdateConfigCommand command) {
+        try {
+            configApplicationService.updateConfig(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "参数管理", businessType = BusinessType.DELETE)
+    @RequiresPermissions("system:config:remove")
+    @DeleteMapping("/api/iam/config/{configIds}")
+    @ResponseBody
+    public AjaxResult apiRemove(@PathVariable Long[] configIds) {
+        DeleteConfigCommand command = new DeleteConfigCommand();
+        command.setConfigIds(configIds);
+        try {
+            configApplicationService.deleteConfigs(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "参数管理", businessType = BusinessType.CLEAN)
+    @RequiresPermissions("system:config:remove")
+    @GetMapping("/api/iam/config/refreshCache")
+    @ResponseBody
+    public AjaxResult apiRefreshCache() {
+        try {
+            configApplicationService.refreshCache();
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
     }
 }

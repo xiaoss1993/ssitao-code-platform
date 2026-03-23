@@ -5,7 +5,7 @@ import com.ssitao.code.common.core.domain.AjaxResult;
 import com.ssitao.code.common.core.text.Convert;
 import com.ssitao.code.common.utils.ServletUtils;
 import com.ssitao.code.common.utils.StringUtils;
-import com.ssitao.code.modular.iam.service.ISysConfigService;
+import com.ssitao.code.modular.iam.application.service.ISysConfigService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;

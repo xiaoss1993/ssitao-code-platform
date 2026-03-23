@@ -1,8 +1,7 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
 import com.ssitao.code.common.core.domain.entity.SysUser;
-import com.ssitao.code.modular.iam.api.dto.SysUserDTO;
-import com.ssitao.code.modular.iam.application.command.ChangePasswordCommand;
+import com.ssitao.code.modular.iam.application.dto.SysUserDTO;
 import com.ssitao.code.modular.iam.application.command.CreateUserCommand;
 import com.ssitao.code.modular.iam.application.command.UpdateUserCommand;
 import com.ssitao.code.modular.iam.domain.model.SysUserAggregate;

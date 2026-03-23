@@ -1,12 +1,11 @@
 package com.ssitao.code.modular.iam.application.service;
 
-import com.ssitao.code.common.core.domain.AjaxResult;
 import com.ssitao.code.common.core.domain.entity.SysUser;
 import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ShiroUtils;
 import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.common.utils.uuid.IdUtils;
-import com.ssitao.code.modular.iam.api.dto.SysUserDTO;
+import com.ssitao.code.modular.iam.application.dto.SysUserDTO;
 import com.ssitao.code.modular.iam.application.command.ChangePasswordCommand;
 import com.ssitao.code.modular.iam.application.command.CreateUserCommand;
 import com.ssitao.code.modular.iam.application.command.DeleteUserCommand;
@@ -14,7 +13,6 @@ import com.ssitao.code.modular.iam.application.command.UpdateUserCommand;
 import com.ssitao.code.modular.iam.domain.model.SysUserAggregate;
 import com.ssitao.code.modular.iam.domain.repository.SysUserRepository;
 import com.ssitao.code.modular.iam.infrastructure.converter.SysUserConverter;
-import com.ssitao.code.modular.iam.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

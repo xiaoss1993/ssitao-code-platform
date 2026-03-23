@@ -7,8 +7,14 @@ import com.ssitao.code.common.core.domain.Ztree;
 import com.ssitao.code.common.core.domain.entity.SysMenu;
 import com.ssitao.code.common.core.domain.entity.SysRole;
 import com.ssitao.code.common.enums.BusinessType;
+import com.ssitao.code.common.exception.ServiceException;
 import com.ssitao.code.common.utils.ShiroUtils;
-import com.ssitao.code.modular.iam.service.ISysMenuService;
+import com.ssitao.code.modular.iam.application.dto.SysMenuDTO;
+import com.ssitao.code.modular.iam.application.command.CreateMenuCommand;
+import com.ssitao.code.modular.iam.application.command.DeleteMenuCommand;
+import com.ssitao.code.modular.iam.application.command.UpdateMenuCommand;
+import com.ssitao.code.modular.iam.application.service.SysMenuApplicationService;
+import com.ssitao.code.modular.iam.application.service.ISysMenuService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +37,9 @@ public class SysMenuController extends BaseController
 
     @Autowired
     private ISysMenuService menuService;
+
+    @Autowired
+    private SysMenuApplicationService menuApplicationService;
 
     @RequiresPermissions("system:menu:view")
     @GetMapping()
@@ -201,5 +210,94 @@ public class SysMenuController extends BaseController
     {
         mmap.put("menu", menuService.selectMenuById(menuId));
         return prefix + "/tree";
+    }
+
+    // ==================== REST API 接口 (DDD风格) ====================
+
+    @RequiresPermissions("system:menu:list")
+    @GetMapping("/api/iam/menu/list")
+    @ResponseBody
+    public List<SysMenuDTO> apiList(SysMenuDTO query) {
+        return menuApplicationService.listMenus(query);
+    }
+
+    @RequiresPermissions("system:menu:list")
+    @GetMapping("/api/iam/menu/{menuId}")
+    @ResponseBody
+    public AjaxResult apiGetInfo(@PathVariable("menuId") Long menuId) {
+        SysMenuDTO menu = menuApplicationService.getMenuById(menuId);
+        return success(menu);
+    }
+
+    @GetMapping("/api/iam/menu/all")
+    @ResponseBody
+    public AjaxResult apiListAll() {
+        List<SysMenuDTO> list = menuApplicationService.listAllMenus();
+        return success(list);
+    }
+
+    @Log(title = "菜单管理", businessType = BusinessType.INSERT)
+    @RequiresPermissions("system:menu:add")
+    @PostMapping("/api/iam/menu")
+    @ResponseBody
+    public AjaxResult apiAdd(@Validated @RequestBody CreateMenuCommand command) {
+        try {
+            Long menuId = menuApplicationService.createMenu(command);
+            return success(menuId);
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("system:menu:edit")
+    @PutMapping("/api/iam/menu")
+    @ResponseBody
+    public AjaxResult apiEdit(@Validated @RequestBody UpdateMenuCommand command) {
+        try {
+            menuApplicationService.updateMenu(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "菜单管理", businessType = BusinessType.DELETE)
+    @RequiresPermissions("system:menu:remove")
+    @DeleteMapping("/api/iam/menu/{menuIds}")
+    @ResponseBody
+    public AjaxResult apiRemove(@PathVariable Long[] menuIds) {
+        DeleteMenuCommand command = new DeleteMenuCommand();
+        command.setMenuIds(menuIds);
+        try {
+            menuApplicationService.deleteMenus(command);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("system:menu:edit")
+    @PutMapping("/api/iam/menu/status")
+    @ResponseBody
+    public AjaxResult apiChangeStatus(@RequestParam Long menuId, @RequestParam String visible) {
+        try {
+            menuApplicationService.changeStatus(menuId, visible);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
+    }
+
+    @PutMapping("/api/iam/menu/sort")
+    @ResponseBody
+    public AjaxResult apiUpdateSort(@RequestParam Long menuId, @RequestParam String orderNum) {
+        try {
+            menuApplicationService.updateSort(menuId, orderNum);
+            return success();
+        } catch (ServiceException e) {
+            return error(e.getMessage());
+        }
     }
 }

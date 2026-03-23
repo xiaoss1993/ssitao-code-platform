@@ -6,7 +6,7 @@ import com.ssitao.code.common.utils.bean.BeanUtils;
 import com.ssitao.code.common.utils.spring.SpringUtils;
 import com.ssitao.code.frame.security.shiro.session.OnlineSession;
 import com.ssitao.code.modular.iam.domain.SysUserOnline;
-import com.ssitao.code.modular.iam.service.ISysUserOnlineService;
+import com.ssitao.code.modular.iam.application.service.ISysUserOnlineService;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.session.ExpiredSessionException;
 import org.apache.shiro.session.InvalidSessionException;

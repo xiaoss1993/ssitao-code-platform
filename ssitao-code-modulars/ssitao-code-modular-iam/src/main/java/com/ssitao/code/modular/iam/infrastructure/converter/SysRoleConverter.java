@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.iam.infrastructure.converter;
 
 import com.ssitao.code.common.core.domain.entity.SysRole;
-import com.ssitao.code.modular.iam.api.dto.SysRoleDTO;
+import com.ssitao.code.modular.iam.application.dto.SysRoleDTO;
 import com.ssitao.code.modular.iam.application.command.CreateRoleCommand;
 import com.ssitao.code.modular.iam.application.command.UpdateRoleCommand;
 import com.ssitao.code.modular.iam.domain.model.SysRoleAggregate;

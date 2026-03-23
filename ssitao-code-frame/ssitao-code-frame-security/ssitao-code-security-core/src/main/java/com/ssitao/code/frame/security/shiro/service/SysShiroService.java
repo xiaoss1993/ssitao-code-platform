@@ -3,7 +3,7 @@ package com.ssitao.code.frame.security.shiro.service;
 import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.frame.security.shiro.session.OnlineSession;
 import com.ssitao.code.modular.iam.domain.SysUserOnline;
-import com.ssitao.code.modular.iam.service.ISysUserOnlineService;
+import com.ssitao.code.modular.iam.application.service.ISysUserOnlineService;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
