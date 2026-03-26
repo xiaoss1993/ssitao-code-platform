@@ -9,10 +9,15 @@
     </parent>
 
     <artifactId>ssitao-code-boot-starters</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>ssitao-code-boot-starters</name>
     <description>快速启动器：提供开箱即用的Starter组件</description>
+    <modules>
+        <module>ssitao-code-starter-doc</module>
+        <module>ssitao-code-starter-redis</module>
+        <module>ssitao-code-starter-json</module>
+    </modules>
 
     <dependencies>
         <!-- Spring Boot Starter -->

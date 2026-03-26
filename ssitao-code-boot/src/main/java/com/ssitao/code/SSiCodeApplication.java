@@ -8,13 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author ruoyi
  */
 @SpringBootApplication
-public class RuoYiApplication
+public class SSiCodeApplication
 {
     public static void main(String[] args)
     {
         // System.setProperty("spring.devtools.restart.enabled", "false");
-        SpringApplication.run(RuoYiApplication.class, args);
-        System.out.println("(♥◠‿◠)ﾉﾞ  若依启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
+        SpringApplication.run(SSiCodeApplication.class, args);
+        System.out.println("(♥◠‿◠)ﾉﾞ  启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 " .-------.       ____     __        \n" +
                 " |  _ _   \\      \\   \\   /  /    \n" +
                 " | ( ' )  |       \\  _. /  '       \n" +

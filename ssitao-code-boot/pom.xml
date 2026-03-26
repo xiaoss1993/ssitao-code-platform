@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-modular-codegen</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
             <artifactId>ssitao-code-modular-common</artifactId>
         </dependency>
         <dependency>
