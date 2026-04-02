@@ -20,6 +20,7 @@
         <module>ssitao-code-starter-extension</module>
         <module>ssitao-code-starter-api-doc</module>
         <module>ssitao-code-starter-web</module>
+        <module>ssitao-code-starter-data</module>
     </modules>
 
     <dependencies>
