@@ -3,8 +3,8 @@ package com.ssitao.code.modular.codegen.infrastructure.util;
 import com.ssitao.code.common.constant.GenConstants;
 import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.modular.codegen.infrastructure.config.GenConfig;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTable;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTableColumn;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTable;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTableColumn;
 import org.apache.commons.lang3.RegExUtils;
 
 import java.util.Arrays;

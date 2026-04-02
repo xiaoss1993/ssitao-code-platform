@@ -13,7 +13,7 @@ import com.ssitao.code.frame.mybatisflex.core.activerecord.Model;
 #end
 
 #if(jdkVersion >= 14)
-import java.io.Serial;
+
 #end
 
 #if(!isBase)
@@ -83,7 +83,7 @@ import lombok.EqualsAndHashCode;
 public class #(entityClassName)#if(withActiveRecord) extends Model<#(entityClassName)>#else#(table.buildExtends(isBase))#(table.buildImplements())#end  {
 
     #if(jdkVersion >= 14)
-    @Serial
+
     #end
     private static final long serialVersionUID = 1L;
 

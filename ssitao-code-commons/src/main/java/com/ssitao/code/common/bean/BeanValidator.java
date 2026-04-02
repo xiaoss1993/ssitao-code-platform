@@ -1,8 +1,7 @@
 package com.ssitao.code.common.bean;
 
 import com.ssitao.code.common.exception.ValidationException;
-import com.ssitao.code.common.util.SimpleValidateResults;
-import com.ssitao.code.common.util.ValidateResults;
+import com.ssitao.code.common.utils.SimpleValidateResults;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.ConstraintViolation;

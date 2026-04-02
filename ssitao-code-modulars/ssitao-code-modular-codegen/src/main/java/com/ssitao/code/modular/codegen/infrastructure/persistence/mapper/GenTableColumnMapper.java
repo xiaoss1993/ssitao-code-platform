@@ -1,6 +1,6 @@
 package com.ssitao.code.modular.codegen.infrastructure.persistence.mapper;
 
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTableColumn;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTableColumn;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -26,12 +26,6 @@
             <artifactId>ssitao-code-commons</artifactId>
         </dependency>
 
-        <!-- 依赖 MyBatis-Easy 模块 -->
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-mybatis-easy</artifactId>
-        </dependency>
-
         <!-- Spring Boot Security (可选) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

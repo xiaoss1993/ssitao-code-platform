@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.codegen.infrastructure.persistence.mapper;
 
 import com.ssitao.code.frame.mybatisflex.core.BaseMapper;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTable;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTable;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

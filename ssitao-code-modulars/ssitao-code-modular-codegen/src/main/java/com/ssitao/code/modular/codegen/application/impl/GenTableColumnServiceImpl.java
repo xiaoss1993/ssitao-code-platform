@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.codegen.application.impl;
 
 import com.ssitao.code.common.core.text.Convert;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTableColumn;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTableColumn;
 import com.ssitao.code.modular.codegen.infrastructure.persistence.mapper.GenTableColumnMapper;
 import com.ssitao.code.modular.codegen.application.IGenTableColumnService;
 import org.springframework.beans.factory.annotation.Autowired;

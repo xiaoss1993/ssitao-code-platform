@@ -1,5 +1,7 @@
 package com.ssitao.code.common.bean;
 
+import com.ssitao.code.common.utils.FastBeanCopier;
+
 import java.io.Serializable;
 
 /**
@@ -19,7 +21,7 @@ public interface Bean extends Serializable {
      */
     @SuppressWarnings("all")
     default <T extends Bean> T copyFrom(Object from, String... ignore) {
-        return (T) com.ssitao.code.common.util.FastBeanCopier.copy(from, this, ignore);
+        return (T) FastBeanCopier.copy(from, this, ignore);
     }
 
     /**
@@ -31,6 +33,6 @@ public interface Bean extends Serializable {
      * @return 复制后的对象
      */
     default <T> T copyTo(T to, String... ignore) {
-        return com.ssitao.code.common.util.FastBeanCopier.copy(this, to, ignore);
+        return FastBeanCopier.copy(this, to, ignore);
     }
 }

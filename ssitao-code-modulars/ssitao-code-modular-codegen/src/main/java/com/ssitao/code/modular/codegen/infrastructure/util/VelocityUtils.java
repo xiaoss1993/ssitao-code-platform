@@ -5,8 +5,8 @@ import com.ssitao.code.common.constant.GenConstants;
 import com.ssitao.code.common.utils.DateUtils;
 import com.ssitao.code.common.utils.StringUtils;
 import com.ssitao.code.modular.codegen.infrastructure.config.GenConfig;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTable;
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTableColumn;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTable;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTableColumn;
 import org.apache.velocity.VelocityContext;
 
 import java.util.ArrayList;

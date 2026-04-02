@@ -1,6 +1,6 @@
 package com.ssitao.code.common.exception;
 
-import com.ssitao.code.common.util.ValidateResults;
+import com.ssitao.code.common.utils.ValidateResults;
 
 /**
  * 验证异常

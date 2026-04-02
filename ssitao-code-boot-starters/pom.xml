@@ -17,6 +17,9 @@
         <module>ssitao-code-starter-doc</module>
         <module>ssitao-code-starter-redis</module>
         <module>ssitao-code-starter-json</module>
+        <module>ssitao-code-starter-extension</module>
+        <module>ssitao-code-starter-api-doc</module>
+        <module>ssitao-code-starter-web</module>
     </modules>
 
     <dependencies>
@@ -44,16 +47,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

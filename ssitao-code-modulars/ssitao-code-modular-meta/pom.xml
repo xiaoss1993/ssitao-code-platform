@@ -30,7 +30,8 @@
         <!-- Aggregate-Framework DDD框架 -->
         <dependency>
             <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-frame-aggregate</artifactId>
+            <artifactId>aggregate-framework-core</artifactId>
+             <version>${revision}</version>
         </dependency>
 
         <!-- Spring Boot Web -->

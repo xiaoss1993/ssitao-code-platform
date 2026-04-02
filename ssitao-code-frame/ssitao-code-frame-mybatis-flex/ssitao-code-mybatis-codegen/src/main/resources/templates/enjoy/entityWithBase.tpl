@@ -37,7 +37,7 @@ import lombok.NoArgsConstructor;
 #end
 #end
 #if(jdkVersion >= 14)
-import java.io.Serial;
+
 #end
 
 #if(!isBase)

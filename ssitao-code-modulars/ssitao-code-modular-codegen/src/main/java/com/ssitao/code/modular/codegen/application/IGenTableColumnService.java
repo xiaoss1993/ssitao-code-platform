@@ -1,6 +1,6 @@
 package com.ssitao.code.modular.codegen.application;
 
-import com.ssitao.code.modular.codegen.infrastructure.persistence.dataobject.GenTableColumn;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.GenTableColumn;
 
 import java.util.List;
 

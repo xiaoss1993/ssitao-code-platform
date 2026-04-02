@@ -7,7 +7,7 @@ import com.ssitao.code.frame.mybatisflex.core.query.QueryColumn;
 import com.ssitao.code.frame.mybatisflex.core.table.TableDef;
 
 #if(jdkVersion >= 14)
-import java.io.Serial;
+
 #end
 
 /**
@@ -23,7 +23,7 @@ import java.io.Serial;
 public class #(tableDefClassName) extends TableDef {
 
     #if(jdkVersion >= 14)
-    @Serial
+
     #end
     private static final long serialVersionUID = 1L;
 

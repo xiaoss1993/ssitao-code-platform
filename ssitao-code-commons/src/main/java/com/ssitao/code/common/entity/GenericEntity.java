@@ -2,7 +2,7 @@ package com.ssitao.code.common.entity;
 
 
 
-import com.ssitao.code.common.util.ToString;
+import com.ssitao.code.common.utils.ToString;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

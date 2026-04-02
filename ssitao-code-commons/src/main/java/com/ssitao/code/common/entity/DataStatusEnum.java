@@ -1,7 +1,6 @@
 package com.ssitao.code.common.entity;
 
-import com.ssitao.code.common.util.EnumDict;
-import lombok.AllArgsConstructor;
+import com.ssitao.code.common.utils.EnumDict;
 import lombok.Getter;
 
 @Getter

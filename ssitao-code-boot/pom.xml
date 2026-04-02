@@ -26,10 +26,6 @@
         </dependency>
         <dependency>
             <groupId>com.ssitao.code</groupId>
-            <artifactId>ssitao-code-modular-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.ssitao.code</groupId>
             <artifactId>ssitao-code-modular-meta</artifactId>
         </dependency>
         <dependency>
@@ -95,7 +91,10 @@
             <groupId>com.ssitao.code</groupId>
             <artifactId>ssitao-code-mybatis-spring-boot-starter</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-codegen</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
