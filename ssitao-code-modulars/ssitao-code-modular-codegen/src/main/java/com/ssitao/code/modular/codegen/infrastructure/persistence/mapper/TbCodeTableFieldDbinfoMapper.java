@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.codegen.infrastructure.persistence.mapper;
 
 import com.ssitao.code.frame.mybatisflex.core.BaseMapper;
-import com.ssitao.code.meta.entity.TbCodeTableFieldDbinfo;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.TbCodeTableFieldDbinfo;
 
 /**
  * 字段的数据库信息 映射层。

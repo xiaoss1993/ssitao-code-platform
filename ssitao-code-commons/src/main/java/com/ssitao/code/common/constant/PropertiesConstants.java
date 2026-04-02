@@ -1,0 +1,107 @@
+
+package com.ssitao.code.common.constant;
+
+/**
+ * 配置属性相关常量
+ *
+ */
+public class PropertiesConstants {
+
+    /**
+     * ContiNew Starter
+     */
+    public static final String CONTINEW_STARTER = "continew-starter";
+
+    /**
+     * 启用配置
+     */
+    public static final String ENABLED = "enabled";
+
+    /**
+     * 安全配置
+     */
+    public static final String SECURITY = CONTINEW_STARTER + StringConstants.DOT + "security";
+
+    /**
+     * 密码编解码配置
+     */
+    public static final String SECURITY_PASSWORD = SECURITY + StringConstants.DOT + "password";
+
+    /**
+     * 加/解密配置
+     */
+    public static final String SECURITY_CRYPTO = SECURITY + StringConstants.DOT + "crypto";
+
+    /**
+     * 限流器配置
+     */
+    public static final String SECURITY_LIMITER = SECURITY + StringConstants.DOT + "limiter";
+
+    /**
+     * Web 配置
+     */
+    public static final String WEB = CONTINEW_STARTER + StringConstants.DOT + "web";
+
+    /**
+     * 跨域配置
+     */
+    public static final String WEB_CORS = WEB + StringConstants.DOT + "cors";
+
+    /**
+     * 响应配置
+     */
+    public static final String WEB_RESPONSE = WEB + StringConstants.DOT + "response";
+
+    /**
+     * 链路配置
+     */
+    public static final String WEB_TRACE = WEB + StringConstants.DOT + "trace";
+
+    /**
+     * XSS 配置
+     */
+    public static final String WEB_XSS = WEB + StringConstants.DOT + "xss";
+
+    /**
+     * 日志配置
+     */
+    public static final String LOG = CONTINEW_STARTER + StringConstants.DOT + "log";
+
+    /**
+     * 存储配置
+     */
+    public static final String STORAGE = CONTINEW_STARTER + StringConstants.DOT + "storage";
+
+    /**
+     * 本地存储配置
+     */
+    public static final String STORAGE_LOCAL = STORAGE + StringConstants.DOT + "local";
+
+    /**
+     * 验证码配置
+     */
+    public static final String CAPTCHA = CONTINEW_STARTER + StringConstants.DOT + "captcha";
+
+    /**
+     * 图形验证码配置
+     */
+    public static final String CAPTCHA_GRAPHIC = CAPTCHA + StringConstants.DOT + "graphic";
+
+    /**
+     * 行为验证码配置
+     */
+    public static final String CAPTCHA_BEHAVIOR = CAPTCHA + StringConstants.DOT + "behavior";
+
+    /**
+     * 消息配置
+     */
+    public static final String MESSAGING = CONTINEW_STARTER + StringConstants.DOT + "messaging";
+
+    /**
+     * WebSocket 配置
+     */
+    public static final String MESSAGING_WEBSOCKET = MESSAGING + StringConstants.DOT + "websocket";
+
+    private PropertiesConstants() {
+    }
+}

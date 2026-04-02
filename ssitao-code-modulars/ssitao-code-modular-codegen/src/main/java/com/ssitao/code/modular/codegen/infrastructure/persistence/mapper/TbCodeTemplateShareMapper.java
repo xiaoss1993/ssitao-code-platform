@@ -1,7 +1,7 @@
 package com.ssitao.code.modular.codegen.infrastructure.persistence.mapper;
 
 import com.ssitao.code.frame.mybatisflex.core.BaseMapper;
-import com.ssitao.code.meta.entity.TbCodeTemplateShare;
+import com.ssitao.code.modular.codegen.infrastructure.persistence.entity.TbCodeTemplateShare;
 
 /**
  * 模板分享 映射层。
