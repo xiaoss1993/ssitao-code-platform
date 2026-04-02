@@ -4,11 +4,165 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3b7f2dc-58ed-46a4-8229-1937b837ae8f" name="更改" comment="2026年03月06日00:15:42" />
+    <list default="true" id="e3b7f2dc-58ed-46a4-8229-1937b837ae8f" name="更改" comment="2026年03月26日09:32:36">
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-api-doc/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-api-doc/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-api-doc/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-core/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-core/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-core/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mf/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mf/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mf/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mp/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mp/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-crud/ssitao-ode-starter-extension-crud-mp/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-tenant/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-tenant/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-extension/ssitao-code-starter-extension-tenant/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-web/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-web/src/main/java/com/ssitao/code/App.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-web/src/test/java/com/ssitao/code/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js/html5shiv.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js/require-css.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js/require-form.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js/require.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js/respond.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/require-css/css-builder.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/require-css/css.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/require-css/normalize.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins/Markdown.Converter.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins/requirejs-cs.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins/requirejs-domready.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins/requirejs-i18n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins/requirejs-text.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-boot/src/test/java/com/ssitao/code/Codegen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/constant/CharConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/constant/StringConstants.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/enums/BaseEnum.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/controller/CodeTemplateController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/controller/CodeTemplateGroupController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeGenParams.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableBaseField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableField.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableFieldDbinfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableFieldVerification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableHead.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTableServiceConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTemplate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTemplateFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTemplateGroup.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/TbCodeTemplateShare.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeGenParamsMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableBaseFieldMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableFieldDbinfoMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableFieldMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableFieldVerificationMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableHeadMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTableServiceConfigMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTemplateFileMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTemplateGroupMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTemplateMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/TbCodeTemplateShareMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/application/service/MetaDatabaseInstanceApplicationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/application/service/MetaDatabaseInstanceQueryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/application/service/MetaDatabaseResourceApplicationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/application/service/MetaDatabaseResourceQueryService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/controller/MetaDatabaseInstanceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/controller/MetaDatabaseResourceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/entity/TbCodeDbinfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/entity/TbMetaDatabaseInstance.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/entity/TbMetaDatabaseResource.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/mapper/TbCodeDbinfoMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/mapper/TbMetaDatabaseInstanceMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/src/main/java/com/ssitao/code/modular/meta/infrastructure/persistence/mapper/TbMetaDatabaseResourceMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot-starters/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-doc/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-doc/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-json/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-json/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-redis/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot-starters/ssitao-code-starter-redis/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/SSiCodeApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/SSiCodeApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/application-druid.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/application-druid.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/bean/Bean.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/bean/Bean.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/bean/BeanValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/bean/BeanValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/entity/DataStatusEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/entity/DataStatusEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/entity/GenericEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/entity/GenericEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/exception/ValidationException.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/exception/ValidationException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/BeanFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/BeanFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ClassDescription.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ClassDescription.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ClassDescriptions.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ClassDescriptions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/Converter.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/Converter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ConverterUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ConverterUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/DateUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/DateUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/DefaultToStringOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/DefaultToStringOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/DynamicProxy.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/DynamicProxy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/EnumDict.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/EnumDict.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/FastBeanCopier.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/FastBeanCopier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/Lists.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/Lists.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/Maps.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/Maps.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/SimpleValidateResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/SimpleValidateResults.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/Sqls.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/Sqls.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/StringUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/StringUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ToString.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ToString.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ToStringOperator.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ToStringOperator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/util/ValidateResults.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-commons/src/main/java/com/ssitao/code/common/utils/ValidateResults.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-bom/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-bom/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-basic-usage/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-basic-usage/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-sample/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/aggregate-framework-tutorial-sample/aggregate-framework-sample/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-autotable/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-autotable/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/entityOrBase.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/entityOrBase.tpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/entityWithBase.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/entityWithBase.tpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/tableDef.tpl" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-codegen/src/main/resources/templates/enjoy/tableDef.tpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-metadata/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-mybatis-flex/ssitao-code-mybatis-metadata/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/IGenTableColumnService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/IGenTableColumnService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/IGenTableService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/IGenTableService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/impl/GenTableColumnServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/impl/GenTableColumnServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/impl/GenTableServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/application/impl/GenTableServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/controller/GenController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/controller/GenController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/dataobject/GenTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/GenTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/dataobject/GenTableColumn.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity/GenTableColumn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/GenTableColumnMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/GenTableColumnMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/GenTableMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper/GenTableMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/util/GenUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/util/GenUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/util/VelocityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/util/VelocityUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/resources/mapper/generator/GenTableColumnMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/resources/mapper/generator/GenTableColumnMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/resources/mapper/generator/GenTableMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/resources/mapper/generator/GenTableMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysCaptchaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamCaptchaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysConfigController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamConfigController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysDeptController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamDeptController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysDictDataController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamDictDataController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysDictTypeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamDictTypeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysIndexController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamIndexController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysLoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamLoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamMenuController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysNoticeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamNoticeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysPostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamPostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysRegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamRegisterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysRoleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamRoleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/SysUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-iam/src/main/java/com/ssitao/code/modular/iam/controller/IamUserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-meta/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+        <option value="JavaScript File" />
+        <option value="Enum" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -17,8 +171,23 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;xiaoss1993&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:xiaoss1993/ssitao-code-platform.git&quot;,
+    &quot;accountId&quot;: &quot;d1279039-fd34-4c3b-b434-bb014150c0e9&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -30,12 +199,16 @@
         <option name="userSettingsFile" value="$USER_HOME$/soft/apache-maven-3.9.6/conf/settings.xml" />
       </MavenGeneralSettings>
     </option>
+    <option name="explicitlyEnabledProfiles" value="skip-tests" />
   </component>
   <component name="MavenRunner">
     <option name="skipTests" value="true" />
   </component>
   <component name="PerforceDirect.Settings">
     <option name="CHARSET" value="none" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -48,31 +221,42 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ssitao-code-dependencies [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.ssitao-code-platform [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.ssitao-code-platform [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.ssitao-code-platform [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ssitao-code-platform [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.ssitao-code-platform [validate].executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;数据库检测器&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.SsitaoCodeApplication.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/sizt__iam__20260221&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.RuoYiApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.SSiCodeApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;Spring Boot.SsitaoCodeApplication.executor&quot;: &quot;HotSwap Debug Executor&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/sizt__iam__20260312&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/sizt/ssitao-code-workspace/ssitao-code-platform/ssitao-code-boot/src/main/resources/static&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ssitao/ssitao-workspace/ssitao-code-workspace/ssitao-code-platform/ssitao-code-boot/src/main/resources/assets/js&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;npm.serve.executor&quot;: &quot;Debug&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;全局库&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.29770115&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;应用程序.Codegen.executor&quot;: &quot;Debug&quot;
   }
 }</component>
   <component name="ReactorSettings">
@@ -80,14 +264,80 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/static" />
-      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources" />
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/js" />
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs" />
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/requirejs-plugins" />
+      <recent name="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/mapper" />
+      <recent name="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-codegen/src/main/java/com/ssitao/code/modular/codegen/infrastructure/persistence/entity" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/assets/libs/require-css" />
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/static/assets" />
+      <recent name="$PROJECT_DIR$/ssitao-code-boot/src/main/resources/templates" />
+      <recent name="$PROJECT_DIR$/docs" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.ssitao.code.common.constant" />
+      <recent name="com.ssitao.code.modular.meta.application.service" />
+      <recent name="com.ssitao.code.modular.codegen.controller" />
+      <recent name="com.ssitao.code.common.utils" />
+      <recent name="com.ssitao.code.modular.iam.authorization.controller" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.SsitaoCodeApplication">
-    <configuration name="SsitaoCodeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="应用程序.Codegen">
+    <configuration name="Codegen" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.ssitao.code.Codegen" />
       <module name="ssitao-code-boot" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssitao.code.SsitaoCodeApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ssitao.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AggregateFrameworkDashboardApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="aggregate-framework-dashboard" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssitao.code.frame.aggregate.dashboard.AggregateFrameworkDashboardApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AggregateFrameworkServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="aggregate-framework-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssitao.code.frame.aggregate.server.AggregateFrameworkServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BasicUsageApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="aggregate-framework-basic-usage" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssitao.code.frame.aggregate.basic.usage.BasicUsageApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SSiCodeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="ssitao-code-boot" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ssitao.code.SSiCodeApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ssitao.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -102,11 +352,29 @@
       <envs />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="npm.serve" />
+      <item itemvalue="Spring Boot.AggregateFrameworkDashboardApplication" />
+      <item itemvalue="Spring Boot.AggregateFrameworkServerApplication" />
+      <item itemvalue="Spring Boot.BasicUsageApplication" />
+      <item itemvalue="Spring Boot.SSiCodeApplication" />
+      <item itemvalue="应用程序.Codegen" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="应用程序.Codegen" />
+        <item itemvalue="Spring Boot.SSiCodeApplication" />
         <item itemvalue="npm.serve" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-84258761d1cc-intellij.indexing.shared.core-IU-243.28141.18" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.28141.18" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -145,6 +413,51 @@
       <workItem from="1772631356572" duration="3862000" />
       <workItem from="1772637729687" duration="6677000" />
       <workItem from="1772682377587" duration="21555000" />
+      <workItem from="1773496032956" duration="481000" />
+      <workItem from="1773531301488" duration="1108000" />
+      <workItem from="1773533583763" duration="3417000" />
+      <workItem from="1773557319948" duration="20643000" />
+      <workItem from="1773588080065" duration="1000" />
+      <workItem from="1773618794361" duration="618000" />
+      <workItem from="1773629707185" duration="912000" />
+      <workItem from="1773647169640" duration="1830000" />
+      <workItem from="1773669442707" duration="638000" />
+      <workItem from="1773703709085" duration="999000" />
+      <workItem from="1773718940309" duration="2466000" />
+      <workItem from="1773744416308" duration="8984000" />
+      <workItem from="1773803477377" duration="6248000" />
+      <workItem from="1773816451098" duration="2580000" />
+      <workItem from="1773820388499" duration="1275000" />
+      <workItem from="1773821816187" duration="2893000" />
+      <workItem from="1773838829206" duration="962000" />
+      <workItem from="1773841480239" duration="10518000" />
+      <workItem from="1773891046996" duration="29000" />
+      <workItem from="1773891079072" duration="62000" />
+      <workItem from="1773891162005" duration="7000" />
+      <workItem from="1773899579979" duration="1544000" />
+      <workItem from="1773901132287" duration="193000" />
+      <workItem from="1773901331602" duration="5015000" />
+      <workItem from="1773907649581" duration="5052000" />
+      <workItem from="1773925841695" duration="270000" />
+      <workItem from="1773968164873" duration="8041000" />
+      <workItem from="1774020085392" duration="39000" />
+      <workItem from="1774071822281" duration="6281000" />
+      <workItem from="1774089144826" duration="234000" />
+      <workItem from="1774179935627" duration="73000" />
+      <workItem from="1774188711221" duration="8514000" />
+      <workItem from="1774274474575" duration="3500000" />
+      <workItem from="1774312351606" duration="36000" />
+      <workItem from="1774395105182" duration="5633000" />
+      <workItem from="1774427831039" duration="2112000" />
+      <workItem from="1774488211829" duration="324000" />
+      <workItem from="1774753617849" duration="2923000" />
+      <workItem from="1774883942918" duration="2316000" />
+      <workItem from="1774959895974" duration="34000" />
+      <workItem from="1774959943491" duration="1795000" />
+      <workItem from="1774962325202" duration="3850000" />
+      <workItem from="1775005385883" duration="3404000" />
+      <workItem from="1775025112457" duration="7320000" />
+      <workItem from="1775087578401" duration="5423000" />
     </task>
     <task id="LOCAL-00001" summary="2026年02月21日22:22:35">
       <option name="closed" value="true" />
@@ -186,11 +499,86 @@
       <option name="project" value="LOCAL" />
       <updated>1772727347867</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="2026年03月15日18:35:03">
+      <option name="closed" value="true" />
+      <created>1773570911271</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1773570911271</updated>
+    </task>
+    <task id="LOCAL-00007" summary="2026年03月16日17:03:50">
+      <option name="closed" value="true" />
+      <created>1773651843420</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1773651843420</updated>
+    </task>
+    <task id="LOCAL-00008" summary="2026年03月17日20:31:38">
+      <option name="closed" value="true" />
+      <created>1773750705937</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1773750705937</updated>
+    </task>
+    <task id="LOCAL-00009" summary="2026年03月20日22:45:06">
+      <option name="closed" value="true" />
+      <created>1774017925330</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1774017925330</updated>
+    </task>
+    <task id="LOCAL-00010" summary="2026年03月22日19:46:00">
+      <option name="closed" value="true" />
+      <created>1774179964377</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1774179964377</updated>
+    </task>
+    <task id="LOCAL-00011" summary="2026年03月23日08:54:27">
+      <option name="closed" value="true" />
+      <created>1774227275380</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774227275380</updated>
+    </task>
+    <task id="LOCAL-00012" summary="2026年03月26日09:32:36">
+      <option name="closed" value="true" />
+      <created>1774488760183</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1774488760183</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:org.springframework.security:spring-security-core" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
+    <option featureType="dependencySupport" implementationName="java:io.projectreactor:reactor-core" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
+    <option featureType="dependencySupport" implementationName="executable:kubectl" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate.validator:hibernate-validator" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
+    <option featureType="dependencySupport" implementationName="java:org.projectlombok:lombok" />
+    <option featureType="dependencySupport" implementationName="java:junit:junit" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-websocket" />
+    <option featureType="dependencySupport" implementationName="executable:docker" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.batch:spring-batch-core" />
+    <option featureType="dependencySupport" implementationName="java:org.thymeleaf:thymeleaf" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+    <option featureType="dependencySupport" implementationName="java:javax.batch:javax.batch-api" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -203,7 +591,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/feature/sizt_iam_20260221" />
+                        <option value="feature/sizt_iam_20260312" />
                       </list>
                     </value>
                   </entry>
@@ -225,7 +613,15 @@
     <MESSAGE value="2026年02月26日14:17:00" />
     <MESSAGE value="2026年03月04日11:29:37" />
     <MESSAGE value="2026年03月06日00:15:42" />
-    <option name="LAST_COMMIT_MESSAGE" value="2026年03月06日00:15:42" />
+    <MESSAGE value="2026年03月15日18:35:03" />
+    <MESSAGE value="2026年03月16日17:03:50" />
+    <MESSAGE value="2026年03月17日20:31:38" />
+    <MESSAGE value="2026年03月20日22:45:06" />
+    <MESSAGE value="2026年03月22日19:46:00" />
+    <MESSAGE value="2026年03月23日08:54:27" />
+    <MESSAGE value="2026年03月26日09:32:36" />
+    <option name="LAST_COMMIT_MESSAGE" value="2026年03月26日09:32:36" />
+    <option name="NON_MODAL_COMMIT_POSTPONE_SLOW_CHECKS" value="false" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -237,7 +633,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/ssitao-code-boot/src/main/java/com/ssitao/code/controller/IndexController.java</url>
-          <line>76</line>
+          <line>81</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">

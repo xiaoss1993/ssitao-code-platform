@@ -5,8 +5,22 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-frame/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-frame-aggregate/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/ssitao-code-frame/ssitao-code-mybatis-easy/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-common/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-config/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-dashboard/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-dictionary/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-file/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-organization/pom.xml" />
+        <option value="$PROJECT_DIR$/ssitao-code-modulars/ssitao-code-modular-schedule/pom.xml" />
+      </set>
+    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="adopt-11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>
