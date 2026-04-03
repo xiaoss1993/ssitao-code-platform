@@ -1,11 +1,239 @@
-/**
- * TinyForm-core@0.7.13  2020-12-15
- * @作者: hyjiacan
- * @源码: https://git.oschina.net/hyjiacan/TinyForm.git
- * @示例: http://hyjiacan.oschina.io/tinyform
- * @许可协议: MIT
- * @依赖: jQuery 1.8.0及更高版本
- * @浏览器支持: 不支持IE8及更低版本
- * @QQ群: 187786345 (Javascript爱好者)
- */
-!function(a,b){function c(){return"tiny"+(new Date).getTime()+Math.random().toString().substring(2)}function d(a,e){var f=b(a).first(),h=f.attr(g);return h&&i.hasOwnProperty(h)||(h=c(),f.attr(g,h),i[h]=new d.prototype.tinyform(f,e,h)),i[h]}function e(a){var c=a.option,d=c.exclude;c.exclude=!1,"string"==typeof d||d instanceof window.HTMLElement?c.exclude=b(d,a.context):d instanceof b||(c.exclude=!1),d=b(a.context).find("[data-exclude]"),d.length&&(c.exclude=c.exclude?c.exclude.add(d):d)}function f(a){var c=j[a.id]={},e=b.makeArray(a.option.ignore);a.context.find(d.defaults.selector).each(function(){var d=b(this);if(!a.option.selector||d.is(a.option.selector)){var f=b.trim(d.attr("name"));if(""!==f&&-1===e.indexOf(f)&&!(a.option.exclude&&a.option.exclude.find(d).length>0))return void 0===c[f]||0===c[f].length?void(c[f]=d):d.is(":radio")?void(c[f]=c[f].add(this)):void console.error('字段的name属性"'+f+'"出现多次，这不对吧')}})}var g="data-tinyform",h={setup:[],refresh:[]},i={},j={};d.prototype={constructor:d,tinyform:function(a,c,g){var i=this;return i.id=g,i.context=a,i.option=b.extend(!0,{},d.defaults,c),e(i),f(i),b.each(h.setup,function(){this.call(i)}),i},getField:function(a){var c=this;c.option.refresh&&c.refresh();var d=b.extend(!0,{},j[c.id]);if(0===arguments.length)return d;if("string"==typeof a){var e=d[a];if(d.hasOwnProperty(a)&&0!==e.length)return e}},refresh:function(){var a=this;return e(a),f(a),b.each(h.refresh,function(){this.call(a)}),a}},Object.defineProperty(d,"extend",{configurable:!1,value:function(a){var c=this;b.each(a,function(a,b){return h.hasOwnProperty(a)?void h[a].push(b):c.hasOwnProperty(a)?void console.error("插件添加方法失败: 此方法已经存在"):void(d.prototype[a]=b)})}}),d.defaults={selector:"input[name]:not(:button,:submit,:reset,[data-ignore]"+(window.FormData?"":",[type=file]")+"), select[name]:not([data-ignore]), textarea[name]:not([data-ignore])",ignore:!1,exclude:!1,refresh:!1},d.prototype.tinyform.prototype=d.prototype,a.TinyForm=d,d.get=function(a){return a?i[a]:b.extend(!0,{},i)}}(window,jQuery),function(a,b){function c(a,c){if((void 0===a||null===a||b.isArray(a)&&!a.length)&&(a=""),(void 0===c||null===c||b.isArray(c)&&!c.length)&&(c=""),b.isArray(a)&&b.isArray(c)){if(a.length!==c.length)return!0;for(var d=0;d<a.length;d++)if(a[d]!==c[d])return!0;return!1}return!(!b.isArray(a)&&!b.isArray(c))||a!==c}function d(a,c,d){if(d&&0!==d.length){if(c=h(c),c=b.isArray(c)?b.map(c,function(a){return a.toString()}):c.toString(),d.is(":radio"))return void d.prop("checked",!1).each(function(){if(b(this).val().toLowerCase()===c.toLowerCase())return b(this).prop("checked",!0),!1});if(d.is(":checkbox")){var e=j(a,d);return c=c.toLowerCase(),-1===e.indexOf(c)&&console.warn("字段"+d.attr("name")+"的值"+c+"无效，需要["+e.join()+"]"),void d.prop("checked",c===e[0])}d.is("select")?(d.val(c),d.change()):d.val(c)}}function e(a){var c={};return b.each(a.getField(),function(b){c[b]=f(a,b)}),c}function f(a,b){var c=a.getField(b);if(!c)return console.error('cannot found field "'+b+'"'),"";if(c.is("input"))return g(a,c);var d=c.val();return c.is("select[multiple]")?null===d?[]:d:void 0===d?c.is("select[multiple]")?[]:"":d}function g(a,b){return b.is(":radio")?h(b.filter(":checked").val()):b.is(":checkbox")?j(a,b)[b.is(":checked")?0:1]:b.is(":file")?b.get(0).files[0]:h(b.val())}function h(a,b){return void 0===a||null===a?arguments.length>1?b:"":a}function i(c,d){var e=c.getData(),f={url:c.context.attr("action"),type:c.context.attr("method")||"post",async:!0,cache:!1},g=!1;if(b.each(c.getField(),function(a,b){if(b.is(":file"))return g=!0,!1}),g){if(!a.FormData)throw new Error("[TinyForm] 浏览器不支持 FormData，无法上传文件，请前往 http://caniuse.com/#search=formdata 查看浏览器兼容性");var h=new a.FormData;b.each(c.getField(),function(a,b){b.is(":file")?h.append(a,b.get(0).files[0]):h.append(a,e[a])}),f.data=h,f.contentType=!1,f.processData=!1,c.option.onprogress&&(f.xhr=function(){var a=b.ajaxSettings.xhr();return a.upload&&a.upload.addEventListener("progress",c.option.onprogress,!1),a})}else f.data=e;return b.extend(!0,f,d)}function j(a,b){var c=(b.attr("data-checkbox")||"").toLowerCase();if(c)return c.split("|");var d=(a.context.attr("data-checkbox")||"").toLowerCase();return d?d.split("|"):a.option.checkbox.map(function(a){return a.toString().toLowerCase()})}var k=b.Deferred(),l={},m={};b.extend(!0,TinyForm.defaults,{checkbox:["on","off"],beforeSubmit:!1}),TinyForm.extend({setup:function(){l[this.id]=this.getData(),m[this.id]=this.getData()},getData:function(a){return 0===arguments.length?e(this):"string"!=typeof a?"":f(this,a)},setData:function(a,c){var e=this;if(0===arguments.length)return console.error("setData 需要至少1个参数"),e;if(void 0===a||null===a)return e;if(arguments.length>=2&&"string"==typeof c)return d(e,a,e.getField(c)),e;var f="boolean"==typeof c;return arguments.length>=2&&!f?e:(b.each(e.getField(),function(b,c){if(!f||a.hasOwnProperty(b)){var g=h(a[b]);d(e,g,c)}}),e)},asDefault:function(a){var c=this,d=c.getData();if(!arguments.length||!a)return m[c.id]=d,c;var e={};return b.each(d,function(b){e[b]=a[b]}),m[c.id]=e,c},getChanges:function(a){var d=this,e=m[d.id]||{},f={},g=!1,h=d.getField(),i=d.getData();return b.each(i,function(b,d){e.hasOwnProperty(b)&&!c(e[b],d)||(g=!0,f[b]=a?h[b]:d)}),b.each(e,function(b){i.hasOwnProperty(b)||(g=!0,f[b]=a?h[b]:"")}),!!g&&f},submit:function(a){var c=this;return a=i(c,a),b.isFunction(c.option.beforeSubmit)&&!1===c.option.beforeSubmit.call(c,a)?k:b.ajax(a)},reset:function(){return b.isFunction(this.context.get(0).reset)?this.context.get(0).reset():this.setData(l[this.id]),this}})}(window,jQuery),TinyForm.version="0.7.13";
+define(['jquery', 'bootstrap', 'upload', 'validator'], function ($, undefined, Upload, Validator) {
+    var Form = {
+        config: {
+        },
+        api: {
+            submit: function (form, onBeforeSubmit, onAfterSubmit) {
+                if (form.size() == 0)
+                    return Toastr.error("表单未初始化完成,无法提交");
+                //提交前事件
+                var beforeSubmit = form.data("before-submit");
+                //元素绑定函数
+                if (beforeSubmit && typeof Form.api.custom[beforeSubmit] == 'function') {
+                    if (!Form.api.custom[beforeSubmit].call(form)) {
+                        return false;
+                    }
+                }
+                //自定义函数
+                if (typeof onBeforeSubmit == 'function') {
+                    if (!onBeforeSubmit.call(form)) {
+                        return false;
+                    }
+                }
+                var type = form.attr("method").toUpperCase();
+                type = type && (type == 'GET' || type == 'POST') ? type : 'GET';
+                url = form.attr("action");
+                url = url ? url : location.href;
+                $.ajax({
+                    type: type,
+                    url: url,
+                    data: form.serialize(),
+                    dataType: 'json',
+                    success: function (ret) {
+                        if (ret.hasOwnProperty("code")) {
+                            var data = ret.hasOwnProperty("data") && ret.data != "" ? ret.data : null;
+                            var msg = ret.hasOwnProperty("msg") && ret.msg != "" ? ret.msg : "";
+                            if (ret.code === 1) {
+                                $('.form-group', form).removeClass('has-feedback has-success has-error');
+                                //成功提交后事件
+                                var afterSubmit = form.data("after-submit");
+                                //元素绑定函数
+                                if (afterSubmit && typeof Form.api.custom[afterSubmit] == 'function') {
+                                    if (!Form.api.custom[afterSubmit].call(form, data, ret)) {
+                                        return false;
+                                    }
+                                }
+                                //自定义函数
+                                if (typeof onAfterSubmit == 'function') {
+                                    if (!onAfterSubmit.call(form, data, ret)) {
+                                        return false;
+                                    }
+                                }
+                                Toastr.success(msg ? msg : __('Operation completed'));
+                            } else {
+                                if (data && typeof data === 'object' && typeof data.token !== 'undefined') {
+                                    $("input[name='__token__']").val(data.token);
+                                }
+                                Toastr.error(msg ? msg : __('Operation failed'));
+                            }
+                        } else {
+                            Toastr.error(__('Unknown data format'));
+                        }
+                    }, error: function () {
+                        Toastr.error(__('Network error'));
+                    }, complete: function (e) {
+                    }
+                });
+                return false;
+            },
+            bindevent: function (form, onBeforeSubmit, onAfterSubmit) {
+                //绑定表单事件
+                form.validator($.extend({
+                    validClass: 'has-success',
+                    invalidClass: 'has-error',
+                    bindClassTo: '.form-group',
+                    formClass: 'n-default n-bootstrap',
+                    msgClass: 'n-right',
+                    stopOnError: true,
+                    display: function (elem) {
+                        return $(elem).closest('.form-group').find(".control-label").text().replace(/\:/, '');
+                    },
+                    target: function (input) {
+                        var $formitem = $(input).closest('.form-group'),
+                                $msgbox = $formitem.find('span.msg-box');
+                        if (!$msgbox.length) {
+                            return [];
+                        }
+                        return $msgbox;
+                    },
+                    valid: function (ret) {
+                        //验证通过提交表单
+                        Form.api.submit($(ret), onBeforeSubmit, function (data, ret) {
+                            if (typeof onAfterSubmit == 'function') {
+                                if (!onAfterSubmit.call($(this), data, ret)) {
+                                    return false;
+                                }
+                            }
+                            //提示及关闭当前窗口
+                            parent.Toastr.success(__('Operation completed'));
+                            parent.$(".btn-refresh").trigger("click");
+                            var index = parent.Layer.getFrameIndex(window.name);
+                            parent.Layer.close(index);
+                        });
+                        return false;
+                    }
+                }, form.data("validator-options") || {}));
+                
+                //移除提交按钮的disabled类
+                $(".layer-footer .btn.disabled", form).removeClass("disabled");
+
+                //绑定select元素事件
+                if ($(".selectpicker", form).size() > 0) {
+                    require(['bootstrap-select', 'bootstrap-select-lang'], function () {
+                        $('.selectpicker', form).selectpicker();
+                    });
+                }
+
+                //绑定selectpage元素事件
+                if ($(".selectpage", form).size() > 0) {
+                    require(['selectpage'], function () {
+                        $('.selectpage', form).selectPage({
+                            source: 'ajax/selectpage',
+                        });
+                    });
+                    //给隐藏的元素添加上validate验证触发事件
+                    $(form).on("change", ".selectpage-input-hidden", function () {
+                        $(this).trigger("validate");
+                    });
+                }
+
+                //绑定cxselect元素事件
+                if ($("[data-toggle='cxselect']").size() > 0) {
+                    require(['cxselect'], function () {
+                        $.cxSelect.defaults.jsonName = 'name';
+                        $.cxSelect.defaults.jsonValue = 'value';
+                        $.cxSelect.defaults.jsonSpace = 'data';
+                        $("[data-toggle='cxselect']").cxSelect();
+                    });
+                }
+
+                //绑定日期时间元素事件
+                if ($(".datetimepicker", form).size() > 0) {
+                    require(['bootstrap-datetimepicker'], function () {
+                        $('.datetimepicker', form).parent().css('position', 'relative');
+                        $('.datetimepicker', form)
+                                .datetimepicker({
+                                    format: 'YYYY-MM-DD HH:mm:ss',
+                                    icons: {
+                                        time: 'fa fa-clock-o',
+                                        date: 'fa fa-calendar',
+                                        up: 'fa fa-chevron-up',
+                                        down: 'fa fa-chevron-down',
+                                        previous: 'fa fa-chevron-left',
+                                        next: 'fa fa-chevron-right',
+                                        today: 'fa fa-history',
+                                        clear: 'fa fa-trash',
+                                        close: 'fa fa-remove'
+                                    },
+                                    showTodayButton: true,
+                                    showClose: true
+                                });
+                    });
+                }
+
+                //绑定summernote事件
+                if ($(".summernote", form).size() > 0) {
+                    require(['summernote'], function () {
+                        $(".summernote", form).summernote({
+                            height: 250,
+                            lang: 'zh-CN',
+                            fontNames: [
+                                'Arial', 'Arial Black', 'Serif', 'Sans', 'Courier',
+                                'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
+                                "Open Sans", "Hiragino Sans GB", "Microsoft YaHei",
+                                '微软雅黑', '宋体', '黑体', '仿宋', '楷体', '幼圆',
+                            ],
+                            fontNamesIgnoreCheck: [
+                                "Open Sans", "Microsoft YaHei",
+                                '微软雅黑', '宋体', '黑体', '仿宋', '楷体', '幼圆'
+                            ],
+                            dialogsInBody: true,
+                            callbacks: {
+                                onChange: function (contents) {
+                                    $(this).val(contents);
+                                    $(this).trigger('change');
+                                },
+                                onInit: function () {
+                                },
+                                onImageUpload: function (files) {
+                                    var that = this;
+                                    //依次上传图片
+                                    for (var i = 0; i < files.length; i++) {
+                                        Upload.api.send(files[i], function (data) {
+                                            var url = Fast.api.cdnurl(data.url);
+                                            $(that).summernote("insertImage", url, 'filename');
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+
+                //绑定plupload上传元素事件
+                if ($(".plupload", form).size() > 0) {
+                    Upload.api.plupload();
+                }
+
+                //绑定fachoose选择附件事件
+                if ($(".fachoose", form).size() > 0) {
+                    $(document).on('click', ".fachoose", function () {
+                        var multiple = $(this).data("multiple") ? $(this).data("multiple") : false;
+                        var mimetype = $(this).data("mimetype") ? $(this).data("mimetype") : '';
+                        Fast.api.open("general/attachment/select?callback=refreshchoose&element_id=" + $(this).attr("id") + "&multiple=" + multiple + "&mimetype=" + mimetype, __('Choose'));
+                        return false;
+                    });
+
+                    //刷新选择的元素
+                    window.refreshchoose = function (id, data, multiple) {
+                        var input_id = $("#" + id).data("input-id");
+                        if (multiple) {
+                            var urlArr = [];
+                            var inputObj = $("#" + input_id);
+                            if (inputObj.val() != "") {
+                                urlArr.push(inputObj.val());
+                            }
+                            urlArr.push(data.url);
+                            inputObj.val(urlArr.join(",")).trigger("change");
+                        } else {
+                            $("#" + input_id).val(data.url).trigger("change");
+                        }
+                        Layer.closeAll();
+                    };
+                }
+            },
+            custom: {}
+        },
+    };
+    return Form;
+});
