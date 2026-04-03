@@ -23,5 +23,21 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-mybatis-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ssitao.code</groupId>
+            <artifactId>ssitao-code-starter-extension-crud-mf</artifactId>
+        </dependency>
     </dependencies>
 </project>

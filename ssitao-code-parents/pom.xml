@@ -110,7 +110,16 @@
                 <artifactId>ssitao-code-mybatis-metadata</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-starter-extension-crud-mf</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-starter-extension-crud-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!-- ==================== ssitao-code-modulars 子模块 ==================== -->
             <dependency>
                 <groupId>com.ssitao.code</groupId>
@@ -135,6 +144,11 @@
             <dependency>
                 <groupId>com.ssitao.code</groupId>
                 <artifactId>ssitao-code-modular-devtools</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ssitao.code</groupId>
+                <artifactId>ssitao-code-starter-web</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!-- ==================== ssitao-code-frame-security 子模块 ==================== -->

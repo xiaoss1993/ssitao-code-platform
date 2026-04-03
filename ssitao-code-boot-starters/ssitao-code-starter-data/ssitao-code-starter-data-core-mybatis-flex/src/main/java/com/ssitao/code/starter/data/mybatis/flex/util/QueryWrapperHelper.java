@@ -6,8 +6,13 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.ssitao.code.common.utils.ReflectUtils;
+import com.ssitao.code.common.utils.validation.ValidationUtils;
 import com.ssitao.code.frame.mybatisflex.core.query.QueryWrapper;
+import com.ssitao.code.starter.data.core.annotation.Query;
+import com.ssitao.code.starter.data.core.annotation.QueryIgnore;
 import com.ssitao.code.starter.data.core.enums.QueryType;
+import com.ssitao.code.starter.data.core.util.SqlInjectionUtils;
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
@@ -113,7 +118,7 @@ public class QueryWrapperHelper {
      * @return QueryWrapper Consumer
      */
     private static <Q, R> List<Consumer<QueryWrapper>> buildWrapperConsumer(Q query, Field field) {
-        boolean accessible = field.canAccess(query);
+        boolean accessible = field.isAccessible();
         try {
             field.setAccessible(true);
             // 如果字段值为空，直接返回
@@ -148,9 +153,7 @@ public class QueryWrapperHelper {
                 parse(queryType, column, fieldValue, consumers);
             }
             return consumers;
-        } catch (BadRequestException e) {
-            throw e;
-        } catch (Exception e) {
+        }catch (Exception e) {
             log.error("Build query wrapper occurred an error: {}. Query: {}, Field: {}.", e
                 .getMessage(), query, field, e);
         } finally {
@@ -172,31 +175,57 @@ public class QueryWrapperHelper {
                                   Object fieldValue,
                                   List<Consumer<QueryWrapper>> consumers) {
         switch (queryType) {
-            case EQ -> consumers.add(q -> q.eq(columnName, fieldValue));
-            case NE -> consumers.add(q -> q.ne(columnName, fieldValue));
-            case GT -> consumers.add(q -> q.gt(columnName, fieldValue));
-            case GE -> consumers.add(q -> q.ge(columnName, fieldValue));
-            case LT -> consumers.add(q -> q.lt(columnName, fieldValue));
-            case LE -> consumers.add(q -> q.le(columnName, fieldValue));
-            case BETWEEN -> {
+            case EQ:
+                consumers.add(q -> q.eq(columnName, fieldValue));
+                break;
+            case NE:
+                consumers.add(q -> q.ne(columnName, fieldValue));
+                break;
+            case GT:
+                consumers.add(q -> q.gt(columnName, fieldValue));
+                break;
+            case GE:
+                consumers.add(q -> q.ge(columnName, fieldValue));
+                break;
+            case LT:
+                consumers.add(q -> q.lt(columnName, fieldValue));
+                break;
+            case LE:
+                consumers.add(q -> q.le(columnName, fieldValue));
+                break;
+            case BETWEEN: {
                 List<Object> between = new ArrayList<>((List<Object>)fieldValue);
                 ValidationUtils.throwIf(between.size() != 2, "[{}] 必须是一个范围", columnName);
                 consumers.add(q -> q.between(columnName, between.get(0), between.get(1)));
+                break;
             }
-            case LIKE -> consumers.add(q -> q.like(columnName, fieldValue));
-            case LIKE_LEFT -> consumers.add(q -> q.likeLeft(columnName, fieldValue));
-            case LIKE_RIGHT -> consumers.add(q -> q.likeRight(columnName, fieldValue));
-            case IN -> {
+            case LIKE:
+                consumers.add(q -> q.like(columnName, fieldValue));
+                break;
+            case LIKE_LEFT:
+                consumers.add(q -> q.likeLeft(columnName, fieldValue));
+                break;
+            case LIKE_RIGHT:
+                consumers.add(q -> q.likeRight(columnName, fieldValue));
+                break;
+            case IN: {
                 ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", columnName);
                 consumers.add(q -> q.in(columnName, (Collection<Object>)fieldValue));
+                break;
             }
-            case NOT_IN -> {
+            case NOT_IN: {
                 ValidationUtils.throwIfEmpty(fieldValue, "[{}] 不能为空", columnName);
                 consumers.add(q -> q.notIn(columnName, (Collection<Object>)fieldValue));
+                break;
             }
-            case IS_NULL -> consumers.add(q -> q.isNull(columnName));
-            case IS_NOT_NULL -> consumers.add(q -> q.isNotNull(columnName));
-            default -> throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
+            case IS_NULL:
+                consumers.add(q -> q.isNull(columnName));
+                break;
+            case IS_NOT_NULL:
+                consumers.add(q -> q.isNotNull(columnName));
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("暂不支持 [%s] 查询类型", queryType));
         }
     }
 }
